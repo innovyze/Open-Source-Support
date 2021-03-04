@@ -1,4 +1,4 @@
-# Replace a flag in all objects in a model network
+# Replace flags in all objects in a model network
 This script prompts the user to input both existing flag codes and a new flag codes to replace it. It will then loop through all model objects within the active network and replace the old flag with the new one.
 ## Version 1
 For just one flag code
