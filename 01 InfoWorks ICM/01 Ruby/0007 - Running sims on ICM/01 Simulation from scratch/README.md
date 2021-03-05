@@ -1,3 +1,3 @@
 # Run a simulation from scratch
-For just one flag code
+This script creates a new run object from database objects and runs a simulation.
 ![](gif001.gif)
