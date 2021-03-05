@@ -81,7 +81,7 @@ ModificationGUID,1,{04C089B2-6542-48C7-B866-8373741AADA7}
 ModifiedBy,1,daniel.moreira
 Momentum,1,0.001000
 MultiScenarioInUI,1,0
-Name,1,test
+Name,1,Run forest
 NetworkCheckedOutRevisionID,0,
 NodeLag,1,0
 NodeThreshold,1,0.000000

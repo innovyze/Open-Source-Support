@@ -8,12 +8,13 @@ $db=WSApplication.open $db_file,false
 group=$db.model_object '>MODG~Model group'
 group.children.each do |run|
 	if run.type=='Run'
-		id = run['Model Network']
+		model_id = run['Model Network']
+		level_id = run['Level']
 		commit = run['Model Network Commit ID']
 		puts "Run parameters:"
-		puts "=> Model network id:          #{id}"
-		puts "=> Model network name:        #{$db.model_object_from_type_and_id('Model Network',id).name}"
+		puts "=> Model network name:        #{$db.model_object_from_type_and_id('Model Network',model_id).name}"
 		puts "=> Model commit version:      #{commit}"
+		puts "=> Level file used:           #{$db.model_object_from_type_and_id('Level',level_id).name}"
 		puts "=> Simulation duration:       #{run['Duration']}"
 	end
 end
