@@ -1,0 +1,38 @@
+IWTDB002
+#Children,1,()
+#Parent,1,4118
+#UsedBy,1,()
+#Uses,1,(269)
+Comment,0,
+Computer,0,
+CreationGUID,1,{8D71863C-D703-4547-87AA-92BF23344009}
+End Time,0,
+EndedCode,0,
+Engine Version,0,
+Flow Survey,0,
+Hidden,0,
+ID,1,16
+Init State Time,0,
+LastVerificationSequence,0,
+ModificationGUID,1,{A61B3443-7981-420B-9E52-15281B668A30}
+ModifiedBy,1,daniel.moreira
+Name,1,rainfall
+NetworkScenarioUID,0,
+PreProcessAction,0,
+Rainfall Event,1,1
+Rainfall Event Index,0,
+RecycledBy,0,
+RecycleParent,0,
+RecycleParentType,0,
+ResultsLocation,0,
+Run,1,16
+RunoffOnly,0,
+Save Final State,0,
+Start Time,0,
+StateSim,0,
+Status,0,
+Status2,0,
+WhenCreated,1,44260.47740741
+WhenModified,1,44260.47740741
+WhenRecycled,0,
+WhenRun,0,
