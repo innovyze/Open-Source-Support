@@ -7,4 +7,4 @@ Scripts posted here are generally developed by Innovyze Support on the back of a
 
 Scripts hosted here are meant to be boilerplate and anonymised snippets that perform a specific function. The aim is creating a library that empowers customers to help themselves, discuss improvements and contribute with their own ideas. Hopefully you can come here, quickly pick and choose from the existing library, and Frankenstein your code for your own needs.
 
-This is not the place to develop bespoke code for customers, nor ever will we post it here. This can be requested from Innovyze within the scope of an implementation project.
+This is not the place to post bespoke or complex code for specific user needs. This can be requested from Innovyze within the scope of an implementation project.
