@@ -1,10 +1,15 @@
 # Innovyze open source scripts
 This repo will host open source code that can be used in the various Innovyze products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
 
-The Exchange.docx documentation includs (almost) all available Ruby methods and will be updated regularly.
-## Disclaimer
-Scripts posted here are generally developed by Innovyze Support on the back of a specific customer inquiry. We're not computer scientists. Therefore, the scripts might not always be optimised, prettyfied, refactored, etc. Feel very welcome to contribute with pull requests and raise issues for code that you'd like to see here.
+The Exchange.docx documentation includes (almost) all available Ruby methods for ICM, IAM and WSPro. It will be updated as regularly as there are updates.
 
-Scripts hosted here are meant to be boilerplate and anonymised snippets that perform a specific function. The aim is creating a library that empowers customers to help themselves, discuss improvements and contribute with their own ideas. Hopefully you can come here, quickly pick and choose from the existing library, and Frankenstein your code for your own needs.
+## Disclaimer
+Scripts posted here are generally developed by Innovyze Support on the back of a specific customer inquiry. They are meant to be anonymised boilerplate snippets that perform specific functions within the software. The aim is allowing our customers to hit the ground running on basic tasks to save them time when trying to develop their own scripts.
+
+**By creating this library, we want to empower customers to help themselves.**
+
+As a by-product it would be nice if this space reached enough critical mass that a community of like-minded programmers would help each other via with improvements to the code.
+
+Also, we're not computer scientists. Therefore, the scripts might not always be optimised, prettyfied, refactored, etc. Feel very welcome to contribute with pull requests and raise issues for code that you'd like to see here.
 
 This is not the place to post bespoke or complex code for specific user needs. This can be requested from Innovyze within the scope of an implementation project.
