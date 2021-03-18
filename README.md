@@ -4,10 +4,13 @@ This repo will host open source code that can be used in the various Innovyze pr
 The Exchange.docx documentation includs (almost) all available Ruby methods and will be updated regularly.
 
 ## Ruby
-Ruby Scripts are split into those that run from the UI and those that run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. In this Repo:
-* Scripts that run from the **UI** will follow the nomenclature `UI_script*.rb`.
-* Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script*.rb`. These will also contain a `*.bat` file that triggers the script using a specific version of the Workgroup Client that can be customisable.
+Ruby Scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. In this Repo:
+* Scripts that run from the **UI** will follow the nomenclature `UI_script*.rb`
+* Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script*.rb`
+
+Exchange scripts will sometimes be packages alongside a `*.bat` file. This is precursor command that triggers the script. It uses a specific version of the Workgroup Client that can be customisable (see below).
 ![Example of an exchange.bat file with customisable version](exchange_bat.png)
+
 Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v*`, where `*` is an integer representing each variant.
 ## Disclaimer
 ### Scope of code
