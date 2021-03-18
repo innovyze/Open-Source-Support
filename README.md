@@ -1,7 +1,7 @@
 # Innovyze open source scripts
 This repo will host open source code that can be used in the various Innovyze products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
 
-The Exchange.docx documentation includs (almost) all available Ruby methods and will be updated regularly.
+The Exchange.docx documentation includes (almost) all available Ruby methods and will be updated regularly.
 
 ## Ruby
 Ruby Scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. In this Repo:
