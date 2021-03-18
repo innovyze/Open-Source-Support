@@ -8,7 +8,7 @@ Ruby Scripts are split into those which run from the UI and those which run via 
 * Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`
 * Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script.rb`
 
-Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v*`, where `*` is an integer representing each variant.
+Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v?`, where `?` is an integer representing each variant.
 
 Exchange scripts will sometimes be packaged alongside a `*.bat` file. This is precursor command that triggers the script. It uses a specific version of the Workgroup Client that can be customisable (see example below).
 ```bat
