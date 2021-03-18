@@ -5,7 +5,7 @@ require 'matrix'
 net = WSApplication.current_network
 result_type = 'mcpl1dis'
 file_dir = WSApplication.folder_dialog 'Select a folder for results',  true
-file_name = file_dir + '\\' + 'Alewife_' + result_type + '.csv'
+file_name = file_dir + '\\' + 'project_x_' + result_type + '.csv'
 
 link = net.row_objects('hw_1d_results_point')
 timesteps = net.list_timesteps
