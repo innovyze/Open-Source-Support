@@ -10,7 +10,7 @@ Ruby Scripts are split into those which run from the UI and those which run via 
 
 Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v?`, where `?` is an integer representing each variant.
 
-Exchange scripts will sometimes be packaged alongside an `exchange.bat` file. This encapsulates a set of commands that provide the `*.rb` script to the Exchange executable. It uses a specific version of the Workgroup Client that can be customisable (see example below).
+Exchange scripts will sometimes be packaged alongside an `exchange.bat` file. This encapsulates a set of commands that provide the `*.rb` script to the Exchange executable in a specific Workgroup Client version. It uses a specific version of the Workgroup Client that can be customisable (see example below).
 ```bat
 @ECHO OFF
 SET version=2021.1
