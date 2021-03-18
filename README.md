@@ -34,4 +34,6 @@ This is not the place to develop bespoke code for customers, nor ever will we po
 This project is currently growing in a rather organic fashion. We might decide do change the structure, which might mean broken links. We'll try to avoid this as best as possible, but this can happen more frequently especially during the early stages of the project.
 
 ### Liability
-Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate what it does. **Innovyze is not liable for unintended consequences of code posted her, nor does it have a responsibility for maintaining it.**
+Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate what it does. 
+
+**Innovyze is not liable for unintended consequences of code posted her, nor does it have a responsibility for maintaining it.**
