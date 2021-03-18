@@ -38,4 +38,4 @@ This project is currently growing in a rather organic fashion. We might decide t
 ## Liability
 Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate what it does. 
 
-**Innovyze is not liable for unintended consequences of code posted her, nor does it have a responsibility for maintaining it.**
+**Innovyze is not liable for unintended consequences of code posted here, nor does it have a responsibility for maintaining it.**
