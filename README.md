@@ -33,7 +33,7 @@ As a by-product it would be nice if this space reached enough critical mass that
 This is not the place to develop bespoke code for customers, nor ever will we post it here. This can be requested from Innovyze within the scope of an implementation project.
 
 ## Structure
-This project is currently growing in a rather organic fashion. We might decide do change the structure, which might mean broken links. We'll try to avoid this as best as possible, but this can happen more frequently especially during the early stages of the project.
+This project is currently growing in a rather organic fashion. We might decide to change the structure, which might mean broken links. We're alos open to structure changes by user if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
 
 ## Liability
 Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate what it does. 
