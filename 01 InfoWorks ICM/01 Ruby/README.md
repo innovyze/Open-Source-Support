@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby scripts
 
-This directory contains examples of tasks that can be performed using Ruby cripts. These are stored in sub-directories suffixed with a counter and a brief README.md description. They can be either ICM UI scripts or ICMExchange scripts.
+This directory contains examples of tasks that can be performed using Ruby cripts. These are stored in sub-directories prefixed with a counter and a brief README.md description. They can be either ICM UI scripts or ICMExchange scripts.
 
 ## UI scripts
 Scripts following the nomenclature `UI_script.rb` are run from within the ICM graphics interface. A quick way to get started is:
