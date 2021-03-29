@@ -1,16 +1,18 @@
 # Innovyze open source scripts
 This repo will host open source code that can be used in the various Innovyze products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
 
-The Exchange.docx documentation includs (almost) all available Ruby methods and will be updated regularly.
+The Exchange.docx documentation includes (almost) all available Ruby methods and will be updated regularly.
 
 ## Ruby
 Ruby Scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. In this Repo:
-* Scripts that run from the **UI** will follow the nomenclature `UI_script*.rb`
-* Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script*.rb`
+* Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`
+* Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script.rb`
 
-Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v*`, where `*` is an integer representing each variant.
+Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v?`, where `?` is an integer representing each variant.
 
-Exchange scripts will sometimes be packaged alongside a `*.bat` file. This is precursor command that triggers the script. It uses a specific version of the Workgroup Client that can be customisable (see example below).
+Exchange scripts will sometimes be packaged alongside a standalone database and an `exchange.bat` file. The goal is allowing the script to be run off the shelf when the repo is cloned.
+
+The BAT file encapsulates commands that call the Exchange executable and provide the Ruby script in the same folder as a parameter for a specific Workgroup Client version. It allows a degree of customisation - see an example below:
 ```bat
 @ECHO OFF
 SET version=2021.1
@@ -31,9 +33,9 @@ As a by-product it would be nice if this space reached enough critical mass that
 This is not the place to develop bespoke code for customers, nor ever will we post it here. This can be requested from Innovyze within the scope of an implementation project.
 
 ## Structure
-This project is currently growing in a rather organic fashion. We might decide do change the structure, which might mean broken links. We'll try to avoid this as best as possible, but this can happen more frequently especially during the early stages of the project.
+This project is currently growing in a rather organic fashion. We might decide to change the structure, which might mean broken links. We're alos open to structure changes by user if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
 
 ## Liability
 Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate what it does. 
 
-**Innovyze is not liable for unintended consequences of code posted her, nor does it have a responsibility for maintaining it.**
+**Innovyze is not liable for unintended consequences of code posted here, nor does it have a responsibility for maintaining it.**
