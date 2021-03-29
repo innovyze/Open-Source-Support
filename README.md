@@ -5,8 +5,8 @@ The Exchange.docx documentation includes (almost) all available Ruby methods and
 
 ## Ruby
 Ruby Scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. In this Repo:
-* Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`
-* Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script.rb`
+* Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`. These can be run from the Workgroup Client.
+* Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script.rb`. These have to be run using a licensed version of Exchange.
 
 Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v?`, where `?` is an integer representing each variant.
 
