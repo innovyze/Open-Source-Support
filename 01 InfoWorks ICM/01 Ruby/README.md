@@ -12,7 +12,7 @@ Scripts with the name `UI_script.rb` are run from within the ICM graphics interf
 ![](gif001.gif)
 
 ## Exchange scripts
-Scripts with the name `EX_script.rb` are run passing the script to the ICMExchange API. 
+Scripts with the name `EX_script.rb` need to be passed to the ICMExchange API to run. 
 The directories in this repository might contain example databases to test the scripts on. There are ways to download a specific directory, but it is probably easier to clone the whole repository (it's not that big anyway). 
 This example shows cloning by downloading the zip file. More avanced users might want to clone using other methods.
 1. Ensure the machine can access a valid Exchange license.
