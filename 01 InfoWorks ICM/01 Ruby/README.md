@@ -12,7 +12,7 @@ Scripts with the name `UI_script.rb` are run from within the ICM graphics interf
 ![](gif001.gif)
 
 ## Exchange scripts
-The directories in this repository might contain example databases to test the scripts on. There are ways to download a specific directory, but it is probably easier to clone the whole repository (it's not that big anyway). 
+These scripts will sometimes be packaged alongside a standalone database and an `exchange.bat` file. The goal is allowing the script to be run off the shelf when the repo is cloned. There are ways to download a specific directory, but it is probably easier to clone the whole repository (it's not that big anyway). 
 This example shows cloning by downloading the zip file. More avanced users might want to clone using other methods.
 1. Ensure the machine can access a valid Exchange license.
 2. Clone the repository from GitHub
