@@ -24,6 +24,6 @@ This example shows cloning by downloading the zip file. More avanced users might
 
 ![](gif002.gif)
 
-Note that downloaded `*.bat` files are often recognised as a threat by malware detection algorythms. This is a blanket warning because scripts can be used for malicious purposes. There is nothing malicious about the `bat` files under this repo, they are simply used to push the Ruby script to the Exchange API, and are completely open to interrogation from GitHub before being downloaded. 
+Note that downloaded `bat` files are often recognised as a threat by malware detection algorythms. This is a blanket warning because scripts can be used for malicious purposes. There is nothing malicious about the `bat` files under this repo, they are simply used to push the Ruby script to the Exchange API, and are completely open to interrogation from GitHub before being downloaded. 
 
 However, if for any reason you can't use the `bat` files from our repository, you can create an equivalent `*.bat` file in your local machine. In fact, you can copy past the exact same from GitHub onto the locally created file and this will likely allow you to run the file without warnings.
