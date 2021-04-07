@@ -1,2 +1,0 @@
-IWTDB002
-daniel.moreira,1,"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no"" ?><TreeNode Name=""Root"" Schema=""1""><TreeNode Name=""LiveClientCfg"" Schema=""-1""><Value Flag="""" Name=""DisplayLayerList"" Type=""32769"" Value=""0,""/><Value Flag="""" Name=""OverviewAlertMode"" Type=""2"" Value=""0""/><Value Flag="""" Name=""UpdateNetworkPageOnAutomaticRunCompletion"" Type=""11"" Value=""1""/><Value Flag="""" Name=""UpdateNetworkPageOnManualRunCompletion"" Type=""11"" Value=""1""/></TreeNode><TreeNode Name=""MainFrame"" Schema=""1""/></TreeNode>"
