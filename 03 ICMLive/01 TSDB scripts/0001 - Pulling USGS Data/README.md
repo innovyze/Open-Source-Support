@@ -1,5 +1,5 @@
-# USGS REST API downloading script
-This script downloads data from USGS into Simple CSV format that can be used to feed ICM Live TSDBs.
+# USGS data download script
+This script downloads data from USGS via a REST API into Simple CSV format that can be used to feed ICM Live TSDBs.
 
 In this example, the following types are downloaded for a number of sites:
 * Observed tidal
