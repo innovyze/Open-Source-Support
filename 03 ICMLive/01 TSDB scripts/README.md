@@ -8,6 +8,6 @@ It is common to have a `bat` file activating a secondary process which might be 
 
 We will preferably post scripts that can run without the need for third party software - such as by using PowerShell. 
 
-In some cases it might be preferable to trigger processes using other freely available scripting software. For example, scriptable FTP software (such as [WinSCP](https://winscp.net/eng/index.php)) designed speficifically for this protocal often manages transfers more robustly, comes with simpler syntax and enhanced logging capabilities. But this will require installing third party software in the machine consuming the TSDB data.
+In some cases it might be preferable to trigger processes using other freely available scripting software. For example, scriptable FTP software (such as [WinSCP](https://winscp.net/eng/index.php)) designed speficifically for this protocal often manages transfers more robustly, comes with simpler syntax and enhanced logging capabilities. But this will require installing additional software in the machine consuming the TSDB data.
 
 We will not reference scripts that trigger paid third party software.
