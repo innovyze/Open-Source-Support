@@ -6,6 +6,6 @@ In this example, the following data types are downloaded for a number of sites:
 * Observed levels
 * Observed rainfall
 
-These can be easily added to the list, alongside parameter codes.
+More sites can be easily added to the list, as well as additional measurement parameter codes.
 The code is run by calling the `Get-Data` function with parameters relative to the gauges that are required to be downloaded.
 Times come from USGS as local to the site, but are converted to UTC+00 by the script for consistency of output for TSDB consumption.
