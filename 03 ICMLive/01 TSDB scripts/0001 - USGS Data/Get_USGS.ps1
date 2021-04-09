@@ -14,10 +14,6 @@ $USGSLevlSites = @(                         # =< Add/Remove as necessary >=
 )
 $USGSRainSites = @(                         # =< Add/Remove as necessary >=
   "405245074022401"                         # Hackensack            
-  "404241074072201"                         # Newark
-  "01376515"                                # Hudson River Pier 84
-  "01376520"                                # Hudson River Pier 26
-  "405939074084301"                         # Ridgewood
 )
 
 # Parameter codes                           # https://help.waterdata.usgs.gov/codes-and-parameters/parameters
