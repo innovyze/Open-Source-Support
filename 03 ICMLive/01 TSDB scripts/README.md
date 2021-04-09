@@ -6,7 +6,7 @@ This directory contains examples of scripts that can be triggered by ICMLive ahe
 ## Notes
 It is common to have a `bat` file activating a secondary process which might be more efficient for a particular type of data request.
 
-We will preferably post scripts that can run off the shelf from Windows without the need for third party software - such as by using PowerShell. 
+We will preferably post scripts that can run from Windows without the need for third party software - such as by using PowerShell. 
 
 In some cases it might be preferable to trigger processes using other freely available scripting software. For example, scriptable FTP software (such as [WinSCP](https://winscp.net/eng/index.php)) designed speficifically for this protocal often manages transfers more robustly, comes with simpler syntax and enhanced logging capabilities. But this will require installing third party software in the machine consuming the TSDB data.
 
