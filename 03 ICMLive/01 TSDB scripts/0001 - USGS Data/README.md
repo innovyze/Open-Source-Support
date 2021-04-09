@@ -1,7 +1,7 @@
 # USGS data download script
 This script downloads data from USGS via a REST API into Simple CSV format that can be used in ICMLive TSDBs.
 
-In this example, the following types are downloaded for a number of sites:
+In this example, the following data types are downloaded for a number of sites:
 * Observed tidal
 * Observed levels
 * Observed rainfall
