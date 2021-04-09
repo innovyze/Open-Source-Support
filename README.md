@@ -12,7 +12,8 @@ This is not the place to develop bespoke code for customers, nor ever will we po
 
 # Languages
 ## Ruby
-Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. In this Repo:
+Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. 
+In this Repo:
 * Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`. These can be run from the Workgroup Client.
 * Scripts that run from via the **Exchange API** will follow the nomenclature `EX_script.rb`. These need to be passed to `IExchange.exe` to run, which is present in the folders of every version of the Workgroup Client installation in both 32-bit and 64-bit. This requires a valid Exchange license.
 
