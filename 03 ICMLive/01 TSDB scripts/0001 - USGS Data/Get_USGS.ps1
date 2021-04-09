@@ -8,12 +8,15 @@ $LevlObsPeriod = 72                         # Period for observed level data to 
 $RainObsPeriod = 72                         # Period for observed rainfall data to be retrieved
 $USGSTidlSites = @(                         # =< Add/Remove as necessary >=
   "01392650"                                # Newark
+  "01376562"                                # Great Kills Harbor
 )
 $USGSLevlSites = @(                         # =< Add/Remove as necessary >=
   "01389890"                                # Dundee Dam
+  "01391500"                                # Saddle River at Lodi
 )
 $USGSRainSites = @(                         # =< Add/Remove as necessary >=
-  "405245074022401"                         # Hackensack            
+  "405245074022401"                         # Hackensack
+  "405934074120201"                         # Ridgewood
 )
 
 # Parameter codes                           # https://help.waterdata.usgs.gov/codes-and-parameters/parameters
