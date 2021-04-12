@@ -2,7 +2,7 @@
 # https://waterservices.usgs.gov/rest/IV-Service.html
 $UsgsUrl = "https://waterservices.usgs.gov"
 # User defined variables
-$DataPath = "C:\TEMP\"
+$DataPath = "C:\TEMP\USGS\"
 $LevlObsPeriod = 72                         # Period in h for observed level data to be retrieved
 $RainObsPeriod = 72                         # Period in h for observed rainfall data to be retrieved
 # Sites
@@ -38,7 +38,10 @@ function Get-Data {
       $_.datetime = [datetime]::Parse($_.datetime).ToUniversalTime().ToString("yyyy-MM-dd HH:mm")
       $_
     } |
-    ConvertTo-CSV -NoTypeInformation | ForEach-Object {$_ -replace '"',''} | Out-File -encoding "ASCII" $OutFile
+    ConvertTo-CSV -NoTypeInformation |
+    ForEach-Object {$_ -replace '"',''} |
+    Select-Object -Skip 1 |
+    Out-File -encoding "ASCII" $OutFile
     Write-Output $OutFile
   }
 }
