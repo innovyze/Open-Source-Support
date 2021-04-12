@@ -32,10 +32,10 @@ $NoaaSites = @(                           # =< Add more sites as needed >=
 function Set-RestUrl {
     Param($Site, $Stream)
     $CurrentTime = (Get-Date).ToUniversalTime().ToString("yyyyMMdd HH:00")
-    if ($Stream.Type -eq 'obs') { $StreamPeriod = "end_date={0}&range={1}" –f $CurrentTime, $Stream.Period }
-    if ($Stream.Type -eq 'prs') { $StreamPeriod = "begin_date={0}&range={1}" –f $CurrentTime, $Stream.Period }
-    $StringQuery = "{0}&station={1}&product={2}&datum={3}&time_zone={4}&interval={5}&units={6}&application=web_services&format=json" `
-        –f $StreamPeriod, $Site, $Stream.Product, $NoaaParams.Datum, $NoaaParams.TMZ, $Stream.Interval, $NoaaParams.Units
+    if ($Stream.Type -eq 'obs') { $StartEnd = "end_date=" + $CurrentTime }
+    if ($Stream.Type -eq 'prs') { $StartEnd = "begin_date=" + $CurrentTime }
+    $StringQuery = "{0}&range={1}&station={2}&product={3}&datum={4}&time_zone={5}&interval={6}&units={7}&application=web_services&format=json" `
+        –f $StartEnd, $Stream.Period, $Site, $Stream.Product, $NoaaParams.Datum, $NoaaParams.TMZ, $Stream.Interval, $NoaaParams.Units
     $NoaaParams.Url + '?' + $StringQuery
 }
 # Gets the data and converts it to Simple CSV tor TSDB consumption
