@@ -38,7 +38,7 @@ function Set-RestUrl {
         –f $StartEnd, $Stream.Period, $Site, $Stream.Product, $NoaaParams.Datum, $NoaaParams.TMZ, $Stream.Interval, $NoaaParams.Units
     $NoaaParams.Url + '?' + $StringQuery
 }
-# Gets the data and converts it to Simple CSV tor TSDB consumption
+# Gets the data and converts it to Simple CSV for TSDB consumption
 function Get-Data {
     Param($Sites, $Stream, $Path)
     Foreach ($Site in $Sites) {
