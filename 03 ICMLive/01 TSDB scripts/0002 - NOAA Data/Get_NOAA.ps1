@@ -1,4 +1,4 @@
-﻿# NOAA CO-OPS API For Data Retrieval
+﻿# NOAA CO-OPS API For Data Retrieval:
 # https://api.tidesandcurrents.noaa.gov/api/prod/
 $NoaaUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter"
 # User defined variables
@@ -6,12 +6,6 @@ $DataPath = 'C:\TEMP\NOAA\'
 $NoaaTMZ = 'GMT'                          # Timezone of incoming data
 $NoaaDatum = 'MLLW'                       # Datum of incoming data
 $NoaaUnits = 'English'                    # Units system
-# Sites
-# https://tidesandcurrents.noaa.gov/
-$NoaaSites = @(                           # =< Add more sites as needed >=
-    '8519483'                             # Bergen
-    '8518750'                             # Battery
-)
 # Parameters
 $ObsParams = @{                           # Parameters for Observed data (example)
     Period = 72                           # Time range of data (h)
@@ -25,6 +19,12 @@ $ForParams = @{                           # Parameters for Forecast data (exampl
     Product = 'predictions'               # Type of data
     Interval = 'h'                        # Interval for which data is returned 
 }
+# Sites
+# https://tidesandcurrents.noaa.gov/
+$NoaaSites = @(                           # =< Add more sites as needed >=
+    '8519483'                             # Bergen
+    '8518750'                             # Battery
+)
 # Functions
 # Generates a URL to download the data with origin rounded to the current hour
 function Set-RestUrl {
