@@ -1,12 +1,14 @@
 ﻿# NOAA CO-OPS API For Data Retrieval:
 # https://api.tidesandcurrents.noaa.gov/api/prod/
-$NoaaUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter"
 # User defined variables
 $DataPath = 'C:\TEMP\NOAA\'
-$NoaaTMZ = 'GMT'                          # Timezone of incoming data
-$NoaaDatum = 'MLLW'                       # Datum of incoming data
-$NoaaUnits = 'English'                    # Units system
 # Parameters
+$NoaaParams = @{
+    Url = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter"
+    TMZ = 'GMT'                           # Timezone of incoming data
+    Datum = 'MLLW'                        # Datum of incoming data
+    Units = 'English'                     # Units system
+}
 $ObsParams = @{                           # Parameters for Observed data (example)
     Period = 72                           # Time range of data (h)
     Type = 'obs'                          # Type of data (observed / predicted)
@@ -33,8 +35,8 @@ function Set-RestUrl {
     if ($Stream.Type -eq 'obs') { $StreamPeriod = "end_date={0}&range={1}" –f $CurrentTime, $Stream.Period }
     if ($Stream.Type -eq 'prs') { $StreamPeriod = "begin_date={0}&range={1}" –f $CurrentTime, $Stream.Period }
     $StringQuery = "{0}&station={1}&product={2}&datum={3}&time_zone={4}&interval={5}&units={6}&application=web_services&format=json" `
-        –f $StreamPeriod, $Site, $Stream.Product, $NoaaDatum, $NoaaTMZ, $Stream.Interval, $NoaaUnits
-    $NoaaUrl + '?' + $StringQuery
+        –f $StreamPeriod, $Site, $Stream.Product, $NoaaParams.Datum, $NoaaParams.TMZ, $Stream.Interval, $NoaaParams.Units
+    $NoaaParams.Url + '?' + $StringQuery
 }
 # Gets the data and converts it to Simple CSV tor TSDB consumption
 function Get-Data {
