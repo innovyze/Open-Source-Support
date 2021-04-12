@@ -15,7 +15,7 @@ $ObsParams = @{                           # Parameters for Observed data (exampl
     Product = 'water_level'               # Type of data
     Interval = '6'                        # Interval for which data is returned 
 }
-$ForParams = @{                           # Parameters for Forecast data (example)
+$PrsParams = @{                           # Parameters for Predictions data (example)
     Period = 72                           # Time range of data (h)
     Type = 'prs'                          # Type of data (observed / predicted)
     Product = 'predictions'               # Type of data
@@ -56,4 +56,4 @@ function Get-Data {
 New-Item -ItemType Directory -Force -Path $DataPath | Out-Null
 # Call Get-Data function
 Get-Data -Sites $NoaaSites -Stream $ObsParams -Path $DataPath
-Get-Data -Sites $NoaaSites -Stream $ForParams -Path $DataPath
+Get-Data -Sites $NoaaSites -Stream $PrsParams -Path $DataPath
