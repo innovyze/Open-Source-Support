@@ -29,7 +29,6 @@ SET script=EX_script.rb
 IF %bit%==32 (SET "path=C:\Program Files (x86)")
 IF %bit%==64 (SET "path=C:\Program Files")
 "%path%\Innovyze Workgroup Client %version%\IExchange" "%~dp0%script%" ICM
-PAUSE
 ```
 ## SQL
 Innovyze implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria.
