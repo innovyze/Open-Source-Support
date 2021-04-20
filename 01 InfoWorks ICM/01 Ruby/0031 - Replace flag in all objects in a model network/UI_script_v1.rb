@@ -7,8 +7,8 @@ $net.tables.each do |table|
   fields.each do |field|
     if field.name.match? (/_flag/)
       $net.row_objects(table.name).each do |row|
-		row[field.name]=$new_flag if row[field.name]==$old_flag
-		row.write
+      row[field.name]=$new_flag if row[field.name]==$old_flag
+      row.write
       end
     end
   end
