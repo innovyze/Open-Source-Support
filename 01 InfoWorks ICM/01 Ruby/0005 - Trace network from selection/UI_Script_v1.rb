@@ -7,7 +7,7 @@ roc.each do |ro|
 			unprocessedLinks << l
 			l._seen=true
 		end
-	end
+	end 
 	while unprocessedLinks.size>0
 		working = unprocessedLinks.shift
 		working.selected=true
