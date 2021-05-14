@@ -1,0 +1,8 @@
+# Sum values in GIS based on criteria
+This SQL sums values found in a `value` column in a GIS file of points contained in each subcatchment if the value on their `ident` column matches `A`.
+It displays the sum and also updates the `user_number_10` column of the Subcatchments table with the respective result.
+The GIS has to be loaded in the model network.
+
+Network snapshot file and `points.shp` file included.
+
+![](img001.png)
