@@ -4,5 +4,7 @@ It displays the sum and also updates the `user_number_10` column of the Subcatch
 The GIS has to be loaded in the model network.
 
 Network snapshot file and `points.shp` file included.
-
+## ICM query and results
 ![](img001.png)
+## GIS view
+![](img002.png)
