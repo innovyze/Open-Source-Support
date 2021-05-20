@@ -3,7 +3,7 @@ This repo will host open source code that can be used in the Innovyze Workgroup 
 
 The Exchange.docx documentation includes (almost) all available Ruby methods and will be updated regularly.
 
-## Scope
+## Scope 
 Scripts posted here are generally developed by Innovyze Support on the back of a specific customer request, but we're not programmers. Therefore, the scripts might not always be entirely optimised. Feel welcome to contribute with pull requests and raise issues for changes that you'd like to see.
 
 It would be a desirable by-product if this space reached enough critical mass that a community of like-minded users would help each other, suggest improvements and propose new ideas.
