@@ -4,23 +4,23 @@ August 2016
 ## Contents
 [Introduction](#Introduction)
 
-[User Interface](#_Toc17977248)
+[User Interface](#User-Interface)
 
-[ICM Exchange](#_Toc17977249)
+[ICM Exchange](#ICM-Exchange)
 
-[File Format](#_Toc17977250)
+[File Format](#File-Format)
 
-[Data Types](#_Toc17977251)
+[Data Types](#Data-Types)
 
-[Dates](#_Toc17977252)
+[Dates](#Dates)
 
-[Strings](#_Toc17977253)
+[Strings](#Strings)
 
-[File Contents – Full time varying results export](#_Toc17977254)
+[File Contents – Full time varying results export](#file-contents--full-time-varying-results-export)
 
-[File Contents – Summary results export](#_Toc17977255)
+[File Contents – Summary results export](#file-contents--summary-results-export)
 
-[Differences between the summary and full time varying results files](#_Toc17977256)
+[Differences between the summary and full time varying results files](#differences-between-the-summary-and-full-time-varying-results-files)
 
 _Important: This document documents the initial format of the ICM binary results introduced in InfoWorks ICM version 2.5 and enhanced in version 6.5. Whilst Innovyze has no immediate plans to change this file format, it does not guarantee that the file format will not change in future releases of InfoWorks ICM or that future versions of the software will provide options to export this initial version. The file format is identified by a long integer at the beginning of the file._
 
