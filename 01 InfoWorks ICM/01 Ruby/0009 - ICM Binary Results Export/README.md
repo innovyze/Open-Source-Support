@@ -3,12 +3,19 @@ Version 3.0
 August 2016
 ## Contents
 [Introduction](#_Toc17977247)
+
 [User Interface](#_Toc17977248)
+
 [ICM Exchange](#_Toc17977249)
+
 [File Format](#_Toc17977250)
+
 [Data Types](#_Toc17977251)
+
 [Dates](#_Toc17977252)
+
 [Strings](#_Toc17977253)
+
 [File Contents – Full time varying results export](#_Toc17977254)
 [File Contents – Summary results export](#_Toc17977255)
 [Differences between the summary and full time varying results files](#_Toc17977256)
