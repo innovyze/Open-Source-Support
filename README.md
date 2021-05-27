@@ -1,5 +1,5 @@
 # Innovyze open source scripts
-This repo will host open source code that can be used in the various Innovyze products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
+This repo will host open source code that can be used in the Innovyze Workgroup products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
 
 The Exchange.docx documentation includes (almost) all available Ruby methods and will be updated regularly.
 
@@ -12,7 +12,7 @@ This is not the place to develop bespoke code for customers, nor ever will we po
 
 # Languages
 ## Ruby
-Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation. 
+Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation.
 
 In this repository:
 * Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`. These can be run from the Workgroup Client.
@@ -42,7 +42,7 @@ Within the GUI users can create Stored Query objects where SQL queries can be bu
 
 # Disclaimer
 ## Structure
-This project is currently growing in a rather organic fashion. We might decide to change the structure, which might mean broken links. We're alos open to structure changes by user if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
+This project is currently growing in a rather organic fashion. We might decide to change the structure, which might mean broken links. We're also open to structure changes by users if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
 
 ## Liability
 Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate. 
