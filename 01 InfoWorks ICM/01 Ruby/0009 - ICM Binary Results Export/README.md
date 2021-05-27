@@ -2,7 +2,7 @@
 Version 3.0
 August 2016
 ## Contents
-[Introduction](##_Introduction)
+[Introduction](##Introduction)
 
 [User Interface](#_Toc17977248)
 
