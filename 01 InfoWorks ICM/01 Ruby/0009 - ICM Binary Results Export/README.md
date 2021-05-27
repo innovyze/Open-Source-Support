@@ -3,6 +3,7 @@ Version 3.0
 August 2016
 ## Contents
 [Introduction](#_Toc17977247)
+
 [User Interface](#_Toc17977248)
 [ICM Exchange](#_Toc17977249)
 [File Format](#_Toc17977250)
