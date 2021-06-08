@@ -1,0 +1,10 @@
+SET user_text_1 = "";
+LIST $hd_oids STRING;
+SELECT DISTINCT oid INTO $hd_oids FROM [head discharge];
+LET $i = 1;
+WHILE $i <= LEN($hd_oids);
+  LET $hd_oid = AREF($i,$hd_oids);
+  SELECT MAX(HDP_table.discharge) INTO $maxQ FROM [Head Discharge] WHERE oid = $hd_oid;
+  SET user_text_1 = $maxQ WHERE head_discharge_id = $hd_oid;
+  LET $i=$i+1;
+WEND;
