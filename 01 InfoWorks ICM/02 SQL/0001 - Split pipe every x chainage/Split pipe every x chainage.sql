@@ -1,3 +1,6 @@
+//Object: All nodes
+//Spatial Search: blank
+
 //Can only have one pipe selected
 UPDATE SELECTED [ALL LINKS] SET $selected = 1;
 
