@@ -1,7 +1,0 @@
-SET $sum=0;
-SET $count=0;
-
-SET $sum= $sum + spatial.user_number_1;
-SET $count=$count + 1;
-SET $avg=$sum$count;
-SELECT OID,$sum,$count,$avg;
