@@ -23,13 +23,15 @@ Multiple scripts performing a similar task can be stored under the same folder. 
 The BAT file encapsulates commands that call the Exchange executable and provide the Ruby script in the same folder as a parameter for a specific Workgroup Client version. It allows a degree of customisation - see an example below:
 ```bat
 @ECHO OFF
+SET script=EX_script.rb
 SET version=2021.1
 SET bit=64
-SET script=EX_script.rb
 IF %bit%==32 (SET "path=C:\Program Files (x86)")
 IF %bit%==64 (SET "path=C:\Program Files")
 "%path%\Innovyze Workgroup Client %version%\IExchange" "%~dp0%script%" ICM
 ```
+This example BAT script passes an `EX_script.rb` Ruby script to the `IExchange.exe` executable version `2021.1` using the `64-bit` architecture.
+
 ## SQL
 Innovyze implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria.
 An SQL query consists of a number of clauses separated by semi-colons. Each clause can do one of the following:
