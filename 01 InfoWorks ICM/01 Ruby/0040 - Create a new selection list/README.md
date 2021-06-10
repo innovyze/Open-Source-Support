@@ -1,0 +1,4 @@
+# Create a new Selection List 
+This script will select network objects in an active network and create a new Selection List tree object under the same Model Group with the selected network objects.
+## Version 1 - Trace network downstream of selected node
+![](gif001.gif)
