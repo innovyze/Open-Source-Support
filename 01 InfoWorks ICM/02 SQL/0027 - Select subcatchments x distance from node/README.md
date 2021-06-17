@@ -7,4 +7,4 @@ Current functionality dictates that the user has to sacrifice a user field since
 
 The `distance` statement uses subcatchment centroids as a heuristic to determine the distance to the node.
 
-![](screenshot.png)
+![](gif001.gif)
