@@ -1,4 +1,4 @@
-# InfoWorks ICM Ruby scripts
+# Ruby in InfoWorks ICM
 
 This directory contains examples of tasks that can be performed using Ruby cripts. These are stored in sub-directories prefixed with a counter and a brief README.md description. They can be either ICM UI scripts or ICMExchange scripts.
 
@@ -27,3 +27,24 @@ There are ways to download a specific directory, but it is probably easier to cl
 Downloaded `bat` files are often recognised as a threat by malware detection algorythms. This is a blanket warning because scripts can be used for malicious purposes. There is nothing malicious about the `bat` files under this repository, they are simply used to push the Ruby script to the Exchange API, and are completely open to interrogation from GitHub before being downloaded. 
 
 However, if for any reason you can't use the `bat` files from our repository, you can create an equivalent `bat` file in your local machine (or equivalent shell script). In fact, you can copy past the exact same code lines from GitHub onto the locally created file and this will likely allow you to run the file without warnings.
+
+# SQL in InfoWorks ICM
+InfoWorks ICM implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria. 
+
+An SQL query consists of a number of clauses separated by semi-colons. Each clause can do one of the following:
+    Select objects 
+    Deselect objects 
+    Update fields in objects 
+    Clear the selection
+
+The SQL query is built on the SQL Dialog. To open the dialog, choose SQL select... from the Selection menu, or click the  button from the Selection toolbar.
+
+There is considerable resource already contained within the ICM Help (press F1) to assist users with SQL and to understand the available functionality. This should be the first place to investigate and understand what is possible. This repository is designed to provide practical examples and to show working syntax based on historic requests we have had from customers. 
+
+## InfoWorks ICM Help - SQL in InfoWorks ICM
+![](img001.png)
+
+## Community input welcome!
+If you have any great SQLs that you would like to share with the modelling community then please provide them to support@innovyze.com and we will try and get them uploaded as soon as possible. Additionally if you make any enhancements to our scripts or find any bugs then please let us know. 
+
+Together we grow!
