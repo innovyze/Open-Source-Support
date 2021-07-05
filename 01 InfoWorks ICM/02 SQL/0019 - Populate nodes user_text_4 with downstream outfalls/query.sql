@@ -1,16 +1,19 @@
-set user_text_4 = "";
-list $nodes string;
-select selected distinct oid into $nodes;
-let $i = 1;
-while $i <= len ($nodes);
-  let $node = aref($i, $nodes);
-  list $outfalls string;
-  select distinct oid into $outfalls where node_type = "outfall" and all_us_links.us_node_id = $node;
-  let $j = 1;
-  while $j <= len ($outfalls);
-    let $outfall = aref($j, $outfalls);
-    set user_text_4 = user_text_4 + IIF(LEN(user_text_4)=0,'',',') + $outfall where oid = $node;
-    let $j = $j + 1;
-  wend;  
-  let $i = $i + 1;
-wend;
+SET user_text_4 = "";
+LIST $nodes STRING;
+SELECT SELECTED DISTINCT oid INTO $nodes;
+LET $i = 1;
+WHILE $i <= LEN($nodes);
+  LET $node = AREF($i, $nodes);
+  LIST $outfalls STRING;
+  SELECT DISTINCT oid INTO $outfalls 
+    WHERE node_type = "outfall" 
+    AND all_us_links.us_node_id = $node;
+  LET $j = 1;
+  WHILE $j <= LEN($outfalls);
+    LET $outfall = AREF($j, $outfalls);
+    SET user_text_4 = user_text_4 + IIF(LEN(user_text_4)=0,'',',') + $outfall 
+      WHERE oid = $node;
+    LIST $j = $j + 1;
+  WEND;  
+  LET $i = $i + 1;
+WEND;
