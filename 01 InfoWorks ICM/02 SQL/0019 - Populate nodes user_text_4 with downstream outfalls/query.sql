@@ -13,7 +13,7 @@ WHILE $i <= LEN($nodes);
     LET $outfall = AREF($j, $outfalls);
     SET user_text_4 = user_text_4 + IIF(LEN(user_text_4)=0,'',',') + $outfall 
       WHERE oid = $node;
-    LIST $j = $j + 1;
+    LET $j = $j + 1;
   WEND;  
   LET $i = $i + 1;
 WEND;
