@@ -6,7 +6,7 @@ The Exchange.docx documentation includes (almost) all available Ruby methods and
 ## Scope 
 Scripts posted here are generally developed by Innovyze Support on the back of a specific customer request, but we're not programmers. Therefore, the scripts might not always be entirely optimised. Feel welcome to contribute with pull requests and raise issues for changes that you'd like to see.
 
-It would be a desirable by-product if this space reached enough critical mass that a community of like-minded users would help each other, suggest improvements and propose new ideas.
+It would be a desirable by-product if this space reached enough critical mass that a community of like-minded users would help each other, suggest improvements and propose new ideas. Feel free to make use of [Issues](https://github.com/innovyze/Open-Source-Support/issues).
 
 This is not the place to develop bespoke code for customers, nor ever will we post it here. This can be requested from Innovyze within the scope of an implementation project.
 
