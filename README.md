@@ -32,7 +32,7 @@ IF %bit%==64 (SET "path=C:\Program Files")
 ```
 This example BAT script passes an `EX_script.rb` Ruby script to the `IExchange.exe` executable version `2021.1` using the `64-bit` architecture.
 
-## SQL
+## SQL (of the Innovyze Workgroup Products variety)
 Innovyze implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria.
 An SQL query consists of a number of clauses separated by semi-colons. Each clause can do one of the following:
 * Select objects 
