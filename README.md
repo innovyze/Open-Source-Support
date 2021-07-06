@@ -1,5 +1,5 @@
 # Innovyze open source scripts
-This repo will host open source code that can be used in the Innovyze Workgroup products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
+This repository will host open source code that can be used in the Innovyze Workgroup products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
 
 The Exchange.docx documentation includes (almost) all available Ruby methods and will be updated regularly.
 
