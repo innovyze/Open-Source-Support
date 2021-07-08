@@ -11,10 +11,12 @@ def mark(object)
     object._seen=true
     $seen_objects<<object
 end
+
 def unsee_all
     $seen_objects.each { |object| object._seen=false }
     $seen_objects=Array.new
 end
+
 def unprocessed_links(node)
     node.us_links.each do |link|
         if !link._seen
@@ -23,6 +25,7 @@ def unprocessed_links(node)
         end
     end
 end
+
 def tot_sub_area(object)
     tot_sub_area=0
     object.navigate('subcatchments').each do |subs|
@@ -31,6 +34,7 @@ def tot_sub_area(object)
     end
     tot_sub_area
 end
+
 def trace_us(node)
     mark(node)
     total_area=tot_sub_area(node)
