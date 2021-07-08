@@ -40,7 +40,7 @@ def trace_us(node)
     total_area=tot_sub_area(node)
     unprocessed_links(node)
     nodes_us=Array.new
-    nodes_us<<node
+    nodes_us << node
     while $unprocessed_links.size>0
         working_link=$unprocessed_links.shift
         working_node=working_link.us_node
@@ -49,7 +49,7 @@ def trace_us(node)
             total_area += tot_sub_area(working_node)
             unprocessed_links(working_node)
             mark(working_node)
-            nodes_us<<working_node
+            nodes_us << working_node
         end 
     end
     unsee_all
