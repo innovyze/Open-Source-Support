@@ -9,7 +9,7 @@ $seen_objects=Array.new
 def mark(object)
     object.selected=true
     object._seen=true
-    $seen_objects<<object
+    $seen_objects << object
 end
 
 def unsee_all
@@ -20,7 +20,7 @@ end
 def unprocessed_links(node)
     node.us_links.each do |link|
         if !link._seen
-            $unprocessed_links<<link
+            $unprocessed_links << link
             mark(link)
         end
     end
