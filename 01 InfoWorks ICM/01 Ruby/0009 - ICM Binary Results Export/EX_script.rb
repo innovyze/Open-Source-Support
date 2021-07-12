@@ -124,20 +124,20 @@ class ICMBinaryAttributes
 end
 class ICMBinaryTable
 	attr_reader :name,:desc
-	def init(f,bMax,object_offset)
-		@bMax=bMax
+	def init(f,b_max,object_offset)
+		@b_max=b_max
 		@objectHash=Hash.new
 		header_size=0
 		object_count=ICMBinaryUtil.readlong(f)
 		non_blob_attribute_count=ICMBinaryUtil.readlong(f)
 		float_blob_attributes_count=ICMBinaryUtil.readlong(f)	
-		if @bMax
+		if @b_max
 			double_blob_attributes_count=ICMBinaryUtil.readlong(f)
 		else
 			double_blob_attributes_count=0
 		end
 		header_size+=3
-		if @bMax
+		if @b_max
 			header_size+=1
 		end
 		@name=ICMBinaryUtil.readstring(f)
