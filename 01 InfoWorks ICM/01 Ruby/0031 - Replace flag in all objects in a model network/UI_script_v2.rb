@@ -49,4 +49,3 @@ begin
 	WSApplication.message_box(success_message,'OK',nil,false)
 rescue SystemExit
 end
-
