@@ -1,21 +1,19 @@
 # Powershell script that downloads the HRRR weather forecast data for ICMLive.
+To setup ICMLive to download hourly HRRR data:
+* Create a `script` folder on the server
+* Create a `data` folder on the server
+* Update `hrrr.bat` with the input (see the file for more information)
+   * Paths for `script` and `data`
+   * Bounding box for the area
+ * Setup the TSDB
+   * The data format, etc
+   * The auto update schedule
+ * Data will be downloaded to the `data` folder
+   * ICMLive when runs will load when all the 18 files are all ready, otherwise, it will skip all the files
+   * Logging information is recorded in `hrrr.log`
+   * Loaded data will be automatically moved to a `loaded` subfolder
 
-
-To setup ICMLive to download hourly HRRR data, 
-* create a script folder on the server
-* create a data folder on the server
-* update the hrrr.bat with the input (see the file for more information)
-   * paths for script and data
-   * bounding box for the area
- * setup the TSDB
-   * the data format, etc
-   * the auto update schedule
- * data will be downloaded to the "data" folder
-   * icmlive when runs will load when all the 18 files are all ready, otherwise, it will skip all the files
-   * hrrr.log in the data has the logging information
-   * loaded data will be placed in the "loaded" folder
-
-# TSDB
+## TSDB
 
 A sample TSDB is shown below.
 
