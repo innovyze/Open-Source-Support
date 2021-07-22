@@ -1,4 +1,4 @@
-Powershell script that downloads the HRRR weather forecast data for ICMLive.
+# Powershell script that downloads the HRRR weather forecast data for ICMLive.
 
 
 To setup ICMLive to download hourly HRRR data, 
