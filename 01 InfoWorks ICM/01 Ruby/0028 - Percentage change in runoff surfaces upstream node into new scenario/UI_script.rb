@@ -28,7 +28,7 @@ end
 
 def scenario
     time = Time.new.strftime('%Y%m%d_%k%M%S').to_s
-    new_scenario = $net.add_scenario(time,nil,time)
+    $net.add_scenario(time,nil,time)
     $net.current_scenario = time
 end
 
