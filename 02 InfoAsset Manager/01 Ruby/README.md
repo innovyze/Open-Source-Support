@@ -7,4 +7,4 @@ Scripts with `UI` within the name are run from within the InfoAsset Manager inte
 1. Create a `test.rb` file in a known location, preferably close to the drive root and without special characters in the path.
 2. Create an Action which points at the `test.rb` script.
 3. Copy paste the code you are testing from GitHub into this file using a plain-text editor.
-4. Run it in IAM in a relevant network using: Network > Run Ruby Script....
+4. Run it in IAM in a relevant network using: **Network** > **Run Ruby Script...**.
