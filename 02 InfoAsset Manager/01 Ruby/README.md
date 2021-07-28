@@ -14,11 +14,11 @@ Scripts with `IE` within the name are designed to be run using InfoAsset Exchang
 The Exchange applications are run by running the IExchange program from the command line with suitable arguments. The two required arguments are the script name and the application code.
 Relative paths are permitted for the script names but if you are running a script from the current working directory then this follows the convention (inherited from the ‘normal’ Ruby program) of requiring the script name to be preceded by "./".
 
-The application code for InfoAsset Exchange is: 'IA' (or 'IN').
+The application code for InfoAsset Exchange is: `IA` (or `IN`).
 
-e.g.
-**"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "c:\temp\script.rb" IA**
-**"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "./script.rb" IA**
-**"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "\\server\dir\script.rb" IA**
+e.g. 
+`"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "c:\temp\script.rb" IA`
+`"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "./script.rb" IA`
+`"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "\\server\dir\script.rb" IA`
 
 The command line can be written into a `.bat` file using a text editor, to allow quick running of the referenced script.
