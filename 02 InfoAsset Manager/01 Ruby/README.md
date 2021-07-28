@@ -12,7 +12,7 @@ Scripts with `UI` within the name are run from within the InfoAsset Manager inte
 ## IExchange scripts
 Scripts with `IE` within the name are designed to be run using InfoAsset Exchange.
 The Exchange applications are run by running the IExchange program from the command line with suitable arguments. The two required arguments are the script name and the application code.
-Relative paths are permitted for the script names but if you are running a script from the current working directory then this follows the convention (inherited from the ‘normal’ Ruby program) of requiring the script name to be preceded by ./
+Relative paths are permitted for the script names but if you are running a script from the current working directory then this follows the convention (inherited from the ‘normal’ Ruby program) of requiring the script name to be preceded by "./".
 
 The application code for InfoAsset Exchange is: 'IA' (or 'IN').
 
