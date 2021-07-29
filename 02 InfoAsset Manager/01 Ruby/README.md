@@ -21,10 +21,10 @@ The application code for InfoAsset Exchange is: `IA` (or `IN`).
 
 e.g. 
 
-`"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "c:\temp\script.rb" IA`
+`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "c:\temp\script.rb" IA`
 
-`"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "./script.rb" IA`
+`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "./script.rb" IA`
 
-`"C:\Program Files\Innovyze Workgroup Client 11.0\IExchange.exe" "\\server\dir\script.rb" IA`
+`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "\\server\dir\script.rb" IA`
 
 The command line can be written into a `.bat` file using a text editor, to allow quick running of the referenced script.
