@@ -62,11 +62,11 @@ The image below shows how I've configured my custom user actions.
 ## Importing more/different objects from the ICM Model
 The script example provided is configured to import in a few specific Model objects into pre-defined InfoAsset Manager object tables, if you wanted to change which IAM table an object is imported into and/or import other ICM objects into IAM you can do this by editing the *InfoAsset_In.rb* script.
 
-Lines 454-463 (with help information on line 452) denote into which InfoAsset Manager object class [<InfoAsset Table Name>], the details from which ICM CSV file [<CSV File Name>] is imported into, using the field mapping config [<Configuration File Name>], with the callback class [<Callback Class>] (set to nil if not required for an object class).
+Lines 454-463 (with help information on line 452) denote into which InfoAsset Manager object class `<InfoAsset Table Name>`, the details from which ICM CSV file `<CSV File Name>` is imported into, using the field mapping config `<Configuration File Name>`, with the callback class `<Callback Class>` (set to nil if not required for an object class).
 
 Simply add more lines in the same format below the existing (or edit the existing lines) to add/change what is being imported.
 You will also need to amend the existing field mapping config file (ICM_Model_Importer.cfg) or create addition config files for the field mappings as necessary.
 
 
 ### Changing what ICM fields are imported into IAM
-If all you wanted to change was what fields from ICM are being imported into IAM, just edit the field mapping config file (ICM_Model_Importer.cfg) by loading it [Load Config] into the Open Data Import Centre in InfoAsset Manager and amend the field mappings as desired, then save the new mappings [Save Config] with the same filename to the relevant location (if you change the filename of the config file, you'll have to update the name in the script).
+If all you wanted to change was what fields from ICM are being imported into IAM, just edit the field mapping config file (ICM_Model_Importer.cfg) by loading it *Load Config* into the Open Data Import Centre in InfoAsset Manager and amend the field mappings as desired, then save the new mappings *Save Config* with the same filename to the relevant location (if you change the filename of the config file, you'll have to update the name in the script).
