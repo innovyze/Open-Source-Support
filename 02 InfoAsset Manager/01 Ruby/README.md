@@ -28,3 +28,8 @@ e.g.
 `"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "\\server\dir\script.rb" IA`
 
 The command line can be written into a `.bat` file using a text editor, to allow quick running of the referenced script.
+
+
+
+## Note
+See the README in the top-level of the repository for more information.
