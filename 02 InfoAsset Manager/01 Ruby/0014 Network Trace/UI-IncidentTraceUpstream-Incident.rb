@@ -1,8 +1,11 @@
 net=WSApplication.current_network
 
-net.row_object_collection_selection('cams_incident_flooding').each do |ro|
-net=ro.navigate1('node')
-end
+net.row_object_collection_selection('cams_incident_flooding').each do |ri|
+	rn=ri.navigate1('node')
+		if !rn.nil?
+		rn.selected=true
+		end
+	end
 
 roc=net.row_object_collection_selection('cams_manhole')
 selectedNodes=0
