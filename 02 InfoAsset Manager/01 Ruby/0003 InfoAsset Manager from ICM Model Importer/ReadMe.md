@@ -35,32 +35,26 @@ Read more about these user/shared custom actions in the ICM/InfoAsset HELP File.
 For this example I am running InfoAsset Manager and InfoWorks ICM in the one interface together. So both custom user action are in this one InfoWorks ICM interface. Otherwise the **ICM_Out.rb** script needs to be within InfoWorks ICM and **InfoAsset_In.rb** within InfoAsset.
 
 The image below shows how I've configured my custom user actions.
-![](Image1.jfif)
-    Ruby Scripts on User or Shared Custom Actions.
+![Ruby Scripts on User or Shared Custom Actions](Image1.jfif)
 
 
 6. In my example I open both Networks and initially focus on the InfoWorks ICM Model Network.
-![](Image2.jfif)
-    InfoWorks ICM & InfoAsset GeoPlans
+![InfoWorks ICM & InfoAsset GeoPlans](Image2.jfif)
 
 
 7. Click on the 'ICM Out' custom action button. The script exports files to the default InfoWorks ICM csv format (manually main menu Network > Export > to CSV Files…). It allows for exporting of a selection. If 'yes' is selected and there is a selection of model objects the those objects only are exported. If there is no selection the export csv files are created with just the field headers (i.e. no objects exported). If 'no' is selected then the entire network is exported. The user is given the option to browser for an export folder. **This should be the folder created in step 2, containing the configuration file.**
-![](Image3.jfif)
-    Exported CSV Files
+![Exported CSV Files](Image3.jfif)
 
 
 8. With the focus now on the InfoAsset Manager Collection Network, click on the 'InfoAsset In' custom action button. Note the message about the configuration file. Click 'yes' to continue the import (clicking 'no' or 'cancel' terminates the import process). Browse for the import folder containing the CSV files. Hitting OK will start the import process.
-![](Image4.jfif)
-Import into InfoAsset Manager
+![Import into InfoAsset Manager](Image4.jfif)
 
 
 9. Network imported.
-![](Image5.jfif)
-Network Imported
+![Network Imported](Image5.jfif)
 
 
-![](Image6.jfif)
-Network Imported Detail
+![Network Imported Detail](Image6.jfif)
 
 
 
