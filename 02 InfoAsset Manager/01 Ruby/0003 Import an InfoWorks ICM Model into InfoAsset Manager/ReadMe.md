@@ -35,7 +35,7 @@ Read more about these user/shared custom actions in the ICM/InfoAsset HELP File.
 For this example I am running InfoAsset Manager and InfoWorks ICM in the one interface together. So both custom user action are in this one InfoWorks ICM interface. Otherwise the **ICM_Out.rb** script needs to be within InfoWorks ICM and **InfoAsset_In.rb** within InfoAsset.
 
 The image below shows how I've configured my custom user actions.
-![Ruby Scripts on User or Shared Custom Actions](Image1.jfif)
+    ![Ruby Scripts on User or Shared Custom Actions](Image1.jfif)
 
 
 6. In my example I open both Networks and initially focus on the InfoWorks ICM Model Network.
@@ -52,8 +52,6 @@ The image below shows how I've configured my custom user actions.
 
 9. Network imported.
 ![Network Imported](Image5.jfif)
-
-
 ![Network Imported Detail](Image6.jfif)
 
 
