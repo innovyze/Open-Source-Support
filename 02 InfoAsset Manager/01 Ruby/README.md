@@ -1,6 +1,7 @@
 # Ruby in InfoAsset Manager
 
-This directory contains examples of tasks that can be performed using Ruby scripts. These are stored in sub-directories prefixed with a counter and a brief README.md description. They can be either IAM UI scripts or IAMExchange scripts.
+This directory contains examples of tasks that can be performed using Ruby scripts. These are stored in sub-directories prefixed with a counter and a brief README.md description. They can be either IAM UI scripts or IAM Exchange scripts. 
+Note, the sub-directory counter is arbitrary and may not be complete as they have been initially derived from an internal datastore.
 
 ## IAM Interface scripts
 Scripts with `UI` within the name are run from within the InfoAsset Manager interface. A quick way to get started is:
