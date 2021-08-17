@@ -2,4 +2,6 @@ Within the InfoAsset Manager interface you can create Word and HTML reports for 
 
 If you generate reports for a selection, all selected objects will be in the same single report file.
 
-The script will generate individual reports for each of the selected objects.
+The script will generate individual report files for each of the selected objects.
+
+Currently only certain reports in IAM can utilise this method - as listed at the top of the scripts.
