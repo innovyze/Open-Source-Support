@@ -1,0 +1,2 @@
+LIST $Type STRING;
+SELECT DISTINCT control_id INTO $Type;
