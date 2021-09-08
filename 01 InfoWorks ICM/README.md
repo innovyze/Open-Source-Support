@@ -26,7 +26,7 @@ There are ways to download a specific directory, but it is probably easier to cl
 ### Note
 Downloaded `bat` files are often recognised as a threat by malware detection algorythms. This is a blanket warning because scripts can be used for malicious purposes. There is nothing malicious about the `bat` files under this repository, they are simply used to push the Ruby script to the Exchange API, and are completely open to interrogation from GitHub before being downloaded. 
 
-However, if for any reason you can't use the `bat` files from our repository, you can create an equivalent `bat` file in your local machine (or equivalent shell script). In fact, you can copy past the exact same code lines from GitHub onto the locally created file and this will likely allow you to run the file without warnings.
+However, if for any reason you can't use the `bat` files from our repository, you can create an equivalent `bat` file in your local machine (or equivalent shell script). In fact, you can copy paste the exact same code lines from GitHub onto the locally created file and this will likely allow you to run the file without warnings.
 
 # SQL in InfoWorks ICM
 InfoWorks ICM implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria. 
