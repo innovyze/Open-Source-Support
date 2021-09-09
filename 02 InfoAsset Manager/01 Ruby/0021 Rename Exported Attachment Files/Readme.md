@@ -20,22 +20,18 @@ The scripts here will resolve this, allowing bulk renaming of files using a simp
  ![ODEC](2_ODEC.png)
 
  Note, that becuase these attachments are a blob field, to generate the proposed filename I had to use a Script callback class (on line 3) - see the [0001A ODEC Callback Examples](https://github.com/innovyze/Open-Source-Support/tree/main/02%20InfoAsset%20Manager/01%20Ruby/0001A%20ODEC%20Callback%20Examples) repository for examples such as this.
-    `<class Exporter>`
-
-    `<  def Exporter.Filename(obj)>`
-
-    `<      return obj['id']+'_'+obj['attachments.purpose']>`
-
-    `<  end>`
-
-    `<end>`
+    `<class Exporter
+      def Exporter.Filename(obj)
+          return obj['id']+'_'+obj['attachments.purpose']
+      end
+    end>`
 
  So that I have a simple CSV file as below which I can use to rename the files as well as the files themselves.
  ![CSV export in Excel](3_Files.png)
 
  Then I can run the script using the InfoAsset Manager interface, when prompted selecting the folder where the files are, the mapping file, and the headers of the current & new filenames.
  ![Script Parammeters](4_ScriptParams.png)
- 
+
  Hey presto, the files are renamed to something more meaningful.
  ![Files pre & post renaming](5_FileIcons.png)
 
