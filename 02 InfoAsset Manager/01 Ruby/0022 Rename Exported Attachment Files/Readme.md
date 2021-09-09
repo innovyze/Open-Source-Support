@@ -28,7 +28,7 @@ The scripts here will resolve this, allowing bulk renaming of files using a simp
 ```
     class Exporter
       def Exporter.Filename(obj)
-          return obj['id']+'_'+obj['attachments.purpose']
+        return obj['id']+'_'+obj['attachments.purpose']
       end
     end
 ```
