@@ -9,7 +9,7 @@ The scripts here will resolve this, allowing bulk renaming of files using a simp
 
 
 ## Renaming Already Exported Files
- Script: UI-FileRename_v2.rb
+ Script: **UI-FileRename_v2.rb**
 
  The prerequisite of using this script is a CSV file which contains at least two columns - one which has the file's current filename (full filename including file type extension) & a column with the new filename (without file type extension), and that the files to be renamed are all located within one folder.
 
