@@ -16,12 +16,12 @@ The scripts here will resolve this, allowing bulk renaming of files using a simp
 
  For example, I have the below CCTV Survey with some attachments.
 
- ![Attachments dialog for a CCTV Survey](1_Attachments.png)
+ ![Attachments dialog for a CCTV Survey](img1.png)
 
 
  I export the object ID, the file reference - to export the file itself, and the proposed new filename - either generated using SQL/Script.
 
- ![ODEC](2_ODEC.png)
+ ![ODEC](img2.png)
 
 
  Note, that because these attachments are a blob field, to generate the proposed filename I had to use a Script callback class (on line 3) - see the [0001A ODEC Callback Examples](https://github.com/innovyze/Open-Source-Support/tree/main/02%20InfoAsset%20Manager/01%20Ruby/0001A%20ODEC%20Callback%20Examples) repository for examples such as this.
@@ -36,17 +36,17 @@ The scripts here will resolve this, allowing bulk renaming of files using a simp
 
  So that I have a simple CSV file as below which I can use to rename the files as well as the files themselves.
 
- ![CSV export in Excel](3_Files.png)
+ ![CSV export in Excel](img3.png)
 
 
  Then I can run the script using the InfoAsset Manager interface, when prompted selecting the folder where the files are, the mapping file, and the headers of the current & new filenames.
 
- ![Script Parameters](4_ScriptParams.png)
+ ![Script Parameters](img4.png)
 
 
  Hey presto, the files are renamed to something more meaningful.
 
- ![Files pre & post renaming](5_FileIcons.png)
+ ![Files pre & post renaming](img5.png)
 
 
 Note on renaming, the script is set to prevent overwriting of files by means of renaming a file to a filename already in use within the folder.
