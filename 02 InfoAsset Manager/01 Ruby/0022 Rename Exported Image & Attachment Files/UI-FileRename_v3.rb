@@ -14,8 +14,8 @@ puts "[Files Folder, CSV Mappings file, CURRENT filename column, NEW filename co
 
 exportloc=val[0].to_s
 exportfile=val[1].to_s
-image=val[2].to_s
-name=val[3].to_s
+image=val[2].downcase.to_s
+name=val[3].downcase.to_s
 
 if val[0]==nil
 	WSApplication.message_box("Files folder required\nScript cancelled",'OK','!',nil)
@@ -34,7 +34,8 @@ files.each do |a|
 end
 
 
-CSV.foreach(exportfile, :headers=>true) do |row|
+converter = lambda { |header| header.downcase }
+CSV.foreach(exportfile, :headers=>true, header_converters: converter) do |row|
     if (row[image].length)
         fileFrom = File.join(exportloc, row[image])
         fileTo = File.join(exportloc, row[name] + File.extname(fileFrom))
