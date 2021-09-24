@@ -1,4 +1,4 @@
-## If source fields cover_locable/side_entry have value "Y", set IAM boolean field = true/checked
+## If source fields cover_lockable/side_entry have value "Y", set IAM boolean field = true/checked
 class Importer
         def Importer.onEndRecordNode(obj)
                if obj['cover_lockable']=='Y'
