@@ -13,7 +13,7 @@ Full details of this script can be found in [this article](https://innovyze.forc
 
 The script is designed to prevent overwriting of files by means of renaming a file to a filename already in use within the folder. 
 If this happens, the Script Output will show a log the current and proposed filenames for your separate investigation.
-We cannot be held liable if the scriptdoes overwrite files incorrectly when run.
+We cannot be held liable if the script does overwrite any files.
 
 
 ## Renaming Already Exported Files
