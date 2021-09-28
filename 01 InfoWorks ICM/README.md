@@ -12,7 +12,7 @@ Scripts with the name `UI_script.rb` are run from within the ICM graphics interf
 ![](gif001.gif)
 
 ## Exchange scripts
-These scripts will sometimes be packaged alongside an examples databases and an `exchange.bat` file. The contents of the database should contain the necessary model objects to test the script. The aim is to allow users to hit the ground running these scripts as seamlessly as possible. Sometimes this will be a zipped standalone database that should be extracted to the same directory as the script.
+These scripts will sometimes be packaged alongside an example database and an `exchange.bat` file. The contents of the database should contain the necessary model objects to test the script. The aim is to allow users to hit the ground running these scripts as seamlessly as possible. Sometimes this will be a zipped standalone database that should be extracted to the same directory as the script.
 There are ways to download a specific directory, but it is probably easier to clone the whole repository (it's not that big anyway). This example shows cloning by downloading the zip file. More avanced users might want to clone using other methods.
 1. Ensure the machine can access a valid Exchange license.
 2. Clone the repository from GitHub
@@ -26,7 +26,7 @@ There are ways to download a specific directory, but it is probably easier to cl
 ### Note
 Downloaded `bat` files are often recognised as a threat by malware detection algorythms. This is a blanket warning because scripts can be used for malicious purposes. There is nothing malicious about the `bat` files under this repository, they are simply used to push the Ruby script to the Exchange API, and are completely open to interrogation from GitHub before being downloaded. 
 
-However, if for any reason you can't use the `bat` files from our repository, you can create an equivalent `bat` file in your local machine (or equivalent shell script). In fact, you can copy past the exact same code lines from GitHub onto the locally created file and this will likely allow you to run the file without warnings.
+However, if for any reason you can't use the `bat` files from our repository, you can create an equivalent `bat` file in your local machine (or equivalent shell script). In fact, you can copy paste the exact same code lines from GitHub onto the locally created file and this will likely allow you to run the file without warnings.
 
 # SQL in InfoWorks ICM
 InfoWorks ICM implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria. 

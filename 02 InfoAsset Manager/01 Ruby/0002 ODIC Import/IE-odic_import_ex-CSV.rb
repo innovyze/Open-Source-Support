@@ -23,10 +23,10 @@ puts 'Start import'
 options=Hash.new											## Type | Default | Notes
 options['Error File'] = 'C:\Temp\ImportErrorLog.txt'		## String | blank | Path of error file
 #options['Callback Class'] = ImporterClass					## String | blank | Class used for Ruby callback methods (ICM & InfoAsset only)
-#options['Set Value Flag'] = 'GDB'							## String | blank | Flag used for fields set from data
-#options['Default Value Flag'] = 'GDB'						## String | blank | Flag used for fields set from the default value column
+#options['Set Value Flag'] = 'CSV'							## String | blank | Flag used for fields set from data
+#options['Default Value Flag'] = 'CSV'						## String | blank | Flag used for fields set from the default value column
 #options['Image Folder'] = 'C:\Temp\'						## String | blank | Folder to import images from (Asset networks only)
-#options['Duplication Behaviour'] = 'Merge'				## String | Merge | One of Duplication Behaviour:'Overwrite','Merge','Ignore'
+#options['Duplication Behaviour'] = 'Merge'					## String | Merge | One of Duplication Behaviour:'Overwrite','Merge','Ignore'
 #options['Units Behaviour'] = 'Native'						## String | Native | One of 'Native','User','Custom'
 #options['Update Based On Asset ID'] = false				## Boolean | false
 #options['Update Only'] = false								## Boolean | false
@@ -42,24 +42,31 @@ options['Error File'] = 'C:\Temp\ImportErrorLog.txt'		## String | blank | Path o
 
 ## Action the Import using odic_import_ex
 nw.odic_import_ex(
-'GDB',										# import data format => ESRI GeoDatabase
-'C:\Temp\GDBConfig.cfg',						# field mapping config file
+'CSV',										# import data format => CSV
+'C:\Temp\CSVConfig.cfg',					# field mapping config file
 options,									# specified options override the default options
 
 # table group
 'node',										# import to table name
-'NodeClass',								# import from feature class
-'C:\Temp\Geodatabase.gdb'					# import from file geodatabase name
+'C:\Temp\node.csv'							# import from file shapefile name
 )
+puts 'Node import completed'
 
-puts 'End import'
+
+nw.odic_import_ex(
+'CSV',
+'C:\Temp\CSVConfig.cfg',
+options,
+'pipe',
+'C:\Temp\pipe.csv'
+)
+puts 'Pipe import completed'
 
 
 ## Commit changes and unreserve the network
-nw.commit('Date imported from GDB')
+nw.commit('Date imported from CSV')
 nw.unreserve
 puts 'Committed'
-
 
 
 ## handle exceptions

@@ -31,7 +31,7 @@ end
 linkname[0]='Date'
 
 CSV.open(file_name, "w") do |csv|
-    csv<<linkname
+    csv << linkname
     for i in 0..n-1
         csv << results3[i]       
     end

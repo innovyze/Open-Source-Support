@@ -2,7 +2,7 @@
 begin
 
 ## Open a database
-db = WSApplication.open('localhost:40000/IA_NEW',false)
+db = WSApplication.open('localhost:40000/database',false)
 
 ## Get the network from the object type and id
 nw = db.model_object_from_type_and_id('Collection Network',848) 
