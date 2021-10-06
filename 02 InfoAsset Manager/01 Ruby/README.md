@@ -5,10 +5,10 @@ Note, the sub-directory counter is arbitrary and may not be complete as they hav
 
 ## IAM Interface scripts
 Scripts with `UI` within the name are run from within the InfoAsset Manager interface. A quick way to get started is:
-1. Create a `test.rb` file in a known location, preferably close to the drive root and without special characters in the path.
-2. Create an Action which points at the `test.rb` script.
-3. Copy paste the code you are testing from GitHub into this file using a plain-text editor.
-4. Run it in IAM in a relevant network using: **Network** > **Run Ruby Script...**.
+1. Create a file with the file-type suffix of `.rb` in a known location on your PC, preferably close to the drive root and without special characters in the path.
+2. Copy paste the code you are testing from GitHub into this file.
+    Ruby (.rb) files can be created/edited in any plain-text editor, such as MS Notepad or Notepad++†, etc.
+3. Run the script in IAM with a relevant network type open from the main menu using: **Network** > **Run Ruby Script...**.
 
 ## IExchange scripts
 Scripts with `IE` within the name are designed to be run using InfoAsset Exchange.
@@ -33,4 +33,5 @@ The command line can be written into a `.bat` file using a text editor, to allow
 
 
 ## Note
-See the README in the top-level of the repository for more information.
+See the README in the top-level of the repository for more information. 
+† Third-party application, this is not an endorsement. 
