@@ -4,11 +4,11 @@ This directory contains examples of tasks that can be performed using Ruby scrip
 Note, the sub-directory counter is arbitrary and may not be complete as they have been initially derived from an internal datastore.
 
 ## IAM Interface scripts
-Scripts with `UI` within the name are run from within the InfoAsset Manager interface. A quick way to get started is:
-1. Create a file with the file-type suffix of `.rb` in a known location on your PC, preferably close to the drive root and without special characters in the path.
-2. Copy paste the code you are testing from GitHub into this file.
-    Ruby (.rb) files can be created/edited in any plain-text editor, such as MS Notepad or Notepad++†, etc.
-3. Run the script in IAM with a relevant network type open from the main menu using: **Network** > **Run Ruby Script...**.
+Scripts with `UI` within the name are run from within the InfoAsset Manager interface. A quick way to get started is: 
+1. Create a file with the file-type suffix of `.rb` in a known location on your PC, preferably close to the drive root and without special characters in the path. 
+2. Copy paste the code you are testing from GitHub into this file. 
+    Ruby (.rb) files can be created/edited in any plain-text editor, such as MS Notepad or Notepad++†, etc. 
+3. Run the script in IAM with a relevant network type open from the main menu using: **Network** > **Run Ruby Script...**. 
 
 ## IExchange scripts
 Scripts with `IE` within the name are designed to be run using InfoAsset Exchange.
