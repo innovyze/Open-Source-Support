@@ -11,7 +11,7 @@ This script will only look at video file attachments from the snumbat Video Dire
 
 
 ## IE-AttachmentCheck.rb
-This script will look at the attachments and video files on the database's networks, it will identify files which are:  
-* Referenced by the networks but are not in the attachments/videos store - into missing.csv.  
-* Video files in the video file store which are not referenced in the latest network versions - into NonCurrentVideos.txt.  
-* Other attachment files in the attachment file store which are not referenced in the latest network versions - into NonCurrentAttachments.txt.  
+This script will look at the attachments and video files on the database's networks, it will identify files which are:   
+* Referenced by the networks but are not in the attachments/videos store - into missing.csv.   
+* Video files in the video file store which are not referenced in the latest network versions - into NonCurrentVideos.txt.   
+* Other attachment files in the attachment file store which are not referenced in the latest network versions - into NonCurrentAttachments.txt.   
