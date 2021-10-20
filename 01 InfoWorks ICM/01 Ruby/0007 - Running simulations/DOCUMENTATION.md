@@ -1,5 +1,5 @@
 
-# Documentation
+# Running sims in ICM
 
 ## Contents
 
