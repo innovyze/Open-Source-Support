@@ -28,9 +28,17 @@ nw.odec_export_ex(
 )
 
 nw.odec_export_ex(
-	'SHP',                      				# Export data format = SHP File
-	config,         							# Field mapping config file
-	options,                   					# Specified options override the default options
-	'pipe',                     				# InfoAsset table to export
-	exportloc+'\pipe.SHP',							# Export destination file
+	'SHP',
+	config,
+	options,
+	'pipe',
+	exportloc+'\pipe.SHP',
+)
+
+nw.odec_export_ex(
+	'SHP',
+	config,
+	options,
+	'cctvsurvey',
+	exportloc+'\cctvsurvey.SHP',
 )
