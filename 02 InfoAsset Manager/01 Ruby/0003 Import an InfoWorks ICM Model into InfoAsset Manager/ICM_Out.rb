@@ -12,6 +12,8 @@ msbx = WSApplication.message_box(
 
 puts 'Export Selection Y/N? - ' + msbx
 
+ExportFolder = WSApplication.folder_dialog('title', true)
+
 # set bool options
 #
 
@@ -45,7 +47,7 @@ if msbx == 'Yes'
 	# Select Export Folder
 	#
 
-	ExportFolder = WSApplication.folder_dialog('title', true)
+	
 	puts 'Files exported to ' + ExportFolder
 	
 	net.csv_export(
@@ -63,8 +65,7 @@ elsif msbx == 'No'
 	# Select Export Folder
 	#
 
-	ExportFolder = WSApplication.folder_dialog('title', true)
-	puts 'Files exported to ' + ExportFolder
+		puts 'Files exported to ' + ExportFolder
 		
 	net.csv_export(
 
