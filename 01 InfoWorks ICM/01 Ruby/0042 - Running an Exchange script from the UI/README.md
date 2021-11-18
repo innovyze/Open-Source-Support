@@ -3,6 +3,8 @@ This example shows how to run a Ruby script from the ICM UI which triggers an Ex
 
 Load the `UI_script.rb` script in ICM. This runs the `EX_script.rb` script in Exchange. It also passes arguments from the UI to the Exchange script.
 
+![](gif001.gif)
+
 ## Technical note
 The `UI_script.rb` script uses the `system()` method, which can pass command line strings to the shell. The command passed to the `system()` method must be surrounded by double-quotes. For example:
 
