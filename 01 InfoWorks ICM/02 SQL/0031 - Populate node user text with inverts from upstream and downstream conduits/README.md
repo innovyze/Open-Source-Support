@@ -1,7 +1,7 @@
 # Populate Node `user_text` fields with list of invert levels from upstream and downstream conduits
 This query populates the `user_text_8` and `user_text_9` fields of selected nodes with a list of invert levels. The list is comma separated and rounded to 2 decimal cases for readability. 
 
-It runs on a links tables, such as `All Links` or `Conduit`. The links in this exampe must have a `ds_invert` and an `us_invert` fields. The logic was expanded to include links such as weirs, which have a `crest` field too. It is possible to expand this further to encompass invert fields from other link types, but that is outside the scope of this example.
+It runs on links tables, such as `All Links` or `Conduit`. The links in this exampe must have a `ds_invert` and an `us_invert` fields. The logic was expanded to include links such as weirs, which have a `crest` field too. It is possible to expand this further to encompass invert fields from other link types, but that is outside the scope of this example.
 
 It works by first assigning a variable `$selected = 1` to mark all nodes which have been selected by the user. It clears the `user_text_8` and `user_text_9` fields of those selected nodes by making them `null`.
 
