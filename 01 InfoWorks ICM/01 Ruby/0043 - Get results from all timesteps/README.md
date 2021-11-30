@@ -5,3 +5,5 @@ The script in this example returns `depnod` results of selected nodes for all si
 
 ## Technical note
 The two main methods in this script are `list_timesteps`/`list_gauge_timesteps` and `results`/`gauge_results`. The script matches the simulation timesteps array with results array. In case the simulation contains "gauged" results, the script returns the results at the gauged timestep.
+
+![](png001.png)
