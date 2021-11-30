@@ -42,6 +42,7 @@
 | 0040 | UI & EX  | Create a new selection list using a SQL query                       | Network Data Analysis |
 | 0041 | UI & EX  | Minimum and maximum elevation of river reach section at node        | Network Data Get      |
 | 0042 | UI       | Running an Exchange script from the UI                              | System Automation     |
+| 0043 | UI       | Get results from all timesteps                                      | Simulations Data Get  |
 
 ### Descriptions
 
