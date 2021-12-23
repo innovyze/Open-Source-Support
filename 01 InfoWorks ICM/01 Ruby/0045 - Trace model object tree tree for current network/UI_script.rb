@@ -1,9 +1,6 @@
-#Exports ICM objects (Nodes & Conduits) and with filename of the root of the model group.
-require "date.rb"
 db = WSApplication.current_database
 nw = WSApplication.current_network
 my_object = nw.model_object
-#my_object_path = my_object.path
 
 p_id = my_object.parent_id
 p_type = my_object.parent_type
