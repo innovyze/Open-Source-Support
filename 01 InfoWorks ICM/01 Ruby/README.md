@@ -15,7 +15,7 @@
 | 0007 | EX       | Running simulations                                                 | Simulations Run       |
 | 0009 | EX       | ICM Binary Results Export                                           | Network Data Export   |
 | 0011 | UI & EX  | Find Root Model Group                                               | Database Get          |
-| 0012 | UI & EX  | ODEC Export MIF using the root model group filename                 | Network Data Export   |
+| 0012 | UI & EX  | ODEC Export Node and Conduit tables to CSV and MIF                  | Network Data Export   |
 | 0014 | UI & EX  | Find all flags in all objects of a network model                    | Network Data Get      |
 | 0015 | UI & EX  | Output RTC to text                                                  | Network RTC  Bin      |
 | 0016 | UI & EX  | Example ODEC callback scripts                                       | Network Data Export   |
@@ -43,6 +43,8 @@
 | 0041 | UI & EX  | Minimum and maximum elevation of river reach section at node        | Network Data Get      |
 | 0042 | UI       | Running an Exchange script from the UI                              | System Automation     |
 | 0043 | UI       | Get results from all timesteps                                      | Simulations Data Get  |
+| 0044 | UI       | Import Flow Survey Data                                             | Database Data Set     |
+| 0045 | UI       | Trace Current Network family in database tree                       | Database Data Get     |
 
 ### Descriptions
 
