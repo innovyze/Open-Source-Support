@@ -45,6 +45,7 @@
 | 0043 | UI       | Get results from all timesteps                                      | Simulations Data Get  |
 | 0044 | UI       | Import Flow Survey Data                                             | Database Data Set     |
 | 0044 | UI       | Trace Current Network family in database tree                       | Database Data Get     |
+| 0045 | UI       | Clear SUDS control data from all the subcatchments                  | Database Data Set     |
 
 ### Descriptions
 
