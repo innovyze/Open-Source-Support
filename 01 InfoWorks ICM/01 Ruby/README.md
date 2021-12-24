@@ -46,7 +46,7 @@
 | 0044 | UI       | Import Flow Survey Data                                             | Database Data Set     |
 | 0044 | UI       | Trace Current Network family in database tree                       | Database Data Get     |
 | 0045 | UI       | Clear SUDS control data from all the subcatchments                  | Network Data Set      |
-| 0046 | UI       | Output SUDS control data from all subcatchments to a csv            | Network Data get      |
+| 0046 | UI       | Output SUDS control data from all subcatchments to a csv            | Network Data Get      |
 
 ### Descriptions
 
