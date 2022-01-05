@@ -17,7 +17,7 @@ We cannot be held liable if the script does overwrite any files.
 
 
 ## Renaming Already Exported Files
- Script: **UI-FileRename_v2.rb**
+ Script: **UI-FileRename_v3.rb**
 
  The prerequisite of using this script is a CSV file which contains at least two columns - one which has the file's current filename (full filename including file type extension) & a column with the new filename (without file type extension), and that the files to be renamed are all located within one folder.
 
