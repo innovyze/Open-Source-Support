@@ -1,7 +1,6 @@
 nw=WSApplication.current_network 
 exportloc ='C:\\Temp\\export\\'			## Export to folder
 file=exportloc+'MSCC_'					## Filename prefix or leave as just "exportloc" to not include a prefix
-#log=exportloc+'log.txt'
 
 list=Array.new
 list=nw.row_objects_selection('cams_cctv_survey')
