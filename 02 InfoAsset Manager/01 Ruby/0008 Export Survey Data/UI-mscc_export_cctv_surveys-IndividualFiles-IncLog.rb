@@ -1,7 +1,7 @@
 now=DateTime.now.strftime("%Y%m%d%H%M")
 
 nw=WSApplication.current_network 
-exportloc ='C:\\Temp\\junk\\export\\'			## Export to folder
+exportloc ='C:\\Temp\\export\\'			## Export to folder
 file=exportloc+'MSCC_'					## Filename prefix or leave as just "exportloc" to not include a prefix
 logfile=exportloc+'MSCC_Export_'+now+'.csv'		## Log CSV filename
 
