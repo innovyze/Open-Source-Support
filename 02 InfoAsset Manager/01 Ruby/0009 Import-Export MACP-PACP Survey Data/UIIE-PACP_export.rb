@@ -17,4 +17,5 @@ myHash["Imperial"]=true						## Boolean, true for imperial values (the WSApplica
 myHash["InfoAsset"]=4						## nil or an Integer, if an integer must be between 1 and 10 – corresponds to the dialog setting | Default=nil
 myHash["Format"]="7"						## String, PACP db version format (must be "6" or "7") | Default=7
 myHash["LogFile"]='C:\\Temp\\PACP-log.txt'	## String, path of a log file, if nil or blank then nothing is logged to the file | Default=nil
+
 net.PACP_export export,myHash
