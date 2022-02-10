@@ -46,5 +46,4 @@ while count<total
 end
 
 puts "\nExport complete - check log files (if any) for errors."
-puts "Object count: #{total}"
 puts "File count: #{filecount}"
