@@ -16,5 +16,9 @@ And looping through that list to:
 
         IIF($count>1,$usds=AREF($index,$list),'');
 
+# Note
+This code is not efficient on large networks and might take a long time to run. It is possible that there isn't a way to currently optimise it further due to limitations on our SQL functionality. 
+
+However, there is a Ruby equivalent which runs much faster, if this is an option.
 ## SQL Dialog
 ![](img001.png)
