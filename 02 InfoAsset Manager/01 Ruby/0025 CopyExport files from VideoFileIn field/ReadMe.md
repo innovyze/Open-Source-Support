@@ -6,6 +6,6 @@ If a referenced file is not found - this is reported in the logged.
 If there is nothing referenced for a selected survey - this is reported in the logged.  
 
 ## Note
-The process of copying files using this script is the same as copy-paste using Windows File Explorer, which depending on the source/destination locations and the size/quantity of files can take time to complete – bare this in mind when selecting surveys to copy files for.  
+The process of copying files using this script is the same as copy-paste using Windows File Explorer, which depending on the source/destination locations and the size/quantity of files it can take a considerable amount of time to complete – bare this in mind when selecting surveys to copy the files for.  
 
 Whilst the script is designed to prevent files in the destination being overwritten, we cannot be liable for any issues caused through the use of this script.  
