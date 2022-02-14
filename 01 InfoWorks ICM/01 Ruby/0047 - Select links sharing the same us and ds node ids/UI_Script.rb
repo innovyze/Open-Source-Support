@@ -4,9 +4,8 @@ links_list_all=Array.new
 
 # Creates an array of arrays containing the unique link id and the upstream and downstream nodes of each link.
 net.row_objects('_links').each do |link|
-  link_uid = link.us_node_id+'.'+link.link_suffix
-  usds = link.us_node_id+link.ds_node_id
-  links_list_all << [usds, link_uid]
+  usds = link.us_node_id + link.ds_node_id
+  links_list_all << [usds, link.id]
 end
 
 # Groups the array by us/ds node id 
@@ -17,5 +16,5 @@ link_list_sel = group_by_usds.select { |key, value| value.length > 1 }.values.fl
 
 # Selects from the network only links from the list above
 net.row_objects('_links').each do |link|
-  link.selected=true if link_list_sel.include?(link.us_node_id+'.'+link.link_suffix)
+  link.selected=true if link_list_sel.include?(link.id)
 end
