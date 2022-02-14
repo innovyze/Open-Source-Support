@@ -47,6 +47,7 @@
 | 0044 | UI       | Trace Current Network family in database tree                       | Database Data Get     |
 | 0045 | UI       | Clear SUDS control data from all the subcatchments                  | Network Data Set      |
 | 0046 | UI       | Output SUDS control data from all subcatchments to a csv            | Network Data Get      |
+| 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data Get      |
 
 ### Descriptions
 
