@@ -1,7 +1,9 @@
 /* 7 - Network Travel Time Tracer
 	Object Type: All Nodes
 	Description: Trace upstream specified number of segments from selected node(s)
-	Travel time through each link is aproximated using the average velocity over a user-defined time window. */
+	Travel time through each link is aproximated using the average velocity over a user-defined time window.
+	Important: Open the model network first and then drag the simulation object onto the opened network
+	*/
 
 LET $n_hours = 24;    // Total number of hours in the simulation;
 LET $iterations = 200;   // Number of iterations to trace upstream.
