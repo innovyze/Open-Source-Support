@@ -19,6 +19,6 @@ And looping through that list to:
 # Note
 This code is not efficient on large networks and might take a long time to run. It is possible that there isn't a way to currently optimise it further due to limitations on our SQL functionality. 
 
-However, there is a Ruby equivalent which runs much faster, if this is an option.
+However, there is a Ruby equivalent which runs much faster. [link](../../01%20Ruby/0047%20-%20Select%20links%20sharing%20the%20same%20us%20and%20ds%20node%20ids)
 ## SQL Dialog
 ![](img001.png)
