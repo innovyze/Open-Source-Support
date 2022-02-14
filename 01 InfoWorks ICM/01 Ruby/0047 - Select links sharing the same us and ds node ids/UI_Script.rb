@@ -8,7 +8,7 @@ net.row_objects('_links').each do |link|
   links_list_all << [usds, link.id]
 end
 
-# Groups the array by us/ds node id 
+# Groups all links by their respective us/ds node ids
 group_by_usds = links_list_all.group_by { |usds| usds.shift }.transform_values { |values| values.flatten }
 
 # Filters groups with us/ds showing more than once and converts hash to a flattened array of links
