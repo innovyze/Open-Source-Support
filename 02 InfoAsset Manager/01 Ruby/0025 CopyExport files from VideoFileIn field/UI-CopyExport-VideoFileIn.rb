@@ -1,6 +1,6 @@
 require 'Fileutils'
 
-dest='C:\\Temp\\test\\'		## Set DESTINATION folder for files
+dest='C:\\Temp\\test\\'		## Set DESTINATION folder for files - end with double-backslash.
 
 net=WSApplication.current_network
 net.row_objects_selection('cams_cctv_survey').each do |o|
