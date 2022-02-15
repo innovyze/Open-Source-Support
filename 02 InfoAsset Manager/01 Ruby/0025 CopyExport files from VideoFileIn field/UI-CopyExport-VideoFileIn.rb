@@ -7,7 +7,7 @@ net.row_objects_selection('cams_cctv_survey').each do |o|
 	if o.video_file_in!=nil && o.video_file_in.length>0
 		if File.file?(o.video_file_in) == true
 			copy=dest+File.basename(o.video_file_in)
-			new=dest+File.basename(o.id.gsub(/[^0-9A-Za-z_-]/, ''))+File.extname(o.video_file_in)
+			new=dest+File.basename(o.id.gsub(/[^0-9A-Za-z _-]/, ''))+File.extname(o.video_file_in)
 				if File.file?(copy) == false
 					FileUtils.cp o.video_file_in, copy
 					puts o.id+" :SUCCESS: "+o.video_file_in+" >> "+copy
