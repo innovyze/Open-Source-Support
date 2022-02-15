@@ -1,5 +1,7 @@
 # Introduction
-The script is designed to Copy files from the file reference of the CCTV Survey video_file_in field of the currently selected survey objects to a destination folder as defined on line 3 `dest=`. Ensure to end the folder path with a double-backslash.  
+The script is designed to Copy files from the file reference of the CCTV Survey video_file_in field of the currently selected survey objects to a destination folder as defined on line 3 `dest=`.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensure to end the folder path with a double-backslash (`\\`) to save to said folder, or enter as `'C:\...\folder\filename prefix'` to prefix the files being copied with a string.  
+
 As a first preference, the copied filename is the current filename, second preference is the CCTV Survey ID (less any non-alphanumeric characters, or hyphens, or underscored) - the filename as in the destination is reported in the log.  
 If a file already exists in the destination with either preferred filenames, the file will not be copied - reported in the log.  
 If a referenced file is not found - this is reported in the logged.  
