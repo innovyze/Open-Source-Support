@@ -250,7 +250,7 @@ mo.results_GIS_export 'SHP',[0,2,4,6],params,'c:\\temp\\s'
 
 ### CSV exports
 
-This example uses the results_csv_export_ex method to export only the ds flow and ds velocity results for links for a simulation
+This example uses the `results_csv_export_ex` method to export only the ds flow and ds velocity results for links for a simulation
 
 ```ruby
 puts WSApplication.version
