@@ -18,7 +18,7 @@ In this repository:
 * Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`. These can be run from the Workgroup Client.
 * Scripts that run from via **Exchange** will follow the nomenclature `EX_script.rb`. These need to be passed to `IExchange.exe` to run, which is present in the folders of every version of the Workgroup Client installation in both 32-bit and 64-bit. This requires a valid Exchange license.
 
-The BAT file encapsulates commands that call the Exchange executable and provide the Ruby script in the same folder as a parameter for a specific Workgroup Client version. It allows a degree of customisation - see an example below:
+The `bat` file encapsulates commands that call the Exchange executable and provide the Ruby script in the same folder as a parameter for a specific Workgroup Client version. It allows a degree of customisation - see an example below:
 ```bat
 @ECHO OFF
 SET script=EX_script.rb
