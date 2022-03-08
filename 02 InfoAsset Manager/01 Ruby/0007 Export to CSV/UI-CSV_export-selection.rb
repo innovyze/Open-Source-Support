@@ -23,6 +23,7 @@ exp_options['Selection Only'] = true				# Boolean | Default = false
 #exp_options['Units Text'] = false					# Boolean | Default = false
 #exp_options['Coordinate Arrays Format'] = 'Packed'	# String | Default = Packed. Either: Packed, None, or Separate
 #exp_options['Other Arrays Format'] = 'Packed'		# String | Default = Packed. Either: Packed, None, or Separate
+#exp_options['WGS84'] = false						# Boolean | Default = false; Set to true to convert coordinate values into WGS84
 
 
 # Export the data

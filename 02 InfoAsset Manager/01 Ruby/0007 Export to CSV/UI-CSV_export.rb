@@ -9,13 +9,14 @@ exp_options=Hash.new
 #exp_options['Field Names'] = true					# Boolean | Default = true
 #exp_options['Flag Fields '] = true					# Boolean | Default = true
 #exp_options['Multiple Files'] = false				# Boolean | Default = false; Set to true to export to different files, false to export to the same file
-#exp_options['Native System Types'] = false		# Boolean | Default = false
+#exp_options['Native System Types'] = false			# Boolean | Default = false
 #exp_options['User Units'] = false					# Boolean | Default = false
 #exp_options['Object Types'] = false				# Boolean | Default = false
 #exp_options['Selection Only'] = false				# Boolean | Default = false
 #exp_options['Units Text'] = false					# Boolean | Default = false
 #exp_options['Coordinate Arrays Format'] = 'Packed'	# String | Default = Packed. Either: Packed, None, or Separate
 #exp_options['Other Arrays Format'] = 'Packed'		# String | Default = Packed. Either: Packed, None, or Separate
+#exp_options['WGS84'] = false						# Boolean | Default = false; Set to true to convert coordinate values into WGS84
 
 
 # Export the data
