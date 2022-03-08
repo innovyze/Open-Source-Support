@@ -71,7 +71,7 @@ levels.each do |l|
 end
 ```
 
-Notice that one run is created for each pair of ground infiltration and levels (amongst the many parameters put into the parameter hash) – then the rainfall events are put into an array which is passed into the new_run method as the 4th parameter.
+Notice that one run is created for each pair of ground infiltration and levels (amongst the many parameters put into the parameter hash) – then the rainfall events are put into an array which is passed into the `new_run` method as the 4th parameter.
 
 This code takes a run, changes one parameter (the results multiplier) and creates an otherwise unchanged run. As you can see the complexity here is the need to take all the sims which are each for one rainfall event and one scenario and recreate those lists as parameters for new_run. In this case I have used the IDs of the run being copied and the model group into which the new run is being created – there are of course other ways of doing this – see the main [Exchange](https://github.com/innovyze/Open-Source-Support/blob/main/Exchange.docx) documentation for details
 
@@ -134,7 +134,7 @@ params['Sediment Fraction Enabled'] = [false,false]
 
 There are essentially two ways of doing this, one of them is synchronous, one is asynchronous.
 
-To run a run synchronously (notice that the run_ex method is a method of the simulation, therefore if the run has multiple simulations you need to loop through them)
+To run a run synchronously (notice that the `run_ex` method is a method of the simulation, therefore if the run has multiple simulations you need to loop through them)
 
 ```ruby
 newRun.children.each do |c|
@@ -191,7 +191,7 @@ end
 
 ### Exporting to GIS
 
-The export of results to GIS is done using the results_GIS_export method of the sim.
+The export of results to GIS is done using the `results_GIS_export` method of the sim.
 
 Here is an example of exporting the maximum 2D elements for all the runs in a model group
 
@@ -250,7 +250,7 @@ mo.results_GIS_export 'SHP',[0,2,4,6],params,'c:\\temp\\s'
 
 ### CSV exports
 
-This example uses the results_csv_export_ex method to export only the ds flow and ds velocity results for links for a simulation
+This example uses the `results_csv_export_ex` method to export only the *downstream flow* and *downstream velocity* results for links for a simulation
 
 ```ruby
 puts WSApplication.version
