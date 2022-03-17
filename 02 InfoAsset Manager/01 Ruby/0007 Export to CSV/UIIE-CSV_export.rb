@@ -1,6 +1,12 @@
 # Export to CSV file(s) via csv_export method
 
-nw=WSApplication.current_network
+if WSApplication.ui?
+	net=WSApplication.current_network		## Uses current open network when run in UI
+else
+	db=WSApplication.open
+	dbnet=db.model_object_from_type_and_id 'Collection Network',2		## Run on Collection Network #2 in IE
+	net=dbnet.open
+end
 
 # Create a hash for the export options override the defaults
 exp_options=Hash.new
