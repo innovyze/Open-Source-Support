@@ -12,7 +12,7 @@ This is not the place to develop bespoke code for customers, nor ever will we po
 
 # Languages
 ## Ruby
-Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the Exchange.docx documentation.
+Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the [Exchange](https://innovyze-emea01.s3-eu-west-1.amazonaws.com/WorkgroupProducts/Dropbear/2021.8/Exchange.pdf) documentation.
 
 In this repository:
 * Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`. These can be run from the Workgroup Client.
