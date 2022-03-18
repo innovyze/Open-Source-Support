@@ -13,17 +13,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     
-    # Creates a new branch
-    - uses: peterjgrainger/action-create-branch@v2.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
-      with:
-        branch: 'traffic'
+    # # Creates a new branch
+    # - uses: peterjgrainger/action-create-branch@v2.0.1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
+    #   with:
+    #     branch: 'traffic'
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       with:
-        ref: "traffic"
+        ref: "main"
     
     # Calculates traffic and clones and stores in CSV file
     - name: GitHub traffic 
@@ -38,4 +38,4 @@ jobs:
         author_name: Santiago Gonzalez
         message: "GitHub traffic"
         add: "./traffic/*"
-        ref: "traffic"  # commits to branch "traffic" 
+        ref: "main"  # commits to branch "traffic" 
