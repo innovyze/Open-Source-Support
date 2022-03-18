@@ -19,7 +19,7 @@
 
 ## Introduction
 
-Refer to the main [Exchange](https://github.com/innovyze/Open-Source-Support/blob/main/Exchange.docx) documentation for the objects, their methods and the parameters of those methods.
+Refer to the main [Exchange](https://innovyze-emea01.s3-eu-west-1.amazonaws.com/WorkgroupProducts/Dropbear/2021.8/Exchange.pdf) documentation for the objects, their methods and the parameters of those methods.
 
 Some of the examples below are snippets and are not designed to run on their own.
 
