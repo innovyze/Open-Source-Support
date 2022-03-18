@@ -2,8 +2,8 @@ name: traffic_report
 on:
   schedule: 
   # Runs Sunday every week
-    - cron: '55 23 * * 0'
-    workflow_dispatch:
+  - cron: '55 23 * * 0'
+  workflow_dispatch:
     
 jobs:
   # This workflow contains a single job called 'traffic'
