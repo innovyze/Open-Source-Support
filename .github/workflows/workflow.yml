@@ -22,7 +22,7 @@ jobs:
     - name: GitHub traffic 
       uses: sangonzal/repository-traffic-action@v0.1.5
       env:
-        TRAFFIC_ACTION_TOKEN: ${{ secrets.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 }} 
+        TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }} 
      
     # Commits files to repository
     - name: Commit changes
