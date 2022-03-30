@@ -29,5 +29,5 @@ Some scripts in this repository might have `UIIE` at the start of the filename, 
 
 
 ## Note
-See the README in the top-level of the repository for more information.  
+See the README in the top-level of the Innovyze/Open-Source-Support repository for more information.  
 † Third-party application, this is not an endorsement.  
