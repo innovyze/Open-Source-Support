@@ -1,6 +1,7 @@
-///Trace Upstream/Downstream from multiple/1 Node selected specifying the maximum number of links to select from each Node.
+/*Trace Upstream/Downstream from multiple/1 Node selected specifying the maximum number of links to select from each Node.
 //Object Type: All Nodes
 //Spatial Search: blank
+*/
 
 
 LIST $direction = 'Upstream', 'Downstream';

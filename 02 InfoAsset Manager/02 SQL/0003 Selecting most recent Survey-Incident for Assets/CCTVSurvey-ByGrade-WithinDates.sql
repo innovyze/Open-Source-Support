@@ -1,6 +1,7 @@
-///Select the most recent CCTV Survey(s) with the highest when_surveyed date within a specified date range (via prompt dialog), with hard_wired_structural_grade=5 or 4, exclude 'Split Survey'.
+/*Select the most recent CCTV Survey(s) with the highest when_surveyed date within a specified date range (via prompt dialog), with hard_wired_structural_grade=5 or 4, exclude 'Split Survey'.
 //Object Type: CCTV Survey
 //Spatial Search: blank
+*/
 
 
 PROMPT LINE $DateFrom 'From Date' DATE;

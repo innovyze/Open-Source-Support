@@ -1,6 +1,7 @@
-///Select the most recent CCTV Survey(s) with the highest when_surveyed date with specific defect code or defect code & characterisation1 value, exclude 'Split Survey'.
+/*Select the most recent CCTV Survey(s) with the highest when_surveyed date with specific defect code or defect code & characterisation1 value, exclude 'Split Survey'.
 //Object Type: CCTV Survey
 //Spatial Search: blank
+*/
 
 
 UPDATE PIPE SET cctv_surveys.$surveyselection=1 WHERE cctv_surveys.when_surveyed=MAX(cctv_surveys.when_surveyed);

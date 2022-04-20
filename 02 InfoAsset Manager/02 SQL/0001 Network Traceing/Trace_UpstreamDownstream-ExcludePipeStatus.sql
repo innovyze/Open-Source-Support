@@ -1,6 +1,7 @@
-///Trace Upstream/Downstream from multiple/1 Node selected specifying the maximum number of links to select from each Node, excluding Pipes which have the selected Status field value.
+/*Trace Upstream/Downstream from multiple/1 Node selected specifying the maximum number of links to select from each Node, excluding Pipes which have the selected Status field value.
 //Object Type: All Nodes
 //Spatial Search: blank
+*/
 
 
 LIST $notstatus STRING;

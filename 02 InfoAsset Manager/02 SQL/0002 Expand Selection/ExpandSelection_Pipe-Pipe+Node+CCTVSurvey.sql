@@ -1,6 +1,7 @@
-///With Pipe(s) selected select the US/DS Nodes and CCTV Surveys
+/*With Pipe(s) selected select the US/DS Nodes and CCTV Surveys
 //Object Type: Pipe
 //Spatial Search: blank
+*/
 
 
 //Set a 0 value variable on all objects to be used

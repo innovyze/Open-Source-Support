@@ -1,6 +1,7 @@
-///Trace Upstream/Downstream from multiple/1 Links selected specifying the maximum number of links to select, expand selection to include CCTV Surveys, output a SQL Results Grid of CCTV Survey object values.
+/*Trace Upstream/Downstream from multiple/1 Links selected specifying the maximum number of links to select, expand selection to include CCTV Surveys, output a SQL Results Grid of CCTV Survey object values.
 //Object Type: All Links
 //Spatial Search: blank
+*/
 
 
 //TRACE-Up/Down_SpecifyDistance

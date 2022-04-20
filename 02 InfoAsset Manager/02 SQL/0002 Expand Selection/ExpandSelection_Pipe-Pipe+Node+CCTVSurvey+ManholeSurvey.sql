@@ -1,6 +1,7 @@
-///With Pipe(s) selected select the US/DS Nodes, CCTV Surveys, and Manhole Surveys
+/*With Pipe(s) selected select the US/DS Nodes, CCTV Surveys, and Manhole Surveys
 //Object Type: Pipe
 //Spatial Search: blank
+*/
 
 
 UPDATE [All Nodes] SET $node_selected = 0;

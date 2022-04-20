@@ -1,6 +1,7 @@
-///Trace Upstream from 1 Node selected.
+/*Trace Upstream from 1 Node selected.
 //Object Type: Node
 //Spatial Search: blank
+*/
 
 
 LET $n = 0;
