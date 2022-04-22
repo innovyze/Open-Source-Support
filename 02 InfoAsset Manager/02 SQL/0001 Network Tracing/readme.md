@@ -1,4 +1,4 @@
-# Tracing using SQL
+# Network Tracing using SQL
 ## [Trace_Upstream.sql](./Trace_Upstream.sql)
 A simple Upstream trace from one or more selected **Nodes**.  
 A prompt dialog will appear to set the maximum number of links to trace upstream - it is recommended to be restraint in the number entered, tracing for long distances via SQL is inefficient.  
@@ -15,6 +15,6 @@ This SQL runs from selected **Link(s)**.
 
 
 ## [Trace_IntermediateLinks.sql](./Trace_IntermediateLinks.sql)
-Within InfoAsset Manager, there is a tool to select the path between two Nodes (GeoPlan > Tracing Tools > Intermediate Paths) - but this only works from a current selecvtion of 2 Nodes.  
+Within InfoAsset Manager, there is a tool to select the path between two Nodes (GeoPlan > Tracing Tools > Intermediate Paths) - but this only works from a current selection of 2 Nodes.  
 With a current selection of at least **2 Pipes**, extend the selection to also include any intermediate Pipes.
 ![Trace Intermediate Pipes GIF](./img001.gif). 
