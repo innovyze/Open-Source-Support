@@ -8,8 +8,7 @@ All methods are available in InfoAsset Exchange only.
 
 e.g.  
 `on.befdss_import_cctv('D:\\import.xml','IM',true,false,1,false,'D:\\log.txt')`  
-  
-#### Parameters:
+
 **Filename** (string) - The XML filename & path.  
 **Flag** (string) - Either *nil* or the string specifies the data flag for imported fields.  
 **Images** (boolean) - *true* to import images from an absolute path in the PHOTO_REF field of the BEFDSS XML file, or a relative path if the image is in the folder containing the XML file, or a sub-folder.   
@@ -29,8 +28,7 @@ e.g.
 
 e.g.  
 `on.befdss_import_manhole_surveys('D:\\import.xml','IM',false,false,1,false,'D:\\log.txt')`  
-  
-#### Parameters:
+
 **Filename** (string) - The XML filename & path.  
 **Flag** (string) - Either *nil* or the string specifies the data flag for imported fields.  
 **P3** (boolean) - not used.  
@@ -47,10 +45,9 @@ e.g.
 
 e.g.  
 `on.befdss_export('D:\\export.xml','DP',false,false,'D:\\log.txt')`  
-  
-#### Parameters:
+
 **Filename** (string) - The XML filename & path.  
-**Type** (string) - One of:
+**Type** (string) - One of:  
  *'DP'* - Export CCTV surveys as Direct Pipeline Inspection  
  *'IP'* - Export CCTV surveys as Indirect Pipeline Inspection  
  *'IDP'* - Export CCTV surveys as Inventory Data Pipeline Inspection  
