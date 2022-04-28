@@ -1,7 +1,8 @@
-# Importing BEFDSS XML Survey Data  
+# Importing & Exporting BEFDSS XML Survey Data  
+All methods are available in InfoAsset Exchange only.  
 
 ## Importing BEFDSS XML CCTV Survey Data  
-### [befdss_import_cctv](IE-befdss_import_cctv.rb) (InfoAsset Exchange only)
+### [befdss_import_cctv](./IE-befdss_import_cctv.rb) (InfoAsset Exchange only)
 
 `on.befdss_import_cctv(Filename,Flag,Images,MatchExisting,GenerateIDsFrom,DuplicateIDs,LogFile)`  
 
@@ -22,7 +23,7 @@ e.g.
 
 
 ## Importing BEFDSS XML Manhole Survey Data  
-### [befdss_import_manhole_surveys](IE-befdss_import_manhole_surveys.rb) (InfoAsset Exchange only)
+### [befdss_import_manhole_surveys](./IE-befdss_import_manhole_surveys.rb) (InfoAsset Exchange only)
 
 `on.befdss_import_manhole_surveys(Filename,Flag,false,MatchExisting,1,false,LogFile)`  
 
@@ -33,7 +34,28 @@ e.g.
 **Filename** (string) - The XML filename & path.  
 **Flag** (string) - Either *nil* or the string specifies the data flag for imported fields.  
 **P3** (boolean) - not used.  
-**MatchExisting** (boolean) - *true* = Match to existing records by node reference (CAA) and employers job reference (CBJ / IAM `customer` field) option to merge survey data into existing surveys. Create survey if match not found.  
+**MatchExisting** (boolean) - *true* = Match to existing records by node reference (CAA) and employers job reference (CBJ / IAM 'customer' field) option to merge survey data into existing surveys. Create survey if match not found.  
 **GenerateIDsFrom** (integer) - Must be *1* = Node reference (CAA) and an index.  
 **P6** (boolean) - not used.   
+**LogFile** (string) - Either *nil* or filename & path to .txt log file, the log will be created or overwritten if one exists.  
+
+
+## Exporting BEFDSS XML Survey Data  
+### [befdss_export](./IE-befdss_export.rb) (InfoAsset Exchange only)
+
+`on.befdss_export(Filename,Type,Images,SelectedSurveysOnly,LogFile)`  
+
+e.g.  
+`on.befdss_export('D:\\export.xml','DP',false,false,'D:\\log.txt')`  
+  
+#### Parameters:
+**Filename** (string) - The XML filename & path.  
+**Type** (string) - One of:
+ *'DP'* - Export CCTV surveys as Direct Pipeline Inspection  
+ *'IP'* - Export CCTV surveys as Indirect Pipeline Inspection  
+ *'IDP'* - Export CCTV surveys as Inventory Data Pipeline Inspection  
+ *'M'* - Export manhole surveys as Manhole Inspection   
+ *'IDM'* - Export manhole surveys as Inventory Data Manhole Inspection  
+**Images** (boolean) - Export defect images, to subfolder alongide 'Filename' of the same name.  
+**SelectedSurveysOnly** (boolean) - *true* = export current selection only, *false* = export whole network.  
 **LogFile** (string) - Either *nil* or filename & path to .txt log file, the log will be created or overwritten if one exists.  
