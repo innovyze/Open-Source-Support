@@ -15,5 +15,5 @@ e.g.
  *1* - StartNodeRef (AAB), Direction (AAK), Date (ABF) and Time (ABG)  
  *2* - StartNodeRef (AAB), Direction (AAK), and an index if needed  
  *3* - PIPELINE_IDNR  
-**DuplicateIDs** (boolean) – *false* = "Do not import duplicate survey", *true* = "Overwrite existing survey".  
+**DuplicateIDs** (boolean) - *false* = "Do not import duplicate survey", *true* = "Overwrite existing survey".  
 **LogFile** (string) - Either *nil* or filename & path to .txt log file, the log will be created or overwritten if one exists.  
