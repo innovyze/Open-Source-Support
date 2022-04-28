@@ -33,7 +33,7 @@ e.g.
 **Filename** (string) - The XML filename & path.  
 **Flag** (string) - Either *nil* or the string specifies the data flag for imported fields.  
 **P3** (boolean) - not used.  
-**MatchExisting** (boolean) - *true* = Match to existing records by node reference (CAA) and employers job reference (CBJ / IAM `customer` field) option to merge survey data into existing surveys.  
+**MatchExisting** (boolean) - *true* = Match to existing records by node reference (CAA) and employers job reference (CBJ / IAM `customer` field) option to merge survey data into existing surveys. Create survey if match not found.  
 **GenerateIDsFrom** (integer) - Must be *1* = Node reference (CAA) and an index.  
 **P6** (boolean) - not used.   
 **LogFile** (string) - Either *nil* or filename & path to .txt log file, the log will be created or overwritten if one exists.  
