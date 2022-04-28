@@ -21,6 +21,9 @@ e.g.
 **DuplicateIDs** (boolean) - *false* = "Do not import duplicate survey", *true* = "Overwrite existing survey".  
 **LogFile** (string) - Either *nil* or filename & path to .txt log file, the log will be created or overwritten if one exists.  
 
+#### Bulk Import Example
+Script [IE-befdss_import_cctv-BulkImport.rb](./IE-befdss_import_cctv-BulkImport.rb) will action the same method, but will import from all xml files within a folder (& sub-folders) as specified on line 6. Individual log files are generated.  
+
 
 ## Importing BEFDSS XML Manhole Survey Data  
 ### [befdss_import_manhole_surveys](./IE-befdss_import_manhole_surveys.rb) (InfoAsset Exchange only)
@@ -54,6 +57,6 @@ e.g.
  *'IDP'* - Export CCTV surveys as Inventory Data Pipeline Inspection  
  *'M'* - Export manhole surveys as Manhole Inspection   
  *'IDM'* - Export manhole surveys as Inventory Data Manhole Inspection  
-**Images** (boolean) - Export defect images, to subfolder alongide 'Filename' of the same name.  
+**Images** (boolean) - Export defect images, to subfolder alongside 'Filename' of the same name.  
 **SelectedSurveysOnly** (boolean) - *true* = export current selection only, *false* = export whole network.  
 **LogFile** (string) - Either *nil* or filename & path to .txt log file, the log will be created or overwritten if one exists.  
