@@ -1,4 +1,5 @@
 # Importing & Exporting BEFDSS XML Survey Data  
+BEFDSS (Belgian Exchange Format for Drain and Sewer Systems) is a Belgian standard format used for files containing standardised Inspection Data.  
 All methods are available in InfoAsset Exchange only.  
 
 ## Importing BEFDSS XML CCTV Survey Data  
