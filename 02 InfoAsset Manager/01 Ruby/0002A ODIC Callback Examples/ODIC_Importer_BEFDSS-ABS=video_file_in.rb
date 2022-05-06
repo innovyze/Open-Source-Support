@@ -1,4 +1,4 @@
-#If running IAM in French, uncomment line 4 by removing the '#' and comment-out line 3. // Si vous exécutez IAM en Français, décommentez la ligne 4 en supprimant le '#' et en commentant la ligne 3.
+#If running IAM in French, uncomment line 4 by removing the '#' and comment-out line 3. // Si vous exécutez IAM en Français, décommentez la ligne 4 en supprimant le '#' et en commentant la ligne 3.  
 class Importer
 	def Importer.OnEndRecordCCTVSurvey(obj)
 	#def Importer.OnEndRecordITV(obj)
