@@ -14,21 +14,16 @@ begin
 	end
 
 options=Hash.new
-options['Use Display Precision'] = true		# default=true
-options['Field Descriptions']    = false	# default=false
-options['Field Names']           = true		# default=true    
-options['Flag Fields']           = false	# default=true
-options['Multiple Files']        = false    	# default=false
-options['User Units']            = false    	# default=false
-options['Units Behaviour']       = 'Native' 	# use native units
-options['Object Types']          = false    	# default=false
-options['Units Text']            = false    	# default=false
-options['Selection Only']        = false    	# export selected objects only?
-options['Create Primary Key']	 = false     	# create a primary key
-options['Error File'] 		 = 'C:\Temp\SQLErrorLog.txt' #logs export errors
-
-options['Coordinate Arrays Format'] = 'Unpacked'  # values='Packed'(default), 'None', 'Unpacked'
-options['Other Arrays Format']      = 'Separate'  # values='Packed'(default), 'None', 'Separate'
+#options['Callback Class'] = nil				# Default = nil
+#options['Error File'] = nil					# Default = nil
+#options['Image Folder'] = nil					# Default = nil
+#options['Units Behaviour'] = 'Native'			# Native or User | Default = Native
+#options['Report Mode'] = false					# Boolean, True to export in 'report mode' | Default = FALSE
+#options['Append'] = false						# Boolean, True to enable 'Append to existing data' | Default = FALSE
+#options['Export Selection'] = false			# Boolean, True to export the selected objects only | Default = FALSE
+#options['Previous Version'] = false			# Integer, Previous version, if not zero differences are exportedy | Default = 0
+#options['WGS84'] = false						# Boolean, SHP only | Default = FALSE
+#options['Don’t Update Geometry'] = false		# Boolean | Default = FALSE
 
 	puts 'Ready for export'
 
