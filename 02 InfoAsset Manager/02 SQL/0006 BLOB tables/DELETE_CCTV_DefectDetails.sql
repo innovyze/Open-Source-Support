@@ -1,0 +1,1 @@
+DELETE FROM [CCTV Survey].details WHERE  details.code <> 'ID' AND details.code <> 'IDJ';
