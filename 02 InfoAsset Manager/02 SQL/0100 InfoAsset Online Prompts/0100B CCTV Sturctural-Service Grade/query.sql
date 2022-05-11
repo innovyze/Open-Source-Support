@@ -1,0 +1,1 @@
+hard_wired_service_grade >= value OR hard_wired_structural_grade >= value
