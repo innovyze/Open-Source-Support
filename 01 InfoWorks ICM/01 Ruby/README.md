@@ -17,7 +17,7 @@
 | 0011 | UI & EX  | Find Root Model Group                                               | Database Get          |
 | 0012 | UI & EX  | ODEC Export Node and Conduit tables to CSV and MIF                  | Network Data Export   |
 | 0014 | UI & EX  | Find all flags in all objects of a network model                    | Network Data Get      |
-| 0015 | UI & EX  | Output RTC to text                                                  | Network RTC  Bin      |
+| 0015 | UI & EX  | Import or Export RTC to txt                                         | Network RTC  Bin      |
 | 0016 | UI & EX  | Example ODEC callback scripts                                       | Network Data Export   |
 | 0017 | UI & EX  | Create a node from polygon boundary                                 | Network Data Set      |
 | 0018 | UI & EX  | Checking conveyance using Ruby                                      | Network Data Analysis |
