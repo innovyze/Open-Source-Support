@@ -43,32 +43,49 @@ run=group.new_run(
 )
 
 # Select run mode
-mode=0
-if mode==0
-	simsArray=Array.new
-	sim=run.children[0]
-	simsArray << sim
-	WSApplication.connect_local_agent(1)	
-	handles=WSApplication.launch_sims simsArray,'.',false,0,0
-	while sim.status=='None'
-		puts  'running'
-		sleep 1
+mode=1
+
+# Code which starts each of the different modes
+begin
+	if mode==1
+		simsArray=Array.new
+		sim=run.children[0]
+		simsArray << sim
+		WSApplication.connect_local_agent(1)	
+		handles=WSApplication.launch_sims simsArray,'.',false,0,0
+		while sim.status=='None'
+			puts  'running'
+			sleep 1
+		end
+	elsif mode==2
+		simsArray=Array.new
+		sim=run.children[0]
+		simsArray << sim
+		WSApplication.connect_local_agent(1)	
+		handles=WSApplication.launch_sims simsArray,'.',false,0,0
+		puts handles
+		WSApplication.wait_for_jobs handles,true,86400000	
+	elsif mode==3
+		sims=run.children
+		sims.each do |sim|
+			puts 'running sim'
+			sim.run_ex '.',1
+		end
+	elsif mode==4
+		settingsArray=Hash.new
+		settingsArray['Server'] = 'innocpu01'
+		settingsArray['Threads'] = 1
+		settingsArray['SU'] = false
+		settingsArray['ResultsOnServer'] = false
+		
+		sims=run.children
+		sims.each do |sim|
+			puts 'running sim'
+			sim.run_ex(settingsArray)
+		end
 	end
 	puts 'done'
-elsif mode==1
-	simsArray=Array.new
-	sim=run.children[0]
-	simsArray << sim
-	WSApplication.connect_local_agent(1)	
-	handles=WSApplication.launch_sims simsArray,'.',false,0,0
-	puts handles
-	WSApplication.wait_for_jobs handles,true,86400000
-	puts 'done'	
-else
-	sims=run.children
-	sims.each do |sim|
-		puts 'running sim'
-		sim.run_ex '.',1
-	end
-	puts 'done'
+rescue => e
+	puts e
+	sleep 10
 end

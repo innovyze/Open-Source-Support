@@ -1,3 +1,5 @@
+require 'date'
+
 # Sets the current directory to a user defined location
 Dir.chdir 'E:/Temp'
 cfg_file = './ICMFieldMapping.cfg'
