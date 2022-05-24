@@ -1,5 +1,5 @@
 # Introduction
-List variables are used in conjunction with a number of functions, known as 'list variable functions'. You can find full information about these functions in the Help file on the “SQL in InfoAsset Manager Technical Paper”.  
+List variables are used in conjunction with a number of functions, known as 'list variable functions'. You can find full information about these functions in the "SQL in InfoAsset Manager Technical Paper", either from the IAM in-built Help file or from the [Online Help](https://help.innovyze.com/display/infoassetmanager/InoAsset+Manager+Online+Help) [copy of the Technical Paper](https://help2.innovyze.com/infoassetmanager/index.html#HTML/TechNotes/SQL_in_InfoWorks_ICM%20and%20InfoNet.htm%3FTocPath%3DTechnical%2520Notes%7C_____2#List_Variables).  
 Variables can be populated using three primary methods; defining within the SQL syntax, populating from network values, or loading from a file.  
 
 
