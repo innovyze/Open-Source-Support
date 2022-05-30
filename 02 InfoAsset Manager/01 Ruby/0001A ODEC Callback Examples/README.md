@@ -4,10 +4,10 @@ This directory contains examples of Open Data Export Centre Callback Class synta
 They can be either utilised either via the IAM UI or embedded within IAM Exchange scripts. 
 
 
-Further guidance can be found in the articles on our [Support Portal](https://innovyze.force.com/support/s/) [Knowledgebase](https://innovyze.force.com/support/s/topic/0TO0P000000IdBQWA0){:target="\_blank"}:  
-[Ruby Scripting: Changing values on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Changing-values-on-export-using-a-callback-class){:target="\_blank"}  
-[Ruby Scripting: Filtering objects on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Filtering-objects-on-export-using-a-callback-class){:target="\_blank"}  
-  
+Further guidance can be found in the articles on our [Support Portal](https://innovyze.force.com/support/s/) [Knowledgebase](https://innovyze.force.com/support/s/topic/0TO0P000000IdBQWA0)  
+[Ruby Scripting: Changing values on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Changing-values-on-export-using-a-callback-class)  
+[Ruby Scripting: Filtering objects on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Filtering-objects-on-export-using-a-callback-class)  
+
 
 ## ODEC Callback Classes in the UI
 Simply save the Callback class syntax in a file with `.rb` as the file type suffix, then to action the script select the file from the Ruby Script parameter on the ODEC dialog.  
