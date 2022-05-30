@@ -6,7 +6,7 @@ They can be either utilised either via the IAM UI or embedded within IAM Exchang
 
 Further guidance can be found in the articles on our [Support Portal](https://innovyze.force.com/support/s/) [Knowledgebase](https://innovyze.force.com/support/s/topic/0TO0P000000IdBQWA0)  
 [Ruby Scripting: Changing values on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Changing-values-on-export-using-a-callback-class)  
-[Ruby Scripting: Filtering objects on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Filtering-objects-on-export-using-a-callback-class)  <a href="https://innovyze.force.com/support/s/article/Ruby-Scripting-Filtering-objects-on-export-using-a-callback-class" target="_blank">external link</a>  
+[Ruby Scripting: Filtering objects on export using a callback class](https://innovyze.force.com/support/s/article/Ruby-Scripting-Filtering-objects-on-export-using-a-callback-class)  
 
 
 ## ODEC Callback Classes in the UI
