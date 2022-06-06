@@ -13,6 +13,7 @@
 | 0005 | UI & EX  | Trace network from selection                                        | Network Data Analysis |
 | 0006 | EX       | Copy a run and set 'Working' flag                                   | Simulations Run       |
 | 0007 | EX       | Running simulations                                                 | Simulations Run       |
+| 0008 | UI & EX  | List all results fields in a simulation                             | Network Data Get      |
 | 0009 | EX       | ICM Binary Results Export                                           | Network Data Export   |
 | 0011 | UI & EX  | Find Root Model Group                                               | Database Get          |
 | 0012 | UI & EX  | ODEC Export Node and Conduit tables to CSV and MIF                  | Network Data Export   |
