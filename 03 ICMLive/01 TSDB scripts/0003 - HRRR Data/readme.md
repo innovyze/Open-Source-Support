@@ -1,4 +1,7 @@
 # Powershell script that downloads the HRRR weather forecast data for ICMLive.
+
+For more information about working HRRR weather forecast data in ICM, refer to this [blog post](https://mel-meng-pe.medium.com/how-to-get-rainfall-forecast-into-tsdb-in-infoworks-icm-97faa6934abe).
+
 To setup ICMLive to download hourly HRRR data:
 * Create a `script` folder on the server
 * Create a `data` folder on the server
