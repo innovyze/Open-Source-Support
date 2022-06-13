@@ -13,6 +13,7 @@
 | 0005 | UI & EX  | Trace network from selection                                        | Network Data Analysis |
 | 0006 | EX       | Copy a run and set 'Working' flag                                   | Simulations Run       |
 | 0007 | EX       | Running simulations                                                 | Simulations Run       |
+| 0008 | UI & EX  | List all results fields in a simulation                             | Network Data Get      |
 | 0009 | EX       | ICM Binary Results Export                                           | Network Data Export   |
 | 0011 | UI & EX  | Find Root Model Group                                               | Database Get          |
 | 0012 | UI & EX  | ODEC Export Node and Conduit tables to CSV and MIF                  | Network Data Export   |
@@ -48,6 +49,8 @@
 | 0045 | UI       | Clear SUDS control data from all the subcatchments                  | Network Data Set      |
 | 0046 | UI       | Output SUDS control data from all subcatchments to a csv            | Network Data Get      |
 | 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data Get      |
+| 0048 | UI       | Delete all scenarios except Base                                    | Network Data Set      |
+| 0049 | EX       | Extract river reach results                                         | Network Data Get      |
 
 ### Descriptions
 
