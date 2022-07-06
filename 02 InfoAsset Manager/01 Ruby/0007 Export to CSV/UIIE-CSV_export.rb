@@ -26,7 +26,7 @@ exp_options=Hash.new
 
 
 # Export the data
-nw.csv_export(
-	'C:\Temp\network.csv'		# Export destination folder & filename
+net.csv_export(
+	'C:\Temp\network.csv',		# Export destination folder & filename
 	exp_options					# Specified options override the default options
 )
