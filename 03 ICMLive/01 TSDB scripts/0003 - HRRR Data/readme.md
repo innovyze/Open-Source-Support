@@ -2,6 +2,8 @@
 
 For more information about working HRRR weather forecast data in ICM, refer to this [blog post](https://mel-meng-pe.medium.com/how-to-get-rainfall-forecast-into-tsdb-in-infoworks-icm-97faa6934abe).
 
+For a more detailed example of setting it up, refer to the [sample folder](https://github.com/innovyze/Open-Source-Support/tree/main/03%20ICMLive/01%20TSDB%20scripts/0003%20-%20HRRR%20Data/sample)
+
 To setup ICMLive to download hourly HRRR data:
 * Create a `script` folder on the server
 * Create a `data` folder on the server
