@@ -1,6 +1,12 @@
 class Attachments
 	def initialize
-		@net=WSApplication.current_network
+		if WSApplication.ui?
+			@net=WSApplication.current_network		## Uses current open network when run in UI
+		else
+			db=WSApplication.open
+			dbnet=db.model_object_from_type_and_id 'Collection Network',1		## Run on Collection Network #1 in IE
+			@net=dbnet.open
+		end
 	end
 	def doit
 		map=Hash.new
