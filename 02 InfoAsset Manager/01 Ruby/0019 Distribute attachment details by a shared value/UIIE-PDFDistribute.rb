@@ -3,9 +3,17 @@ class Attachments
 		if WSApplication.ui?
 			@net=WSApplication.current_network		## Uses current open network when run in UI
 		else
-			db=WSApplication.open
-			dbnet=db.model_object_from_type_and_id 'Collection Network',1		## Run on Collection Network #1 in IE
-			@net=dbnet.open
+			db=WSApplication.open('//localhost:40000/db', false)
+			@dbnet=db.model_object_from_type_and_id 'Collection Network',1		## Run on Collection Network #1 in IE
+			current_commit_id = @dbnet.current_commit_id
+			latest_commit_id = @dbnet.latest_commit_id
+			if(latest_commit_id > current_commit_id) then
+				puts "Updating from Commit ID #{current_commit_id} to Commit ID #{latest_commit_id}"
+				@dbnet.update
+			else
+				puts 'Network is up to date'
+			end
+			@net=@dbnet.open
 		end
 	end
 	def doit
@@ -55,6 +63,10 @@ class Attachments
 			end
 		end
 		@net.transaction_commit
+		if !WSApplication.ui?
+			@dbnet.commit('PDF Distribute script run.')		##Commits the changes when the script is run via Exchange
+			puts 'Committed'
+		end
 	end
 end
 fred=Attachments.new
