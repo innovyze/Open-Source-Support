@@ -1,3 +1,5 @@
+## Similar to the IE-odec_export_ex-SQLSERVER.rb script, but this example will only export the differences between a previously exported database commit version (line 62) pulled from a text file (line 38) and the current commit version.
+
 begin
 
     currtime = Time.now.strftime("%Y-%m-%d %T")
