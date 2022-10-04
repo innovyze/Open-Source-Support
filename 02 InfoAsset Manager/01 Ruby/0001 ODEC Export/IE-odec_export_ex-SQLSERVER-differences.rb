@@ -30,6 +30,7 @@ begin
     if(latest_commit_id > current_commit_id) then
         puts "#{currtime} Updating from Commit ID #{current_commit_id} to Commit ID #{latest_commit_id}"
         nw.update
+        current_commit_id = nw.current_commit_id
     else
         puts "#{currtime} Network is up to date"
     end
