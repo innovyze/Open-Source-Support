@@ -1,7 +1,4 @@
 net=WSApplication.current_network
-puts 'The current scenario is:'
-puts net.current_scenario
-puts 'It will be changed to this correct scenario:'
 net.current_scenario='Roughness -20%'
 puts net.current_scenario
 
