@@ -24,7 +24,7 @@ nw.odec_export_ex(
 	config,         							# Field mapping config file
 	options,                   					# Specified options override the default options
 	'node',                     				# InfoAsset table to export
-	exportloc+'\node.SHP',							# Export destination file
+	exportloc+'\node.SHP'							# Export destination file
 )
 
 nw.odec_export_ex(
@@ -32,7 +32,7 @@ nw.odec_export_ex(
 	config,
 	options,
 	'pipe',
-	exportloc+'\pipe.SHP',
+	exportloc+'\pipe.SHP'
 )
 
 nw.odec_export_ex(
@@ -40,5 +40,5 @@ nw.odec_export_ex(
 	config,
 	options,
 	'cctvsurvey',
-	exportloc+'\cctvsurvey.SHP',
+	exportloc+'\cctvsurvey.SHP'
 )
