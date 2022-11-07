@@ -1,17 +1,15 @@
-# Product		InfoWorks WS Pro - UI & EX
-# Script Name	Node to Link
-# Description	Creates a link from the currently selected node (UI)
+# Node to Links
 
-# Main Function	node2link
-# Arguments		network - network to work on
-#				node - WSRowObject - the node object to generate a link from
-#				linktype - string - the type of link to create e.g. wn_pipe
-#				prefix* - string - added to the US node (the one provided to the method)
-#				suffix* - string - added to the DS node (the one generated)
+# Converts a node to a link - this could be made cleaner, but it works. The existing node is converted to the Upstream node
+#
+# @network [WSOpenNetwork]
+# @node [WSNode] the node to convert
+# @linktype [String] the type of link to convert into, this should be the WS Pro internal row name e.g. wn_pipe
+# @prexix [String] What to append to the upstream node - not really a prefix
+# @suffix [String] What to append to the new downstream node
+# @return [WSLink] the WSLink that was created
 
-# Method(s)
-#-------------------------------------------------------------------
-def node2link (network, node, linktype='wn_pipe', prefix='_US', suffix='_DS')
+def node2link (network, node, linktype, prefix, suffix)
 
 	# Do some basic checks
 	if network == nil || node == nil
@@ -61,7 +59,7 @@ def node2link (network, node, linktype='wn_pipe', prefix='_US', suffix='_DS')
 	newnode['x'] = node['x']
 	newnode['y'] = node['y']
 	newnode['z'] = node['z']
-	
+
 	# Make the new link
 	newlink = network.new_row_object(linktype)
 	newlink['us_node_id'] = node['node_id']
@@ -71,11 +69,11 @@ def node2link (network, node, linktype='wn_pipe', prefix='_US', suffix='_DS')
 	newlink['asset_id'] = node['asset_id']
 	newlink['diameter'] = dslink['diameter']
 	newlink['k'] = dslink['k']
-	
+
 	# Update the old node, clear the asset ID because only the link should have this ID
 	node['asset_id'] = ''
 	if prefix != nil then node['node_Id'] = node['node_Id'] + prefix end
-	
+
 	# Shift the DS link's US node to the new node we just made
 	dslink['us_node_id'] = newnode['node_id']
 
@@ -85,7 +83,7 @@ def node2link (network, node, linktype='wn_pipe', prefix='_US', suffix='_DS')
 		newlink["user_text_#{i}"] = node["user_text_#{i}"]
 		newlink["user_number_#{i}"] = node["user_number_#{i}"]
 
-		# Clear the node's data
+		# Clear the original node's data
 		node["user_text_#{i}"] = ''
 		node["user_number_#{i}"] = ''
 	end
@@ -101,35 +99,66 @@ def node2link (network, node, linktype='wn_pipe', prefix='_US', suffix='_DS')
 	return newlink
 end
 
-# UI / Exchange Switch
-#-------------------------------------------------------------------
-if WSApplication.ui?
-	network=WSApplication.current_network
+# Main Function
+# ------------------------------------------------------------------
 
-	# What nodes to convert?
-	if network.selection_size > 0
-		# Will exit the script if user presses cancel
-		WSApplication.message_box("There are currently #{network.selection_size} object(s) selected - continue with this selection?", 'OKCancel', '?', true)
-	else
-		WSApplication.message_box('There are no objects selected.', 'OK', '!')
-		exit
-	end
+network = WSApplication.current_network
 
-	# Iterate over every selected node to create the links
-	newlinks = Array.new
-	network.transaction_begin
+# Confirm which nodes to convert
+if network.selection_size > 0
+	# Will exit the script if user presses cancel
+	WSApplication.message_box("There are currently #{network.selection_size} object(s) selected - continue with this selection?", 'OKCancel', '?', true)
+else
+	WSApplication.message_box('There are no objects selected.', 'OK', '!', true)
+	exit
+end
 
-	network.row_objects_selection('wn_node').each do |n|
-		newlink = node2link(network, n)
-		if newlink != nil then newlinks << newlink end
-	end
+# Prompt user for options
+options = WSApplication.prompt("Node to Link Options",
+	[
+		["Link Type", "String", "wn_pipe"],
+		["Upstream", "String", "_US"],
+		["Downstream", "String", "_DS"],
+		["Expand & Simplify", "Boolean",  true]
+	],
+	true)
 
-	network.transaction_commit
+network.transaction_begin
 
-	#Clear the selection of nodes, and select the new links instead (so we can do stuff to them in the UI)
-	network.clear_selection
+# Convert Nodes to Links - store the new links in an array
+new_links = Array.new
 
-	newlinks.each do |link|
-		link.selected = true
+network.row_objects_selection('_nodes').each do |node|
+	link = node2link(network, node, options[0], options[1], options[2])
+	if link != nil then new_links << link end
+end
+
+# Select just the new links
+network.clear_selection
+new_links.each do |link|
+	link.selected = true
+end
+
+# Expand and simplify - expand_short_links works on the current network selection
+if options[3] == true then
+	network.expand_short_links({
+		"Expansion threshold" => 1,
+		"Minimum resultant length" => 1,
+		"Protect connection points" => true,
+		"Recalculate Length" => false,
+		"Tables" => ["wn_pipe", "wn_valve", "wn_meter", "wn_non_return_valve"]
+	})
+
+	new_links.each do |link|
+		link["bends"] = [
+			link.us_node["X"],
+			link.us_node["Y"],
+			link.ds_node["X"],
+			link.ds_node["Y"],
+		]
+
+		link.write
 	end
 end
+
+network.transaction_commit
