@@ -12,7 +12,7 @@ subcatchment=net.row_objects('hw_subcatchment').each do |subcatchment|
 	dischargeNode=''
 	
 node=net.row_objects('hw_node').each do |node| 
-	if node.node_type.downcase == "storage" #only calculate against note_type = storage
+	if node.node_type.downcase == "storage" #only calculate against node_type = storage
 	#.downcase makes the match case insensitive
 	tdi=((x-node.x)**2+(y-node.y)**2)**0.5 #calculate distance to node
 		if (tdi<di)
