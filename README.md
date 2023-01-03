@@ -1,7 +1,7 @@
 # Innovyze open source scripts
 This repository will host open source code that can be used in the Innovyze Workgroup products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
 
-The [Exchange](https://innovyze-emea01.s3-eu-west-1.amazonaws.com/WorkgroupProducts/Dropbear/2021.8/Exchange.pdf) documentation includes (almost) all available Ruby methods and will be updated regularly.
+The [Exchange](https://downloads-emea.info360.com/WorkgroupProducts/Dropbear/2021.8/Exchange.pdf) documentation includes (almost) all available Ruby methods and will be updated regularly.
 
 ## Scope 
 Scripts posted here are generally developed by Innovyze Support on the back of a specific customer request, but we're not programmers. Therefore, the scripts might not always be entirely optimised. Feel welcome to contribute with pull requests and raise issues for changes that you'd like to see.
@@ -12,7 +12,7 @@ This is not the place to develop bespoke code for customers, nor ever will we po
 
 # Languages
 ## Ruby
-Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the [Exchange](https://innovyze-emea01.s3-eu-west-1.amazonaws.com/WorkgroupProducts/Dropbear/2021.8/Exchange.pdf) documentation.
+Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the [Exchange](https://downloads-emea.info360.com/WorkgroupProducts/Dropbear/2021.8/Exchange.pdf) documentation.
 
 In this repository:
 * Scripts that run from the **UI** will follow the nomenclature `UI_script.rb`. These can be run from the Workgroup Client.
