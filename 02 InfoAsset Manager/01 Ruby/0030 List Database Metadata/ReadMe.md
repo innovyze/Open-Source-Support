@@ -14,6 +14,7 @@ The output for this script would look similar to:
 		 db_ref
 	node_type
 	node_type_flag
+...
 ```
 
 ## [UI-ListCurrentNetworkFieldStructure.rb](./UI-ListCurrentNetworkFieldStructure.rb)
@@ -30,4 +31,5 @@ The output for this script would look similar to:
 		Database ref, db_ref, String
 	Type, node_type, String
 	Type Flag, node_type_flag, Flag
+...
 ```
