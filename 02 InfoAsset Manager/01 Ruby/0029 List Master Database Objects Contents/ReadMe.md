@@ -29,6 +29,18 @@ Identified 76 Collection Network
     ...
 
 ```
+Or, if using line 42 instead of 41:
+```
+    ...
+Collection Network(s)
+4	Croyde		>MASG~MasterGroup>AG~AssetGroup>CNN~Croyde
+6	SQL		>MASG~MasterGroup>AG~AssetGroup>CNN~SQL
+8	Fakenham		>MASG~MasterGroup>AG~AssetGroup>CNN~Fakenham
+10	Malden		>MASG~MasterGroup>AG~AssetGroup>AG~Archive>CNN~Malden
+    ...
+
+```
+
 
 
 ## [UIIE-DatabaseSummary.rb](./UIIE-DatabaseSummary.rb)
