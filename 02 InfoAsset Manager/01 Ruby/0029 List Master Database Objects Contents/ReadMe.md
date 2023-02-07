@@ -5,7 +5,7 @@ The object types being queried for are configured on line 6, add/remove object t
 
 
 ## [UIIE-DatabaseContents.rb](./UIIE-DatabaseContents.rb)
-For the Database Object Types listed in the object_types array, a list of the database objects will be outputted, grouped together by type, in order as they are listed in the type array.  
+For the Database Object Types listed in the object_types array, a list of the database objects will be outputted, grouped together by type, in order as they are listed in the type array, with a summary count following the list.  
 Comment-out line 41 and uncomment 42 to also output the database path of the object.  
 The output for this script would look similar to:  
 ```
@@ -18,14 +18,16 @@ Selection List
 
 Database Guid: ABCD1234-EFGH-5678-IJKL-90MNOPQRZTUV
 
-Identified 76 Collection Network
-Identified 8 Distribution Network
-Identified 2 Asset Network
-Identified 51 Theme
-Identified 412 Stored Query
-Identified 7 Selection List
+Collection Network(s)
+4	Croyde
+6	SQL
+8	Fakenham
+10	Malden
+    ...
 
-Done.
+Identified 76 Collection Network
+    ...
+
 ```
 
 
