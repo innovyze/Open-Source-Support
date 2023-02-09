@@ -3,7 +3,7 @@ database = '//localhost:40000/IA_NEW'
 logFilename = 'Output.txt'
 
 # General Configuration
-object_types = ['Collection Network', 'Distribution Network', 'Asset Network', 'Theme', 'Stored Query', 'Selection List']
+object_types = ['Collection Network', 'Distribution Network', 'Asset Network', 'Theme', 'Stored Query', 'Selection List', 'Web workspace']
 
 # End of Configuration
 
