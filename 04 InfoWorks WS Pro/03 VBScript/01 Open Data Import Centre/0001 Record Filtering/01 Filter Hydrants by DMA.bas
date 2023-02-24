@@ -1,9 +1,5 @@
-Option Explicit
-
 Public Sub OnBeginRecordHydrant()
-	Dim DMA
-	DMA = Importer.Field("DMAZone")
-	If (DMA <> "EOH5P") Then
+	If (Importer.Field("DMAZone") <> "DMA123") Then
 		Importer.WriteRecord = false
 	end if
 end Sub

@@ -1,15 +1,17 @@
-Option Explicit
-
-Public Sub OnBeginRecordValve()
-	If (Importer.Field("DMAZone") <> "DMA1" And _
-        Importer.Field("InstallDat") <= #01/01/2020#) Then
+REM Filter records based on matching all conditions from multiple fields (this AND that AND that are true)
+Public Sub OnBeginRecord<OBJECT TYPE>()
+	If (Importer.Field("<EXTERNAL FIELD NAME>") <> "<STRING VALUE>" And _
+		Importer.Field("<EXTERNAL FIELD NAME>") <= <NUMBER VALUE> And _
+		Importer.Field("<EXTERNAL FIELD NAME>") >= #<DATETIME VALUE>#) Then
 		Importer.WriteRecord = false
 	end if
 end Sub
 
-Public Sub OnBeginRecordValve()
-	If (Importer.Field("DMAZone") <> "DMA1" Or _
-        Importer.Field("InstallDat") <= #01/01/2020#) Then
+REM Filter records based on matching one condition from multiple fields (this OR that OR that is true)
+Public Sub OnBeginRecord<OBJECT TYPE>()
+	If (Importer.Field("<EXTERNAL FIELD NAME>") <> "<STRING VALUE>" Or _
+		Importer.Field("<EXTERNAL FIELD NAME>") <= <NUMBER VALUE> Or _
+		Importer.Field("<EXTERNAL FIELD NAME>") >= #<DATETIME VALUE>#) Then
 		Importer.WriteRecord = false
 	end if
 end Sub
