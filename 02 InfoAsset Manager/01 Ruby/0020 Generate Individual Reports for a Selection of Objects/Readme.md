@@ -17,7 +17,7 @@ All can be produced in either Word (.doc) or HTML (.html) formats.
 
 ## [UI-Reports-CreateIndividualForSelection.rb](./UI-Reports-CreateIndividualForSelection.rb)
 Set on line 23 the folder (and filename prefix), replacing `c:\\temp\\Report_` to the folder (and optionally) the filename prefix desired.  
-## [UI-Reports-CreateIndividualForSelection_folder..rb](./UI-Reports-CreateIndividualForSelection_folder..rb)
+## [UI-Reports-CreateIndividualForSelection_folder.rb](./UI-Reports-CreateIndividualForSelection_folder.rb)
 This script is the same as [UI-Reports-CreateIndividualForSelection.rb](./UI-Reports-CreateIndividualForSelection.rb) but instead of needing to enter the export location into the script itself, a prompt dialog will appear to select a folder to save the reports into.
 
 ### Customising The Script
