@@ -1,102 +1,130 @@
 # Node to Links
 
-# Converts a node to a link - this could be made cleaner, but it works. The existing node is converted to the Upstream node
+# Converts a node to a link - the existing node is converted to the Upstream node
 #
-# @network [WSOpenNetwork]
-# @node [WSNode] the node to convert
-# @linktype [String] the type of link to convert into, this should be the WS Pro internal row name e.g. wn_pipe
-# @prexix [String] What to append to the upstream node - not really a prefix
-# @suffix [String] What to append to the new downstream node
-# @return [WSLink] the WSLink that was created
+# network (WSOpenNetwork) - the network, needed to generate new objects
+# node (WSNode) - the node to convert into a link
+# link_type (String) - the type of link to convert to, this should be the WS Pro internal row name e.g. wn_pipe
+# us_suffix (String) - Suffix to append to the upstream node
+# ds_suffix (String) - Suffix to append to the downstream node
+# migrate_fields (Boolean) - Whether to migrate the user fields from the existing node to the new link
+#
+# Returns the new link (WSLink)
+def node2link (network: , node: , link_type: 'wn_pipe', us_suffix: '_US', ds_suffix: '_DS', flag: nil, migrate_fields: true)
 
-def node2link (network, node, linktype, prefix, suffix)
-
-	# Do some basic checks
-	if network == nil || node == nil
-		puts "Network (#{network}) or Node (#{node}) invalid."
+	# Do some basic checks on the input
+	if network.nil? then
+		raise "Network (#{network}) invalid"
+	elsif node.nil? then
+		puts "Node object invalid"
 		return nil
-	elsif prefix == nil && suffix == nil
-		puts "Failed to create Link from Node \'#{node.node_id}\' - Upstream and Downstream suffix cannot both be blank."
+	elsif us_suffix.nil? || ds_suffix.nil? then
+		puts "Failed to create Link from Node \'#{node.node_id}\' - Upstream and Downstream suffix cannot be blank"
 		return nil
-	elsif linktype == nil
-		puts "Failed to create Link from Node \'#{node.node_id}\' - no link type specified."
+	elsif link_type.nil? then
+		puts "Failed to create Link from Node \'#{node.node_id}\' - no link type specified"
 		return nil
 	end
 
-	# Determine connectivity
-	if node.ds_links.length == 1 && node.us_links.length == 1
+	us_count = node.us_links.length
+	ds_count = node.ds_links.length
+
+	# Determine and fix connectivity
+	if us_count == 1 && ds_count == 1 then
 		# Link connectivity is straightforward - the node has 1 US and 1 DS link
-		uslink = node.us_links[0]
-		dslink = node.ds_links[0]
-	elsif (node.ds_links.length + node.us_links.length) == 2
-		# Link connectivity is complex - the node has 2 US or 2 DS links
-		links = Array.new
-		node.ds_links.each { |link| links << link }
-		node.us_links.each { |link| links << link }
-
-		# Does not apply any logic to determine US/DS
-		uslink = links[0]
-		dslink = links[1]
-
-		# Flip the downstream link so that the rest of the code works as normal
-		new_ds_node = dslink['us_node_id']
-		dslink['us_node_id'] = dslink['ds_node_id']
-		dslink['ds_node_id'] = new_ds_node
-		dslink.write
-
-		# Log what we just did
-		puts "Flipped link - new link is \'#{dslink['us_node_id']}.#{dslink['ds_node_id']}.#{dslink['link_suffix']}\'"
+	elsif us_count == 2 && ds_count == 0 then
+		# We need to flip one of the US links
+		reverse_link(node.us_links[0])
+	elsif ds_count == 2 && us_count == 0 then
+		# We need to flip one of the DS links
+		reverse_link(node.ds_links[0])
 	else
 		puts "Failed to create Link from Node \'#{node.node_id}\' - does not have clear linkage. Probably has more than 3 links attached to node."
 		return nil
 	end
 
-	oldnodename = node["node_id"]
+	us_link = node.us_links[0]
+	ds_link = node.ds_links[0]
+
+	old_node_id = node["node_id"]
+	us_node = node
 
 	# Make the new downstream node
-	newnode = network.new_row_object('wn_node')
-	newnode['node_id'] = node["node_id"] + suffix
-	newnode['x'] = node['x']
-	newnode['y'] = node['y']
-	newnode['z'] = node['z']
+	ds_node = network.new_row_object('wn_node')
+	ds_node['node_id'] = us_node["node_id"] + ds_suffix
+	ds_node['node_id_flag'] = flag
 
-	# Make the new link
-	newlink = network.new_row_object(linktype)
-	newlink['us_node_id'] = node['node_id']
-	newlink['ds_node_id'] = newnode['node_id']
-	newlink['link_suffix'] = 1
-	newlink['length'] = 1
-	newlink['asset_id'] = node['asset_id']
-	newlink['diameter'] = dslink['diameter']
-	newlink['k'] = dslink['k']
-
-	# Update the old node, clear the asset ID because only the link should have this ID
-	node['asset_id'] = ''
-	if prefix != nil then node['node_Id'] = node['node_Id'] + prefix end
+	fields = ['x', 'y', 'z']
+	fields.each do |field|
+		ds_node[field] = us_node[field]
+		ds_node[field + '_flag'] = flag
+	end
 
 	# Shift the DS link's US node to the new node we just made
-	dslink['us_node_id'] = newnode['node_id']
+	ds_link['us_node_id'] = ds_node['node_id']
+
+	# Make the new link
+	newlink = network.new_row_object(link_type)
+	newlink['us_node_id'] = us_node['node_id']
+	newlink['us_node_id_flag'] = flag
+	newlink['ds_node_id'] = ds_node['node_id']
+	newlink['ds_node_id_flag'] = flag
+	newlink['link_suffix'] = 1
+	newlink['link_suffix_flag'] = flag
+	newlink['length'] = 1
+	newlink['length_flag'] = flag
+	newlink['asset_id'] = us_node['asset_id']
+	newlink['asset_id_flag'] = flag
+
+	fields = ['diameter', 'roughness_type', 'k', 'hazen_williams', 'darcy_weissbach']
+	fields.each do |field|
+		newlink[field] = ds_link[field]
+		newlink[field + '_flag'] = flag
+	end
+
+	# Update the old node, clear the asset ID because only the link should have this ID
+	us_node['asset_id'] = nil
+	us_node['node_id'] = us_node['node_id'] + us_suffix
 
 	# Migrate user fields
-	for i in 1...15 do
-		# Move the data into the link
-		newlink["user_text_#{i}"] = node["user_text_#{i}"]
-		newlink["user_number_#{i}"] = node["user_number_#{i}"]
+	if migrate_fields then
+		for i in 1...15 do
+			# Move the data into the link
+			newlink["user_text_#{i}"] = us_node["user_text_#{i}"]
+			newlink["user_number_#{i}"] = us_node["user_number_#{i}"]
 
-		# Clear the original node's data
-		node["user_text_#{i}"] = ''
-		node["user_number_#{i}"] = ''
+			# Clear the original node's data
+			us_node["user_text_#{i}"] = ''
+			us_node["user_number_#{i}"] = ''
+		end
 	end
 
 	# Write all our changes
-	newnode.write # The new DS Node
+	ds_node.write # The new DS Node
 	newlink.write
-	node.write # The old node, which is now US
-	dslink.write
+	us_node.write # The old (now US) node
+	ds_link.write
 
-	puts "Creating Link #{newlink['us_node_id']}.#{newlink['ds_node_id']}.1 (#{linktype}) from Node \'#{oldnodename}\' (Asset ID #{newlink.asset_id})"
+	puts "Creating Link #{newlink['us_node_id']}.#{newlink['ds_node_id']}.1 (#{link_type}) from Node \'#{old_node_id}\' (Asset ID #{newlink.asset_id})"
 
 	return newlink
+end
+
+def reverse_link (link)
+	old_bends = link["bends"]
+	new_bends = Array.new
+	while !old_bends.empty?
+		new_bends.concat(old_bends.pop(2))
+	end
+
+	old_us_id = link["us_node_id"]
+	link["us_node_id"] = link["ds_node_id"]
+	link["ds_node_id"] = old_us_id
+	link["bends"] = new_bends
+
+	link.write
+
+	puts "Flipped link - new link is \'#{link['us_node_id']}.#{link['ds_node_id']}.#{link['link_suffix']}\'"
 end
 
 # Main Function
@@ -114,11 +142,14 @@ else
 end
 
 # Prompt user for options
-options = WSApplication.prompt("Node to Link Options",
+options = WSApplication.prompt(
+	"Node to Link Options",
 	[
 		["Link Type", "String", "wn_pipe"],
-		["Upstream", "String", "_US"],
-		["Downstream", "String", "_DS"],
+		["Upstream Suffix", "String", "_US"],
+		["Downstream Suffix", "String", "_DS"],
+		["Flag", "String", "NL"],
+		["Migrate User Fields", "Boolean",  true],
 		["Expand & Simplify", "Boolean",  true]
 	],
 	true)
@@ -129,24 +160,32 @@ network.transaction_begin
 new_links = Array.new
 
 network.row_objects_selection('_nodes').each do |node|
-	link = node2link(network, node, options[0], options[1], options[2])
-	if link != nil then new_links << link end
+	link = node2link(
+		network: network,
+		node: node,
+		link_type: options[0],
+		us_suffix: options[1],
+		ds_suffix: options[2],
+		flag: options[3],
+		migrate_fields: options[4]
+	)
+
+	new_links << link unless link.nil?
 end
 
 # Select just the new links
 network.clear_selection
-new_links.each do |link|
-	link.selected = true
-end
+new_links.each { |link| link.selected = true }
 
 # Expand and simplify - expand_short_links works on the current network selection
-if options[3] == true then
+if options[5] then
 	network.expand_short_links({
 		"Expansion threshold" => 1,
 		"Minimum resultant length" => 1,
 		"Protect connection points" => true,
 		"Recalculate Length" => false,
-		"Tables" => ["wn_pipe", "wn_valve", "wn_meter", "wn_non_return_valve"]
+		"Flag" => options[3],
+		"Tables" => [options[0]]
 	})
 
 	new_links.each do |link|
