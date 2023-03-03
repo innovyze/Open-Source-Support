@@ -24,9 +24,6 @@ end
 		net.generate_report(t[0],t[1],ro.id,prefix+'.doc')		## Generate a Word report
 		#net.generate_report(t[0],t[1],ro.id,prefix+'.html')		## Generate a HTML report
 		n+=1
-		if n==3
-			break
-		end
 	end
 end
 WSApplication.message_box "Reports Exported","OK","Information", false
