@@ -1,5 +1,5 @@
 # An Asset Management Approach to Wastewater Capacity Assurance
-This script is the one referenced in the Innovyze White Paper “[An Asset Management Approach to Wastewater Capacity Assurance](https://www.innovyze.com/media/5227/innovyze-whitepaper-asset-management-capacity-assurance_digital.pdf)” by Tony Andrews.  
+This script is the one referenced in the Innovyze White Paper “[An Asset Management Approach to Wastewater Capacity Assurance](./Innovyze-WhitePaper-Asset_Management_Capacity_Assurance.pdf)” by Tony Andrews.  
 
 Provided with this script includes:  
 1. Fakenham Network provided as a [snapshot file](./FakenhamForCapacityAssurance.isfc). This Network's coordinate system is British National Grid (EPSG 27700).  
