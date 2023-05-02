@@ -13,6 +13,8 @@ mode = 1
 # Example 1: Export RTC from current network to a txt file
 if mode == 1
     rtc_string = row_object['rtc_data']
+	#remove carriage returns (\r\n) and replace with newline (\n)
+	rtc_string = rtc_string.gsub(/\r\n?/, "\n")
     File.open(path + exported_file, 'w') { |file| file.write(rtc_string) }
     puts "File \'#{exported_file}\' exported to path \'#{path}\'"
 end
