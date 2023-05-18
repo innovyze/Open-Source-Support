@@ -1,5 +1,6 @@
 # InfoWorks SWMM Networks and the Length of Links
-These Ruby scripts are intended to work with the InfoWorks SWMM network and InfWorks Networks
+
+These Ruby scripts are intended to work with the InfoWorks SWMM network and InfoWorks Networks
 
 ##SW is SWMM
 ##HW is ICM or its grandfather HydroWorks
