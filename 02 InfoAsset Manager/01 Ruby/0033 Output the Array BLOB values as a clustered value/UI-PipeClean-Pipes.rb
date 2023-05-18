@@ -7,7 +7,7 @@ obj.each do |s|
 		jp=s.pipes
 		join=Array.new
 		jp.each do |j|
-			join<<j.us_node_id+'.'+j.us_node_id+'.'+j.link_suffix
+			join<<j.us_node_id+'.'+j.ds_node_id+'.'+j.link_suffix
 		end
 		puts "#{s.id} :	#{join.join(', ')}"
 	end
