@@ -1,0 +1,6 @@
+UPDATE Node set user_text_1 = '';
+UPDATE Node set user_text_2 = '';
+
+##Take Post code & address data from addresspoints.
+SET user_text_1 =spatial.POSTCODE_LOCATOR ;
+SET user_text_2 = spatial.LOCATION_DESC
