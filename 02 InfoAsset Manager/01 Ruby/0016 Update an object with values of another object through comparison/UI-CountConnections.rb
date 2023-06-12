@@ -7,7 +7,7 @@ net.row_objects('cams_connection_pipe').each do |p|
 			if !connections.has_key? connection
 				connections[connection]=1
 			elsif connections.has_key? connection
-				connections[connection]=connections[connection]+1
+				connections[connection]+=
 		end
 	end
 end

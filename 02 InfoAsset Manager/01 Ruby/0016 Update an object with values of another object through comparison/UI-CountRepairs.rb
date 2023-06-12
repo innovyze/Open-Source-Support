@@ -9,7 +9,7 @@ net.row_objects('cams_pipe_repair').each do |p|
 				if !repairs.has_key? repair
 					repairs[repair]=1
 				elsif repairs.has_key? repair
-					repairs[repair]=repairs[repair]+1
+					repairs[repair]+=1
 			end
 		end
 	end
