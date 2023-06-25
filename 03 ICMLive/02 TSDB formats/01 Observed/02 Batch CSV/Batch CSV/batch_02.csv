@@ -1,0 +1,12 @@
+SO95009000_ActualRainFall,2015-09-04T07:45:00+00:00,0.2,mm/hr,false
+SO95009000_ActualRainFall,2015-09-04T08:00:00+00:00,0.0,mm/hr,false
+SO95009000_ActualRainFall,2015-09-04T08:15:00+00:00,0.0,mm/hr,false
+SO95009000_ActualRainFall,2015-09-04T09:00:00+00:00,0.0,mm/hr,false
+SO95009000_ActualRainFall,2015-09-04T08:30:00+00:00,0.0,mm/hr,false
+SO95009000_ActualRainFall,2015-09-04T08:45:00+00:00,0.0,mm/hr,false
+FM02_Flow,2015-09-04T07:45:00+00:00,0.2,m3/s,false
+FM02_Flow,2015-09-04T08:00:00+00:00,0.0,m3/s,false
+FM02_Flow,2015-09-04T08:15:00+00:00,0.0,m3/s,false
+FM02_Flow,2015-09-04T09:00:00+00:00,0.0,m3/s,false
+FM02_Flow,2015-09-04T08:30:00+00:00,0.0,m3/s,false
+FM02_Flow,2015-09-04T08:45:00+00:00,0.0,m3/s,false
