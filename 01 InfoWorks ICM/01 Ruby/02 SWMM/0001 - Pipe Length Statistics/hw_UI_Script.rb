@@ -1,4 +1,4 @@
-# Find the smallest 10 percent of pipes
+# Find the smallest 10 percent of link lengths
 net = WSApplication.current_network
 net.clear_selection
 
