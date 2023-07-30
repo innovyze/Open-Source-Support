@@ -20,7 +20,7 @@ begin
         "sw_snow_pack",
         "sw_raingage",
         "sw_curve_control",
-        #"sw_curve_diversion",
+        # "sw_curve_diversion",  Ruby says "Error: no such table"
         "sw_curve_pump",
         "sw_curve_rating",
         "sw_curve_shape",

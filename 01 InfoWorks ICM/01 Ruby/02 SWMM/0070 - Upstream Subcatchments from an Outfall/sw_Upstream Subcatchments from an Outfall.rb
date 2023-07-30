@@ -1,3 +1,4 @@
+# Select Upstream Subcatchments from a Node with Multilinks
 # net variable is assigned the current network of the WSApplication
 # the hash code is from https://github.com/chaitanyalakeshri/ruby_scripts and 
 # the tree walking code is from Unit 5 from https://github.com/innovyze/Open-Source-Support/tree/main/01%20InfoWorks%20ICM/01%20Ruby

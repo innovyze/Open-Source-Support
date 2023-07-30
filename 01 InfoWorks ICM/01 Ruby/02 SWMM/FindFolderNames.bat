@@ -1,0 +1,2 @@
+dir > log.log
+pause

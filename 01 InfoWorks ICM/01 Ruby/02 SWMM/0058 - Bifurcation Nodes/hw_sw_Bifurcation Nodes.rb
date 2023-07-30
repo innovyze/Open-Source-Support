@@ -26,7 +26,7 @@ end
 net = WSApplication.current_network
 net.clear_selection
 
-# Use a Hash to store the count of each u/s node ID
+# Initialize a hash to store the count of occurrences for each u/s node ID
 us_node_count = Hash.new(0)
 
 # Count the occurrences of each u/s node ID in the links object collection
@@ -38,5 +38,6 @@ end
 us_node_count.each do |node_id, count|
   if count > 1
     net.row_object('_nodes', node_id).selected = true
+	puts "Node #{node_id} has #{count} occurrences in links."
   end
 end

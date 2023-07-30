@@ -1,7 +1,8 @@
 # Original Source https://github.com/ngerdts7/ICM_Tools
-# Modified for ICM SWMM Networks
+# For ICM InfoWorks Networks
 
 class QuickTrace
+  
 	def initialize
 		@net=WSApplication.current_network
 	end
@@ -13,9 +14,9 @@ class QuickTrace
 		n._val=0.0
 		n._from=nil
 		n._link=nil
+		total_length_of_links = 0.0  # Initialize the global variable to store the total length of links
 		working << n
 		workingHash[n.id]=0
-        $whole_length = 0
 		while working.size>0
 			min=nil
 			minIndex=-1
@@ -66,35 +67,54 @@ class QuickTrace
 									workingHash[node.id]=0
 									index=working.size-1
 								end
-								working[index]._val=current._val+l.length
+								if l.link_type == 'Cond'
+									working[index]._val=current._val+l.conduit_length
+									total_length_of_links += l.conduit_length  # Update the total length of links									
+								else
+									working[index]._val=current._val+5
+								end
 								working[index]._from=current
 								working[index]._link=l
-                                $whole_length = $whole_length + current._val+l.length
-								puts $whole_length 
 							end
 						end
 					end
 				end
-			end
-		end
+				puts "Updated Total length of links: #{total_length_of_links.round(2)}" # Rounded to two decimal places
+			end			
+		end	
 	end
+
+
 	def doit
-		nodes=@net.row_objects_selection('_nodes')
-		if nodes.size!=2
-			puts "You need to select two nodes to have a trace"
+		nodes = @net.row_objects_selection('_nodes')
+		if nodes.size != 2
+			puts "Please select two nodes for the trace."
+			return
 		else
-			@dest=nodes[1].id
-			found=process_node(nodes[0])
-			while(!found.nil?)
-				found.selected=true
+			@dest = nodes[1].id
+			found = process_node(nodes[0])
+			total_nodes_found = 0
+			total_links_found = 0
+
+			while !found.nil?
+				found.selected = true
 				if !found._link.nil?
-					found._link.selected=true
+					found._link.selected = true
+					total_links_found += 1
 				end
-				found=found._from
+				total_nodes_found += 1
+				found = found._from
 			end
+	
+			puts "Trace completed. Do you see the red line trace?"
+			puts "Total nodes found: #{total_nodes_found}"
+			puts "Total links found: #{total_links_found}"	
+			#puts "Total length of links: #{total_length_of_links.round(2)}" # Rounded to two decimal places		
 		end
 	end
 end
-d=QuickTrace.new
-d.doit
-puts "Do you see a red line trace? It's length is %0.2f" % [$whole_length]
+	d = QuickTrace.new
+	d.doit
+
+
+	

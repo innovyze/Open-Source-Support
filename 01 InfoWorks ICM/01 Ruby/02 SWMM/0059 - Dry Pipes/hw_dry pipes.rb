@@ -30,10 +30,12 @@ node_id.each do |x|
 		end
 	end
 end
-all_links=net.row_object_collection('_links')
+
+all_links = net.row_object_collection('_links')
 all_links.each do |d|
-	if !d._seen
-		d.selected=true
-		d.us_node.selected=true
-	end
+  if !d._seen
+    d.selected = true
+    d.us_node.selected = true
+    puts "Selected Node: #{d.us_node.id}"
+  end
 end

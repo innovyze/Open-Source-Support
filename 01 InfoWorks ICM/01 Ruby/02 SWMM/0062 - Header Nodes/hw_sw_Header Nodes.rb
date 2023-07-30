@@ -46,6 +46,7 @@ if WSApplication.current_network.nil?
     # If the node ID is not in the downstream node IDs array, select it
     if !downstream_node_ids.include?(node_id)
       net.row_object('_nodes', node_id).selected = true
+      puts "Selected Node: #{node_id}"
     end
   end
   
