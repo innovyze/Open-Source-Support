@@ -95,7 +95,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0081 | UI       |                                                                     | Network Data          |
 | 0082 | UI       |                                                                     | Network Data          |
 | 0083 | UI       |                                                                     | Network Data          |
-| 0084 | UI       |                                                                     | Network Data          |
+| 0084 | UI       | Change All Node and Link IDs                                        | Network Data          |
 | 0085 | UI       |                                                                     | Network Data          |
 | 0086 | UI       |                                                                     | Network Data          |
 | 0087 | UI       |                                                                     | Network Data          |
