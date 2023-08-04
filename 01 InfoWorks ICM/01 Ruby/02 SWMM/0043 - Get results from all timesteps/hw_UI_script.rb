@@ -12,17 +12,47 @@ ts_g_size = net.list_gauge_timesteps.count
 ts = net.list_timesteps
 ts_g = net.list_gauge_timesteps
 
-# Define the result field name to fetch the results (in this case, 'depnod')
+# Define the result field name to fetch the results (in this case, 'qnode')
 res_field_name = 'QNODE'
 
 # Iterate through the selected objects in the network (e.g., nodes)
-net.each_selected do |sel|
-  # Get the row object for the current node
-  ro = net.row_object('hw_node', sel.node_id)
+#net.each_selected do |sel|
+  # Print a message for the selected object
+#  puts "Processing selected object with ID: #{sel.id}"
+#end
 
-  # Get the count of results and gauge results for the specified field
-  rs_size = ro.results(res_field_name).count
-  rs_g_size = ro.gauge_results(res_field_name).count
+# Iterate through the selected objects in the network
+net.each_selected do |sel|
+  begin
+    # Try to get the row object for the current node
+    ro = net.row_object('hw_node', sel.node_id)
+
+    # Check if the row object is nil (if it's not a node)
+    if ro.nil?
+      puts "Selected object with ID #{sel.node_id} is not a node."
+      next
+    end
+
+  rescue => e
+    # Handle any exceptions that occur if the object is not a node
+    #puts "Error processing object with ID #{sel.id}: #{e.message}"
+    next
+  end
+
+# Check the node type and skip to the next iteration if it's an 'Outfall'
+if ro.node_type == 'Outfall'
+  next
+end
+
+# Get the count of results and gauge results for the specified field
+rs_size = ro.results(res_field_name).count
+rs_g_size = ro.gauge_results(res_field_name).count
+
+# Check if results are available
+if rs_size == 0 && rs_g_size == 0
+  puts "Error: No results or gauge results found for field #{res_field_name} in node with ID #{sel.id}."
+  next # Skip to the next iteration
+end
 
   # Check if the count of gauge results matches the count of gauge timesteps
   if rs_g_size == ts_g_size
@@ -35,7 +65,6 @@ net.each_selected do |sel|
     end
   # Check if the count of results matches the count of timesteps
   elsif rs_size == ts_size
-    puts "Results: #{sel.node_id}"
 
 # Initialize variables to keep track of statistics
 total = 0.0 # Added this line for the total sum
@@ -61,17 +90,10 @@ end
 # Calculate the mean value if the count is greater than 0
 mean_value = count > 0 ? total / count : 0
 
-# Print the total, total integrated over time, mean, min, and max values
-puts "Total Integrated Over Time:  #{'%.4f' % total_integrated_over_time}"
-puts "Mean:                        #{'%.4f' % mean_value}"
-puts "Min:                         #{'%.4f' % min_value}"
-puts "Max:                         #{'%.4f' % max_value}"
-puts res_field_name
+# Print the total, total integrated over time, mean, max, and min values
+puts "Node: #{'%-12s' % sel.node_id} | Sum: #{'%12.4f' % total_integrated_over_time} | Mean: #{'%12.4f' % mean_value} | Max: #{'%12.4f' % max_value} | Min: #{'%12.4f' % min_value} | Field: #{res_field_name}"
 
-  # Print an empty line for better readability
-  puts ""
 end
-
 
 
 
