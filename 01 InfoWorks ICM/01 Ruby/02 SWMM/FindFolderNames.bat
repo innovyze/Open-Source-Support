@@ -1,2 +1,0 @@
-dir > log.log
-pause
