@@ -24,9 +24,9 @@ begin
   raise "Error: objects not found" if nodes_ro.nil? || links_ro.nil? || subs_ro.nil?
   
   # Update IDs for nodes, links, and subcatchments
-  puts "Node IDs Changed", update_ids(nodes_ro, "Kate")
-  puts "Link IDs Changed", update_ids(links_ro, "Kyle")
-  puts "Sub  IDs Changed", update_ids(subs_ro, "MyM")
+  puts "Node IDs Changed", update_ids(nodes_ro, "N_")
+  puts "Link IDs Changed", update_ids(links_ro, "L_")
+  puts "Sub  IDs Changed", update_ids(subs_ro, "S_")
 
   net.transaction_commit    
 
