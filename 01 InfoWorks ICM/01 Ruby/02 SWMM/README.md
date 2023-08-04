@@ -10,6 +10,7 @@ This means that if you're trying to use these Ruby scripts with Autodesk Innovyz
 In conclusion, while these Ruby scripts are designed to work specifically with Autodesk Innovyze's InfoWorks SWMM, they might be adaptable for use with InfoWorks ICM or other similar software packages, but such adaptation would likely require some adjustments to the code.
 
 |------|----------|---------------------------------------------------------------------|-----------------------|
+|------|----------|---------------------------------------------------------------------|-----------------------|
 | ID   | Type     | Name                                                                | Category              |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 | 0001 | UI       | Pipe Length Statistics                                              | Network Data          |
