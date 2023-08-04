@@ -15,7 +15,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0001 | UI       | Pipe Length Statistics                                              | Network Data          |
 | 0002 | UI       | Quick Trace                                                         | Network Data          |
 | 0003 | UI       | Scenario Maker                                                      | Network Data          |
-| 0004 | UI       | New ICM SWMM Scenarios                                              | Network Data          |
+| 0004 | UI       | New ICM InfoWorks and ICM SWMM Scenarios                            | Network Data          |
 | 0005 | UI       | Change All Node and Link IDs                                        | Network Data          |
 | 0006 | UI       | Add Total Area for Subcatchments                                    | Network Data          |
 | 0007 | UI       | Kutter Sql for ICM SWMM                                             | Network Data          |
@@ -116,7 +116,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 
 ## Name notes on the meaning of the prefixes
 
-* The Ruby script "hw_Upstream Subcatchments from an Outfall.rb" is designed to work specifically with ICM InfoWorks, indicated by the "hw_" prefix in its name. It focuses on identifying and managing upstream subcatchments from an outfall point within the ICM InfoWorks environment. Similarly, when you see a "sw_" prefix in a Ruby script's name, it means that script is intended for use with ICM SWMM only.
+* The Ruby script says "hw_Upstream Subcatchments from an Outfall.rb" is designed to work specifically with ICM InfoWorks, indicated by the "hw_" prefix in its name. It focuses on identifying and managing upstream subcatchments from an outfall point within the ICM InfoWorks environment. Similarly, when you see a "sw_" prefix in a Ruby script's name, it means that script is intended for use with ICM SWMM only.
 
 * However, for scripts with the "hw_sw" prefix, it means they are versatile and can be applied to both ICM InfoWorks (hw) and ICM SWMM (sw) modeling environments. These versatile scripts provide flexibility and convenience, allowing users to work seamlessly across both platforms to perform various tasks related to water management, drainage, and modeling.
 

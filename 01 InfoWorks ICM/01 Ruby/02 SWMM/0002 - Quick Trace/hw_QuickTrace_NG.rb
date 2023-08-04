@@ -14,7 +14,7 @@ class QuickTrace
 		n._val=0.0
 		n._from=nil
 		n._link=nil
-		total_length_of_links = 0.0  # Initialize the global variable to store the total length of links
+		@total_length_of_links = 0.0  # Initialize the global variable to store the total length of links
 		working << n
 		workingHash[n.id]=0
 		while working.size>0
@@ -69,7 +69,7 @@ class QuickTrace
 								end
 								if l.link_type == 'Cond'
 									working[index]._val=current._val+l.conduit_length
-									total_length_of_links += l.conduit_length  # Update the total length of links									
+									@total_length_of_links += l.conduit_length  # Update the total length of links									
 								else
 									working[index]._val=current._val+5
 								end
@@ -79,7 +79,7 @@ class QuickTrace
 						end
 					end
 				end
-				puts "Updated Total length of links: #{total_length_of_links.round(2)}" # Rounded to two decimal places
+				#puts "Updated Total length of links: #{total_length_of_links.round(2)}" # Rounded to two decimal places
 			end			
 		end	
 	end
@@ -106,10 +106,10 @@ class QuickTrace
 				found = found._from
 			end
 	
-			puts "Trace completed. Do you see the red line trace?"
+			puts "Trace completed. You should see a red line trace."
 			puts "Total nodes found: #{total_nodes_found}"
 			puts "Total links found: #{total_links_found}"	
-			#puts "Total length of links: #{total_length_of_links.round(2)}" # Rounded to two decimal places		
+			puts "Total length of links: #{@total_length_of_links.round(2)}" # Rounded to two decimal places		
 		end
 	end
 end
