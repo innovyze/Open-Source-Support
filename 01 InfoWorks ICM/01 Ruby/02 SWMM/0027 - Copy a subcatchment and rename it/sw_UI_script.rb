@@ -1,5 +1,5 @@
 net=WSApplication.current_network 	
-puts 'running ruby for SWMM Networks'												# selects current active network
+puts 'running Ruby for SWMM Networks'												# selects current active network
 net.row_objects('sw_subcatchment').each do |subcatchment|							# loops through all subcatchment objects
     if subcatchment.selected?														# 'if' the catchment is selected
 		net.transaction_begin														# start a 'transaction'
@@ -14,4 +14,4 @@ net.row_objects('sw_subcatchment').each do |subcatchment|							# loops through 
 		net.transaction_commit												    	# end the 'transaction'
     end																				# end of 'if' condition
 end																					# end of loop
-puts 'ending ruby for SWMM Networks'	
+puts 'ending Ruby for SWMM Networks'	
