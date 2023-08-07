@@ -53,15 +53,15 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0038 | UI       |                                                                     | Network Data          |
 | 0039 | UI       | Calculate subcatchment areas in all nodes upstream a node           | Network Data          |
 | 0040 | UI       | Create a new selection list using a SQL query                       | Network Data          |
-| 0041 | UI       |                                                                     | Network Data          |
-| 0042 | UI       |                                                                     | Network Data          |
-| 0043 | UI       | Get results from all timesteps                                      | Network Data          |
-| 0044 | UI       |                                                                     | Network Data          |
-| 0045 | UI       | Clear SUDS from subcatchments                                       | Network Data          |
+| 0041 | UI       | Get results from all timesteps for Links, US_FLOW                   | Network Data          |
+| 0042 | UI       | Get results from all timesteps for Subcatchments, All Params        | Network Data          |
+| 0043 | UI       | Get results from all timesteps for Manholes, Qnode                  | Network Data          |
+| 0044 | UI       | Get results from all timesteps for Manholes, All Params             | Network Data          |
+| 0045 | UI       | Get results from all timesteps for Links, All Params                | Network Data          |
 | 0046 | UI       | Output SUDS control as CSV                                          | Network Data          |
 | 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data          |
 | 0048 | UI       | Delete all scenarios except Base                                    | Network Data          |
-| 0049 | UI       |                                                                     | Network Data          |
+| 0049 | UI       | Clear SUDS from subcatchments                                       | Network Data          |
 | 0050 | UI       | Assign Subcatchment to nearest 'Storage' type Node                  | Network Data          |
 | 0051 | UI       |                                                                     | Network Data          |
 | 0052 | UI       |                                                                     | Network Data          |
