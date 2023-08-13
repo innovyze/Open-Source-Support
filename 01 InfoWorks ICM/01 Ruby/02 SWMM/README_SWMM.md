@@ -112,7 +112,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0097 | UI       |                                                                     | Network Data          |
 | 0098 | UI       |                                                                     | Network Data          |
 | 0099 | UI       |                                                                     | Network Data          |
-| 0100 | UI       |                                                                     | Network Data          |
+| 0100 | UI       | ODIC and Ruby Scripts for Importing InfoSewer to ICM                | Network Data          |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ## Name notes on the meaning of the prefixes
