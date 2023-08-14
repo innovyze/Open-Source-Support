@@ -1,0 +1,9 @@
+# InfoSewer Import - RDII or RTK UH import
+
+hw_channel: The hw_channel section intricately defines the channels within the system. Key attributes like us_node_id and ds_node_id provide connectivity information. The section delves deep into the geometry and hydraulic behavior of channels, listing properties such as length, shape, base_flow_depth, and sediment_depth. This extensive list of attributes showcases the complexity and thoroughness with which channels are represented in the system.
+
+hw_ground_infiltration: Soil and groundwater interactions are vital for hydrological models. The hw_ground_infiltration section presents a detailed account of ground infiltration properties. Attributes like soil_depth, percolation_coefficient, and various evapotranspiration factors emphasize the depth of considerations put into modeling the groundwater-surface interactions. The numerous columns in this section signify a robust representation of ground infiltration dynamics.
+
+hw_unit_hydrograph_month: Hydrographs are indispensable for understanding and predicting streamflow. The hw_unit_hydrograph_month section outlines the monthly unit hydrographs, providing attributes like ID, Month, and various runoff parameters such as R1, T1, and K1. The breadth of parameters indicates a holistic approach to modeling streamflow dynamics on a monthly scale.
+
+hw_unit_hydrograph: Extending the concept of hydrographs, the hw_unit_hydrograph section seems to provide a more general depiction, not limited to monthly data. It details runoff volumes, peak timings, and recession parameters, ensuring that the hydrological models capture streamflow dynamics accurately across different timescales.
