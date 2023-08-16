@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "Write Current File Name",
+        "label": "Task 1",
         "type": "shell",
         "command": "cmd",
         "args": [
@@ -18,7 +18,7 @@
         }
       },
       {
-        "label": "IExchange",
+        "label": "Task 2",
         "type": "process",
         "command": "C:/Program Files/Autodesk/InfoWorks ICM Ultimate 2024/ICMExchange.exe",
         "args": [
@@ -39,8 +39,8 @@
         "label": "Run Ruby",
         "dependsOrder": "sequence",
         "dependsOn": [
-          "Write Current File Name",
-          "IExchange"
+          "Task 1",
+          "Task 2"
         ],
         "group": {
           "kind": "build",
