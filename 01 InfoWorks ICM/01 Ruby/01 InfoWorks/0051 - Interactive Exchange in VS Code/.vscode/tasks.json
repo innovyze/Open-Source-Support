@@ -1,0 +1,52 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Task 1",
+        "type": "shell",
+        "command": "cmd",
+        "args": [
+          "/C",
+          "echo ${file}> .vscode/current_file_path.txt"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "silent"
+        }
+      },
+      {
+        "label": "Task 2",
+        "type": "process",
+        "command": "C:/Program Files/Autodesk/InfoWorks ICM Ultimate 2024/ICMExchange.exe",
+        "args": [
+          "--version",
+          "--",
+          "${workspaceFolder}/.vscode/repl.rb",
+          "/ICM",
+        ],
+        "options": {
+          "cwd": "${fileDirname}"
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "Run Ruby",
+        "dependsOrder": "sequence",
+        "dependsOn": [
+          "Task 1",
+          "Task 2"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+    }
+   ]
+}
+  

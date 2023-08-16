@@ -51,6 +51,8 @@
 | 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data Get      |
 | 0048 | UI       | Delete all scenarios except Base                                    | Network Data Set      |
 | 0049 | EX       | Extract river reach results                                         | Network Data Get      |
+| 0050 | UI & EX  | Assign Subcatchment to nearest 'Storage' type Node                  | Network Data Get      |
+| 0051 | EX       |  Interactive Exchange in Visual Studio Code                         | Developer Tools       |
 
 ### Descriptions
 
