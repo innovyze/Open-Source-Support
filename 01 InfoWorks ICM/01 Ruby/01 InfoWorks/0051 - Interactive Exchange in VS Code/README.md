@@ -10,14 +10,14 @@ This workflow does the following:
 2. Gives the user access to script variables after the script is executed in exchange, so that the user can interactively play with the script variables.
 
 ## How to use?
-1. Download relevant files from GitHub ('hello_world.rb', '.vscode', 'repl.rb', 'task.json').
-2. Copy files to your project folder without changing the folder structure ('hello_world.rb' is optional, 'hello_world.rb can be replaced with any other ruby script).
+1. Download relevant files from [here](https://github.com/innovyze/Open-Source-Support/tree/main/01%20InfoWorks%20ICM/01%20Ruby/01%20InfoWorks/0051%20-%20Interactive%20Exchange%20in%20VS%20Code) ('hello_world.rb', '.vscode' folder).
+2. Copy downloaded files to your project folder without changing the folder structure ('hello_world.rb' is optional, 'hello_world.rb can be replaced with any other ruby script).
 3. Open VS code and navigate to "File>Open Folder". In the pop-up dialog box, select the folder where you copied 'hello_world.rb' ruby script and '.vscode' folder in step 2.
 
 ![](gif001.gif)
 
 4. The folder selected in step 3 will be considered a workspace folder by VS Code. 
-5. Within the current workspace folder, locate '.vcode/tasks.json' file. Edit line 20 of 'tasks.json' file and replace it with the complete path of 'ICMExchange.exe'/'IExchange.exe'(these execuatables will be in the same location as your ICM/WS Pro installation).
+5. Within the current workspace folder, locate '.vcode/tasks.json' file. Edit line 23 of 'tasks.json' file and replace it with the complete path of 'ICMExchange.exe'/'IExchange.exe'(these execuatables will be in the same location as your ICM/WS Pro installation).
 
 ![](gif002.gif)
 
