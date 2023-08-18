@@ -5,7 +5,7 @@ These scripts can be used with the ODIC to filter which objects are imported int
 There are 2 example types of script in this folder: a very basic object filtering script that filters based on a single field value (script IDs begining with **0**), and a slightly less basic object filtering script that filters based on 2 field values with a conditional (script IDs begining with **1**). These scripts utilise logic for the filtering that equates to double negatives; by this we mean that they aren't written to import objects where a condition (or several)
 is true, but rather they're written to **not** import objects where a condtion (or several) **isn't** true, which results in the same effect.
 
-The first scripts of each example type (**00** and **10**) are written in pure example syntaxt, with the input parameters written in `[SQUARE BRACKETS]`, where:
+The first scripts of each example type (**00** and **10**) are written in pure example syntax, with the input parameters written in `[SQUARE BRACKETS]` where:
 
 * `[OBJECT TYPE]` is replaced by the WS Pro object table name 
 * `[EXTERNAL FIELD NAME]` is replaced by the GIS/external file field name
