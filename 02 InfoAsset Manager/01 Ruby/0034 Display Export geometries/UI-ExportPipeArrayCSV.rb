@@ -1,4 +1,4 @@
-## Display and Export to CSV the point_array of a Pipe to to the file on line 5.
+## Display and Export to CSV the point_array of selected Pipes to to the file on line 5.
 
 net=WSApplication.current_network
 require 'csv'
