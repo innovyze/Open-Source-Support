@@ -3,7 +3,7 @@
 net=WSApplication.current_network
 require 'csv'
 CSV.open("c:\\temp\\pipes.csv", "wb") do |csv|
-	pipes=net.row_objects_selection('cams_pipe')
+	pipes=net.row_objects_selection('cams_pipe')		## Remove "_selection" to run on whole network
 	pipes.each do |s|
 		unless s.point_array.nil?
 			puts "#{s.us_node_id}.#{s.ds_node_id}.#{s.link_suffix} #{s.point_array}"
