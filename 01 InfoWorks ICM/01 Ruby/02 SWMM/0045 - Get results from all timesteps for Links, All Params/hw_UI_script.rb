@@ -55,7 +55,7 @@ net.each_selected do |sel|
         mean_value = count > 0 ? total / count : 0
         
         # Print the total, total integrated over time, mean, max, and min values
-        puts "Link: #{'%-12s' % sel.id} | Field: #{'%-12s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
+        puts "Link: #{'%-12s' % sel.id} | #{'%-16s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
       end
     end
 

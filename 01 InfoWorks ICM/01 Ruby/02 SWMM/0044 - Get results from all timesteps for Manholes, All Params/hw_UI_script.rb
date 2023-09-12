@@ -66,9 +66,9 @@ net.each_selected do |sel|
           
           # Print the total, total integrated over time, mean, max, min values, and count
           if ['qnode', 'qinfnod', 'qrain'].include?(res_field_name)
-          puts "Node: #{'%-12s' % sel.node_id} | Field: #{'%-12s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
+          puts "Node: #{'%-12s' % sel.node_id} | #{'%-16s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
           else
-          puts "Node: #{'%-12s' % sel.node_id} | Field: #{'%-12s' % res_field_name} | End: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
+          puts "Node: #{'%-12s' % sel.node_id} | #{'%-16s' % res_field_name} | End: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
           end 
         end
 
