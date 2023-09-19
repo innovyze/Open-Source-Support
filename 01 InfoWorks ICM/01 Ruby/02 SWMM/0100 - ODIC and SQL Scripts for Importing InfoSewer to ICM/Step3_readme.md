@@ -1,5 +1,14 @@
-### Step 3: Manhole Hydraulics
-Step3_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg: Configuration for hydraulic calculations related to manholes.
-Step3_readme.md: Documentation for setting up manhole hydraulic calculations.
+# Step 3 - Import Manhole Hydraulics in the Import of InfoSewer to ICM InfoWorks using ODIC
 
-![Alt text](image-17.png)
+1. Import the file Mhhyd.CSV in the IEDB foder using the ODIC Center and the CFG file Step3_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg
+
+What is imported?  The manhole Rim Elevation and Flood Level
+
+![Alt text](image-20.png)
+
+2.  Need to use the SQL Script SET node_type = 'Outfall' to convert some manholes to Outfalls based on the node type imported when the Manhole CSV file was imported.
+Solution
+
+![Alt text](image-21.png)
+
+

@@ -1,12 +1,7 @@
-### Step 2: Pipe and Link Configuration
-Step2a_InfoSewer_Pipe_CSV.cfg: Configuration for pipe-specific attributes in InfoSewer.
 
-Step2a_readme.md: Documentation explaining the parameters and settings for configuring pipes.
+# Step 2 - Import Links in the Import of InfoSewer to ICM InfoWorks using ODIC
 
-Step2_InfoSewer_Link_csv.cfg: Configuration for link attributes in the InfoSewer network.
+What is imported?
+LInk Asset ID, From and To Nodes and a user_text_10 value of Pump.  This will change later when we import the link hydraulic information.  The file imported is the Link.CSV file and the CFG file Step2_InfoSewer_Link_csv.cfg into the conduit data table (see below).
 
-Step2_readme.md: Provides instructions for configuring the links between nodes.
-
-### hw_node
-
-![Alt text](image-9.png)
+![Alt text](image-19.png)
