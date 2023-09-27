@@ -1,4 +1,4 @@
-**Title: Converting an InfoSewer Model to an ICM InfoWorks Network using ODIC, SQL and Ruby**
+**Title: Converting an InfoSewer Model to an ICM InfoWorks Network using ODIC, SQL**
 
 ## Model Conversion
 Converting InfoSewer Model to ICM InfoWorks Network.md: Documentation detailing the steps for converting an InfoSewer model to an ICM InfoWorks Network.
@@ -76,6 +76,6 @@ Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrog
 ## Miscellaneous
 Step1b_Create_Duumy_Subcatchment_Boundaries: Likely a script or guide to create dummy subcatchment boundaries.
 
-This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, configuration files for modeling steps, and documentation to guide users through the process.
+This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, CFG configuration files for modeling steps, and documentation to guide users through the process.
 
 ![Alt text](image-6.png)
