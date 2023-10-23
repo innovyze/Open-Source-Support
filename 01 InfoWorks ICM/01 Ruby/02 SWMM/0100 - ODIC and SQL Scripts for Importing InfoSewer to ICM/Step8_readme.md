@@ -38,6 +38,6 @@ Outcome:
 
 The validation process should complete without any errors. If errors do occur, revisit the previous steps and correct the discrepancies before proceeding
 
-![Alt text](image-32.png)
+![Alt text](./media/image-32.png)
 
-![Alt text](image-31.png)
+![Alt text](./media/image-31.png)

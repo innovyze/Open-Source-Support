@@ -4,11 +4,11 @@
 
 What is imported?  The manhole Rim Elevation and Flood Level
 
-![Alt text](image-20.png)
+![Alt text](./media/image-20.png)
 
 2.  Need to use the SQL Script SET node_type = 'Outfall' to convert some manholes to Outfalls based on the node type imported when the Manhole CSV file was imported.
 Solution
 
-![Alt text](image-21.png)
+![Alt text](./media/image-21.png)
 
 

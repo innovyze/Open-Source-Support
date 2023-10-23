@@ -6,6 +6,6 @@ We now import the pipe lengths, roughness, diameter and inverts from the PIPE hy
 
 2. Often the barrels are undefined in InfoSewer and InfoSewer assumes it is 1.  We do the same with the SQl Script SQL  number_of_barrels.  Use the SQL to set the zero barrels to 1.  
 
-![Alt text](image-22.png)
+![Alt text](./media/image-22.png)
 
-![Alt text](image-23.png)
+![Alt text](./media/image-23.png)

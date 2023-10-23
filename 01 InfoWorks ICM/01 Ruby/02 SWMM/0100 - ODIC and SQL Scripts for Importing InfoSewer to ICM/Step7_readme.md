@@ -2,4 +2,4 @@
 
 1. Import the file Mhhyd.CSV in the IEDB foder using the ODIC Center and the CFG file Step7_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg
 
-![Alt text](image-30.png)
+![Alt text](./media/image-30.png)
