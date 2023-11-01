@@ -345,16 +345,3 @@ log "Done.  Time taken #{Time.at(elapsed).utc.strftime("%H:%M:%S")}"
 log
 
 $logFile.close()
-
-
-colors = "+++//++++"
-lines = 20
-
-colors_array = colors.split('')
-1.upto(lines) do |i|
-  first = colors_array.shift
-  colors_array << first
-  puts colors_array.join
- # sleep 0.5
-end
-
