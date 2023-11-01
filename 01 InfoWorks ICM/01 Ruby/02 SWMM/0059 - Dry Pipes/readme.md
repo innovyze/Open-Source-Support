@@ -1,0 +1,5 @@
+# Dry Pipes
+
+This Ruby script selects all dry pipes in an ICM model network. It starts by clearing any previous selections in the network and creates an array to store the drainage node IDs of the subcatchments. Then, it collects all the subcatchments' drainage node IDs and proceeds to find unprocessed links using a depth-first search algorithm.
+
+The script iterates through each drainage node ID, following the downstream links, and marking them as seen to avoid duplication. It continues the search until all downstream nodes are processed. Finally, it selects all the dry pipes by iterating through all links in the network that have not been processed during the depth-first search. It selects both the link and its upstream node and displays a message indicating the selected node. The script helps identify and work with dry pipes in the ICM model network.
