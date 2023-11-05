@@ -4,13 +4,17 @@ require 'date'
 # Get the current network object from InfoWorks
 net = WSApplication.current_network
 
-# Get the count of timesteps and gauge timesteps
-ts_size = net.list_timesteps.count
-
 # Get the list of timesteps
 ts = net.list_timesteps
 
-# Define the result field names to fetch the results for all selected links
+  # Ensure there's more than one timestep before proceeding
+  if ts.size <= 1
+      puts "Not enough timesteps available!"
+      return # or some other form of early exit appropriate for your application
+    end
+
+# Calculate the time interval in seconds assuming the time steps are evenly spaced
+time_interval = (ts[1] - ts[0]) * 24 * 60 * 60
 
 # Define the result field name
 res_field_name = 'us_flow'
@@ -21,43 +25,43 @@ net.each_selected do |sel|
     # Try to get the row object for the current link using upstream node id
     ro = net.row_object('_links', sel.id)
     
-    # If ro is nil, then the object with the given id is not a link
-    raise "Object with ID #{sel.id} is not a link." if ro.nil?
+    # Skip the iteration if the row object is nil (not a link)
+    next if ro.nil?
 
-    # Get the count of results for the specified field
-    rs_size = ro.results(res_field_name).count
+    # Get the results for the specified field
+    results = ro.results(res_field_name)
 
-    # If the count of results matches the count of timesteps, proceed with calculations
-    if rs_size == ts_size
-      # Initialize variables to keep track of statistics
+    # Ensure we have results for all timesteps
+    if results.size == ts.size
+      # Initialize variables for statistics
       total = 0.0
-      total_integrated_over_time = 0.0
-      min_value = Float::INFINITY
-      max_value = -Float::INFINITY
       count = 0
-      
-      # Assuming the time steps are evenly spaced, calculate the time interval in seconds
-      time_interval = (ts[1] - ts[0]) * 24 * 60 * 60 if ts.size > 1
-      
+      total_integrated_over_time = 0.0
+      min_value = results.first.to_f
+      max_value = results.first.to_f
+ 
       # Iterate through the results and update statistics
-      ro.results(res_field_name).each_with_index do |result, time_step_index|
-        total += result.to_f
-        total_integrated_over_time += result.to_f * time_interval
-        min_value = [min_value, result.to_f].min
-        max_value = [max_value, result.to_f].max
+      results.each do |result|
+        val = result.to_f
+
+        total += val
+        total_integrated_over_time += val * time_interval
+        min_value = [min_value, val].min
+        max_value = [max_value, val].max
         count += 1
       end
 
-      # Calculate the mean value if the count is greater than 0
-      mean_value = count > 0 ? total / count : 0
+      # Calculate the mean value
+      mean_value = total / count
       
-      # Print the total, total integrated over time, mean, max, and min values
+      # Print the statistics
       puts "Link: #{'%-12s' % sel.id} | Field: #{'%-12s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
+    else
+      puts "Mismatch in timestep count for object ID #{sel.id}. Expected: #{ts.size}, Found: #{results.size}"
     end
 
   rescue => e
     # Output error message if any error occurred during processing this object
-    puts "Error processing link with ID #{sel.id}, Field: #{res_field_name}. Error: #{e.message}"
+    # puts "Error processing link with ID #{sel.id}, Field: #{res_field_name}. Error: #{e.message}"
   end
 end
-
