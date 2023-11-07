@@ -33,11 +33,11 @@ end
 time_interval = (ts[1] - ts[0]) * 24 * 60 * 60
 
 # Define the result field name
-res_field_name = 'us_flow'
+res_field_name = 'ds_vel'
 
 # Output the headers for the SWMM5 Calibration File
-puts ";Flows for Selected Conduits"
-puts ";Conduit  Day      Time  Flow"
+puts ";Flows for Selected Conduits for Downstream Velocity"
+puts ";Conduit  Day      Time  Velocity"
 puts ";-----------------------------"
 
 # Iterate through the selected objects in the network
@@ -77,7 +77,7 @@ net.each_selected do |sel|
         minutes = (remaining_seconds % (60 * 60)) / 60 # Number of minutes
 
         # Output the formatted data for SWMM5
-        puts "         #{days.to_i}    #{hours.to_i}:#{format('%02d', minutes.to_i)}     #{'%.1f' % val}"
+        puts "         #{days.to_i}    #{hours.to_i}:#{format('%02d', minutes.to_i)}     #{'%.4f' % val}"
       end
     else
       puts "Mismatch in timestep count for object ID #{sel.id}. Expected: #{ts.size}, Found: #{results.size}"
