@@ -74,7 +74,7 @@ Step9_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration
 Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## Miscellaneous
-Step1b_Create_Duumy_Subcatchment_Boundaries: Likely a script or guide to create dummy subcatchment boundaries.
+Step1b_Create_Duumy_Subcatchment_Boundaries: A guide to create dummy subcatchment boundaries.
 
 This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, CFG configuration files for modeling steps, and documentation to guide users through the process.
 

@@ -8,4 +8,4 @@ Sub-Step 1b: Subcatchment Boundaries
 Step1b_Create_Dummy_Subcatchment_Boundaries: Likely a script or tool to create placeholder boundaries for subcatchments.
 Step1b_readme.md: Instructions and guidelines for creating dummy subcatchment boundaries in the model.
 
-![Alt text](image-8.png)
+![Alt text](./media/image-8.png)

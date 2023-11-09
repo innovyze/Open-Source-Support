@@ -83,7 +83,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0068 | UI       | ICM InfoWorks All Table Names                                       | Network Data          |
 | 0069 | UI       | Make an Overview of All Network Elements                            | Network Data          |
 | 0070 | UI       | Upstream Subcatchments from an Outfall                              | Network Data          |
-| 0071 | UI       |                                                                     | Network Data          |
+| 0071 | UI       | Raingages, All Output Parameters                                    | Network Data          |
 | 0072 | UI       |                                                                     | Network Data          |
 | 0073 | UI       |                                                                     | Network Data          |
 | 0074 | UI       |                                                                     | Network Data          |
@@ -96,23 +96,23 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0081 | UI       |                                                                     | Network Data          |
 | 0082 | UI       |                                                                     | Network Data          |
 | 0083 | UI       |                                                                     | Network Data          |
-| 0084 | UI       | Change All Node and Link IDs                                        | Network Data          |
+| 0084 | UI       | Change All Node, Subs and Link IDs                                  | Network Data          |
 | 0085 | UI       |                                                                     | Network Data          |
 | 0086 | UI       |                                                                     | Network Data          |
 | 0087 | UI       |                                                                     | Network Data          |
 | 0088 | UI       |                                                                     | Network Data          |
-| 0089 | UI       |                                                                     | Network Data          |
-| 0090 | UI       |                                                                     | Network Data          |
-| 0091 | UI       |                                                                     | Network Data          |
-| 0092 | UI       |                                                                     | Network Data          |
-| 0093 | UI       |                                                                     | Network Data          |
-| 0094 | UI       |                                                                     | Network Data          |
-| 0095 | UI       |                                                                     | Network Data          |
-| 0096 | UI       |                                                                     | Network Data          |
-| 0097 | UI       |                                                                     | Network Data          |
-| 0098 | UI       |                                                                     | Network Data          |
-| 0099 | UI       |                                                                     | Network Data          |
-| 0100 | UI       | ODIC and Ruby Scripts for Importing InfoSewer to ICM                | Network Data          |
+| 0089 | UI       | Export SWMM5 Calibration Files - Node Flood Depth                   | Network Data          |
+| 0090 | UI       | Export SWMM5 Calibration Files - Node Level                         | Network Data          |
+| 0091 | UI       | Export SWMM5 Calibration Files - Node Lateral Inflow                | Network Data          |
+| 0092 | UI       | Export SWMM5 Calibration Files - Downstream Velocity                | Network Data          |
+| 0093 | UI       | Export SWMM5 Calibration Files - Upstream Velocity                  | Network Data          |
+| 0094 | UI       | Export SWMM5 Calibration Files - Upstream  Depth                    | Network Data          |
+| 0095 | UI       | Export SWMM5 Calibration Files - Downstream Depth                   | Network Data          |
+| 0096 | UI       | Export SWMM5 Calibration Files - Downstream Flow                    | Network Data          |
+| 0097 | UI       | Export SWMM5 Calibration Files - Upstream Flow                      | Network Data          |
+| 0098 | UI       | Compare ICM Inlets to HEC22 Inlets                                  | Network Data          |
+| 0099 | UI       | Copy selected subcatchments with user suffix                        | Network Data          |
+| 0100 | UI       | ODIC and SQL Scripts for Importing InfoSewer to ICM                 | Network Data          |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ## Name notes on the meaning of the prefixes
