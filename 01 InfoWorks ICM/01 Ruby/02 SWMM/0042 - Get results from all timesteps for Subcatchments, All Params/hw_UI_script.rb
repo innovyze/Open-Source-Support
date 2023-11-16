@@ -46,12 +46,13 @@ net.each_selected do |sel|
       count = 0
       
       # Assuming the time steps are evenly spaced, calculate the time interval in seconds
-      time_interval = (ts[1] - ts[0]) * 24 * 60 * 60 if ts.size > 1
+      time_int      = (ts[1] - ts[0]).abs
+      time_interval =  time_int
       
       # Iterate through the results and update statistics
       ro.results(res_field_name).each_with_index do |result, time_step_index|
         total += result.to_f
-        total_integrated_over_time += result.to_f * time_interval
+        total_integrated_over_time += result.to_f * time_interval 
         min_value = [min_value, result.to_f].min
         max_value = [max_value, result.to_f].max
         count += 1
@@ -61,7 +62,8 @@ net.each_selected do |sel|
       mean_value = count > 0 ? total / count : 0
 
        # If the field name is 'rainfall', adjust the total_integrated_over_time value
-       total_integrated_over_time /= 3600.0 if res_field_name == 'rainfall'
+       total_integrated_over_time /= 3600.0  if res_field_name == 'rainfall' 
+       total_integrated_over_time * sel.total_area * 10000.0  if res_field_name != 'rainfall' 
       
       # Print the total, total integrated over time, mean, max, and min values
       puts "Sub: #{'%-12s' % sel.id} | Field: #{'%-12s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"

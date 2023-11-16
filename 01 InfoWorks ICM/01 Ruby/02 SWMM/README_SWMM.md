@@ -84,7 +84,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0069 | UI       | Make an Overview of All Network Elements                            | Network Data          |
 | 0070 | UI       | Upstream Subcatchments from an Outfall                              | Network Data          |
 | 0071 | UI       | Raingages, All Output Parameters                                    | Network Data          |
-| 0072 | UI       |                                                                     | Network Data          |
+| 0072 | UI       | Find Root Model Group                                               | Network Data          |
 | 0073 | UI       |                                                                     | Network Data          |
 | 0074 | UI       |                                                                     | Network Data          |
 | 0075 | UI       |                                                                     | Network Data          |
@@ -97,16 +97,16 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0082 | UI       |                                                                     | Network Data          |
 | 0083 | UI       |                                                                     | Network Data          |
 | 0084 | UI       | Change All Node, Subs and Link IDs                                  | Network Data          |
-| 0085 | UI       |                                                                     | Network Data          |
-| 0086 | UI       |                                                                     | Network Data          |
-| 0087 | UI       |                                                                     | Network Data          |
-| 0088 | UI       |                                                                     | Network Data          |
+| 0085 | UI       | Export SWMM5 Calibration Files - Node Runoff                        | Network Data          |
+| 0086 | UI       | Export SWMM5 Calibration Files - Groundwater Elev                   | Network Data          |
+| 0087 | UI       | Export SWMM5 Calibration Files - Groundwater Flow                   | Network Data          |
+| 0088 | UI       | Export SWMM5 Calibration Files - Node Flooding                      | Network Data          |
 | 0089 | UI       | Export SWMM5 Calibration Files - Node Flood Depth                   | Network Data          |
 | 0090 | UI       | Export SWMM5 Calibration Files - Node Level                         | Network Data          |
 | 0091 | UI       | Export SWMM5 Calibration Files - Node Lateral Inflow                | Network Data          |
 | 0092 | UI       | Export SWMM5 Calibration Files - Downstream Velocity                | Network Data          |
 | 0093 | UI       | Export SWMM5 Calibration Files - Upstream Velocity                  | Network Data          |
-| 0094 | UI       | Export SWMM5 Calibration Files - Upstream  Depth                    | Network Data          |
+| 0094 | UI       | Export SWMM5 Calibration Files - Upstream Depth                     | Network Data          |
 | 0095 | UI       | Export SWMM5 Calibration Files - Downstream Depth                   | Network Data          |
 | 0096 | UI       | Export SWMM5 Calibration Files - Downstream Flow                    | Network Data          |
 | 0097 | UI       | Export SWMM5 Calibration Files - Upstream Flow                      | Network Data          |

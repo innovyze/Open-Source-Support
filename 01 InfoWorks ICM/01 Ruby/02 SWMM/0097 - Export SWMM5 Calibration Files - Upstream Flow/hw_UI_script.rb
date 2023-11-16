@@ -30,7 +30,7 @@ if ts.size <= 1
 end
 
 # Calculate the time interval in seconds assuming the time steps are evenly spaced
-time_interval = (ts[1] - ts[0]) * 24 * 60 * 60
+time_interval = (ts[1] - ts[0]).abs
 
 # Define the result field name
 res_field_name = 'us_flow'
