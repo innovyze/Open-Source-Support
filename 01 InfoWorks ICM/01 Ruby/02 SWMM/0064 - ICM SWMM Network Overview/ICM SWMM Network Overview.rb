@@ -24,6 +24,10 @@ begin
         number_outfalls = 0
         number_storage = 0
         number_junction = 0
+        number_inflow_baseline = 0
+        number_inflow_scaling = 0
+        number_base_flow = 0
+        number_additional_dwf = 0
         total_invert = 0.0
         total_ground = 0.0
         total_depth = 0.0
@@ -34,6 +38,16 @@ begin
         total_flooding_discharge_coeff = 0.0
         
         nodes_ro.each do |node|
+
+            # Check if the node has additional_dwf and it is not nil
+              node.additional_dwf.each do |additional_dwf|
+                # Increment the counter if baseline is greater than 0
+                number_additional_dwf += 1 if additional_dwf.baseline && additional_dwf.baseline > 0
+              end
+          
+            number_inflow_scaling += 1 if node.inflow_scaling > 0
+            number_base_flow      += 1 if node.base_flow  > 0     
+            number_inflow_baseline += 1 if node.inflow_baseline > 0
             number_nodes += 1
             if node.node_type == 'Outfall'
                 number_outfalls += 1
@@ -65,6 +79,10 @@ begin
         printf "%-40s %-d\n", "Number of SW Junctions", number_junction
         printf "%-40s %-d\n", "Number of SW Storage", number_storage
         printf "%-40s %-d\n", "Number of SW Outfalls", number_outfalls
+        printf "%-40s %-d\n", "Number of SW Inflow Baseline", number_inflow_baseline
+        printf "%-40s %-d\n", "Number of SW Inflow Scaling", number_inflow_scaling
+        printf "%-40s %-d\n", "Number of SW Base Flow", number_base_flow
+        printf "%-40s %-d\n", "Number of SW Additional DWF", number_additional_dwf
         printf "%-40s %-.3f\n", "Average Invert Elevation", average_invert
         printf "%-40s %-.3f\n", "Average Ground Elevation", average_ground
         printf "%-40s %-.3f\n", "Average Full Depth", average_depth

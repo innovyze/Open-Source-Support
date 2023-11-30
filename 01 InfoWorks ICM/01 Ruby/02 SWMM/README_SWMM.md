@@ -113,6 +113,16 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0098 | UI       | Compare ICM Inlets to HEC22 Inlets                                  | Network Data          |
 | 0099 | UI       | Copy selected subcatchments with user suffix                        | Network Data          |
 | 0100 | UI       | ODIC and SQL Scripts for Importing InfoSewer to ICM                 | Network Data          |
+| 0101 | UI       | ICM InfoWorks Results to SWMM5 Subcatchment Runoff Summary Table    | Network Data          |
+| 0102 | UI       | ICM InfoWorks Results to SWMM5  Node Inflows Summary Table          | Network Data          |
+| 0103 | UI       | ICM InfoWorks Results to SWMM5 Node Depths Summary Table            | Network Data          |
+| 0104 | UI       | ICM InfoWorks Results to SWMM5  Node Surcharging Table              | Network Data          |
+| 0105 | UI       | ICM InfoWorks Results to SWMM5 Link Flows Summary Table             | Network Data          |
+| 0106 | UI       | ICM InfoWorks Results to SWMM5  Link Flows Summary Table            | Network Data          |
+| 0107 | UI       | ODIC and SQL Scripts for Importing InfoSewer to ICM                 | Network Data          |
+| 0108 | UI       | ODIC and SQL Scripts for Importing InfoSewer to ICM                 | Network Data          |
+| 0109 | UI       | ODIC and SQL Scripts for Importing InfoSewer to ICM                 | Network Data          |
+| 0110 | UI       | ODIC and SQL Scripts for Importing InfoSewer to ICM                 | Network Data          |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ## Name notes on the meaning of the prefixes
