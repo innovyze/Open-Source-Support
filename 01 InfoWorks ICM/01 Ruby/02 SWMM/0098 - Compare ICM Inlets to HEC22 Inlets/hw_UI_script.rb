@@ -26,7 +26,7 @@ time_interval = (ts[1] - ts[0]).abs
 
 # Output the headers for the HEC22 comparison
 header_fields = NodeResultsDataFields.map { |field| field.ljust(9) }.join(' ')
-puts ";#{'Node_ID'.ljust(11)} #{'Time'.ljust(8)} #{header_fields} hec22_spread  hec22_eff  hec22_eff_diff"
+puts ";#{'Node_ID'.ljust(11)} #{'Time'.ljust(8)} #{header_fields} inlet_eff_value hec22_spread hec22_eff hec22_eff_diff"
 
 # Iterate through the selected objects in the network
 net.each_selected do |sel|
@@ -56,6 +56,7 @@ net.each_selected do |sel|
         end
       end
 
+      
       # Calculate the exact time for this result
       current_time = count * time_interval
        # Extract the DEPNOD value for the current index if it is one of the fields
@@ -66,8 +67,8 @@ net.each_selected do |sel|
       hec22_spread = 0.87*(inlet_flow_value**0.42)*0.0003802**0.3*(1.0/(0.013*0.02)**0.6)      #  =$P$10*(GLLYFLOW^0.42)*($P$8^0.3)*(1/(($P$9*$P$6)^0.6))    
       icm_spread = all_field_results[NodeResultsDataFields.index('GTTRSPRD')].to_f rescue 0.0
 
-        if hec22_spread > 0.457
-          hec22_eff = 1.0 - ( 1 - (0.4547/hec22_spread)**1.8)    #   =IF(G2>$P$7,1-(1-($P$7/G2))^1.8,1)
+        if hec22_spread > ro.opening_length
+          hec22_eff = 1.0 - ( 1 - (ro.opening_length/hec22_spread)**1.8)    #   =IF(G2>$P$7,1-(1-($P$7/G2))^1.8,1)
         else
           hec22_eff = 1.0 # or appropriate handling for the case when hec22_spread is 0
           inlet_eff_value = 1.0

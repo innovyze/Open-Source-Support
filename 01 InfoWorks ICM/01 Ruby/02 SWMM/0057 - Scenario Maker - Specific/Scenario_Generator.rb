@@ -6,7 +6,7 @@ current_network = WSApplication.current_network
 THANK_YOU_MESSAGE = 'Thank you for using Ruby in ICM InfoWorks'
 
 scenarios=Array.new
-scenarios = ['Ackers-White','Velikanov','KUL']
+scenarios = ['EXISTING','FUTURE','EXFLOW_FUTPIPE']
 
 current_network.scenarios do |scenario|
     if scenario != 'Base'
