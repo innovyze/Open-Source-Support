@@ -52,7 +52,8 @@
 | 0048 | UI       | Delete all scenarios except Base                                    | Network Data Set      |
 | 0049 | EX       | Extract river reach results                                         | Network Data Get      |
 | 0050 | UI & EX  | Assign Subcatchment to nearest 'Storage' type Node                  | Network Data Get      |
-| 0051 | EX       |  Interactive Exchange in Visual Studio Code                         | Developer Tools       |
+| 0051 | EX       |  Interactive Exchange in Visual Studio Code                         | Developer Tools       
+| 0052 | UI       | Select flow path between nodes                                      | Network Data Get      |
 
 ### Descriptions
 
