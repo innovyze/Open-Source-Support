@@ -1,0 +1,2 @@
+dir *.cfg > log
+pause
