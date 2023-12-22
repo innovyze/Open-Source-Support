@@ -64,8 +64,8 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0049 | UI   | Clear SUDS from subcatchments                           |
 | 0050 | UI   | Assign Subcatchment to nearest 'Storage' type Node      |
 | 0051 | UI   | Additional DWF Node IDs                                 |
-| 0052 | UI   |                                                         |
-| 0053 | UI   |                                                         |
+| 0052 | UI   | Make a Table of the Run Parameters in ICM               |
+| 0053 | UI   | Scenario Counter                              b         |
 | 0054 | UI   |                                                         |
 | 0055 | UI   |                                                         |
 | 0056 | UI   | Listview of the currently selected network objects      |
