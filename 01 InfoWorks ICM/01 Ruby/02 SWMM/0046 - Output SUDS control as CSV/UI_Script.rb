@@ -37,8 +37,24 @@ suds_data = [header]
 open_net.row_objects('_subcatchments').each do |sub|
   sub.SUDS_controls.each do |control|
     # Add a row to the CSV data for each SUDS control
+    puts sub.subcatchment_id
+    puts control.id
+    puts control.suds_structure
+    puts control.control_type
+    puts control.area
+    puts control.num_units
+    puts control.area_subcatchment_pct
+    puts control.unit_surface_width
+    puts control.initial_saturation_pct
+    puts control.impervious_area_treated_pct
+    puts control.pervious_area_treated_pct
+    puts control.outflow_to
+    puts control.drain_to_subcatchment
+    puts control.drain_to_node
+    puts control.surface
+
     suds_data.push([
-      sub.subcatchment_id,
+     sub.subcatchment_id,
       control.id,
       control.suds_structure,
       control.control_type,
@@ -54,6 +70,13 @@ open_net.row_objects('_subcatchments').each do |sub|
       control.drain_to_node,
       control.surface
     ])
+
+    
+      # Print all attributes of the control object
+      control.instance_variables.each do |var|
+        puts "#{var}: #{control.instance_variable_get(var)}"
+      end
+
   end
 end
 
