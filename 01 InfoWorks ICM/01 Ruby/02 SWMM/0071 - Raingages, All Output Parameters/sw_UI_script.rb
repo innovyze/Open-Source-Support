@@ -44,7 +44,7 @@ net.each_selected do |sel|
           ro.results(res_field_name).each_with_index do |result, time_step_index|
             total += result.to_f
             
-            total_integrated_over_time = result.to_f
+            total_integrated_over_time += result.to_f * time_interval
         
             min_value = [min_value, result.to_f].min
             max_value = [max_value, result.to_f].max
@@ -53,9 +53,18 @@ net.each_selected do |sel|
 
           # Calculate the mean value if the count is greater than 0
           mean_value = count > 0 ? total / count : 0
+
+          # Adjust total_integrated_over_time calculation
+          # Assuming total_integrated_over_time is calculated earlier in the script
+          total_integrated_over_time /= 3600.0
+
+          # Modify total_integrated_over_time if result_field_name is 'RAINDPTH'
+          if res_field_name == 'RAINDPTH'
+            total_integrated_over_time = max_value * 1000.0
+          end                   
           
           # Print the total, total integrated over time, mean, max, min values, and count
-          puts "Gage: #{'%-16s' % sel.raingage_id} | Field: #{'%-12s' % res_field_name} | End: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
+          puts "Gage: #{'%-16s' % sel.raingage_id} | Field: #{'%-12s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
         end
 
       rescue

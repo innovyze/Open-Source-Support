@@ -41,7 +41,8 @@ net.each_selected do |sel|
       count = 0
       
       # Assuming the time steps are evenly spaced, calculate the time interval in seconds
-      time_interval = (ts[1] - ts[0]) * 24 * 60 * 60 if ts.size > 1
+      time_int      = (ts[1] - ts[0]).abs
+      time_interval =  time_int * 86400.0
       
       # Iterate through the results and update statistics
       ro.results(res_field_name).each_with_index do |result, time_step_index|
@@ -54,18 +55,10 @@ net.each_selected do |sel|
 
       # Calculate the mean value if the count is greater than 0
       mean_value = count > 0 ? total / count : 0
-      # Print the area and id of the sel object
-      # puts "Area: #{sel.area}, ID: #{sel.id}"
 
-        # If the field name is 'rainfall', 'EVAPORATION_LOSS', or 'INFILTRATION_LOSS', adjust the total_integrated_over_time value
-        total_integrated_over_time /= 3600.0 if ['rainfall', 'EVAPORATION_LOSS', 'INFILTRATION_LOSS'].include?(res_field_name)
-      
-      # Print the total, total integrated over time, mean, max, and min values
-      puts "Sub: #{'%-12s' % sel.id} | Field: #{'%-18s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
-      # Adjust the total_integrated_over_time value if the field name is one of the specified ones
-      total_integrated_over_time *= sel.area * 10.0 if ['rainfall', 'EVAPORATION_LOSS', 'INFILTRATION_LOSS'].include?(res_field_name)
-      # Adjust the total_integrated_over_time value if the field name is one of the specified ones
-      total_integrated_over_time /= sel.area * 10.0 if ['RUNOFF', 'IMPERV_RUNOFF', 'PERV_RUNOFF'].include?(res_field_name)
+      total_integrated_over_time /= 3600.0 if res_field_name != 'RUNOFF'
+      #total_integrated_over_time *= sel.area * 10000.0 if res_field_name == 'RUNOFF'
+
       puts "Sub: #{'%-12s' % sel.id} | Field: #{'%-18s' % res_field_name} | Sum: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
     end
 

@@ -1,47 +1,104 @@
-# Find the smallest 10 percent of conduit heights and widths
-net = WSApplication.current_network
-net.clear_selection
+# Access the current database and network, and then obtain the current model object
+db = WSApplication.current_database
+my_network = WSApplication.current_network
+my_object = my_network.model_object
 
-conduit_heights = []
-conduit_widths = []
-ro = net.row_objects('hw_conduit').each do |ro|
-  conduit_heights << ro.conduit_height if ro.conduit_height
-  conduit_widths << ro.conduit_width if ro.conduit_width
+# Get the parent ID and type of the current object
+p_id = my_object.parent_id
+p_type = my_object.parent_type
+
+# Retrieve the parent object from the database
+parent_object = db.model_object_from_type_and_id(p_type, p_id)
+
+# Loop through the hierarchy of parent objects
+(0..999).each do
+  # Print the name of the current parent object
+  puts "Parent Object: #{parent_object.name}"
+
+  # Get the parent ID and type of the current parent object
+  temp_p_id = parent_object.parent_id
+  temp_p_type = parent_object.parent_type
+
+  # Break the loop if the parent ID is 0, indicating the top of the hierarchy
+  break if temp_p_id == 0
+
+  # Retrieve the next parent object in the hierarchy
+  parent_object = db.model_object_from_type_and_id(temp_p_type, temp_p_id)
 end
+#################################################################################################
 
-# Calculate the threshold height and width for the lowest ten percent
-threshold_height = conduit_heights.min + (conduit_heights.max - conduit_heights.min) * 0.1
-threshold_width = conduit_widths.min + (conduit_widths.max - conduit_widths.min) * 0.1
+# Define database fields for an ICM network Subcatchment object
+database_fields = [
+  "population",
+  "base_flow",
+  "trade_flow",
+  "additional_foul_flow",
+  "user_number_1",
+  "user_number_2",
+  "user_number_3",
+  "user_number_4",
+  "user_number_5",
+  "user_number_6",
+  "user_number_7",
+  "user_number_8",
+  "user_number_9",
+  "user_number_10"
+]
 
-# Calculate the median height and width (50th percentile)
-sorted_heights = conduit_heights.sort
-median_height = sorted_heights[sorted_heights.length / 2]
-sorted_widths = conduit_widths.sort
-median_width = sorted_widths[sorted_widths.length / 2]
+begin
+  net = WSApplication.current_network
+  net.clear_selection
 
-# Select the conduits whose height or width is below the threshold or median
-selected_conduits = []
-ro = net.row_objects('hw_conduit').each do |ro|
-  if (ro.conduit_height && (ro.conduit_height < threshold_height || ro.conduit_height < median_height)) ||
-     (ro.conduit_width && (ro.conduit_width < threshold_width || ro.conduit_width < median_width))
-    ro.selected = true
-    selected_conduits << ro
+ # Loop through each scenario
+  net.scenarios do |s|
+    
+  current_scenario=net.current_scenario=s
+
+  # Output the current scenario
+  puts "Scenario     : #{net.current_scenario}"
+
+  # Prepare hash for storing data of each field for database_fields
+  fields_data = {}
+  database_fields.each { |field| fields_data[field] = [] }
+
+  # Initialize the count of processed rows
+  row_count = 0
+
+  # Collect data for each field
+  net.row_objects('hw_subcatchment').each do |ro|
+    row_count += 1
+    database_fields.each do |field|
+      error_field = field # Update error_field with the current field
+      value = ro[field] || 0 # Replace nil with 0 or handle it as needed
+      fields_data[field] << value
+    end
   end
-end
 
-total_conduits = [conduit_heights.length, conduit_widths.length].max
+  # Print min, max, mean, standard deviation, total, and row count for each field
+  database_fields.each do |field|
+    data = fields_data[field]
+    
+    if data.empty?
+      puts "#{field} has no data!"
+      next
+    end
+    
+    min_value = data.min
+    max_value = data.max
+    sum = data.inject(0.0) { |sum, val| sum + val }
+    mean_value = sum / data.size
+    # Calculate the standard deviation
+    sum_of_squares = data.inject(0.0) { |accum, i| accum + (i - mean_value) ** 2 }
+    standard_deviation = Math.sqrt(sum_of_squares / data.size)
+    total_value = sum
 
-if selected_conduits.any?
-  printf("%-44s %-0.2f\n", "Minimum conduit height", conduit_heights.min)
-  printf("%-44s %-0.2f\n", "Maximum conduit height", conduit_heights.max)
-  printf("%-44s %-0.2f\n", "Threshold height for lowest 10%", threshold_height)
-  printf("%-44s %-0.2f\n", "Median conduit height (50th percentile)", median_height)
-  printf("%-44s %-0.2f\n", "Minimum conduit width", conduit_widths.min)
-  printf("%-44s %-0.2f\n", "Maximum conduit width", conduit_widths.max)
-  printf("%-44s %-0.2f\n", "Threshold width for lowest 10%", threshold_width)
-  printf("%-44s %-0.2f\n", "Median conduit width (50th percentile)", median_width)
-  printf("%-44s %-d\n", "Number of conduits below threshold", selected_conduits.length)
-  printf("%-44s %-d\n", "Total number of conduits", total_conduits)  
-else
-  puts "No conduits were selected."
+    # Updated printf statement with row count
+    printf("%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Mean: %-10.3f | Std Dev: %-10.2f | Total: %-10.2f\n", 
+           field, row_count, min_value, max_value, mean_value, standard_deviation, total_value)
+  end
+end # End of scenario loop
+
+rescue => e
+  # Include the field name and number of processed rows in the error message
+  puts "An error occurred with the field '#{field}' after processing #{row_count} rows: #{e.message}"
 end

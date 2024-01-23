@@ -4,7 +4,7 @@ require 'Date'
 
 # Select database from this path
 $project_path=File.dirname(__FILE__)
-$db_name="2021.1.1_Standalone.icmm"
+$db_name="2023.0_Standalone.icmm"
 $db_file="#{$project_path}\\#{$db_name}"
 $db=WSApplication.open $db_file,false
 

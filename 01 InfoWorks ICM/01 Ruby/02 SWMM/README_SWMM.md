@@ -7,113 +7,143 @@ In particular, the naming convention for tables in InfoWorks ICM is different. I
 
 This means that if you're trying to use these Ruby scripts with Autodesk Innovyze's InfoWorks ICM, you may need to modify the code to account for these differences in table and field names. Without such modifications, the scripts might not work as intended or might produce errors.
 
-In conclusion, while these Ruby scripts are designed to work specifically with Autodesk Innovyze's InfoWorks SWMM, they might be adaptable for use with InfoWorks ICM or other similar software packages, but such adaptation would likely require some adjustments to the code.
+In conclusion, while these Ruby scripts are designed to work specifically with Autodesk In | Network Data  |novyze's InfoWorks SWMM, they might be adaptable for use with InfoWorks ICM or other similar software packages, but such adaptation would likely require some adjustments to the code.
 
-|------|----------|---------------------------------------------------------------------|-----------------------|
-|------|----------|---------------------------------------------------------------------|-----------------------|
-| ID   | Type     | Name                                                                | Category              |
-|------|----------|---------------------------------------------------------------------|-----------------------|
-| 0001 | UI       | Pipe Length Statistics                                              | Network Data          |
-| 0002 | UI       | Quick Trace                                                         | Network Data          |
-| 0003 | UI       | Scenario Maker                                                      | Network Data          |
-| 0004 | UI       | New ICM InfoWorks and ICM SWMM Scenarios                            | Network Data          |
-| 0005 | UI       | Change All Node and Link IDs                                        | Network Data          |
-| 0006 | UI       | Add Total Area for Subcatchments                                    | Network Data          |
-| 0007 | UI       | Kutter Sql for ICM SWMM                                             | Network Data          |
-| 0008 | UI       | Select Upstream Subcatchments from a Node with Multilinks           | Network Data          |
-| 0009 | UI       | ICM Binary Results Export                                           | Network Data          |
-| 0010 | UI       | List all results fields in a simulation                             | Network Data          |
-| 0011 | UI       | Pipe Length Selection                                               | Network Data          |
-| 0012 | UI       | ODEC Export Node and Conduit tables to CSV and MIF                  | Network Data          |
-| 0013 | UI       | Depression Storage Statistics                                       | Network Data          |
-| 0014 | UI       | Find all flags in all objects of a network model                    | Network Data          |
-| 0015 | UI       | Pipe Diameter Statistics                                            | Network Data          |
-| 0016 | UI       | All Link Parameter Statistics                                       | Network Data          |
-| 0017 | UI       | All Node Parameter Statistics                                       | Network Data          |
-| 0018 | UI       | All Subcatchment Parameter Statistics                               | Network Data          |
-| 0019 | UI       |                                                                     | Network Data          |
-| 0020 | UI       |                                                                     | Network Data          |
-| 0021 | UI       | Create a node from polygon boundary                                 | Network Data          |
-| 0022 | UI       | Output CSV of calcs based on Subcatchment Data                      | Network Data          |
-| 0023 | UI       |                                                                     | Network Data          |
-| 0024 | UI       | Input Message Box                                                   | Network Data          |
-| 0025 | UI       | Get Minimum X, Y for All Nodes                                      | Network Data          |
-| 0026 | UI       | Make_Subcatchments_From_Imported_InfoSewer_Manholes                 | Network Data          |
-| 0027 | UI       | Copy a subcatchment and rename it                                   | Network Data          |
-| 0028 | UI       | Percentage change in runoff surfaces upstream node into new scenario| Network Data          |
-| 0029 | UI       | Runoff surfaces from selected subcatchments                         | Network Data          |
-| 0030 | UI       | Connect subcatchment to nearest node                                | Network Data          |
-| 0031 | UI       | List all results fields in a simulation                             | Network Data          |
-| 0032 | UI       |                                                                     | Network Data          |
-| 0033 | UI       |                                                                     | Network Data          |
-| 0034 | UI       |                                                                     | Network Data          |
-| 0035 | UI       |                                                                     | Network Data          |
-| 0036 | UI       |                                                                     | Network Data          |
-| 0037 | UI       |                                                                     | Network Data          |
-| 0038 | UI       |                                                                     | Network Data          |
-| 0039 | UI       | Calculate subcatchment areas in all nodes upstream a node           | Network Data          |
-| 0040 | UI       | Create a new selection list using a SQL query                       | Network Data          |
-| 0041 | UI       | Get results from all timesteps for Links, US_FLOW                   | Network Data          |
-| 0042 | UI       | Get results from all timesteps for Subcatchments, All Params        | Network Data          |
-| 0043 | UI       | Get results from all timesteps for Manholes, Qnode                  | Network Data          |
-| 0044 | UI       | Get results from all timesteps for Manholes, All Params             | Network Data          |
-| 0045 | UI       | Get results from all timesteps for Links, All Params                | Network Data          |
-| 0046 | UI       | Output SUDS control as CSV                                          | Network Data          |
-| 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data          |
-| 0048 | UI       | Delete all scenarios except Base                                    | Network Data          |
-| 0049 | UI       | Clear SUDS from subcatchments                                       | Network Data          |
-| 0050 | UI       | Assign Subcatchment to nearest 'Storage' type Node                  | Network Data          |
-| 0051 | UI       |                                                                     | Network Data          |
-| 0052 | UI       |                                                                     | Network Data          |
-| 0053 | UI       |                                                                     | Network Data          |
-| 0054 | UI       |                                                                     | Network Data          |
-| 0055 | UI       |                                                                     | Network Data          |
-| 0056 | UI       | Listview of the currently selected network objects                  | Network Data          |
-| 0057 | UI       | Scenario Maker                                                      | UI Specific           |
-| 0058 | UI       | Bifurcation Nodes                                                   | Network Data          |
-| 0059 | UI       | Dry Pipes                                                           | Network Data          |
-| 0060 | UI       | Find All Network Elements                                           | Network Data          |
-| 0061 | UI       | Flow Survey                                                         | Network Data          |
-| 0062 | UI       | Header Nodes                                                        | Network Data          |
-| 0063 | UI       | ICM SWMM All Tables                                                 | Network Data          |
-| 0064 | UI       | ICM SWMM Network Overview                                           | Network Data          |
-| 0065 | UI       | Put Run Parameters                                                  | Network Data          |
-| 0066 | UI       | Get Run Parameters                                                  | Network Data          |
-| 0067 | UI       | ICM Ruby Tutorials                                                  | Network Data          |
-| 0068 | UI       | ICM InfoWorks All Table Names                                       | Network Data          |
-| 0069 | UI       | Make an Overview of All Network Elements                            | Network Data          |
-| 0070 | UI       | Upstream Subcatchments from an Outfall                              | Network Data          |
-| 0071 | UI       |                                                                     | Network Data          |
-| 0072 | UI       |                                                                     | Network Data          |
-| 0073 | UI       |                                                                     | Network Data          |
-| 0074 | UI       |                                                                     | Network Data          |
-| 0075 | UI       |                                                                     | Network Data          |
-| 0076 | UI       |                                                                     | Network Data          |
-| 0077 | UI       |                                                                     | Network Data          |
-| 0078 | UI       |                                                                     | Network Data          |
-| 0079 | UI       |                                                                     | Network Data          |
-| 0080 | UI       |                                                                     | Network Data          |
-| 0081 | UI       |                                                                     | Network Data          |
-| 0082 | UI       |                                                                     | Network Data          |
-| 0083 | UI       |                                                                     | Network Data          |
-| 0084 | UI       | Change All Node and Link IDs                                        | Network Data          |
-| 0085 | UI       |                                                                     | Network Data          |
-| 0086 | UI       |                                                                     | Network Data          |
-| 0087 | UI       |                                                                     | Network Data          |
-| 0088 | UI       |                                                                     | Network Data          |
-| 0089 | UI       |                                                                     | Network Data          |
-| 0090 | UI       |                                                                     | Network Data          |
-| 0091 | UI       |                                                                     | Network Data          |
-| 0092 | UI       |                                                                     | Network Data          |
-| 0093 | UI       |                                                                     | Network Data          |
-| 0094 | UI       |                                                                     | Network Data          |
-| 0095 | UI       |                                                                     | Network Data          |
-| 0096 | UI       |                                                                     | Network Data          |
-| 0097 | UI       |                                                                     | Network Data          |
-| 0098 | UI       |                                                                     | Network Data          |
-| 0099 | UI       |                                                                     | Network Data          |
-| 0100 | UI       | ODIC and Ruby Scripts for Importing InfoSewer to ICM                | Network Data          |
-|------|----------|---------------------------------------------------------------------|-----------------------|
+|------|------|---------------------------------------------------------|
+|------|------|---------------------------------------------------------|
+| ID   | Type | Name                                                    |
+|------|------|---------------------------------------------------------|
+| 0001 | UI   | Pipe Length Statistics                                  |
+| 0002 | UI   | Quick Trace                                             |
+| 0003 | UI   | Scenario Maker                                          |
+| 0004 | UI   | New ICM InfoWorks and ICM SWMM Scenarios                |
+| 0005 | UI   | Change All Node and Link IDs                            |
+| 0006 | UI   | Add Total Area for Subcatchments                        |
+| 0007 | UI   | Count Objects In the Database                           |
+| 0008 | UI   | Select Upstream Subcatchments from a Node Multilinks    |
+| 0009 | UI   | ICM Binary Results Export                               |
+| 0010 | UI   | List all results fields in a simulation                 |
+| 0011 | UI   | Pipe Length Selection                                   |
+| 0012 | UI   | ODEC Export Node and Conduit tables to CSV and MIF      |
+| 0013 | UI   | Depression Storage Statistics                           |
+| 0014 | UI   | Find all flags in all objects of a network model        |
+| 0015 | UI   | Pipe Diameter Statistics                                |
+| 0016 | UI   | All Link Parameter Statistics                           |
+| 0017 | UI   | All Node Parameter Statistics                           |
+| 0018 | UI   | All Subcatchment Parameter Statistics                   |
+| 0019 | UI   | Distribute attachment details by a shared value         |
+| 0020 | UI   | Generate Individual Reports for a Selection of Objects  |
+| 0021 | UI   | Create a node from polygon boundary                     |
+| 0022 | UI   | Output CSV of calcs based on Subcatchment Data          |
+| 0023 | UI   | Rename Nodes & Links using Name Generation pattern      |
+| 0024 | UI   | Input Message Box                                       |
+| 0025 | UI   | Get Minimum X, Y for All Nodes                          |
+| 0026 | UI   | Make_Subcatchments_From_Imported_InfoSewer_Manholes     |
+| 0027 | UI   | Copy a subcatchment and rename it                       |
+| 0028 | UI   | Percent change in runoff surfaces upstream              |
+| 0029 | UI   | Runoff surfaces from selected subcatchments             |
+| 0030 | UI   | Connect subcatchment to nearest node                    |
+| 0031 | UI   | List all results fields in a simulation                 |
+| 0032 | UI   | List Network Fields-Structure                           |
+| 0033 | UI   | Output the Array BLOB values as a clustered value       |
+| 0034 | UI   | Display Export geometries                               |
+| 0035 | UI   | List Master Database Objects Contents                   |
+| 0036 | UI   | Create Selection List                                   |
+| 0037 | UI   | Select Isolated Nodes                                   |
+| 0038 | UI   | Remove rows from a blob field                           |
+| 0039 | UI   | Calculate subcatchment areas in all nodes upstream a    |
+| 0040 | UI   | Create a new selection list using a SQL query           |
+| 0041 | UI   | Get results from all timesteps for Links, US_FLOW       |
+| 0042 | UI   | Get results from all timesteps for Subcatchments, All   |
+| 0043 | UI   | Get results from all timesteps for Manholes, Qnode      |
+| 0044 | UI   | Get results from all timesteps for Manholes, All Param  |
+| 0045 | UI   | Get results from all timesteps for Links, All Params    |
+| 0046 | UI   | Output SUDS control as CSV                              |
+| 0047 | UI   | Select links sharing the same us and ds node ids        |
+| 0048 | UI   | Delete all scenarios except Base                        |
+| 0049 | UI   | Clear SUDS from subcatchments                           |
+| 0050 | UI   | Assign Subcatchment to nearest 'Storage' type Node      |
+| 0051 | UI   | Additional DWF Node IDs                                 |
+| 0052 | UI   | Make a Table of the Run Parameters in ICM               |
+| 0053 | UI   | Scenario Counter                              b         |
+| 0054 | UI   |                                                         |
+| 0055 | UI   |                                                         |
+| 0056 | UI   | Listview of the currently selected network objects      |
+| 0057 | UI   | Scenario Maker                                          |
+| 0058 | UI   | Bifurcation Nodes                                       |
+| 0059 | UI   | Dry Pipes                                               |
+| 0060 | UI   | Find All Network Elements                               |
+| 0061 | UI   | Flow Survey                                             |
+| 0062 | UI   | Header Nodes                                            |
+| 0063 | UI   | ICM SWMM All Tables                                     |
+| 0064 | UI   | ICM SWMM Network Overview                               |
+| 0065 | UI   | Put Run Parameters                                      |
+| 0066 | UI   | Get Run Parameters                                      |
+| 0067 | UI   | ICM Ruby Tutorials                                      |
+| 0068 | UI   | ICM InfoWorks All Table Names                           |
+| 0069 | UI   | Make an Overview of All Network Elements                |
+| 0070 | UI   | Upstream Subcatchments from an Outfall                  |
+| 0071 | UI   | Raingages, All Output Parameters                        |
+| 0072 | UI   | Find Root Model Group                                   |
+| 0073 | UI   | Rename Exported Image & Attachment Files                |
+| 0074 | UI   | Capacity Assurance White Paper (InfoNet)                |
+| 0075 | UI   | Sandbox Instance Evaluation and Class Scope             |
+| 0076 | UI   | InfoWorks vs SWMM CSV Comparison                        |
+| 0077 | UI   | ICM InfoWorks UX Tables                                 |
+| 0078 | UI   | ICM SWMM UX Tables                                      |
+| 0079 | UI   | ICM SWMM IWR Tables                                     |
+| 0080 | UI   | ICM InfoWorks IWR Tables                                |
+| 0081 | UI   | Export Compare Network Versions to CSV                  |
+| 0082 | UI   | Create SuDS for All Subcatchments                       |
+| 0083 | UI   | Find the Time of Max DS Depth in all Selected Links     |
+| 0084 | UI   | Change All Node, Subs and Link IDs                      |
+| 0085 | UI   | Export SWMM5 Calibration Files - Node Runoff            |
+| 0086 | UI   | Export SWMM5 Calibration Files - Groundwater Elev       |
+| 0087 | UI   | Export SWMM5 Calibration Files - Groundwater Flow       |
+| 0088 | UI   | Export SWMM5 Calibration Files - Node Flooding          |
+| 0089 | UI   | Export SWMM5 Calibration Files - Node Flood Depth       |
+| 0090 | UI   | Export SWMM5 Calibration Files - Node Level             |
+| 0091 | UI   | Export SWMM5 Calibration Files - Node Lateral Inflow    |
+| 0092 | UI   | Export SWMM5 Calibration Files - Downstream Velocity    |
+| 0093 | UI   | Export SWMM5 Calibration Files - Upstream Velocity      |
+| 0094 | UI   | Export SWMM5 Calibration Files - Upstream Depth         |
+| 0095 | UI   | Export SWMM5 Calibration Files - Downstream Depth       |
+| 0096 | UI   | Export SWMM5 Calibration Files - Downstream Flow        |
+| 0097 | UI   | Export SWMM5 Calibration Files - Upstream Flow          |
+| 0098 | UI   | Compare ICM Inlets to HEC22 Inlets                      |
+| 0099 | UI   | Compare ICM Headloss in Ruby Script                     |
+| 0100 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
+| 0101 | UI   | Common Operations                                       |
+| 0102 | UI   | ICM IWR Results to SWMM5 Node Inflows Summary Table     |
+| 0103 | UI   | ICM IWR Results to SWMM5 Node Depths Summary            |
+| 0104 | UI   | ICM IWR Results to SWMM5 Node Surcharging               |
+| 0105 | UI   | ICM IWR Results to SWMM5 Link Flows Summary             |
+| 0106 | UI   | ICM IWR Results to SWMM5 Link Flows Summary             |
+| 0107 | UI   | ICM IWR Results to SWMM5 to Subcatchment Runoff Summary |
+| 0108 | UI   | Locate Missing Attachments on a Standalone Database     |
+| 0109 | UI   | 1A ODEC Callback Examples                               |
+| 0110 | UI   | ODIC Export                                             |   
+| 0111 | UI   | ODIC Import                                             |
+| 0112 | UI   | 2A ODIC Callback Examples                               |
+| 0113 | UI   | Import an InfoWorks ICM SWMM Model InfoAsset Manager    |
+| 0114 | UI   | GIS Export                                              |
+| 0115 | UI   | Export Dashboard                                        |
+| 0116 | UI   | Export Choice List values                               |
+| 0117 | UI   | Import-Export Snapshot file                             |
+| 0118 | UI   | Bulk Data Import                                        |
+| 0119 | UI   | Export to CSV                                           |
+| 0120 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
+| 0121 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
+| 0122 | UI   | Update from external CSV                                |
+| 0123 | UI   | Update an object with values through comparison         |
+| 0124 | UI   | Network Tracing                                         |
+| 0125 | UI   | Tracing                                                 |
+| 0126 | UI   | Copy selected subcatchments with user suffix            |
+| 0127 | UI   |                                                         |
+| 0128 | UI   |                                                         |
+| 0129 | UI   |                                                         |
+| 0130 | UI   |                                                         |
+|------|------|---------------------------------------------------------|
 
 ## Name notes on the meaning of the prefixes
 

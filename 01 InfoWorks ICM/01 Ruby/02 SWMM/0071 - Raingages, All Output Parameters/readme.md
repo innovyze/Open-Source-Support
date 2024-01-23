@@ -1,29 +1,32 @@
-The script analyzes rainfall data from selected rain gauges in the ICM SWMM Network. Here's a concise summary:
+# Ruby Script Summary: Statistics Calculation for Rain Gages in an ICM SWMM Netowork
 
-The script accesses rainfall data from selected rain gauges in the ICM SWMM Network to compute various statistical metrics.
+## Overview
+This Ruby script is designed to calculate and display statistical data for selected rain gages in an InfoWorks network. It utilizes the InfoWorks API to access network data and compute various statistics for specified result fields.
 
-# Key steps and features:
+## Script Details
+- **Library Import**: The script starts by requiring the `date` library for handling dates.
+- **Network Access**: It accesses the current network object from InfoWorks.
+- **Timesteps and Results Handling**:
+  - Retrieves the count and list of timesteps in the network.
+  - Defines result field names (`'RAINDPTH'`, `'RAINFALL'`) for which statistics will be calculated.
+- **Iteration Over Selected Objects**:
+  - Iterates through each selected object in the network.
+  - Fetches the row object for the current rain gage based on its ID.
+  - Raises an error if the object is not a gage.
+- **Statistics Calculation**:
+  - For each result field, checks if the count of results matches the count of timesteps.
+  - Initializes variables for total, total integrated over time, min, max, and count.
+  - Calculates total, min, max values, and mean for the results.
+  - Adjusts total integrated over time by dividing it by 3600.0.
+  - Specifically, for `RAINDPTH`, modifies the total integrated over time.
+- **Output**:
+  - Prints calculated statistics for each gage and result field.
 
-The script starts by importing the required 'date' library.
-It fetches the current ICM SWMM Network and retrieves the list of time steps.
-The script targets two specific rainfall data fields: 'RAINDPTH' (Rain Depth) and 'RAINFALL'.
+## Error Handling
+- Handles errors related to non-existent fields.
+- Catches and outputs errors during the processing of objects.
 
-# For each selected rain gauge:
-The script ensures the targeted object is indeed a rain gauge.
-For each data field, it checks if the count of results matches the count of time steps.
-If they match, it proceeds to calculate various statistics:
-### Total rainfall
-### Rainfall integrated over time
-### Mean rainfall
-### Maximum and minimum rainfall values
-### Total number of data points (time steps)
-Results for each gauge and field are printed in a structured format.
-
-Error handling mechanisms are in place to manage situations where targeted fields are absent or other unexpected issues arise.
-The script efficiently computes and presents a comprehensive overview of rainfall data, enabling a user to gain insights into rainfall patterns and intensities from the selected rain gauges in the ICM SWMM Network.
-
-![Alt text](image-1.png)
-
+![Alt text](image-2.png)
 
 # SWMM Rain Gage Properties
 
