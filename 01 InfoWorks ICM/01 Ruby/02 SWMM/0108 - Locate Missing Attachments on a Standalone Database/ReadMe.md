@@ -1,0 +1,2 @@
+When copying to/from an .icmt file the error log for missing attachments only references the db_ref GUID of the file not the related object details.
+This script (when run against a standalone database) will identify which objects on the db do not have attachments in the attachments store.
