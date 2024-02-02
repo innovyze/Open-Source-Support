@@ -10,12 +10,12 @@ To use the script, you will need to `require` it - see the example.
 
 ### Time Values
 
-Demand Diagrams in WS Pro store values relative to week days, therefore it would not be strictly accurate to convert values to a Ruby `DateTime` or `Time` object which are absolute/ Therefore the time values in each profile are stored as seconds from the first day of the week (in WS Pro, this is Monday), i.e.:
+Demand Diagrams in WS Pro store values relative to week days, tso it would not be accurate to convert values to a Ruby `DateTime` or `Time` object which are absolute dates. Therefore the time values in each profile are stored as seconds from the first day of the week (in WS Pro, this is Monday), i.e.:
 
 - Monday 00:15 is 900 seconds
 - Tuesday 01:30 is 91800 seconds
 
-This makes it compatible with Ruby's `Time` class, i.e.
+This makes it reasonably compatible with Ruby's `Time` class, i.e.
 
 ```ruby
 require 'time'
@@ -31,4 +31,4 @@ puts base.strftime("%F %T")
 
 ### Validation
 
-Currently, no validation is performed when updating values or re-importing the demand diagram.
+Currently, the script does no validation when updating values or re-importing the demand diagram. WS Pro also does minimal validation on import. Use at your own risk!

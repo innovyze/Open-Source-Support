@@ -4,7 +4,7 @@ database = WSApplication.open()
 ddg_group_mo = database.model_object_from_type_and_id('Demand Diagram Group', 11921)
 ddg_mo = database.model_object_from_type_and_id('Demand Diagram', 11928)
 
-# Create a new deamand diagram proxy (DemandDiagram class) from the demand diagram model object
+# Create a new demaand diagram proxy (DemandDiagram class) from the demand diagram model object
 ddg = DemandDiagram.from_ddg(ddg_mo)
 
 # Print something about the demand diagram
