@@ -1,0 +1,12 @@
+DATA UDFS_FILE "Node1" 0 1 "C:\tmp\gauged\long.csv" 
+DATA R_UDFS_FMTNAME "Node1" 0 1 "inflow" 
+DATA GINFLOW "Node1" 0 1 1
+DATA UDFS_STN "Node1" 0 1 "Node1"
+DATA UDFS_FILE "Node2" 0 1 "C:\tmp\gauged\long.csv" 
+DATA R_UDFS_FMTNAME "Node2" 0 1 "inflow" 
+DATA GINFLOW "Node2" 0 1 1
+DATA UDFS_STN "Node2" 0 1 "Node2"
+DATA UDFS_FILE "Node3" 0 1 "C:\tmp\gauged\long.csv" 
+DATA R_UDFS_FMTNAME "Node3" 0 1 "inflow" 
+DATA GINFLOW "Node3" 0 1 1
+DATA UDFS_STN "Node3" 0 1 "Node3"
