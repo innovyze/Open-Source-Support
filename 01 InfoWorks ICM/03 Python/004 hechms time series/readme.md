@@ -46,13 +46,11 @@ There are many formats to choose from for date time,
 
 Refer to the [python documentation](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior) for more details on the format codes.
 
-```python
-datetime.strptime('31/01/22 23:59:59.999999','**%d**/%m/%y %H:%M:%S.**%f**')
+datetime.strptime('31/01/22 23:59:59.999999','\*\*%d\*\*/%m/%y %H:%M:%S.\*\*%f\*\*')
 
-datetime.datetime(2022, 1, 31, 23, 59, 59, 999999).strftime('**%a** **%d** %b %Y, %I:%M%p')
+datetime.datetime(2022, 1, 31, 23, 59, 59, 999999).strftime('\*\*%a\*\* \*\*%d\*\* %b %Y, %I:%M%p')
 
-#'Mon 31 Jan 2022, 11:59PM'
-```
+\#'Mon 31 Jan 2022, 11:59PM'
 
 ## Calculate the time passed since a starting point for each row
 
@@ -72,7 +70,7 @@ Time series are commonly arranged in two formats, the long and wide format.
 
 # Run the scripts
 
-Download the “004 HECHMS TIME SERIES” folder from [<u>Github</u>](https://raw.githubusercontent.com/mel-meng/xpswmm/master/xpx/source/src/xpx_tools.py). If you are using Anaconda, start “spyder”. Open hms_csv_tools.py and run the script.
+Download the “004 HECHMS TIME SERIES” folder from [<u>Github</u>](https://github.com/innovyze/Open-Source-Support/tree/main/01%20InfoWorks%20ICM/03%20Python/004%20hechms%20time%20series). If you are using Anaconda, start “spyder”. Open hms_csv_tools.py and run the script.
 
 <img src="./media/image5.png" style="width:1.81589in;height:3.05456in" alt="A screenshot of a computer Description automatically generated" /> <img src="./media/image6.png" style="width:3.91513in;height:1.71938in" alt="A screenshot of a computer program Description automatically generated" />
 
@@ -86,20 +84,26 @@ Go to the “data” folder to review the results,
 
 <img src="./media/image8.png" style="width:2.42in;height:0.71in" alt="A screenshot of a computer Description automatically generated" />
 
+You can import flows from this file into InfoWorks ICM,
+
+<img src="./media/image9.png" style="width:3.66405in;height:2.09821in" alt="A screenshot of a computer Description automatically generated" />
+
+<img src="./media/image10.png" style="width:4.0914in;height:3.68357in" alt="A screenshot of a computer Description automatically generated" />
+
 - long.csv: the long format
 
-<img src="./media/image9.png" style="width:1.32in;height:0.99in" alt="A screenshot of a computer Description automatically generated" />
+<img src="./media/image11.png" style="width:1.32in;height:0.99in" alt="A screenshot of a computer Description automatically generated" />
 
 - inflow.xpx: XPSWMM inflow time series in xpx format
 
-<img src="./media/image10.png" style="width:5.02242in;height:3.19052in" alt="A screenshot of a computer Description automatically generated" />
+<img src="./media/image12.png" style="width:5.02242in;height:3.19052in" alt="A screenshot of a computer Description automatically generated" />
 
 - gauged.xpx: XPSWMM using gauged inflow, getting data from external csv file.
 
-<img src="./media/image11.png" style="width:3.56381in;height:3.41532in" alt="A screenshot of a computer Description automatically generated" />
+<img src="./media/image13.png" style="width:3.56381in;height:3.41532in" alt="A screenshot of a computer Description automatically generated" />
 
-<img src="./media/image12.png" style="width:3.33955in;height:1.13929in" alt="A screenshot of a computer Description automatically generated" />
+<img src="./media/image14.png" style="width:3.33955in;height:1.13929in" alt="A screenshot of a computer Description automatically generated" />
 
 Importing this xpx file will add the references to the external csv to each node.
 
-<img src="./media/image13.png" style="width:4.11796in;height:1.24622in" alt="A screenshot of a computer Description automatically generated" />
+<img src="./media/image15.png" style="width:4.11796in;height:1.24622in" alt="A screenshot of a computer Description automatically generated" />
