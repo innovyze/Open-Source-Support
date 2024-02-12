@@ -4,7 +4,7 @@ else
 	$db = WSApplication.open('localhost:40000/IA_DATABASE')
     $nw = $db.model_object_from_type_and_id('Collection Network',4)
     $net = $nw.open
-	WSApplication.use_arcgis_desktop_licence()
+    WSApplication.use_arcgis_desktop_licence()
 end
 
 errorFile = 'C:\\Data\\Geodatabase\\ExportErrors.txt'
