@@ -35,7 +35,7 @@ object_types.each { |network_type|
 		#log "#{network.id}	#{network.name}		#{network.path}"
 		
 		
-		### Insert your chosen export method here
+		### Export process
 		
 			nw = db.model_object_from_type_and_id('Collection Network', network.id)		## Network to export
 			nw.update																	## Update local copy of network to latest
