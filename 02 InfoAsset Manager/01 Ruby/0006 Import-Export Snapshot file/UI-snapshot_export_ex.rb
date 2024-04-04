@@ -16,7 +16,7 @@ exp_options=Hash.new
 exp_options['SelectedOnly'] = true									# Boolean | Default = FALSE
 exp_options['IncludeImageFiles'] = 	true							# Boolean | Default = FALSE
 #exp_options['IncludeGeoPlanPropertiesAndThemes'] = 	false		# Boolean | Default = FALSE
-#options['ChangesFromVersion'] = 									# Integer | Default = 0
+#exp_options['ChangesFromVersion'] = 								# Integer | Default = 0
 #exp_options['Tables'] = export_tables								# Array of strings - If present, a list of the internal table names (as returned by the table_names method of this class) If not present then all tables will be exported.
 
 # Export
