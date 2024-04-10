@@ -1,0 +1,227 @@
+[TITLE]
+;;Project Title/Notes
+
+[OPTIONS]
+;;Option             Value
+FLOW_UNITS           CFS
+INFILTRATION         GREEN_AMPT
+FLOW_ROUTING         DYNWAVE
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+ALLOW_PONDING        NO
+SKIP_STEADY_STATE    NO
+
+START_DATE           05/01/2004
+START_TIME           00:00:00
+REPORT_START_DATE    05/01/2004
+REPORT_START_TIME    00:00:00
+END_DATE             05/11/2004
+END_TIME             23:59:00
+SWEEP_START          01/01
+SWEEP_END            12/31
+DRY_DAYS             0
+REPORT_STEP          00:05:00
+WET_STEP             00:01:00
+DRY_STEP             00:01:00
+ROUTING_STEP         0:00:05 
+
+INERTIAL_DAMPING     NONE
+NORMAL_FLOW_LIMITED  BOTH
+FORCE_MAIN_EQUATION  H-W
+VARIABLE_STEP        0.00
+LENGTHENING_STEP     0
+MIN_SURFAREA         0
+MAX_TRIALS           0
+HEAD_TOLERANCE       0
+SYS_FLOW_TOL         5
+LAT_FLOW_TOL         5
+MINIMUM_STEP         0.5
+THREADS              1
+
+[EVAPORATION]
+;;Data Source    Parameters
+;;-------------- ----------------
+CONSTANT         .000001
+DRY_ONLY         NO
+
+[RAINGAGES]
+;;Name           Format    Interval SCF      Source    
+;;-------------- --------- ------ ------ ----------
+RG_Clay          VOLUME    1:00     1.0      TIMESERIES Rain1           
+RG_Sand          VOLUME    1:00     1.0      TIMESERIES Rain1           
+
+[SUBCATCHMENTS]
+;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
+;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
+Turf_Clay_Roof   RG_Clay          Turf_Clay_LID    0.01177681 100      22.64950331 0.01     0                        
+Prarie_Clay_Roof RG_Clay          Prarie_Clay_LID  0.01177681 100      22.64950331 0.01     0                        
+Turf_Sand_Roof   RG_Sand          Turf_Sand_LID    0.03535339 100      39.24283374 15       0                        
+Prarie_Sand_Roof RG_Sand          Prarie_Sand_LID  0.0118   100      39.24283374 15       0                        
+Turf_Sand_LID    RG_Sand          Turf_Sand_Outlet 0.002295675 0        10       0        0                        
+Prarie_Sand_LID  RG_Sand          Prarie_Sand_Outlet 0.002295675 0        10       0        0                        
+Turf_Clay_LID    RG_Clay          Turf_Clay_Outlet 0.008126689 0        18.81488772 0        0                        
+Prarie_Clay_LID  RG_Clay          Prarie_Clay_Outlet 0.00925157 0        20.0748599 0        0                        
+
+[SUBAREAS]
+;;Subcatchment   N-Imperv   N-Perv     S-Imperv   S-Perv     PctZero    RouteTo    PctRouted 
+;;-------------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+Turf_Clay_Roof   0.01       0.1        0.01       0          0          OUTLET    
+Prarie_Clay_Roof 0.01       0.1        0.01       0.05       0          OUTLET    
+Turf_Sand_Roof   0.01       0.1        0.01       0.05       0          OUTLET    
+Prarie_Sand_Roof 0.01       0.1        0.01       0.05       0          OUTLET    
+Turf_Sand_LID    0.01       0.1        0.05       0.1        0          OUTLET    
+Prarie_Sand_LID  0.01       0.1        0.05       0.1        0          OUTLET    
+Turf_Clay_LID    0.01       0.1        0.05       0.05       25         OUTLET    
+Prarie_Clay_LID  0.01       0.1        0.05       0.05       25         OUTLET    
+
+[INFILTRATION]
+;;Subcatchment   Suction    Ksat       IMD       
+;;-------------- ---------- ---------- ----------
+Turf_Clay_Roof   3          0.5        4         
+Prarie_Clay_Roof 3          0.5        4         
+Turf_Sand_Roof   3          0.5        4         
+Prarie_Sand_Roof 3          0.5        4         
+Turf_Sand_LID    1.93       4.74       0.375     
+Prarie_Sand_LID  1.93       4.74       0.375     
+Turf_Clay_LID    12.6       0.01       0.097     
+Prarie_Clay_LID  12.6       0.01       0.097     
+
+[LID_CONTROLS]
+;;Name           Type/Layer Parameters
+;;-------------- ---------- ----------
+Turf_Clay        BC
+Turf_Clay        SURFACE    6          0.99       0          0.0        5         
+Turf_Clay        SOIL       5          0.59       0.41       0.14       0.78       10.0       3.5       
+Turf_Clay        STORAGE    48         1.439      0.78       0         
+Turf_Clay        DRAIN      0          0.5        0          6         
+
+Prarie_Clay      BC
+Prarie_Clay      SURFACE    6          0.99       0          0.0        5         
+Prarie_Clay      SOIL       5          0.43       0.25       0.19       0.78       10.0       3.5       
+Prarie_Clay      STORAGE    48         0.754      0.78       0         
+Prarie_Clay      DRAIN      0          0.5        0          6         
+
+Turf_Sand        BC
+Turf_Sand        SURFACE    6          0.99       0          0.0        5         
+Turf_Sand        SOIL       5          0.45       0.16       0.11       3.55       10.0       3.5       
+Turf_Sand        STORAGE    48         0.818      3.55       0         
+Turf_Sand        DRAIN      0          0.5        0          6         
+
+Prarie_Sand      BC
+Prarie_Sand      SURFACE    6          0.99       0          0.0        5         
+Prarie_Sand      SOIL       5          0.45       0.34       0.24       3.55       10.0       3.5       
+Prarie_Sand      STORAGE    1          0.818      3.55       0         
+Prarie_Sand      DRAIN      0          0.5        0          6         
+
+[LID_USAGE]
+;;Subcatchment   LID Process      Number  Area       Width      InitSat    FromImp    ToPerv     RptFile                  DrainTo         
+;;-------------- ---------------- ------- ---------- ---------- ---------- ---------- ---------- ------------------------ ----------------
+Turf_Sand_LID    Turf_Sand        1       99.99      0          0          0          0         
+Prarie_Sand_LID  Prarie_Sand      1       99.98      0          0          0          0         
+Turf_Clay_LID    Turf_Clay        1       353.99     18.81488772 0          0          0         
+Prarie_Clay_LID  Prarie_Clay      1       402.99     20.0748599 0          0          0         
+
+[OUTFALLS]
+;;Name           Elevation  Type       Stage Data       Gated    Route To        
+;;-------------- ---------- ---------- ---------------- -------- ----------------
+Turf_Clay_Outlet 0          FREE                        NO                       
+Prarie_Clay_Outlet 0          FREE                        NO                       
+Turf_Sand_Outlet 0          FREE                        NO                       
+Prarie_Sand_Outlet 0          FREE                        NO                       
+
+[TIMESERIES]
+;;Name           Date       Time       Value     
+;;-------------- ---------- ---------- ----------
+Rain1            05/01/2004 0:0        0         
+Rain1                       1:0        1         
+Rain1                       2:0        1         
+Rain1                       3:0        1         
+Rain1                       4:0        1         
+Rain1                       5:0        1         
+Rain1                       10:0       1         
+Rain1                       12:0       1         
+
+[REPORT]
+;;Reporting Options
+INPUT      YES
+CONTROLS   NO
+SUBCATCHMENTS ALL
+NODES ALL
+LINKS ALL
+
+[TAGS]
+
+[MAP]
+DIMENSIONS 34.618 126.831 162.374 201.264
+Units      Feet
+
+[COORDINATES]
+;;Node           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+Turf_Clay_Outlet 48.721             130.214           
+Prarie_Clay_Outlet 65.313             130.214           
+Turf_Sand_Outlet 131.679            130.214           
+Prarie_Sand_Outlet 148.271            130.214           
+
+[VERTICES]
+;;Link           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+
+[Polygons]
+;;Subcatchment   X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+Turf_Clay_Roof   48.721             167.881           
+Turf_Clay_Roof   40.425             177.881           
+Turf_Clay_Roof   40.425             197.881           
+Turf_Clay_Roof   57.017             197.881           
+Turf_Clay_Roof   57.017             177.881           
+Turf_Clay_Roof   48.721             167.881           
+Prarie_Clay_Roof 65.313             167.881           
+Prarie_Clay_Roof 57.017             177.881           
+Prarie_Clay_Roof 57.017             197.881           
+Prarie_Clay_Roof 73.608             197.881           
+Prarie_Clay_Roof 73.608             177.881           
+Prarie_Clay_Roof 65.313             167.881           
+Turf_Sand_Roof   131.679            167.881           
+Turf_Sand_Roof   123.384            177.881           
+Turf_Sand_Roof   123.384            197.881           
+Turf_Sand_Roof   139.975            197.881           
+Turf_Sand_Roof   139.975            177.881           
+Turf_Sand_Roof   131.679            167.881           
+Prarie_Sand_Roof 148.271            167.881           
+Prarie_Sand_Roof 139.975            177.881           
+Prarie_Sand_Roof 139.975            197.881           
+Prarie_Sand_Roof 156.567            197.881           
+Prarie_Sand_Roof 156.567            177.881           
+Prarie_Sand_Roof 148.271            167.881           
+Turf_Sand_LID    131.679            130.381           
+Turf_Sand_LID    123.384            140.381           
+Turf_Sand_LID    123.384            160.381           
+Turf_Sand_LID    139.975            160.381           
+Turf_Sand_LID    139.975            140.381           
+Turf_Sand_LID    131.679            130.381           
+Prarie_Sand_LID  148.271            130.381           
+Prarie_Sand_LID  139.975            140.381           
+Prarie_Sand_LID  139.975            160.381           
+Prarie_Sand_LID  156.567            160.381           
+Prarie_Sand_LID  156.567            140.381           
+Prarie_Sand_LID  148.271            130.381           
+Turf_Clay_LID    48.721             130.381           
+Turf_Clay_LID    40.425             140.381           
+Turf_Clay_LID    40.425             160.381           
+Turf_Clay_LID    57.017             160.381           
+Turf_Clay_LID    57.017             140.381           
+Turf_Clay_LID    48.721             130.381           
+Prarie_Clay_LID  65.313             130.381           
+Prarie_Clay_LID  57.017             140.381           
+Prarie_Clay_LID  57.017             160.381           
+Prarie_Clay_LID  73.608             160.381           
+Prarie_Clay_LID  73.608             140.381           
+Prarie_Clay_LID  65.313             130.381           
+
+[SYMBOLS]
+;;Gage           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+RG_Clay          57.017             170.214           
+RG_Sand          139.975            170.214           
+
