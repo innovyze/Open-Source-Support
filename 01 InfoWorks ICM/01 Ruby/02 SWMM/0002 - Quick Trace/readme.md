@@ -1,40 +1,22 @@
+# QuickTrace Script for InfoWorks ICM Networks
 
-The given code is a Ruby script designed to work with the ICM InfoWorks Network. The code's primary purpose is to trace a path between two selected nodes in the network and provide insights on the traced path.
+This script performs a trace between two selected nodes in an InfoWorks ICM model network, selecting all nodes and links along the path.
 
-Here's a summarized overview:
+## How it Works
 
-# Purpose:
+1. The script first initializes the current network.
 
-The code is used to trace a path between two selected nodes in the ICM InfoWorks Network.
-Key Features:
+2. It then defines a method `process_node` that performs a trace from a given node to a destination node. This method uses Dijkstra's algorithm to find the shortest path, considering each conduit link as a path with a cost equal to its length and each non-conduit link as a path with a fixed cost.
 
-# Initialization:
+3. The `doit` method checks if exactly two nodes are selected in the network. If not, it prints a message asking the user to select two nodes. If two nodes are selected, it performs a trace from the first selected node to the second selected node using the `process_node` method, and selects all nodes and links along the path.
 
-The current active network is fetched.
-The class QuickTrace is initialized with the current network.
+4. Finally, the script creates a new instance of the `QuickTrace` class and calls the `doit` method.
 
-# Process Node:
+![Alt text](image.png)
 
-It processes the current node to find a path to the destination node.
-It calculates the shortest path from the source to the destination based on the conduit length (if the link type is 'Cond') or a default value (5).
-The total length of all the links traversed is kept track of.
-Execution:
+## Usage
 
-The user is expected to select two nodes: a source and a destination.
-The script then traces a path from the source to the destination.
-The traced path is highlighted in the network (expected to be shown as a red line).
-Insights such as the total nodes found, total links found, and the total length of links are printed.
-
-# Usage:
-
-Upon execution, the script checks if exactly two nodes are selected.
-If two nodes are selected, it proceeds with the trace, otherwise, it prompts the user to select two nodes.
-
-# Output:
-
-The traced path between the two selected nodes.
-The number of nodes and links found in the path.
-The total length of all the links in the traced path, rounded to two decimal places.
+To use this script, simply run it in the context of an open network in InfoWorks ICM with exactly two nodes selected. The script will automatically perform a trace from the first selected node to the second selected node, select all nodes and links along the path, and print the total number of nodes and links found and the total length of the links.
 
 # Additional Information:
 

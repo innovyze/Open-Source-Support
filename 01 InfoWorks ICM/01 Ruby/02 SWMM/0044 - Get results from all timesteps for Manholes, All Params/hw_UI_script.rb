@@ -10,6 +10,11 @@ ts_size = net.list_timesteps.count
 # Get the list of timesteps
 ts = net.list_timesteps
 
+# Calculate the time interval in seconds assuming the time steps are evenly spaced
+time_interval = (ts[1] - ts[0]).abs
+# Print the time interval in seconds and minutes
+puts "Time interval: %.4f seconds or %.4f minutes" % [time_interval, time_interval / 60.0]
+
 # Define the result field names to fetch the results for all selected nodes
 result_field_names = [
   'depnod', 'dmaxd', 'volume', 'flooddepth', 'floodvolume', 'flvol',
@@ -42,10 +47,7 @@ net.each_selected do |sel|
           min_value = Float::INFINITY
           max_value = -Float::INFINITY
           count = 0
-          
-          # Assuming the time steps are evenly spaced, calculate the time interval in seconds
-          time_interval = (ts[1] - ts[0]) * 24 * 60 * 60 if ts.size > 1
-          
+
           # Iterate through the results and calculate statistics
           ro.results(res_field_name).each_with_index do |result, time_step_index|
             total += result.to_f

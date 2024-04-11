@@ -1,65 +1,31 @@
 
-# InfoWorks to SWMM5 Calibration File Generator
+# Code Summary: Generating Node Flood Depth Data for SWMM5 Calibration in InfoWorks
 
-This Ruby script is designed to assist in generating SWMM5 calibration files from InfoWorks ICM output data.
+## Library
+- The script utilizes the `date` library for handling time-related operations.
 
-## Requirements
+## Script Overview
+- The script begins by accessing the current network object from InfoWorks and retrieves the list of timesteps.
 
-- Ruby
-- Access to an InfoWorks ICM model
+## Key Functionalities
+1. **Timestep Validation**:
+   - Checks if there are more than one timestep available. If not, it outputs a warning and exits.
 
-## Usage
+2. **Time Interval Calculation**:
+   - Calculates the time interval between timesteps in seconds, assuming they are evenly spaced.
 
-1. Ensure you have the `date` library available in Ruby.
-2. Obtain the current network object from InfoWorks ICM.
-3. Define your asset mapping for the network.
-4. Run the script within the context of your InfoWorks ICM network with the necessary data loaded.
+3. **Data Generation for SWMM5 Calibration**:
+   - Sets up the field name to extract results (here, 'FloodDepth').
+   - Prints headers for the SWMM5 calibration file format.
+   - Iterates through each selected object in the network:
+     - Attempts to retrieve the corresponding row object using the node id.
+     - Skips the iteration if the object is not relevant (not a link).
+     - Extracts and processes flood depth results for each timestep.
+     - Calculates the exact time for each result, converting it into days, hours, and minutes.
+     - Formats and outputs the data in a manner suitable for SWMM5 calibration files.
 
-## Script
+4. **Error Handling**:
+   - Includes error handling to report any issues encountered during the data processing.
 
-```ruby
-require 'date'
-
-# Get the current network object from InfoWorks
-net = WSApplication.current_network
-
-# Define the complete mapping table
-asset_mapping = {
-  'mid9.1' => 'outlet',
-  'Inflow.1' => 'pipe1',
-  # ... (additional mappings)
-}
-
-# Get the list of timesteps
-ts = net.list_timesteps
-
-# Check for sufficient timesteps
-if ts.size <= 1
-  puts "Not enough timesteps available!"
-  exit
-end
-
-# Calculate the time interval
-time_interval = (ts[1] - ts[0]) * 24 * 60 * 60
-
-# Define the result field name
-res_field_name = 'us_flow'
-
-# Output headers for the calibration file
-puts ";Flows for Selected Conduits"
-puts ";Conduit  Day      Time  Flow"
-puts ";-----------------------------"
-
-# Process each selected link in the network
-net.each_selected do |sel|
-  # ... (rest of the processing logic)
-end
-```
-
-## Note
-
-The script assumes that the time steps are evenly spaced and that the result field name corresponds to the upstream flow of the links.
-
----
-
-Generated with the assistance of GPT-4.
+## Summary
+This script is an efficient tool for preparing node flood depth data from an InfoWorks network for SWMM5 calibration. It ensures that the data is accurately timed and formatted according to SWMM5 requirements, making it a valuable asset for hydraulic modelers working on calibration tasks. The script's structured approach and clear output format facilitate easy integration of InfoWorks data into SWMM5 models.

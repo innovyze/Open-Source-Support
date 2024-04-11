@@ -42,6 +42,11 @@ puts ";-----------------------------"
 
 # Iterate through the selected objects in the network
 net.each_selected do |sel|
+              # Check if there are any selected elements
+              if sel.nil?
+                 puts "No elements were selected. Please select at least one element and try again."
+                 exit
+                 end
   begin
     # Try to get the row object for the current link using upstream node id
     ro = net.row_object('_links', sel.id)

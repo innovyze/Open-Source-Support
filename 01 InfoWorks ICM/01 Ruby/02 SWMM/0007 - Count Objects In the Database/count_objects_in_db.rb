@@ -38,3 +38,5 @@ end
 counts.each { |table, count| puts format("%s: %i object(s)", table, count)}
 
 
+
+

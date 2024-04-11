@@ -29,3 +29,28 @@ The output is a Runoff Summary table in the console, formatted with headers and 
 ## Enhancements
 - The script could be enhanced to output data directly to a CSV or Excel file for easier analysis.
 - Additional error handling could be implemented for robustness.
+
+In SWMM5, the dynamics of a runoff surface are governed by a sequence of four key actions, each contributing to the overall hydrological behavior of the system. These actions, occurring over a time step, can be described as follows:
+
+- **Precipitation Status (Raining/Not Raining)**:
+    - The process begins with assessing whether it is raining over the runoff surface. Rainfall directly contributes to the surface runoff and is a critical input for calculating the runoff volume.
+    - If it's not raining, the runoff calculations will primarily depend on the existing conditions of the runoff surface, like the accumulated water from previous rainfall events.
+
+- **Evaporation Status (Evaporating/Not Evaporating)**:
+    - Following the assessment of rainfall, the system evaluates evaporation. If conditions are favorable (like warm temperatures and dry air), water from the runoff surface may evaporate.
+    - The absence of evaporation can lead to water accumulation on the surface, especially if it coincides with rainfall.
+
+- **Computing New Runoff Surface Depth**:
+    - The next step involves calculating the depth of water on the runoff surface. This is influenced by both the incoming rainfall (if any) and the loss of water through evaporation.
+    - This computation is essential for understanding the current water balance on the surface and preparing for the subsequent infiltration and runoff calculations.
+
+- **Computing Infiltration and Runoff**:
+    - For pervious areas, the infiltration rate is calculated, which represents how much water is absorbed into the ground.
+    - Concurrently, the system computes the surface runoff, which is the water that flows over the surface without infiltrating into the soil.
+
+**Evaporation as a Final Consideration**:
+
+- Evaporation is often considered at the tail end of these processes over a time step. It acts as a balancing factor, potentially reducing the water available for runoff and infiltration, especially in scenarios without rainfall.
+
+These actions in SWMM5 collectively account for the various phenomena affecting runoff and play a crucial role in accurately modeling urban hydrology and stormwater management.
+
