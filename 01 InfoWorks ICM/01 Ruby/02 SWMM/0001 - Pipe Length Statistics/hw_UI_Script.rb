@@ -26,12 +26,16 @@ end
 total_links = link_lengths.length
 
 if selected_links.any?
-  printf("%-440s %-0.2f\n", "Minimum link length", link_lengths.min)
-  printf("%-440s %-0.2f\n", "Maximum link length", link_lengths.max)
-  printf("%-44s %-0.2f\n", "Threshold length for lowest 10%", threshold_length)
-  printf("%-44s %-0.2f\n", "Median link length (50th percentile)", median_length)
-  printf("%-44s %-d\n", "Number of links below threshold", selected_links.length)
-  printf("%-44s %-d\n", "Total number of links", total_links)  
+    puts("| ------------------------------------ | ------ |")
+    puts("| Description                          | Value  |")
+    puts("| ------------------------------------ | ------ |")
+    puts("| Minimum link length                  | #{'%.2f' % link_lengths.min} |")
+    puts("| Maximum link length                  | #{'%.2f' % link_lengths.max} |")
+    puts("| Threshold length for lowest 10%      | #{'%.2f' % threshold_length} |")
+    puts("| Median link length (50th percentile) | #{'%.2f' % median_length} |")
+    puts("| Number of links below threshold      | #{selected_links.length} |")
+    puts("| Total number of links                | #{total_links} |")
+    puts("| ------------------------------------ | ------ |")
 else
   puts "No links were selected."
 end

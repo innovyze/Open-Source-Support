@@ -37,18 +37,3 @@ end
 puts "Finished creating SUDS control data for each subcatchment"
 open_net.transaction_commit
 
-=begin
-suds_controls.area
-suds_controls.area_subcatchment_pct
-suds_controls.control_type
-suds_controls.drain_to_node
-suds_controls.id
-suds_controls.impervious_area_treated_pct
-suds_controls.initial_saturation_pct
-suds_controls.num_units
-suds_controls.outflow_to
-suds_controls.pervious_area_treated_pct
-suds_controls.suds_structure
-suds_controls.unit_surface_width
-suds_controls.surface
-=end

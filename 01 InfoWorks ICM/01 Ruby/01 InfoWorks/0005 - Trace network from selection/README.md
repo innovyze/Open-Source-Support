@@ -7,4 +7,4 @@ These scripts allow tracing all assets upstream or downstream of a selected node
 ## Version 3 - Trace network downstream of selected link
 ![](gif003.gif)
 ## Version 4 - Trace network upstread of selected link
-![](gif004.gif)
+![](gif004.gif) 

@@ -3,9 +3,6 @@ net = WSApplication.current_network
 # Ask the user for the list of suffixes they want to use
 suffixes = ["Horton", "GreenAmpt", "Constant"] # Change this to the list of your suffixes
 
-# Ask the user for the list of suffixes they want to use
-suffixes = ["Horton", "GreenAmpt", "Constant"] # Change this to the list of your suffixes
-
 # Initialize counters
 original_selected_count = 0
 new_subcatchments_added = 0

@@ -1,7 +1,11 @@
 net = WSApplication.current_network
 
-# Ask the user for the number of copies they want to create
-number_of_copies = 5
+# Ask the user for the list of suffixes they want to use
+suffixes = ["Horton", "GreenAmpt", "Constant"] # Change this to the list of your suffixes
+
+# Initialize counters
+original_selected_count = 0
+new_subcatchments_added = 0
 
 # Loops through all subcatchment objects
 net.row_objects('sw_subcatchment').each do |subcatchment|
@@ -9,8 +13,11 @@ net.row_objects('sw_subcatchment').each do |subcatchment|
     # Check if the catchment is selected
     if subcatchment.selected?
         
-        # Loop as per the number of copies
-        (1..number_of_copies).each do |copy_number|
+        # Increment the counter for original selected subcatchments
+        original_selected_count += 1
+        
+        # Loop through the list of suffixes
+        suffixes.each do |suffix|
             
             # Start a 'transaction'
             net.transaction_begin
@@ -18,8 +25,8 @@ net.row_objects('sw_subcatchment').each do |subcatchment|
             # Create a new subcatchment object
             new_object = net.new_row_object('sw_subcatchment')
             
-            # Name it with '_copy_<number>' suffix
-            new_object['subcatchment_id'] = "#{subcatchment['subcatchment_id']}_c_#{copy_number}"
+            # Name it with '_<suffix>' suffix
+            new_object['subcatchment_id'] = "#{subcatchment['subcatchment_id']}_#{suffix}"
             
             # Loop through each column
             new_object.table_info.fields.each do |field|
@@ -29,7 +36,10 @@ net.row_objects('sw_subcatchment').each do |subcatchment|
                     new_object[field.name] = subcatchment[field.name]
                 end
             end
-                       
+            
+            # Increment the counter for new subcatchments added
+            new_subcatchments_added += 1
+            
             # Write changes
             new_object.write
             
@@ -38,3 +48,7 @@ net.row_objects('sw_subcatchment').each do |subcatchment|
         end
     end
 end
+
+# Output the count of original selected subcatchments and new subcatchments added
+puts "Number of original selected subcatchments: #{original_selected_count}"
+puts "Number of new subcatchments added: #{new_subcatchments_added}"

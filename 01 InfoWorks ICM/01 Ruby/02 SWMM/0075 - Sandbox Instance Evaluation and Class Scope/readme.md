@@ -17,5 +17,7 @@ This Ruby script showcases the use of class definitions and instance evaluations
   - A new `Sandbox` instance (`new_box`) is created.
   - An attempt to call `amazing` in `new_box` fails, indicating that the method is not shared across instances.
 
+  ![Alt text](image.png)
+
 ## Conclusion
 This script effectively illustrates how `instance_eval` can be used to add methods dynamically to specific instances in Ruby and highlights the scope and accessibility of such methods.

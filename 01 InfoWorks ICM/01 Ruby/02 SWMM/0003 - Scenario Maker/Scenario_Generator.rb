@@ -56,75 +56,11 @@ def create_scenario(param,var,vars,net)
 	return scenario
 end
 
-# =======================================================================================
 # Generate scenarios for every possible parameter combination:
-scenarios=Array.new
-var1 = list_values(param[var[0]]['Range'])
-var1.each do | v1 |
-	if var.length >= 2
-		var2 = list_values(param[var[1]]['Range'])
-		var2.each do | v2 |
-			if var.length >= 3
-				var3 = list_values(param[var[2]]['Range'])
-				var3.each do | v3 |
-					if var.length >= 4
-						var4 = list_values(param[var[3]]['Range'])
-						var4.each do | v4 |
-							if var.length >= 5
-								var5 = list_values(param[var[4]]['Range'])
-								var5.each do | v5 |
-									if var.length >= 6
-										var6 = list_values(param[var[5]]['Range'])
-										var6.each do | v6 |
-											if var.length >= 7
-												var7 = list_values(param[var[6]]['Range'])
-												var7.each do | v7 |
-													if var.length >= 8
-														var8 = list_values(param[var[7]]['Range'])
-														var8.each do | v8 |
-															scenario = create_scenario(param,var,[v1,v2,v3,v4,v5,v6,v7,v8],net)
-															puts "Configured scenario #{scenario} with 8 variables"
-															scenarios << scenario
-														end
-													else
-														puts "Configuring scenarios for 7 variables"
-														scenario = create_scenario(param,var,[v1,v2,v3,v4,v5,v6,v7],net)
-														scenarios << scenario
-													end
-												end
-											else
-												puts "Configuring scenarios for 6 variables"
-												scenario = create_scenario(param,var,[v1,v2,v3,v4,v5,v6],net)
-												scenarios << scenario
-											end
-										end
-									else
-										puts "Configuring scenarios for 5 variables"
-										scenario = create_scenario(param,var,[v1,v2,v3,v4,v5],net)
-										scenarios << scenario
-									end
-								end
-							else
-								puts "Configuring scenarios for 4 variables"
-								scenario = create_scenario(param,var,[v1,v2,v3,v4],net)
-								scenarios << scenario
-							end
-						end
-					else
-						puts "Configuring scenarios for 3 variables"
-						scenario = create_scenario(param,var,[v1,v2,v3],net)
-						scenarios << scenario
-					end
-				end
-			else
-				puts "Configuring scenarios for 2 variables"
-				scenario = create_scenario(param,var,[v1,v2],net)
-				scenarios << scenario
-			end
-		end
-	else
-		puts "Configuring scenarios for 1 variable"
-		scenario = create_scenario(param,var,[v1],net)
-		scenarios << scenario
-	end
+scenarios = []
+variations = var.map { |v| list_values(param[v]['Range']) }
+variations.first.product(*variations[1..-1]) do |vars|
+  scenario = create_scenario(param, var, vars, net)
+  puts "Configured scenario #{scenario} with #{vars.length} variables"
+  scenarios << scenario
 end

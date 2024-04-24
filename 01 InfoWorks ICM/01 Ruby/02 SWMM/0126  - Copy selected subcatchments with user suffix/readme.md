@@ -1,18 +1,25 @@
+# Subcatchment Duplication Script for InfoWorks ICM
 
-# The provided script performs the following actions:
+This script duplicates selected subcatchments in an InfoWorks ICM model network and appends a specified suffix to the ID of each new subcatchment.
 
-It accesses the current active network in InfoWorks ICM.
-It sets the number of copies for each selected subcatchment to 5.
-The script then iterates through all subcatchment objects in the network.
-For each selected subcatchment, it creates the specified number of copies (5 in this case).
-Each copy of the subcatchment is given a new name with a "c<copy_number>" suffix.
+## How it Works
 
-All attributes (fields) of the original subcatchment, except its ID, are copied over to the new subcatchment.
-These changes are saved (written) to the new subcatchment.
-This process continues until all selected subcatchments have been copied the specified number of times.
+1. The script first sets a list of suffixes that will be appended to the IDs of the new subcatchments.
 
-| 📌 **Feature/Aspect** | 🌟 **Description** | 🚀 **Benefit/Importance** |
-|:---------------------:|:------------------:|:------------------------:|
-| **Legacy Components** | Components in ICM from the 1970s and 1980s. | 🛠️ These are foundational and have been proven reliable over time. Changing them could disrupt the core engine as it's intricately built around these data structures. |
-| **SQL, Ruby, Python Integration** | Addition of modern tools and languages. | 🔄 Provides flexibility and customization capabilities, allowing users to tailor the system to their specific needs. |
-| **Open Architecture System** | A system design that is open-ended and modifiable. | 🎨 Enables users to modify any and every aspect of ICM, ensuring adaptability and future growth. |
+2. It then accesses the current network and initializes counters for the number of original selected subcatchments and the number of new subcatchments added.
+
+3. The script loops through all subcatchments in the network. For each subcatchment that is selected, it increments the counter for original selected subcatchments.
+
+4. For each suffix in the list of suffixes, the script begins a transaction, creates a new subcatchment object, and sets its ID to the ID of the original subcatchment with the suffix appended.
+
+5. The script then loops through each field in the new subcatchment object. For each field that is not the subcatchment ID, it copies the value from the original subcatchment.
+
+6. After all fields have been copied, the script increments the counter for new subcatchments added, writes the changes to the new subcatchment object, and commits the transaction.
+
+7. After all selected subcatchments have been processed, the script prints the number of original selected subcatchments and the number of new subcatchments added.
+
+## Usage
+
+To use this script, simply run it in the context of an open network in InfoWorks ICM with some subcatchments selected. The script will automatically duplicate each selected subcatchment for each suffix in the list, append the suffix to the ID of each new subcatchment, and print the number of original selected subcatchments and new subcatchments added.
+
+![Alt text](diagram(2).png)

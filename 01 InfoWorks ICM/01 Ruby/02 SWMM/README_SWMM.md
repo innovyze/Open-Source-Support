@@ -23,7 +23,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0008 | UI   | Select Upstream Subcatchments from a Node Multilinks    |
 | 0009 | UI   | ICM Binary Results Export                               |
 | 0010 | UI   | List all results fields in a simulation                 |
-| 0011 | UI   | Pipe Length Selection                                   |
+| 0011 | UI   | Pipe Length Histogram                                   |
 | 0012 | UI   | ODEC Export Node and Conduit tables to CSV and MIF      |
 | 0013 | UI   | Depression Storage Statistics                           |
 | 0014 | UI   | Find all flags in all objects of a network model        |
@@ -33,7 +33,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0018 | UI   | All Subcatchment Parameter Statistics                   |
 | 0019 | UI   | Distribute attachment details by a shared value         |
 | 0020 | UI   | Generate Individual Reports for a Selection of Objects  |
-| 0021 | UI   | Create a node from polygon boundary                     |
+| 0021 | UI   | Create nodes from polygon,subcatchment boundary         |
 | 0022 | UI   | Output CSV of calcs based on Subcatchment Data          |
 | 0023 | UI   | Rename Nodes & Links using Name Generation pattern      |
 | 0024 | UI   | Input Message Box                                       |
@@ -43,16 +43,16 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0028 | UI   | Percent change in runoff surfaces upstream              |
 | 0029 | UI   | Runoff surfaces from selected subcatchments             |
 | 0030 | UI   | Connect subcatchment to nearest node                    |
-| 0031 | UI   | List all results fields in a simulation                 |
+| 0031 | UI   | List all results fields in a Simulation                 |
 | 0032 | UI   | List Network Fields-Structure                           |
-| 0033 | UI   | Output the Array BLOB values as a clustered value       |
+| 0033 | UI   | Make an Inflows File from User Fields                   |
 | 0034 | UI   | Display Export geometries                               |
 | 0035 | UI   | List Master Database Objects Contents                   |
 | 0036 | UI   | Create Selection List                                   |
 | 0037 | UI   | Select Isolated Nodes                                   |
 | 0038 | UI   | Remove rows from a blob field                           |
 | 0039 | UI   | Calculate subcatchment areas in all nodes upstream a    |
-| 0040 | UI   | Create a new selection list using a SQL query           |
+| 0040 | UI   |                                                         |
 | 0041 | UI   | Get results from all timesteps for Links, US_FLOW       |
 | 0042 | UI   | Get results from all timesteps for Subcatchments, All   |
 | 0043 | UI   | Get results from all timesteps for Manholes, Qnode      |
@@ -77,8 +77,8 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0062 | UI   | Header Nodes                                            |
 | 0063 | UI   | ICM SWMM All Tables                                     |
 | 0064 | UI   | ICM SWMM Network Overview                               |
-| 0065 | UI   | Put Run Parameters                                      |
-| 0066 | UI   | Get Run Parameters                                      |
+| 0065 | UI   | Get and Put Run Dialog Parameters                       |
+| 0066 | UI   | ICM results against measured data within the UI         |
 | 0067 | UI   | ICM Ruby Tutorials                                      |
 | 0068 | UI   | ICM InfoWorks All Table Names                           |
 | 0069 | UI   | Make an Overview of All Network Elements                |
@@ -112,7 +112,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0097 | UI   | Export SWMM5 Calibration Files - Upstream Flow          |
 | 0098 | UI   | Compare ICM Inlets to HEC22 Inlets                      |
 | 0099 | UI   | Compare ICM Headloss in Ruby Script                     |
-| 0100 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
+| 0100 | UI   | ODIC and SQL, Ruby for Importing InfoSewer to ICM       |
 | 0101 | UI   | Common Operations                                       |
 | 0102 | UI   | ICM IWR Results to SWMM5 Node Inflows Summary Table     |
 | 0103 | UI   | ICM IWR Results to SWMM5 Node Depths Summary            |
@@ -120,14 +120,14 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0105 | UI   | ICM IWR Results to SWMM5 Link Flows Summary             |
 | 0106 | UI   | ICM IWR Results to SWMM5 Link Flows Summary             |
 | 0107 | UI   | ICM IWR Results to SWMM5 to Subcatchment Runoff Summary |
-| 0108 | UI   | Locate Missing Attachments on a Standalone Database     |
-| 0109 | UI   | 1A ODEC Callback Examples                               |
-| 0110 | UI   | ODIC Export                                             |   
-| 0111 | UI   | ODIC Import                                             |
-| 0112 | UI   | 2A ODIC Callback Examples                               |
-| 0113 | UI   | Import an InfoWorks ICM SWMM Model InfoAsset Manager    |
-| 0114 | UI   | GIS Export                                              |
-| 0115 | UI   | Export Dashboard                                        |
+| 0108 | UI   |       |
+| 0109 | UI   |                                 |
+| 0110 | UI   |                                             |   
+| 0111 | UI   |                                            |
+| 0112 | UI   |                            |
+| 0113 | UI   |     |
+| 0114 | UI   | GIS Export of Data Tables                               |
+| 0115 | UI   |                                      |
 | 0116 | UI   | Export Choice List values                               |
 | 0117 | UI   | Import-Export Snapshot file                             |
 | 0118 | UI   | Bulk Data Import                                        |
@@ -139,10 +139,11 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 | 0124 | UI   | Network Tracing                                         |
 | 0125 | UI   | Tracing                                                 |
 | 0126 | UI   | Copy selected subcatchments with user suffix            |
-| 0127 | UI   |                                                         |
-| 0128 | UI   |                                                         |
-| 0129 | UI   |                                                         |
-| 0130 | UI   |                                                         |
+| 0127 | UI   | Kutter Sql for ICM SWMM                                 |
+| 0128 | UI   | Spatial Scripts                                         |
+| 0129 | UI   | ICM Information Hub Finder                              |
+| 0130 | UI   | Statistics for Node User Numbers                        |
+| 0130 | UI   | Statistics for Link User Numbers                        |
 |------|------|---------------------------------------------------------|
 
 ## Name notes on the meaning of the prefixes
@@ -179,3 +180,26 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
     * `Simulations Data Get`  - Obtaining simulation data
     * `System Automation`     - Misc system tasks
     * `Developer Tools`       - Tools that can help you make / learn how to make Ruby scripts.
+
+    # InfoWorks ICM Ruby Integration: Exchange vs UI
+
+InfoWorks ICM provides two main ways to integrate with Ruby: Exchange and UI. Each of these has its own strengths and limitations, and they are intended for different use cases.
+
+## Exchange
+
+Exchange is a powerful tool for manipulating tree objects 🗂, creating and opening databases 💽, running simulations 🏁, and more. It provides a lower-level access to the database, allowing you to control and manipulate the data directly.
+
+However, Exchange does not have access to UI elements like graphs 📊 and dialogs 💬. This means that you cannot use Exchange to interact with the user interface of InfoWorks ICM. Exchange scripts are typically run from the command line and do not require the InfoWorks ICM user interface to be open.
+
+## UI
+
+UI, on the other hand, allows you to manipulate the currently open network(s) 🌐. You can import and export data 💾, select objects 👉, and run scripts that produce output in the UI 💻.
+
+However, the UI integration does not allow you to open or close databases, access tree objects directly, or run simulations. It is limited to working on the current open network 🌐.
+
+## Summary
+
+In summary, Exchange gives you more low-level database control 🤓 but no UI access 🚫💻, while UI allows you to manipulate the current network with some UI interactions 💻 but with less low-level control ⚙️.
+
+The Exchange products are intended for command line or automated tasks ⚙️, while the UI Ruby integration allows some scripting on open networks with UI interaction 💻. So they provide different levels of access tailored to their intended use cases.
+
