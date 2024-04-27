@@ -1,25 +1,20 @@
-# SWMM Options Query for InfoWorks ICM
+# ICM SWMM Network Options
 
-This SQL script queries various options related to the Storm Water Management Model (SWMM) in an InfoWorks ICM model network.
+This code selects various options related to the SWMM (Storm Water Management Model) network in InfoWorks ICM. The selected options are:
 
-## How it Works
+- `allow_ponding`: Surface ponding option (Yes, No, 1, or 0)
+- `force_main_equation`: Force main equation (Hazen-Williams or Darcy-Weisbach)
+- `head_tolerance`: Head tolerance used to determine solver convergence
+- `inertial_damping`: Inertial damping option (None, Partial, or Full)
+- `infiltration`: Infiltration model (Horton, Modified Horton, Green Ampt, Modified Green Ampt, or Curve Number)
+- `max_trials`: Maximum number of trials allowed for the solver to converge
+- `min_slope`: Minimum conduit slope (%)
+- `min_surfarea`: Minimum surface area used for nodes when computing changes in water depth
+- `normal_flow_limited`: Normal flow limited option (Slope, Froude, or Both)
+- `units`: Units used in the model (CFS, MGD, CMS, LPS, or MLD)
 
-The script selects the following options:
+The selected options are stored into corresponding variables using the `INTO` clause.
 
-1. `allow_ponding`: Determines whether ponding is allowed in the model.
-2. `force_main_equation`: Specifies the equation used for force main calculations.
-3. `head_tolerance`: Specifies the head tolerance for the model.
-4. `inertial_damping`: Specifies the inertial damping factor for the model.
-5. `infiltration`: Specifies the infiltration method used in the model.
-6. `max_trials`: Specifies the maximum number of trials for the model.
-7. `min_slope`: Specifies the minimum slope for the model.
-8. `min_surfarea`: Specifies the minimum surface area for the model.
-9. `normal_flow_limited`: Specifies the normal flow limit for the model.
-10. `otype`: Specifies the object type for the model.
-11. `units`: Specifies the units used in the model.
+The code also includes a prompt dialog titled "ICM SWMM Network Options" with various prompt lines displaying information about each option. The prompt lines are assigned using `LET` statements and displayed using the `PROMPT LINE` command.
 
-## Usage
-
-To use this script, simply run it in the context of an open network in InfoWorks ICM. The script will automatically query the specified SWMM options and return their values.
-
-![Alt text](image.png)
+Finally, the `PROMPT DISPLAY` command is used to display the prompt dialog to the user.
