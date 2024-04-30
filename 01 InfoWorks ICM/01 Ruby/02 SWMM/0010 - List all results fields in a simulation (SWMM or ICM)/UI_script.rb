@@ -1,12 +1,12 @@
-def print_table_results(net)
+def print_table_results(cn)
   # Iterate over each table in the network
-  net.tables.each do |table|
+  cn.tables.each do |table|
     # Initialize an array to store the names of result fields
     results_array = []
     found_results = false
 
     # Check each row object in the current table
-    net.row_object_collection(table.name).each do |row_object|
+    cn.row_object_collection(table.name).each do |row_object|
       # Check if the row object has a 'results_fields' property and results have not been found yet
       if row_object.table_info.results_fields && !found_results
         # If yes, add the field names to the results_array
@@ -18,15 +18,17 @@ def print_table_results(net)
       end
     end
 
-    # Print the table name and its result fields only if there are result fields
+    # Print the table name and each of its result fields on a separate row only if there are result fields
     unless results_array.empty?
       puts "Table: #{table.name.upcase}"
-      puts "Results fields: #{results_array.join(', ')}"
+      results_array.each do |field|
+        puts "Result field: #{field}"
+      end
       puts
     end
   end
 end
 
 # Usage example
-net = WSApplication.current_network
-print_table_results(net)
+cn = WSApplication.current_network
+print_table_results(cn)
