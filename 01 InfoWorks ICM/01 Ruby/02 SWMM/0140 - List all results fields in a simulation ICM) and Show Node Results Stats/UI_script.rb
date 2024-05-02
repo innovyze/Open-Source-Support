@@ -2,7 +2,10 @@ require 'date'
 
 def print_table_results(cn)
   # Iterate over each table in the network
+  puts
   puts "Tables and their result fields in this ICM InfoWorks Run"
+  puts
+  
   cn.tables.each do |table|
     # Initialize an array to store the names of result fields
     results_array = []

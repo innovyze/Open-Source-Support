@@ -2,7 +2,9 @@ require 'date'
 
 def print_table_results(cn)
   # Iterate over each table in the network
+  puts
   puts "Tables and their result fields in this ICM InfoWorks Run"
+  puts
   cn.tables.each do |table|
     # Initialize an array to store the names of result fields
     results_array = []
@@ -52,23 +54,23 @@ puts "Time interval: %.4f seconds or %.4f minutes" % [time_interval, time_interv
 
 # Define the result field names to fetch the results for all selected nodes
 result_field_names = [
-  'angle2d', 'area2d', 'cuminf2d', 'depth2d', 'EFFINF2D', 'elevation2d', 'froude2d', 
-  'gamcuz2d', 'gasflag2d', 'gasmd2d', 'gatduz2d', 'gndlev2d', 'hazard2d', 
-  'max_depth2d', 'max_elevation2d', 'max_speed2d', 'maxangle2d', 'maxdepthangle2d', 
-  'maxhazangle2d', 'maxhazdepth2d', 'maxhazspeed2d', 'maxunitflow2d', 'maxveldepthangle2d', 
-  'minangle2d', 'mindepth2d', 'minspeed2d', 'minunitflow2d', 'potinf2d', 'rainprof2d', 
-  'speed2d', 'swcp2d', 't_end_inundation_2d', 't_flood_duration_2d', 't_inundation_2d', 
-  't_peak_2d', 'unitflow2d', 'volerror2d'
+  'height', 'HYDGRAD', 'length', 'max_qinflnk', 'max_qlink', 'max_Surcharge',
+  'max_us_depth', 'max_us_flow', 'max_us_froude', 'max_us_totalhead', 'max_us_vel',
+  'maxsurchargestate', 'pfc', 'qinflnk', 'qlicum', 'qlink', 'Surcharge', 'type',
+  'us_depth', 'us_flow', 'us_froude', 'us_invert', 'us_qcum', 'us_totalhead',
+  'us_vel', 'volume', 'ds_depth', 'ds_flow', 'ds_froude', 'ds_invert', 'ds_qcum',
+  'ds_totalhead', 'ds_vel', 'max_ds_depth', 'max_ds_flow', 'max_ds_froude',
+  'max_ds_totalhead', 'max_ds_vel'
 ]
 
 # Iterate through the selected objects in the network
 cn.each_selected do |sel|
   begin
     # Try to get the row object for the current node
-    ro = cn.row_object('HW_2D_ZONE', sel.id) 
+    ro = cn.row_object('hw_conduit', sel.id) 
     
     # If ro is nil, then the object with the given id is not a node
-    raise "Object with ID #{sel.id} is not found." if ro.nil?
+    raise "Object with ID #{sel.node_id} is not a link." if ro.nil?
 
     # Iterate through each result field name
     result_field_names.each do |res_field_name|
@@ -88,9 +90,7 @@ cn.each_selected do |sel|
           # Iterate through the results and calculate statistics
           ro.results(res_field_name).each_with_index do |result, time_step_index|
             total += result.to_f
-            
-              total_integrated_over_time = result.to_f
-
+            total_integrated_over_time += result.to_f * time_interval
             min_value = [min_value, result.to_f].min
             max_value = [max_value, result.to_f].max
             count += 1
@@ -100,8 +100,7 @@ cn.each_selected do |sel|
           mean_value = count > 0 ? total / count : 0
           
           # Print the total, total integrated over time, mean, max, min values, and count
-          puts "Subcatchment: #{'%-12s' % sel.id} | #{'%-16s' % res_field_name} | End: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"
-        end
+          puts "Link: #{'%-12s' % sel.id} | #{'%-16s' % res_field_name} | End: #{'%15.4f' % total_integrated_over_time} | Mean: #{'%15.4f' % mean_value} | Max: #{'%15.4f' % max_value} | Min: #{'%15.4f' % min_value} | Steps: #{'%15d' % count}"        end
 
       rescue
         # This will handle the error when the field does not exist

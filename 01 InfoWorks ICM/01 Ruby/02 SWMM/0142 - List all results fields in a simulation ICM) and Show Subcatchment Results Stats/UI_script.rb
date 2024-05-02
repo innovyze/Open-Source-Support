@@ -52,20 +52,17 @@ puts "Time interval: %.4f seconds or %.4f minutes" % [time_interval, time_interv
 
 # Define the result field names to fetch the results for all selected nodes
 result_field_names = [
-  'angle2d', 'area2d', 'cuminf2d', 'depth2d', 'EFFINF2D', 'elevation2d', 'froude2d', 
-  'gamcuz2d', 'gasflag2d', 'gasmd2d', 'gatduz2d', 'gndlev2d', 'hazard2d', 
-  'max_depth2d', 'max_elevation2d', 'max_speed2d', 'maxangle2d', 'maxdepthangle2d', 
-  'maxhazangle2d', 'maxhazdepth2d', 'maxhazspeed2d', 'maxunitflow2d', 'maxveldepthangle2d', 
-  'minangle2d', 'mindepth2d', 'minspeed2d', 'minunitflow2d', 'potinf2d', 'rainprof2d', 
-  'speed2d', 'swcp2d', 't_end_inundation_2d', 't_flood_duration_2d', 't_inundation_2d', 
-  't_peak_2d', 'unitflow2d', 'volerror2d'
+  'effrain', 'evapprof', 'EVAPRATE', 'max_EVAPRATE', 'max_qcatch', 'max_qfoul',
+  'max_qinfsoil', 'max_qsurf01', 'max_qtrade', 'qbase', 'qcatch', 'qfoul',
+  'qinfsoil', 'qsurf01','qsurf02','qsurf03', 'qtrade', 'rainprof', 'max_RAINFALL', 'RAINFALL',
+  'max_runoff', 'runoff'
 ]
 
 # Iterate through the selected objects in the network
 cn.each_selected do |sel|
   begin
     # Try to get the row object for the current node
-    ro = cn.row_object('HW_2D_ZONE', sel.id) 
+    ro = cn.row_object('hw_subcatchment', sel.id) 
     
     # If ro is nil, then the object with the given id is not a node
     raise "Object with ID #{sel.id} is not found." if ro.nil?
