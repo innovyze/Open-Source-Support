@@ -14,4 +14,4 @@ This Ruby script is used to duplicate selected subcatchments in the InfoWorks IC
 
 - It writes the changes to the new subcatchment and commits the transaction.
 
-- This process is repeated for each selected subcatchment in the network.
+- This process is repeated for each selected subcatchment in the network.                                                                                                                                                                                  
