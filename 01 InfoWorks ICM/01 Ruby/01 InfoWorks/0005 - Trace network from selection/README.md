@@ -2,11 +2,11 @@
 These scripts allow tracing all assets upstream or downstream of a selected node or link.
 ## Version 1 - Trace network downstream of selected node
 ![](gif001.gif)
-## Version 2 - Trace network upstread of selected node
+## Version 2 - Trace network upstream of selected node
 ![](gif002.gif)
 ## Version 3 - Trace network downstream of selected link
 ![](gif003.gif)
-## Version 4 - Trace network upstread of selected link
+## Version 4 - Trace network upstream of selected link
 ![](gif004.gif) 
  
 # Ruby Script for Selecting Unprocessed Links in InfoWorks ICM - version 1
