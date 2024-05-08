@@ -1,6 +1,6 @@
 # Create Selection List of Reverse Slope Pipes
 
-This script iterates through all conduits in the 'hw_conduit' network. It selects conduits that have a negative gradient and their solution model is neither 'Pressure' nor 'ForceMain'. If no reverse slope pipes are found, it informs the user and exits the script.
+This script iterates through all conduits in the 'hw_conduit' table. It selects conduits that have a negative gradient and their solution model is neither 'Pressure' nor 'ForceMain'. If no reverse slope pipes are found, it informs the user and exits the script.
 
 The script then identifies the parent model group of the current network. It attempts to find the parent object assuming it's a 'Model Group'. If unsuccessful, it assumes the parent object is a 'Model Network' and finds its parent 'Model Group'.
 
