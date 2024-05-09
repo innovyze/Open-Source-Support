@@ -1,31 +1,15 @@
-# Header Nodes Selection Script
+# Maintain only first and last river reach sections
 
-This script selects all header nodes in an InfoWorks ICM model network. A header node is defined as a node that is not used as the downstream node (`ds_node_id`) for any link in the network.
+This script is designed to modify the sections of selected river reaches in a network, specifically focusing on the first and last sections of each reach.
 
 ## How it Works
 
-1. The script first checks if there is a network open in the WSApplication. If not, it prints an error message and exits.
-
-2. It then gets the current network and clears any existing selection.
-
-3. The script creates an array to store node IDs and populates it with the IDs of all nodes in the network.
-
-4. It also creates an array to store downstream node IDs and populates it with the IDs of the downstream nodes of all links in the network.
-
-5. Finally, the script iterates over each node ID. If a node ID is not in the downstream node IDs array, the script selects the corresponding node in the network and prints a message indicating the node ID.
-
-## Usage
-
-To use this script, simply run it in the context of an open network in InfoWorks ICM. The script will automatically select all header nodes in the network.
-
-## Error Handling
-
-The script includes error handling to catch and print error messages if there is no open network in the WSApplication, or if the nodes or links object collections are empty.
-
-## Source
-
-This script is originally sourced from [here](https://github.com/chaitanyalakeshri/ruby_scripts) and has been edited for use with ChatGPT.
-
-## Naming Convention
-
-The naming convention for tables in InfoWorks ICM is different. Instead of starting with sw_, tables in ICM usually start with hw_ (for "HydroWorks", the original name of InfoWorks ICM). The field names within these tables can also be different between SWMM and ICM.  Ruby code with the prefix hw_sw can be used in both ICM InfoWorks and SWMM Networks
+1. The script first accesses the current network of river reaches.
+2. It then goes through each river reach in the network. If a river reach is selected:
+    - It retrieves the sections of the river reach.
+    - It identifies the keys (identifiers) of the first and last sections.
+    - It creates a new array, `values_array`, to hold the data from the first and last sections.
+    - It then goes through each section in the river reach. If the section is the first or last section, it adds the data of the section to the `values_array`.
+    - After all sections have been processed, it resizes the sections to the number of entries in `values_array` divided by 6 (since each section has 6 fields: key, X, Y, Z, roughnessN, and newpanel).
+    - It then goes through each section again, this time setting the data of the section to the corresponding data in `values_array`.
+3. Once all selected river reaches have been processed, it writes the changes to the sections and the river reach.
