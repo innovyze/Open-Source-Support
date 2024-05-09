@@ -1,31 +1,11 @@
-# Header Nodes Selection Script
+# Import ground model
 
-This script selects all header nodes in an InfoWorks ICM model network. A header node is defined as a node that is not used as the downstream node (`ds_node_id`) for any link in the network.
+This script is designed to import a ground model into a network from a grid file. This imported ground model can then be used in various geospatial analyses.
 
 ## How it Works
 
-1. The script first checks if there is a network open in the WSApplication. If not, it prints an error message and exits.
-
-2. It then gets the current network and clears any existing selection.
-
-3. The script creates an array to store node IDs and populates it with the IDs of all nodes in the network.
-
-4. It also creates an array to store downstream node IDs and populates it with the IDs of the downstream nodes of all links in the network.
-
-5. Finally, the script iterates over each node ID. If a node ID is not in the downstream node IDs array, the script selects the corresponding node in the network and prints a message indicating the node ID.
-
-## Usage
-
-To use this script, simply run it in the context of an open network in InfoWorks ICM. The script will automatically select all header nodes in the network.
-
-## Error Handling
-
-The script includes error handling to catch and print error messages if there is no open network in the WSApplication, or if the nodes or links object collections are empty.
-
-## Source
-
-This script is originally sourced from [here](https://github.com/chaitanyalakeshri/ruby_scripts) and has been edited for use with ChatGPT.
-
-## Naming Convention
-
-The naming convention for tables in InfoWorks ICM is different. Instead of starting with sw_, tables in ICM usually start with hw_ (for "HydroWorks", the original name of InfoWorks ICM). The field names within these tables can also be different between SWMM and ICM.  Ruby code with the prefix hw_sw can be used in both ICM InfoWorks and SWMM Networks
+1. The script first opens the current database and selects a specific 'Model Group' in the database.
+2. It creates an array of filenames (in this case, only one file is specified) which represent the grid files to import.
+3. It creates a hash (a type of data structure) containing various properties for the new ground model such as name, data type, cell size, unit multipliers, whether the data is in integer format, and whether a boundary polygon should be used.
+4. The 'importgridground_model' method of the 'Model Group' object is then called with the appropriate parameters: a polygon row object (in this case, none is specified), the array of filenames, and the hash of properties. This method imports the ground model from the specified grid file(s) with the specified properties.
+5. The ground model, named 'fredi', is now available in the 'Model Group' for further use.
