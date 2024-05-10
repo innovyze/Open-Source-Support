@@ -1,4 +1,4 @@
-Welcome to the XPSWMM Introduction Training repository. This repository contains all supporting materials that for our 2-day training class. It includes 6 individual workshops, each workshop starts with a lecture session immediately followed by a hands-on exercise.
+Welcome to the XPSWMM Introduction Training repository. This repository contains all supporting materials for our 2-day training class. It includes 6 individual workshops, each workshop starts with a lecture session immediately followed by a hands-on exercise.
 
 This repository is intended as a "free" resource for XPSWMM users,
 - A self-paced training for new users
