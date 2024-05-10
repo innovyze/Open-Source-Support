@@ -15,22 +15,24 @@
 | 0007 | EX       | Running simulations                                                 | Simulations Run       |
 | 0008 | UI & EX  | List all results fields in a simulation                             | Network Data Get      |
 | 0009 | EX       | ICM Binary Results Export                                           | Network Data Export   |
+| 0010 | UI       | Create selection list of reverse slope pipes                        | Network Data Get      |
 | 0011 | UI & EX  | Find Root Model Group                                               | Database Get          |
 | 0012 | UI & EX  | ODEC Export Node and Conduit tables to CSV and MIF                  | Network Data Export   |
+| 0013 | UI       | Set subcatchment drying time and commit changes                     | Network Data Set      |
 | 0014 | UI & EX  | Find all flags in all objects of a network model                    | Network Data Get      |
-| 0015 | UI & EX  | Import or Export RTC to txt                                         | Network RTC  Bin      |
+| 0015 | UI & EX  | Import or Export RTC to txt                                         | Network RTC Bin       |
 | 0016 | UI & EX  | Example ODEC callback scripts                                       | Network Data Export   |
 | 0017 | UI & EX  | Create a node from polygon boundary                                 | Network Data Set      |
 | 0018 | UI & EX  | Checking conveyance using Ruby                                      | Network Data Analysis |
 | 0019 | UI & EX  | River reach bank spacing                                            | Network Data Get      |
 | 0020 | UI & EX  | Set the river reach section ends to the bank level                  | Network Data Set      |
 | 0021 | UI & EX  | Populate conduit inverts with cross section Zs                      | Network Data Set      |
-| 0022 | UI & EX  | Output CSV of calcs based on Subcatchment Data                      | Network Data Get      | <!--  Justification for category: CSV generated via Ruby File class rather than Export API -->
-| 0023 | TBC      | Ground Model Import                                                 | Network Data Import   | <!--  Type: TBC - If this imports a ground model into the UI then this is `UI` only however if this actually updates manholes with ground model data this is `UI & EX`? -->
+| 0022 | UI & EX  | Output CSV of calcs based on Subcatchment Data                      | Network Data Get      |<!--  Justification for category: CSV generated via Ruby File class rather than Export API -->
+| 0023 | TBC      | Ground Model Import                                                 | Network Data Import   |<!--  Type: TBC - If this imports a ground model into the UI then this is `UI` only however if this actually updates manholes with ground model data this is `UI & EX`? -->
 | 0025 | EX       | Recursively find model network                                      | Database Data Get     |
 | 0026 | UI & EX  | Export to geodatabase                                               | Network Data Export   |
 | 0027 | UI & EX  | Copy a subcatchment and rename it                                   | Network Data Set      |
-| 0028 | UI & EX  | Percentage change in runoff surfaces upstream node into new scenario| Network Data Set      | <!-- Consider a Network Scenario Set Category -->
+| 0028 | UI & EX  | Percentage change in runoff surfaces upstream node into new scenario| Network Data Set      |<!-- Consider a Network Scenario Set Category -->
 | 0030 | UI & EX  | Maintain only first and last river reach sections                   | Network Data Set      |
 | 0031 | UI & EX  | Replace flag in all objects in a model network                      | Network Data Set      |
 | 0033 | EX       | Export a tree object file                                           | Database Data Export  |
@@ -53,12 +55,11 @@
 | 0049 | EX       | Extract river reach results                                         | Network Data Get      |
 | 0050 | UI & EX  | Assign Subcatchment to nearest 'Storage' type Node                  | Network Data Get      |
 | 0051 | EX       | Interactive Exchange in Visual Studio Code                          | Developer Tools       |
-| 0052 | UI       | Select flow path between nodes                                      | Network Data Get      |
+| 0052 | UI       | Select flow path between two nodes                                  | Network Data Get      |
 | 0053 | UI       | Import Cross Section Data from CSV                                  | Network Data Get      |
 | 0058 | UI       | Bifurcation Nodes                                                   | Network Data Get      |
 | 0059 | UI       | Dry Pipes                                                           | Network Data Get      |
 | 0060 | UI       | Change All Node, Subs and Link IDs                                  | Network Data Get      |
-
 
 ### Descriptions
 
