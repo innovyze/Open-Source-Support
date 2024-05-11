@@ -1,7 +1,7 @@
 require 'csv'
 
 # Define the print_csv_inflows_file method
-def print_csv_inflows_file(open_net)
+def print_csv_inflows_file(cn)
   # Define database fields for SWMM network nodes
   database_fields = [
     'us_invert',
@@ -27,8 +27,8 @@ def print_csv_inflows_file(open_net)
   # Define the data fields
   data_fields = ["ID", "FROM_INV", "TO_INV", "LENGTH", "DIAMETER", "COEFF", "PARALLEL"]
 
-  open_net.clear_selection
-  puts "Reading Scenario : #{open_net.current_scenario}"
+  cn.clear_selection
+  puts "Reading Scenario : #{cn.current_scenario}"
   
   # Prepare hash for storing data of each field for database_fields
   fields_data = {}
@@ -39,7 +39,7 @@ def print_csv_inflows_file(open_net)
   total_expected = 0.0
   
   # Collect data for each field from sw_node
-  open_net.row_objects('hw_conduit').each do |ro|
+  cn.row_objects('hw_conduit').each do |ro|
     row_count += 1
     database_fields.each do |field|
       fields_data[field] << ro[field] if ro[field]
@@ -69,7 +69,7 @@ def print_csv_inflows_file(open_net)
   end
 end
 
-def import_pipe_hydraulics(open_net)    
+def import_pipe_hydraulics(cn)    
   # Define the configuration and CSV file paths
   val=WSApplication.prompt "Pipe Hydraulics for an InfoSewer Scenario",
   [
@@ -98,43 +98,53 @@ def import_pipe_hydraulics(open_net)
     }
   end
 
-  # Print the rows
-  rows.each do |row|
-    open_net.row_objects('hw_conduit').each do |ro|
-      if ro.asset_id == row["ID"] then
-        ro.user_number_1 = row["FROM_INV"]
-        ro.user_number_2 = row["TO_INV"]
-        ro.user_number_3 = row["LENGTH"]
-        ro.user_number_4 = row["DIAMETER"]
-        ro.user_number_5 = row["COEFF"]
-        ro.user_number_6 = row["PARALLEL"]
-        if ro.user_number_6 == 0 then ro.user_number_6 = 1 end
-        ro.us_invert =row["FROM_INV"]
-        ro.ds_invert =row["TO_INV"]
-        ro.conduit_length = row["LENGTH"]
-        roconduit_height = row["DIAMETER"]
-        ro.bottom_roughness_N = row["COEFF"]
-        ro.top_roughness_N = row["COEFF"]
-        ro.number_of_barrels = ro.user_number_6
-        ro.write
-        break
+# Print the rows
+rows.each do |row|
+  cn.row_objects('hw_conduit').each do |ro|
+    if ro.asset_id == row["ID"] then
+      ro.user_number_1 = row["FROM_INV"]
+      ro.user_number_2 = row["TO_INV"]
+      ro.user_number_3 = row["LENGTH"]
+      ro.user_number_4 = row["DIAMETER"]
+      ro.user_number_5 = row["COEFF"]
+      ro.user_number_6 = row["PARALLEL"]
+      if ro.user_number_6 == 0 then ro.user_number_6 = 1 end
+      ro.us_invert =row["FROM_INV"]
+      ro.ds_invert =row["TO_INV"]
+      ro.conduit_length = row["LENGTH"]
+      ro.conduit_height = row["DIAMETER"]
+      ro.conduit_width = row["DIAMETER"] # Fixed typo here
+      ro.bottom_roughness_N = row["COEFF"]
+      ro.top_roughness_N = row["COEFF"]
+      ro.roughness_type = 'N'
+      ro.us_headloss_type = 'FIXED'
+      ro.ds_headloss_type = 'FIXED'
+      ro.us_headloss_coeff = 0.25
+      ro.ds_headloss_coeff = 0.25
+      ro.number_of_barrels = ro.user_number_6
+      ro.user_text_10 = 'Pipe'
+      if ro.number_of_barrels.nil? || ro.number_of_barrels.zero?
+        ro.number_of_barrels = 1
       end
-    end
+      ro.write # Moved this line inside the loop
+      break
+     end
   end
+ end
 end
 
 # Access the current open network in the application
-open_net = WSApplication.current_network
+cn= WSApplication.current_network
 
-open_net.scenarios do |scenario|
-  open_net.current_scenario = scenario
-  text = WSApplication.message_box("Scenario #{open_net.current_scenario} to Import", 'OK', 'Information', nil)
-    puts "Importing for Scenario #{open_net.current_scenario}"
-    open_net.transaction_begin
-    import_pipe_hydraulics(open_net)
-    open_net.transaction_commit
+cn.scenarios do |scenario|
+  cn.current_scenario = scenario
+  text = WSApplication.message_box("Scenario #{cn.current_scenario} to Import", 'OK', 'Information', nil)
+    puts "Importing for Scenario #{cn.current_scenario}"
+    cn.transaction_begin
+    import_pipe_hydraulics(cn)
+    cn.transaction_commit
     # Call the print_csv_inflows_file method
-    print_csv_inflows_file(open_net)
+    print_csv_inflows_file(cn)
 end
 
 # Indicate the completion of the import process

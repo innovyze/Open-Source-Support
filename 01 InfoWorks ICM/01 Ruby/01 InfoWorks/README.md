@@ -29,10 +29,12 @@
 | 0021 | UI & EX  | Populate conduit inverts with cross section Zs                      | Network Data Set      |
 | 0022 | UI & EX  | Output CSV of calcs based on Subcatchment Data                      | Network Data Get      |<!--  Justification for category: CSV generated via Ruby File class rather than Export API -->
 | 0023 | TBC      | Ground Model Import                                                 | Network Data Import   |<!--  Type: TBC - If this imports a ground model into the UI then this is `UI` only however if this actually updates manholes with ground model data this is `UI & EX`? -->
+| 0024 | UI       | List all results fields in a Simulation                             | Network Data Get      |
 | 0025 | EX       | Recursively find model network                                      | Database Data Get     |
 | 0026 | UI & EX  | Export to geodatabase                                               | Network Data Export   |
 | 0027 | UI & EX  | Copy a subcatchment and rename it                                   | Network Data Set      |
 | 0028 | UI & EX  | Percentage change in runoff surfaces upstream node into new scenario| Network Data Set      |<!-- Consider a Network Scenario Set Category -->
+| 0029 | UI       | Subcatcatchemt Parameter Statistics                                 | Network Data Get      |
 | 0030 | UI & EX  | Maintain only first and last river reach sections                   | Network Data Set      |
 | 0031 | UI & EX  | Replace flag in all objects in a model network                      | Network Data Set      |
 | 0033 | EX       | Export a tree object file                                           | Database Data Export  |
@@ -46,7 +48,6 @@
 | 0041 | UI & EX  | Minimum and maximum elevation of river reach section at node        | Network Data Get      |
 | 0042 | UI       | Running an Exchange script from the UI                              | System Automation     |
 | 0043 | UI       | Get results from all timesteps                                      | Simulations Data Get  |
-| 0044 | UI       | Import Flow Survey Data                                             | Database Data Set     |
 | 0044 | UI       | Trace Current Network family in database tree                       | Database Data Get     |
 | 0045 | UI       | Clear SUDS control data from all the subcatchments                  | Network Data Set      |
 | 0046 | UI       | Output SUDS control data from all subcatchments to a csv            | Network Data Get      |

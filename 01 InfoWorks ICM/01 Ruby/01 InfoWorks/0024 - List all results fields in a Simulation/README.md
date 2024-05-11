@@ -18,6 +18,8 @@ This script is used to print the results of tables in both the current network a
 
 4. Finally, it calls the `print_table_results` method with the current network and the background network as arguments.
 
+
+![alt text](image-1.png)
 ## Ruby Code
 
 ```ruby
@@ -30,5 +32,3 @@ bn = WSApplication.background_network
 # Print the table results
 print_table_results(net,bn)
 
-
-![alt text](image.png)

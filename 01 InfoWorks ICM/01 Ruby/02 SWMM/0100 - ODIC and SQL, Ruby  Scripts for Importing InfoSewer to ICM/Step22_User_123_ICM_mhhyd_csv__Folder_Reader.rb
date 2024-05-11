@@ -112,15 +112,10 @@ def import_node_loads(open_net)
     open_net.row_objects('hw_node').each do |ro|
       if ro.node_id.strip.downcase == row["ID"].strip.downcase then
         ro.user_number_1 = row["DIAMETER"]
+        ro.shaft_area = row["DIAMETER"]
+        ro.chamber_area = row["DIAMETER"]
         ro.user_number_2 = row["RIM_ELEV"]
-        ro.user_number_3 = row["LOAD1"]
-        ro.user_number_4 = row["LOAD2"]
-        ro.user_number_5 = row["LOAD3"]
-        ro.user_number_6 = row["LOAD4"]
-        ro.user_number_7 = row["LOAD5"]
-        ro.user_number_8 = row["LOAD6"]
-        ro.user_number_9 = row["LOAD7"]
-        ro.user_number_10 = row["LOAD8"]
+        ro.ground_level = row["RIM_ELEV"]
         ro.write
         break
       end
@@ -130,6 +125,7 @@ def import_node_loads(open_net)
     rows.each do |row|
       open_net.row_objects('hw_subcatchment').each do |ro|
         if ro.subcatchment_id == row["ID"] then
+          ro.system_type = 'Sanitary'
           ro.user_number_1 = row["LOAD1"]
           ro.user_number_2 = row["LOAD2"]
           ro.user_number_3 = row["LOAD3"]
