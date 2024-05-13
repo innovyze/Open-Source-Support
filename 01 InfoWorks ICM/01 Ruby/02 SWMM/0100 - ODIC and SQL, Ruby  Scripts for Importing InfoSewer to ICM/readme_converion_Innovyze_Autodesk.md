@@ -78,8 +78,6 @@ Step1b_Create_Duumy_Subcatchment_Boundaries: A guide to create dummy subcatchmen
 
 This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, CFG configuration files for modeling steps, and documentation to guide users through the process.
 
-![Alt text](image-6.png)
-
 
 ## Background Refinement
 
@@ -124,4 +122,117 @@ Both methods offer unique insights and can be chosen based on the specific requi
 # Introduction
 
 We're on the move 🔄 from our legacy software like XPSWMM, InfoSewer, and InfoSWMM, to the advanced Autodesk ICM Standard and ICM Ultimate 🌐. To make this switch smooth for our users, we've enabled direct imports 🔄 from InfoSWMM to ICM SWMM networks and XPSWMM XPX files to both ICM InfoWorks and ICM SWMM 📁. For those transitioning from InfoSewer, we've got Ruby and ODIC CFG files on our Github, accessible via the ICM Technical Information Hub 🔗. Plus, there's a treasure trove of about 100 Knowledge Center Service (KCS) articles in the ICM Online help file 📚 - just search for 'InfoSewer', 'InfoSWMM', or 'XPSWMM' to find detailed guidance 💡. Our aim? A seamless, informed transition for all our users into the new era of Autodesk products 🚀🌟.
+
+# Files Used for InfoSewer or InfoSWMM to ICM InfoWorks or ICM SWMM
+
+## Markdown Files
+- Excel\_Macro\_readme.md
+- InfoSewer\_ODIC\_Ruby.md
+- InfoSWMM\_Merge\_Models.md
+- readme.md
+- SET Node Type = Break.md
+- SQL\_Make\_Subcatchments.md
+- Step1a\_readme.md
+- Step1b\_readme.md
+- Step1\_readme.md
+- Step20.md
+- Step21.md
+- Step22.md
+- Step22a\_User\_123\_ICM\_mhhyd\_csv\_One\_Read.md
+- Step22\_User\_123\_ICM\_mhhyd\_csv\_Folder\_Reader.md
+- Step23.md
+- Step24.md
+- Step25.md
+- Step2\_readme.md
+- Step3\_readme.md
+- Step4\_readme.md
+- Step5\_readme.md
+- Step6\_readme.md
+- Step7\_readme.md
+- Step8\_readme copy 2.md
+- Step8\_readme copy.md
+- Step8\_readme.md
+- Step9\_readme.md
+
+## Excel Files
+- InfoSewer\_InfoSWMM\_VBA\_DBF\_CSV\_Conversion.xlsm
+
+## Ruby Files
+- InfoSewer\_ODIC\_Ruby.rb
+- Move\_Copy\_Imported\_Pumps.rb
+- Step10\_InfoSewer\_sub\_dwf\_mhhyd\_scenario\_ODIC.rb
+- Step11\_InfoSewer\_pipehyd\_scenario\_ODIC.rb
+- Step12\_Point\_Scenario\_csv.rb
+- Step13\_Point\_Runopt\_csv.rb
+- Step14\_Point\_Patterns\_csv.rb
+- Step15\_Point\_Patndata\_csv.rb
+- Step16\_Additional\_DWF\_ICM\_SWMM\_XLOAD\_csv.rb
+- Step17\_User\_10\_ICM\_SWMM\_XLOAD\_csv.rb
+- Step18\_User\_123\_ICM\_SWMM\_mhhyd\_csv.rb
+- Step1a\_InfoSewer\_Manhole\_ODIC.rb
+- Step1b\_InfoSewer\_Subcatchment\_Manhole\_ODIC.rb
+- Step1\_InfoSewer\_Node\_ODIC.rb
+- Step21\_User\_123\_ICM\_SWMM\_pipehyd\_csv .rb
+- Step22a\_User\_123\_ICM\_mhhyd\_csv\_One\_Read.rb
+- Step22\_User\_123\_ICM\_mhhyd\_csv\_\_Folder\_Reader.rb
+- Step23a\_User\_123\_ICM\_pipehyd\_csv\_One\_Read.rb
+- Step23\_User\_123\_ICM\_pipehyd\_csv\_Folder\_Reader.rb
+- Step24\_User\_123\_ICM\_anode\_alink\_csv.rb
+- Step25\_User\_123\_ICM\_Scenario\_csv.rb
+- Step2\_InfoSewer\_Link\_ODIC.rb
+- Step3a\_InfoSewer\_General\_Lines\_mhhyd\_csv.rb
+- Step3\_InfoSewer\_manhole\_hydraulics\_ODIC..rb
+- Step4\_InfoSewer\_link\_hydraulics\_ODIC.rb
+- Step5\_InfoSewer\_pump\_curve\_ODIC.rb
+- Step6\_InfoSewer\_pump\_control\_ODIC.rb
+- Step7\_InfoSewer\_Subcatchment\_dwf\_ODIC.rb
+- Step8\_InfoSewer\_wwellhyd\_ODIC.rb
+- Step9\_InfoSewer\_rdii\_hydrograph\_ODIC.rb
+
+## SQL Files
+- SET Node Type = Break.sql
+- Set node\_id = subcatchment\_id.sql
+- SET node\_type = 'Outfall'.sql
+- SQL number\_of\_barrels.sql
+- SQL Area from InfoSewer.sql
+- SQL Inverts.sql
+- SQL Set ground\_level = chamber\_roof.sql
+- SQL\_Find\_Pumps.sql
+- SQL\_FM\_Roughness.sql
+- SQL\_InfoSewer\_Manhole\_Area.sql
+- SQL\_Make\_Subcatchments.sql
+- SQL\_Population\_Flow.sql
+- SQL\_Pump\_On\_Off.sql
+- SQL\_WW.sql
+
+## Configuration Files
+- Step10\_InfoSewer\_sub\_dwf\_mhhyd\_scenario.cfg
+- Step11\_InfoSewer\_pipehyd\_scenario.cfg
+- Step12\_Point\_Scenario\_csv.cfg
+- Step13\_Point\_Runopt\_csv.cfg
+- Step14\_Point\_Patterns\_csv.cfg
+- Step15\_Point\_Patndata\_csv.cfg
+- Step16\_Additional\_DWF\_ICM\_SWMM\_XLOAD\_csv.cfg
+- Step17\_User\_10\_ICM\_SWMM\_XLOAD\_csv.cfg
+- Step18\_User\_123\_ICM\_SWMM\_mhhyd\_csv.cfg
+- Step19\_Anode\_csv.cfg
+- Step1a\_InfoSewer\_Manhole\_csv.cfg
+- Step1b\_InfoSewer\_Subcatchment\_Manhole\_csv.cfg
+- Step1\_InfoSewer\_Node\_csv.cfg
+- Step20\_ALink\_csv.cfg
+- Step21\_User\_123\_ICM\_SWMM\_pipehyd\_csv.cfg
+- Step22\_User\_123\_ICM\_pipehyd\_csv.cfg
+- Step2\_InfoSewer\_Link\_csv.cfg
+- Step3a\_InfoSewer\_General\_Lines\_mhhyd\_csv.cfg
+- Step3\_InfoSewer\_manhole\_hydraulics\_mhhyd\_csv.cfg
+- Step4\_InfoSewer\_link\_hydraulics\_pipehyd\_csv.cfg
+- Step5\_InfoSewer\_pump\_curve\_pumphyd\_csv.cfg
+- Step6\_InfoSewer\_pump\_control\_control\_csv.cfg
+- Step7\_InfoSewer\_subcatchment\_dwf\_mhhyd\_csv.cfg
+- Step8\_Infosewer\_wetwell\_wwellhyd\_csv.cfg
+- Step9\_rdii\_hydrograph\_csv.cfg
+
+## Other Files
+- make\_sub\_folders\_list.bat
+- media
 

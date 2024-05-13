@@ -37,6 +37,7 @@
 | 0029 | UI       | Subcatcatchemt Parameter Statistics                                 | Network Data Get      |
 | 0030 | UI & EX  | Maintain only first and last river reach sections                   | Network Data Set      |
 | 0031 | UI & EX  | Replace flag in all objects in a model network                      | Network Data Set      |
+| 0032 | UI & EX  | List Master Database Objects Contents                               | Network Data Get      |
 | 0033 | EX       | Export a tree object file                                           | Database Data Export  |
 | 0034 | EX       | Check sim status                                                    | Simulations Data Get  |
 | 0035 | EX       | Copy objects to new transportable                                   | Database Data Export  |
@@ -58,6 +59,10 @@
 | 0051 | EX       | Interactive Exchange in Visual Studio Code                          | Developer Tools       |
 | 0052 | UI       | Select flow path between two nodes                                  | Network Data Get      |
 | 0053 | UI       | Import Cross Section Data from CSV                                  | Network Data Get      |
+| 0054 | UI       | Change Subcatchment Boundaries to a Polygon                         | Network Data Set      |
+| 0055 | UI       | Scenario Maker - Adds Ten User Defined Names                        | Network Data Set      |
+| 0056 | UI       | Delete all scenarios except Base                                    | Network Data Get      |
+| 0057 | UI       | Header Nodes                                                        | Network Data Get      |
 | 0058 | UI       | Bifurcation Nodes                                                   | Network Data Get      |
 | 0059 | UI       | Dry Pipes                                                           | Network Data Get      |
 | 0060 | UI       | Change All Node, Subs and Link IDs                                  | Network Data Get      |

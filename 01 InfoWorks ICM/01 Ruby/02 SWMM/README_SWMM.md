@@ -145,13 +145,13 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0137 - Creates Subs from Polygons
 - 0138 - Input Message Box
 - 0139 - InfoWorks 2D Parameter Statistics
-- 0140 - List all results fields in a simulation ICM) and Show Node Results Stats
-- 0141 - List all results fields in a simulation ICM) and Show Subcatchment Results Stats
+- 0140 - List all results fields in a simulation ICM and Show Node Results Stats
+- 0141 - List all results fields in a simulation ICM and Show Subcatchment Results Stats
 - 0142 - Create nodes from polygon subcatchment boundary
-- 0143 - List all results fields in a simulation ICM) and Show Flap Valve Results Stats
+- 0143 - List all results fields in a simulation ICM and Show Flap Valve Results Stats
 - 0144 - Create nodes from polygon subcatchment boundary
-- 0145 - 
-- 0146 - 
+- 0145 - Change 2D Polygon Boundaries
+- 0146 - Add 2D Results Points in a Polygon
 - 0147 - 
 - 0148 - 
 - 0149 - 
