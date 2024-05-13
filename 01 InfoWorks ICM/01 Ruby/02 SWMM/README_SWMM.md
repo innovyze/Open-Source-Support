@@ -45,7 +45,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0032 - List Network Fields-Structure
 - 0033 - Make an Inflows File from User Fields
 - 0034 - Display Export geometries
-- 0035 - List Master Database Objects Contents
+- 0035 - List Complete Database Objects Contents
 - 0036 - Create Selection List
 - 0037 - Select Isolated Nodes
 - 0038 - Remove rows from a blob field
@@ -138,7 +138,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0128 - InfoSewer Gravity Main Report, from ICM InfoWorks
 - 0129 - ICM Information Hub Finder
 - 0130 - InfoSewer Peaking Factors
-- 0131 - Master RB Files
+- 0131 - Complete RB Files
 - 0134 - Input Message Box
 - 0135 - Create Subs from polygon
 - 0136 - InfoWorks Sub, Land Use with Runoff Surfaces Table

@@ -37,7 +37,7 @@
 | 0029 | UI       | Subcatcatchemt Parameter Statistics                                 | Network Data Get      |
 | 0030 | UI & EX  | Maintain only first and last river reach sections                   | Network Data Set      |
 | 0031 | UI & EX  | Replace flag in all objects in a model network                      | Network Data Set      |
-| 0032 | UI & EX  | List Master Database Objects Contents                               | Network Data Get      |
+| 0032 | UI & EX  | List Complete Database Objects Contents                             | Network Data Get      |
 | 0033 | EX       | Export a tree object file                                           | Database Data Export  |
 | 0034 | EX       | Check sim status                                                    | Simulations Data Get  |
 | 0035 | EX       | Copy objects to new transportable                                   | Database Data Export  |
