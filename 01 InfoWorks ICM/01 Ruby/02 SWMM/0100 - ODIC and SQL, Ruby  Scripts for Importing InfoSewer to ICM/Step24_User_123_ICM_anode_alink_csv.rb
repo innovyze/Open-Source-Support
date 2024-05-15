@@ -47,11 +47,8 @@ def import_anode(open_net)
             puts row_hash
           end
         end
-      else
-        raise "No #{filename} file found in #{dir}"
       end
-    end
-
+ 
   rows.each do |row|
     open_net.row_objects('hw_conduit').each do |ro|
       if ro.asset_id == row["ID"] then
@@ -80,7 +77,7 @@ def import_anode(open_net)
   end
     db=WSApplication.current_database
     open_net.clear_selection
-    group=db.find_root_model_object 'Model Group','DanaHDR'   # Find the model group - has to be created before use
+    group=db.find_root_model_object 'Model Group','Greenville_Import'   # Find the model group - has to be created before use
     open_net.run_SQL "_links","flags.value='ISAC''"
     open_net.run_SQL "_nodes","flags.value='ISAC''"
     open_net.run_SQL "_subcatchments","flags.value='ISAC''"
