@@ -36,7 +36,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0023 - Rename Nodes & Links using Name Generation pattern
 - 0024 - Change Subcatchment Boundaries
 - 0025 - Get Minimum X, Y for All Nodes
-- 0026 - Make Subcatchments From Imported InfoSewer Manholes
+- 0026 - Common Operations
 - 0027 - Copy selected subcatchments five times
 - 0028 - Percentage change in runoff surfaces upstream node into new scenario
 - 0029 - Runoff surfaces from selected subcatchments
@@ -64,7 +64,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0051 - Additional DWF Node IDs
 - 0052 - Stats for ICM Network Tables
 - 0053 - Scenario Counter
-- 0054 - Flow Survey
+- 0054 - InfoWorks as Background Network to ICM SWMM Current Network
 - 0055 - Scenario Maker - Specific
 - 0056 - Listview of the currently selected network objects
 - 0057 - Bifurcation Nodes
@@ -139,7 +139,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0129 - ICM Information Hub Finder
 - 0130 - InfoSewer Peaking Factors
 - 0131 - Complete RB Files
-- 0134 - Input Message Box
+- 0134 - 
 - 0135 - Create Subs from polygon
 - 0136 - InfoWorks Sub, Land Use with Runoff Surfaces Table
 - 0137 - Creates Subs from Polygons
