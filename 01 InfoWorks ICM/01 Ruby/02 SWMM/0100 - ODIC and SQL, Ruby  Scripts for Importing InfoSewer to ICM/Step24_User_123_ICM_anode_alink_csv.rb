@@ -38,7 +38,6 @@ def import_anode(open_net)
         # Read the CSV file
         CSV.foreach(csv_path, headers: true) do |row|
           row_hash = row.to_h
-          puts row.to_h
           row_hash.delete("TYPE") # Remove the "TYPE" key-value pair
           row_hash["dir_source"] = File.basename(dir.to_s) + "_" + File.basename(filename, '.*') # Combine 'dir' and 'source'
           rows.each do |row|
