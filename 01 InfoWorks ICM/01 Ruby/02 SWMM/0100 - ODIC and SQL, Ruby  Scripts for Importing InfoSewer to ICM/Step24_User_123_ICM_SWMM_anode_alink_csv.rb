@@ -115,4 +115,4 @@ import_anode(open_net,parent_object)
 open_net.transaction_commit
 
 # Indicate the completion of the import process
-puts "Finished Import of InfoSewer Facility Manager to ICM InfoWorks" 
+puts "Finished the Import of InfoSewer/InfoSWMM Facility Manager Active Elements to ICM SWMM and InfoWorks Selection Sets" 
