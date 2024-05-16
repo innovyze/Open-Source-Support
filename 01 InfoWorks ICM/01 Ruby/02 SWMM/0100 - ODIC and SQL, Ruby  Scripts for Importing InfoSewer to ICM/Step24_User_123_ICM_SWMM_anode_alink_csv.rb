@@ -1,7 +1,7 @@
 require 'csv'
 require 'pathname'
 
-def import_anode(open_net)
+def import_anode(open_net, parent_object)
   # Prompt the user to pick a folder
   val = WSApplication.prompt("Facilty for an InfoSWMM Scenario", [
     ['Pick the Scenario Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
@@ -13,7 +13,6 @@ def import_anode(open_net)
   folder_path = val[0]
   puts "Folder path: #{folder_path}"
   puts "If the CSV File is Empty - this means all nodes or links are active in the InfoSWMM Scenario"
-
 
   # Create a hash that maps id to row object for links, nodes, and subcatchments
   id_to_link = {}
@@ -43,6 +42,7 @@ def import_anode(open_net)
       end
       # Initialize an empty array to hold the hashes
       rows = []
+
       # Read the CSV file
         CSV.foreach(csv_path, headers: true) do |row|
           row_hash = row.to_h
@@ -76,22 +76,9 @@ def import_anode(open_net)
           ro.write
         end
       end
-
     end
 
-    db = WSApplication.current_database
-    current_network = WSApplication.current_network
-    current_network_object = current_network.model_object
-    parent_id = current_network_object.parent_id
-    
-    begin
-      parent_object = db.model_object_from_type_and_id 'Model Group', parent_id
-    rescue
-      parent_object = db.model_object_from_type_and_id 'Model Network', parent_id
-      parent_id = parent_object.parent_id
-      parent_object = db.model_object_from_type_and_id 'Model Group', parent_id
-    end
-
+  
     open_net.clear_selection
 
     open_net.run_SQL "_links","flags.value='ISAC'"
@@ -101,15 +88,30 @@ def import_anode(open_net)
     sl = parent_object.new_model_object 'Selection List', $selection_set.to_s
     puts s1 = sl.name
     open_net.save_selection sl
+
   end
 
 end
 
 # Access the current open network in the application
 open_net = WSApplication.current_network
-open_net.transaction_begin
+
+db = WSApplication.current_database
+current_network = WSApplication.current_network
+current_network_object = current_network.model_object
+parent_id = current_network_object.parent_id
+
+begin
+  parent_object = db.model_object_from_type_and_id 'Model Group', parent_id
+rescue
+  parent_object = db.model_object_from_type_and_id 'Model Network', parent_id
+  parent_id = parent_object.parent_id
+  parent_object = db.model_object_from_type_and_id 'Model Group', parent_id
+end
+
 # Call the import_anode method
-import_anode(open_net)
+open_net.transaction_begin
+import_anode(open_net,parent_object)
 open_net.transaction_commit
 
 # Indicate the completion of the import process
