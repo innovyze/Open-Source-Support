@@ -14,7 +14,15 @@ def import_anode(open_net)
   puts "Folder path: #{folder_path}"
   puts "If the CSV File is Empty - this means all nodes or links are active in the InfoSWMM Scenario"
 
-  open_net.transaction_begin
+
+  # Create a hash that maps id to row object for links, nodes, and subcatchments
+  id_to_link = {}
+  id_to_node = {}
+  id_to_subcatchment = {}
+
+  open_net.row_objects('_links').each { |ro| id_to_link[ro.id] = ro }
+  open_net.row_objects('_nodes').each { |ro| id_to_node[ro.node_id] = ro }
+  open_net.row_objects('_subcatchments').each { |ro| id_to_subcatchment[ro.subcatchment_id] = ro }
 
   # Iterate over all subdirectories in the given folder
   Pathname.new(folder_path).children.select(&:directory?).each do |dir|
@@ -47,29 +55,25 @@ def import_anode(open_net)
       puts "Row count: #{rows.count}"
 
       rows.each do |row|
-        open_net.row_objects('_links').each do |ro|
-          if ro.id == row["ID"] then
-            ro.id_flag = 'ISAC'  # Set the 'flag' field of the row object
-            ro.write  # Write the changes to the database
-          end
+        # Update links
+        ro = id_to_link[row["ID"]]
+        if ro
+          ro.id_flag = 'ISAC'
+          ro.write
         end
-      end
-
-      rows.each do |row|
-        open_net.row_objects('_nodes').each do |ro|
-          if ro.node_id == row["ID"] then
-            ro.node_id_flag = 'ISAC'  # Set the 'flag' field of the row object
-            ro.write  # Write the changes to the database
-          end
+    
+        # Update nodes
+        ro = id_to_node[row["ID"]]
+        if ro
+          ro.node_id_flag = 'ISAC'
+          ro.write
         end
-      end
-
-      rows.each do |row|
-        open_net.row_objects('_subcatchments').each do |ro|
-          if ro.subcatchment_id == row["ID"] then
-            ro.subcatchment_id_flag = 'ISAC'  # Set the 'flag' field of the row object
-            ro.write  # Write the changes to the database
-          end
+    
+        # Update subcatchments
+        ro = id_to_subcatchment[row["ID"]]
+        if ro
+          ro.subcatchment_id_flag = 'ISAC'
+          ro.write
         end
       end
 
@@ -98,15 +102,15 @@ def import_anode(open_net)
     puts s1 = sl.name
     open_net.save_selection sl
   end
-  open_net.transaction_commit
+
 end
 
 # Access the current open network in the application
 open_net = WSApplication.current_network
-
+open_net.transaction_begin
 # Call the import_anode method
 import_anode(open_net)
-
+open_net.transaction_commit
 
 # Indicate the completion of the import process
 puts "Finished Import of InfoSewer Facility Manager to ICM InfoWorks" 
