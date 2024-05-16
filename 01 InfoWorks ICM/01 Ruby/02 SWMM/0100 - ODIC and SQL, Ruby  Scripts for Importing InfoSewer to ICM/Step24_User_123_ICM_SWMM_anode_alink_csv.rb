@@ -12,7 +12,7 @@ def import_anode(open_net, parent_object)
 
   folder_path = val[0]
   puts "Folder path: #{folder_path}"
-  puts "If the CSV File is Empty - this means all nodes or links are active in the InfoSWMM Scenario"
+  puts "If the CSV File is Empty - this means all nodes or links are active in the InfoSewer or InfoSWMM Scenario"
 
   # Create a hash that maps id to row object for links, nodes, and subcatchments
   id_to_link = {}
