@@ -1,9 +1,9 @@
 require 'csv'
 require 'pathname'
 
-def import_anode(open_net)
+def import_anode(open_net, parent_object)
   # Prompt the user to pick a folder
-  val = WSApplication.prompt("Facilty for an InfoSewer Scenario", [
+  val = WSApplication.prompt("Facilty for an InfoSWMM Scenario", [
     ['Pick the Scenario Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
   ], false)
 
@@ -12,10 +12,16 @@ def import_anode(open_net)
 
   folder_path = val[0]
   puts "Folder path: #{folder_path}"
-  puts "If the CSV File is Empty - this means all nodes or links are active in the InfoSewer Scenario"
+  puts "If the CSV File is Empty - this means all nodes or links are active in the InfoSewer or InfoSWMM Scenario"
 
-  # Initialize an empty array to hold the hashes
-  rows = []
+  # Create a hash that maps id to row object for links, nodes, and subcatchments
+  id_to_link = {}
+  id_to_node = {}
+  id_to_subcatchment = {}
+
+  open_net.row_objects('_links').each { |ro| id_to_link[ro.asset_id] = ro }
+  open_net.row_objects('_nodes').each { |ro| id_to_node[ro.node_id] = ro }
+  open_net.row_objects('_subcatchments').each { |ro| id_to_subcatchment[ro.subcatchment_id] = ro }
 
   # Iterate over all subdirectories in the given folder
   Pathname.new(folder_path).children.select(&:directory?).each do |dir|
@@ -34,70 +40,79 @@ def import_anode(open_net)
           puts "File #{filename} is already open"
         end
       end
+      # Initialize an empty array to hold the hashes
+      rows = []
 
-        # Read the CSV file
+      # Read the CSV file
         CSV.foreach(csv_path, headers: true) do |row|
           row_hash = row.to_h
-          puts row.to_h
-          row_hash.delete("TYPE") # Remove the "TYPE" key-value pair
+          #row_hash.delete("TYPE") # Remove the "TYPE" key-value pair
           row_hash["dir_source"] = File.basename(dir.to_s) + "_" + File.basename(filename, '.*') # Combine 'dir' and 'source'
-          rows.each do |row|
-            row_hash = row.to_h
-            rows << row_hash
-            puts row_hash
-          end
+          row_hash = row.to_h
+          rows << row_hash
         end
-      else
-        raise "No #{filename} file found in #{dir}"
+
+      puts "Row count: #{rows.count}"
+
+      rows.each do |row|
+        # Update links
+        ro = id_to_link[row["ID"]]
+        if ro
+          ro.asset_id_flag = 'ISAC'
+          ro.write
+        end
+    
+        # Update nodes
+        ro = id_to_node[row["ID"]]
+        if ro
+          ro.node_id_flag = 'ISAC'
+          ro.write
+        end
+    
+        # Update subcatchments
+        ro = id_to_subcatchment[row["ID"]]
+        if ro
+          ro.subcatchment_id_flag = 'ISAC'
+          ro.write
+        end
       end
     end
 
-  rows.each do |row|
-    open_net.row_objects('hw_conduit').each do |ro|
-      if ro.asset_id == row["ID"] then
-         ro.asset_id_flag = 'ISAC'  # Set the 'flag' field of the row object
-         ro.write  # Write the changes to the database
-      end
-    end
-  end
-
-  rows.each do |row|
-    open_net.row_objects('hw_node').each do |ro|
-      if ro.node_id == row["ID"] then
-         ro.node_id_flag = 'ISAC'  # Set the 'flag' field of the row object
-         ro.write  # Write the changes to the database
-      end
-    end
-  end
-
-  rows.each do |row|
-    open_net.row_objects('hw_subcatchment').each do |ro|
-      if ro.subcatchment_id == row["ID"] then
-         ro.subcatchment_id_flag = 'ISAC'  # Set the 'flag' field of the row object
-         ro.write  # Write the changes to the database
-      end
-    end
-  end
-    db=WSApplication.current_database
+  
     open_net.clear_selection
-    group=db.find_root_model_object 'Model Group','DanaHDR'   # Find the model group - has to be created before use
-    open_net.run_SQL "_links","flags.value='ISAC''"
-    open_net.run_SQL "_nodes","flags.value='ISAC''"
-    open_net.run_SQL "_subcatchments","flags.value='ISAC''"
-    sl=group.new_model_object 'Selection List',$selection_set.to_s
-    puts s1=sl.name
+
+    open_net.run_SQL "_links","flags.value='ISAC'"
+    open_net.run_SQL "_nodes","flags.value='ISAC'"
+    open_net.run_SQL "_subcatchments","flags.value='ISAC'"
+
+    sl = parent_object.new_model_object 'Selection List', $selection_set.to_s
+    puts s1 = sl.name
     open_net.save_selection sl
-end
+
+  end
 
 end
 
 # Access the current open network in the application
 open_net = WSApplication.current_network
 
+db = WSApplication.current_database
+current_network = WSApplication.current_network
+current_network_object = current_network.model_object
+parent_id = current_network_object.parent_id
+
+begin
+  parent_object = db.model_object_from_type_and_id 'Model Group', parent_id
+rescue
+  parent_object = db.model_object_from_type_and_id 'Model Network', parent_id
+  parent_id = parent_object.parent_id
+  parent_object = db.model_object_from_type_and_id 'Model Group', parent_id
+end
+
 # Call the import_anode method
 open_net.transaction_begin
-import_anode(open_net)
+import_anode(open_net,parent_object)
 open_net.transaction_commit
 
 # Indicate the completion of the import process
-puts "Finished Import of InfoSewer Facility Manager to ICM InfoWorks" 
+puts "Finished the Import of InfoSewer/InfoSWMM Facility Manager Active Elements to ICM InfoWorks Selection Sets" 

@@ -2,10 +2,15 @@
 open_net = WSApplication.current_network
 
 # Define the configuration and CSV file paths
-cfg = 'C:\Users\dickinre\Documents\Open-Source-Support-main\01 InfoWorks ICM\InfoSewer to ICM\Open-Source-Support\01 InfoWorks ICM\01 Ruby\02 SWMM\0100 - ODIC and SQL Scripts for Importing InfoSewer to ICM'
-csv = 'C:\Users\Public\Documents\InfoSewer\RDII_NET!.IEDB'
-puts csv
-puts cfg
+# The user is prompted to select the folders containing the configuration and CSV files
+csv = WSApplication.prompt("InfoSewer PipeHyd File", [
+    ['Pick the Folder', 'String', nil, nil, 'FOLDER', 'PipeHyd File']
+  ], false)
+cfg = WSApplication.prompt("InfoSewer CFG File Folder", [
+    ['Pick the Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
+  ], false)
+  puts csv
+  puts cfg
 
 # List of import steps
 import_steps = [

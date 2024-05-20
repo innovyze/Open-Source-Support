@@ -223,7 +223,6 @@ def save_csv_inflows_file(net)
 	]
 
 	net.clear_selection
-	puts "Scenario : #{net.current_scenario}"
 
 	# Prepare hash for storing data of each field for database_fields
 	fields_data = {}
@@ -231,6 +230,7 @@ def save_csv_inflows_file(net)
 
 	# Initialize the count of processed rows
 	row_count = 0
+	table_index = 0
 	total_expected = 0.0
 
 	# Collect data for each field from sw_node
@@ -241,7 +241,9 @@ def save_csv_inflows_file(net)
 		end
 	end  
 
-	table_index = 0
+	# Initialize the counter and hash if they haven't been initialized
+	print_counter = 0
+	$new_user_number_sums ||= {}
 
 	# Initialize an array to store the node IDs
 	node_ids = []
@@ -287,22 +289,39 @@ def save_csv_inflows_file(net)
 				end
 			end
 			# Print a newline character to separate each row
+			# Save the new user number sum to the hash
+
 			print "#{new_user_number_sum},"
-				rescue => e
+			# Increment the counter each time this line is executed
+			print_counter += 1
+			#puts print_counter
+			#$new_user_number_sums[print_counter] = new_user_number_sum
+			rescue => e
 					#puts "An error occurred: #{e.message}"
 				end
 			end	
 	end
 	puts	
 	end
-	# Print all of the node IDs in one row separated by commas
-	puts node_ids.join(',')
-	node_ids.each_with_index do |node_id, index|
-		print "#{index + 1},"
-		end
+
+	# CSV File Header 
+	puts "!Version=1,type=QIN,encoding=MBCS"
+	puts "FILECONT, TITLE"
+	puts "2,1"
+	puts "UserSettings,U_VALUES,U_DATETIME"
+	puts "UserSettingsValues,m3/s,mm-dd-yyyy hh:mm"
+	puts "G_START,G_TS,G_NPROFILES,G_DATATYPE"
+	puts "12/20/2023 00:00:00,3600, #{node_ids.size},    0"
+	puts "L_NODEID,L_PTITLE"
+
 	# Print all of the node IDs in one column
 	puts node_ids.join("\n")
-	puts ''  
+	# Print all of the node IDs in one row separated by commas
+	# Combine the node IDs and their indices into a single string
+	combined_string = node_ids.each_with_index.map { |node_id, index| "#{index + 1}" }.join(',')
+	# Print P_DATETIME followed by the combined string
+	puts "P_DATETIME," + combined_string
+	puts $new_user_number_sums.inspect
 	end
 
 	# Usage example

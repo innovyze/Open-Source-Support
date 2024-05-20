@@ -10,6 +10,6 @@ net.row_objects('hw_subcatchment').each do |subcatchment|							# loops through 
     		end																		# end of 'if' condition 
     	end																			# end of column loop
     	new_object.write															# write changes
-		net.transaction_commit													# end the 'transaction'
+		net.transaction_commit													    # end the 'transaction'
     end																				# end of 'if' condition
 end																					# end of loop

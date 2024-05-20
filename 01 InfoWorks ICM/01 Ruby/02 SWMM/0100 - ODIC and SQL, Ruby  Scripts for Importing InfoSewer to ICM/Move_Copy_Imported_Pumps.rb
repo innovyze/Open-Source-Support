@@ -60,7 +60,7 @@ begin
         puts "Downstream Node ID: #{pump_link.ds_node_id}"
         puts "-" * 20  # Separator
         # Assuming pump_ro is a pre-defined object for storing/linking pump data
-        net.row_objects('hw_pump')
+        pump_ro = new_pump_ro()
         pump_ro.us_node_id = pump_link.us_node_id.to_s
         pump_ro.ds_node_id = pump_link.ds_node_id
         pump_ro.id = pump_link.id  
