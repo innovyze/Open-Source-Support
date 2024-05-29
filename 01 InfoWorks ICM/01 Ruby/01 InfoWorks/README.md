@@ -67,6 +67,8 @@
 | 0059 | UI       | Select dry pipes                                                    | Network Data Get      |
 | 0060 | UI       | Update IDs for nodes, links, and subcatchments                      | Network Data Get      |
 | 0061 | UI       | Transfer conduit user defined headloss parameters between networks  | Network Data Set      |
+| 0062 | UI       | Export simulation results to CSV                                    | Network Data Set      |
+| 0063 | UI       | Scenario Maker (Names Only)                                         | Network Data Set      |
 
 ### Descriptions
 
