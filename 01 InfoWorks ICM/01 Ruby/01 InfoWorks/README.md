@@ -69,6 +69,7 @@
 | 0061 | UI       | Transfer conduit user defined headloss parameters between networks  | Network Data Set      |
 | 0062 | UI       | Export simulation results to CSV                                    | Network Data Set      |
 | 0063 | UI       | Scenario Maker (Names Only)                                         | Network Data Set      |
+| 0064 | UI       | Trace Upstream Subcatchments For a Given Node                       | Network Data Get      |
 
 ### Descriptions
 
