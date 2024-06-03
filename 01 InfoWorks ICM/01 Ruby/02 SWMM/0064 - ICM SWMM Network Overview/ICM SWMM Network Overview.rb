@@ -117,6 +117,8 @@ begin
         total_seepage_rate = 0.0
         total_flap_gate = 0
         total_culvert_code = 0
+        total_user_number_9 = 0.0
+        total_user_number_10 = 0.0
         
         links_ro.each do |link|
             number_links += 1
@@ -139,6 +141,8 @@ begin
             total_seepage_rate += link.seepage_rate unless link.seepage_rate.nil?
             total_flap_gate ||= link.flap_gate
             total_culvert_code ||= link.culvert_code
+            total_user_number_9 += link.user_number_9 unless link.user_number_9.nil?
+            total_user_number_10 += link.user_number_10 unless link.user_number_10.nil?    
         end
           
         average_conduit_height = total_conduit_height / number_links unless number_links == 0
@@ -159,7 +163,9 @@ begin
         average_seepage_rate = total_seepage_rate / number_links unless number_links == 0
         average_flap_gate = total_flap_gate / number_links unless number_links == 0
         average_culvert_code = total_culvert_code / number_links unless number_links == 0
-
+        average_user_number_9 = total_user_number_9 / number_links unless number_links == 0
+        average_user_number_10 = total_user_number_10 / number_links unless number_links == 0
+        
         
         printf "%-40s %-d\n", "Number of SW Links", number_links
         if number_links != 0
@@ -182,6 +188,8 @@ begin
         printf "%-40s %-.3f\n", "Average Seepage Rate", average_seepage_rate
         printf "%-40s %-.3f\n", "Average Flap Gate", average_flap_gate
         printf "%-40s %-.3f\n", "Average Culvert Code", average_culvert_code
+        printf "%-40s %-.3f\n", "Average User Number 9", average_user_number_9
+        printf "%-40s %-.3f\n", "Average User Number 10", average_user_number_10
         end        
         
         subcatchments_hash_map = {}

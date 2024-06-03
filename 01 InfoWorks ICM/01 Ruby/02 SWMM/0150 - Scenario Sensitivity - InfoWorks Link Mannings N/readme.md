@@ -1,23 +1,26 @@
-# Scenario Generator
+# Scenario_Link_Data.rb
 
-This script, created by Robert Dickinson (RED), is used to create a user-defined number of new scenarios in ICM InfoWorks or ICM SWMM Networks. The original source of the script is [here](https://github.com/ngerdts7/ICM_Tools123), and it's also available at the [Autodesk Water Infrastructure GitHub](https://github.com/innovyze/Open-Source-Support/tree/main).    
+This Ruby script is used to manipulate scenarios in an ICM InfoWorks network.
 
-## Code Summary
+## Overview
 
-1. The script starts by getting the current network using `WSApplication.current_network`.
+1. **Setup**: The script starts by defining an array of factors and a parameter 'bottom_roughness_N'.
 
-2. It defines a constant `THANK_YOU_MESSAGE` which is a string that will be printed at the end of the script.
+2. **Scenario Generation**: It generates scenario names by combining the parameter and each factor.
 
-3. It creates an array `scenarios` containing the letters 'A' to 'Z'. These will be used as the names of the new scenarios.
+3. **Scenario Deletion**: The script deletes all scenarios in the network except for the 'Base' scenario.
 
-4. The script then iterates over all scenarios in the current network. If a scenario's name is not 'Base', the script deletes that scenario. After this step, all scenarios except 'Base' have been deleted.
+4. **Scenario Addition and Parameter Modification**: For each scenario and corresponding factor, the script performs the following operations:
+   - Adds the scenario to the network.
+   - Sets the current scenario to the newly added scenario.
+   - Begins a transaction.
+   - For each 'hw_conduit' row object in the network, it multiplies the `bottom_roughness_N` by `1 + factor` and writes the row object back to the network.
+   - Commits the transaction.
 
-5. It prints a message informing the user that all scenarios except the base were deleted. It also provides instructions on how to revert the changes if the user did not intend to delete the scenarios.
+5. **Completion Message**: Finally, the script prints a completion message indicating the number of scenarios added and a thank you message.
 
-6. The script then iterates over the `scenarios` array. For each element in the array, it adds a new scenario to the current network with that element as the name.
+## Usage
 
-7. It prints the number of scenarios added, which is the length of the `scenarios` array.
+This script allows you to create scenarios with different `bottom_roughness_N` values and analyze the impact of these changes on your network.
 
-8. Finally, it prints the `THANK_YOU_MESSAGE`.
-
-This script is useful for quickly setting up a specific set of scenarios in an ICM InfoWorks network.
+The script is originally sourced from [ICM_Tools123](https://github.com/ngerdts7/ICM_Tools123) and has been edited by RED + CoPilot.
