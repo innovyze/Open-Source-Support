@@ -2,7 +2,7 @@ require 'csv'
 
 # Define the print_csv_inflows_file method
 def print_csv_inflows_file(open_net)
-  # Define database fields for SWMM network nodes
+  # Define database fields for InfoWorks network nodes
   database_fields = [
     'ground_level',
 		'flood_level',

@@ -2,7 +2,7 @@ require 'csv'
 
 # Define the print_csv_inflows_file method
 def print_csv_inflows_file(cn)
-  # Define database fields for SWMM network nodes
+  # Define database fields for InfoWorks  network nodes
   database_fields = [
     'us_invert',
 		'ds_invert',
@@ -69,25 +69,25 @@ def print_csv_inflows_file(cn)
   end
 end
 
-def import_pipe_hydraulics(cn)    
+
+def import_pipe_hydraulics(cn)
   # Define the configuration and CSV file paths
-  val=WSApplication.prompt "Pipe Hydraulics for an InfoSewer Scenario",
-  [
-  ['Pick the Scenario Name that Matches the InfoSewer Dataset ','String',nil,nil,'FOLDER','Pipe Folder']
-  ],false
-    # Exit the program if the user cancelled the prompt
-    return  if val.nil?
-  csv  = val[0] + "\\pipehyd.csv"
+  val = WSApplication.prompt "Pipe Hydraulics for an InfoSewer Scenario", [
+    ['Pick the Scenario Name that Matches the InfoSewer Dataset ', 'String', nil, nil, 'FOLDER', 'Pipe Folder']
+  ], false
+
+  # Exit the program if the user cancelled the prompt
+  return if val.nil?
+
+  csv = val[0] + "\\pipehyd.csv"
   puts csv
 
-  # Initialize an empty array to hold the hashes
-  rows = []
+  # Initialize a hash to hold the rows
+  rows = {}
 
   # Open and read the CSV file
-  CSV.foreach(csv, headers: true).with_index do |row, index|
-
-    # Add the row to the array as a hash
-    rows << {
+  CSV.foreach(csv, headers: true) do |row|
+    row_hash = {
       "ID" => row[0],
       "FROM_INV" => row[1],
       "TO_INV" => row[2],
@@ -96,55 +96,58 @@ def import_pipe_hydraulics(cn)
       "COEFF" => row[5],
       "PARALLEL" => row[6]
     }
+    rows[row_hash["ID"].strip.downcase] = row_hash
   end
 
-# Print the rows
-rows.each do |row|
+  # Update the conduit objects with the corresponding row data
   cn.row_objects('hw_conduit').each do |ro|
-    if ro.asset_id == row["ID"] then
-      ro.user_number_1 = row["FROM_INV"]
-      ro.user_number_2 = row["TO_INV"]
-      ro.user_number_3 = row["LENGTH"]
-      ro.user_number_4 = row["DIAMETER"]
-      ro.user_number_5 = row["COEFF"]
-      ro.user_number_6 = row["PARALLEL"]
-      if ro.user_number_6 == 0 then ro.user_number_6 = 1 end
-      ro.us_invert =row["FROM_INV"]
-      ro.ds_invert =row["TO_INV"]
-      ro.conduit_length = row["LENGTH"]
-      ro.conduit_height = row["DIAMETER"]
-      ro.conduit_width = row["DIAMETER"] # Fixed typo here
-      ro.bottom_roughness_N = row["COEFF"]
-      ro.top_roughness_N = row["COEFF"]
-      ro.roughness_type = 'N'
-      ro.us_headloss_type = 'FIXED'
-      ro.ds_headloss_type = 'FIXED'
-      ro.us_headloss_coeff = 0.25
-      ro.ds_headloss_coeff = 0.25
-      ro.number_of_barrels = ro.user_number_6
-      ro.user_text_10 = 'Pipe'
-      if ro.number_of_barrels.nil? || ro.number_of_barrels.zero?
-        ro.number_of_barrels = 1
-      end
-      ro.write # Moved this line inside the loop
-      break
-     end
+    row = rows[ro.asset_id.strip.downcase]
+    next unless row
+
+    ro.user_number_1 = row["FROM_INV"]
+    ro.user_number_2 = row["TO_INV"]
+    ro.user_number_3 = row["LENGTH"]
+    ro.user_number_4 = row["DIAMETER"]
+    ro.user_number_5 = row["COEFF"]
+    ro.user_number_6 = row["PARALLEL"]
+    ro.user_number_6 = 1 if ro.user_number_6.to_i.zero?
+
+    ro.us_invert = row["FROM_INV"]
+    ro.ds_invert = row["TO_INV"]
+    ro.conduit_length = row["LENGTH"]
+    ro.conduit_height = row["DIAMETER"]
+    ro.conduit_width = row["DIAMETER"]
+    ro.bottom_roughness_N = row["COEFF"]
+    ro.top_roughness_N = row["COEFF"]
+    ro.roughness_type = 'N'
+    ro.us_headloss_type = 'FIXED'
+    ro.ds_headloss_type = 'FIXED'
+    ro.us_headloss_coeff = 0.25
+    ro.ds_headloss_coeff = 0.25
+    ro.number_of_barrels = ro.user_number_6
+    ro.user_text_10 = 'Pipe'
+
+    if ro.number_of_barrels.nil? || ro.number_of_barrels.zero?
+      ro.number_of_barrels = 1
+    end
+
+    ro.write
   end
- end
 end
 
 # Access the current open network in the application
-cn= WSApplication.current_network
+cn = WSApplication.current_network
 
 cn.scenarios do |scenario|
   cn.current_scenario = scenario
-  text = WSApplication.message_box("Scenario #{cn.current_scenario} to Import", 'OK', 'Information', nil)
-    puts "Importing for Scenario #{cn.current_scenario}"
-    cn.transaction_begin
-    import_pipe_hydraulics(cn)
-    cn.transaction_commit
-    # Call the print_csv_inflows_file method
-    print_csv_inflows_file(cn)
+  puts "Importing for Scenario #{cn.current_scenario}"
+
+  cn.transaction_begin
+  import_pipe_hydraulics(cn)
+  cn.transaction_commit
+
+  # Call the print_csv_inflows_file method
+  print_csv_inflows_file(cn)
 end
 
 # Indicate the completion of the import process
