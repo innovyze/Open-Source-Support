@@ -3,6 +3,9 @@ require 'pathname'
 
 def select_file
 
+# Get the current network object
+cn = WSApplication.current_network
+
 result = WSApplication.prompt "InfoSWMM RPT file",
 [
   ['RPT File', 'String', nil, nil, 'FILE', true, '*.*', 'rpt', false]
@@ -71,6 +74,14 @@ lines_hash.each do |index, line|
     
         # Move to the next line
         start_index += 1
+
+        ro = cn.row_objects('sw_conduit').each do |ro|
+        ro.conduit_id = extracted_tokens[0]
+        ro.user_number_10 = extracted_tokens[1]
+        ro.user_number_9 = extracted_tokens[2]
+        ro.write
+        end
+
     end
 
     # Stop processing the hash

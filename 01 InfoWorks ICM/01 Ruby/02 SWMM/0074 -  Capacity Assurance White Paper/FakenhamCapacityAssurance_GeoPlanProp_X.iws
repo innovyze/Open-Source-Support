@@ -1,0 +1,929 @@
+<NetEditParams NetworkType_attr="Collection Network" version="1">
+	<ParamsDataNode m_nsGeoLabelFont="Tahoma" m_nGeoLabelFontSize="80" m_bGeoAutoLabelMaintainFontSizeAtAllScales="1" m_dGeoAutoLabelScaleAtWhichFontSizeIsSet="1.00000000000000000000e+04" m_bGeoLabelShowTitles="1" m_bGeoLabelShowUnits="1" m_nGeoSymbolFontSize="60" m_nGeoSymbolFontSizeOther="60" m_bGeoLabelShowObjectIDs="1" m_bGeoAutoLabelColorAsTheme="0" m_bGeoAutoLabelHideTransparent="1" m_bGeoAutoLabelClashDetect="1" m_bGeoAutoLabelOffSet="1" m_nGeoAutoLabelType="0" m_bGeoShowSimTimeAndStatus="1" m_nGeoLinkArrowsSymbolSize="60" m_nGeoLinkArrowsSymbolWeight="0" m_SelectionColour="255000000" m_InfoSelectionColour="000255255" m_GISSelectionColour="255000000" m_bUseIntelligentNetworkSearch="1" m_bHillShadingOn="1" m_nHillShadingAzimuth="315" m_nHillShadingAltitude="60" m_nHillShadingVertExaggeration="0" m_bGeoLinkDirectionArrows="0" m_bShowCCTVDefects="0" m_bShowCurrentCCTVDefectsOnly="1" m_nCCTVDefectSymbolSize="60" m_bShowCCTVDefectLabels="0" m_bShowCCTVSeverityInLabels="0" m_bShowCCTVSeverityANY="1" m_bShowCCTVSeverityL="0" m_bShowCCTVSeverityM="0" m_bShowCCTVSeverityS="0" m_bShowGroundLevelFloodDepth="0" m_bUseDigitisationDefaults="0" m_bShowObjectCreationDlg="1" m_bShowTrianglesInTINs="0" m_bShowRadarCellBoundaries="0" m_nMapVisibilityPercent="100" m_bGeoAutoLabelRotateLinkLabels="0" m_bInteractiveTooltips="0" m_bImageTooltips="0" m_bControlVisibilityUsingZooms="1" m_bShowDamageReceptor2DElements="0" m_bShowIncidentLines="0" m_bShowPropertyLines="0" m_nsUSName="&lt;none&gt;" m_nsDSName="" m_bShowBanks="1" m_nBankLineWidth="1" m_nBankAlpha="255" m_clrBankColour="000000192" m_bShowWalls="1" m_nWallLineWidth="1" m_nWallAlpha="255" m_clrWallColour="255000255" m_bShowOther="1" m_nOtherLineWidth="1" m_nOtherAlpha="255" m_clrOtherColour="000000000" m_bShowInternal="1" m_nInternalLineWidth="1" m_nInternalAlpha="255" m_clrInternalColour="000000000" m_dMinBankZoom="0.00000000000000000000e+00" m_dMaxBankZoom="-1.00000000000000000000e+00" m_dMinBankScale="0.00000000000000000000e+00" m_dMaxBankScale="-1.00000000000000000000e+00" m_dMinWallZoom="0.00000000000000000000e+00" m_dMaxWallZoom="-1.00000000000000000000e+00" m_dMinWallScale="0.00000000000000000000e+00" m_dMaxWallScale="-1.00000000000000000000e+00" m_dMinOtherZoom="0.00000000000000000000e+00" m_dMaxOtherZoom="-1.00000000000000000000e+00" m_dMinOtherScale="0.00000000000000000000e+00" m_dMaxOtherScale="-1.00000000000000000000e+00" m_dMinInternalZoom="0.00000000000000000000e+00" m_dMaxInternalZoom="-1.00000000000000000000e+00" m_dMinInternalScale="0.00000000000000000000e+00" m_dMaxInternalScale="-1.00000000000000000000e+00" m_dMinGeoAutoLabelZoom="0.00000000000000000000e+00" m_dMaxGeoAutoLabelZoom="1.00000000000000000000e+04" m_dMinGeoAutoLabelScale="0.00000000000000000000e+00" m_dMaxGeoAutoLabelScale="5.00000000000000000000e+04" m_nGDINodesLimit="928" m_bShowScenarioGhosts="1" m_bHideKeysWithNoObjects="1" m_bShowSubCatchmentArrows="0" m_bModifySectionColour="0" m_bModifySectionWidth="0" m_bModifySectionVis="1" m_bModifySectionStyle="0" m_crfSectionColour="000000000" m_nSectionWidth="2" m_nSectionAlpha="96" m_nSectionLineStyle="1">
+		<m_mapCCTVCodeToColour>
+			<CCTVC CODE="B" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="BJ" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="BN" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="BNF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="BR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="BRF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CC" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="CCJ" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="CL" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="CLJ" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="CM" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="CMJ" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="CN" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CNC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CNI" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="CP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CPF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CU" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CUD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CUS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CUW" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CUZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CX" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="CXB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CXBI" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CXD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CXDI" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CXI" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="CXP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CXPI" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="CXZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="D" COLOUR="-255" GRADE="5"/>
+			<CCTVC CODE="DB" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="DC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DE" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEE" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEG" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEGJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DER" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DES" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DESJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEX" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DEZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="DH" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="DI" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="DV" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="EH" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="EHJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="EL" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="ELJ" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="EM" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="EMJ" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="ESH" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="ESL" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="ESM" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="EX" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FC" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="FCJ" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="FH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FL" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="FLJ" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="FM" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="FMJ" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="FR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FW" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FWC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FWCS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FWT" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="FWTF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="GO" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="GP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="GY" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="GYF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="GZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="H" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="HS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="HSH" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="HSL" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="HSM" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="I" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="ICF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="ID" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IDJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IG" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IGJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="ING" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="INGF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="INGG" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="INGP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="INGS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="INGZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IRJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="IS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="ISJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JDL" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="JDM" COLOUR="-32896" GRADE="1"/>
+			<CCTVC CODE="JDS" COLOUR="-32896" GRADE="1"/>
+			<CCTVC CODE="JN" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JNC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JX" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="JXB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JXD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JXP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="JXZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LHF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LL" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LU" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LX" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXCX" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXE" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXEB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXES" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXSC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXSF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXSH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXSL" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXSM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXSS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXWC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXWH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXWL" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXWM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="LXZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MB" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="MC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="ME" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MHF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MM" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="MMM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MMS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MMT" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="MS" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="MT" COLOUR="-33023" GRADE="3"/>
+			<CCTVC CODE="OB" COLOUR="-255" GRADE="5"/>
+			<CCTVC CODE="OBB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBI" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBX" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OBZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OCF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OD" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OFF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OJL" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="OJM" COLOUR="-32896" GRADE="1"/>
+			<CCTVC CODE="OJS" COLOUR="-32896" GRADE="1"/>
+			<CCTVC CODE="OS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="OSF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="PC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="PP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="PVR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="R" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RE" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="REF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="REM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RF" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="RFJ" COLOUR="-65280" GRADE="2"/>
+			<CCTVC CODE="RM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RMJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RPH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RPI" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RPL" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RPR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RPS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RPZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RT" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="RTJ" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="RXC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXH" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXMR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXXM" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="RXZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="S" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SA" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SAP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SAV" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SCP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SK" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SKF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SO" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SRB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SRC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SRP" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SRV" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SS" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SSL" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SSM" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SSS" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="ST" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SV" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="SW" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SWL" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SWM" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SWS" COLOUR="-16512" GRADE="4"/>
+			<CCTVC CODE="SZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="V" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VID" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VRC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VRJ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VRZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VV" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VVR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="VZ" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WL" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WLC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WLT" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WR" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WRF" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WXC" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WXL" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="WXS" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="X" COLOUR="-255" GRADE="5"/>
+			<CCTVC CODE="XB" COLOUR="-0" GRADE="0"/>
+			<CCTVC CODE="XP" COLOUR="-0" GRADE="0"/>
+		</m_mapCCTVCodeToColour>
+	</ParamsDataNode>
+	<theme_order>
+		<layer_type show_layer="1" selectable="1">cams_manhole</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_connection_node</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_storage</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_outlet</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_pipe</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_connection_pipe</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_pump</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_valve</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_orifice</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_screen</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_ancillary</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_sluice</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_flume</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_weir</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_vortex</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_siphon</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_channel</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_generator</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_data_logger</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_general_asset</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_defence_area</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_defence_structure</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_general_maintenance</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_pipe_repair</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_manhole_repair</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_pump_station_mm</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_pump_station_em</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_pipe_clean</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_manhole_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_gps_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_cctv_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_acoustic_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_mon_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_cross_section_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_general_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_fog_inspection</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_dye_test</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_drain_test</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_smoke_test</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_smoke_defect</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_water_quality_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_pump_station_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_general</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_blockage</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_pollution</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_collapse</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_flooding</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_complaint</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_incident_odor</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_flood_defence_survey</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_general_line</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_general_survey_line</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_pump_station</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_wtw</layer_type>
+		<layer_type show_layer="1" selectable="1">cams_property</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_work_package</layer_type>
+		<layer_type show_layer="0" selectable="1">cams_zone</layer_type>
+		<layer_type show_layer="0" selectable="1">Ground Model</layer_type>
+		<layer_type show_layer="0" selectable="1">Rainfall</layer_type>
+	</theme_order>
+	<theme_themes>
+		<theme_theme net_obj_type_attr="cams_manhole" name_attr="Node" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="SYMBOLALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOLCOLOUR">
+					<theme_value>000128000</theme_value>
+					<theme_value>000128000</theme_value>
+					<theme_value>000128000</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_F_CIRC</theme_value>
+					<theme_value>DV_SYM_F_CIRC</theme_value>
+					<theme_value>DV_SYM_F_CIRC</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="SYMBOLCOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOLSIZE">
+					<theme_value>60</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>120</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>120</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>60</theme_value>
+					<theme_value>60</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+		<theme_theme net_obj_type_attr="cams_pipe" name_attr="Pipe" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="LINEALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="LINECOLOUR">
+					<theme_value>000000128</theme_value>
+					<theme_value>000000128</theme_value>
+					<theme_value>000000128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>2</theme_value>
+					<theme_value>2</theme_value>
+					<theme_value>2</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_NONE</theme_value>
+					<theme_value>DV_SYM_NONE</theme_value>
+					<theme_value>DV_SYM_NONE</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="LINEARROWS">
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+		<theme_theme net_obj_type_attr="cams_pump" name_attr="Pump" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="LINEALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="LINECOLOUR">
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_F_TRIANG</theme_value>
+					<theme_value>DV_SYM_F_TRIANG</theme_value>
+					<theme_value>DV_SYM_F_TRIANG</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="LINEARROWS">
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+		<theme_theme net_obj_type_attr="cams_valve" name_attr="Valve" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="LINEALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="LINECOLOUR">
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_VALVE</theme_value>
+					<theme_value>DV_SYM_VALVE</theme_value>
+					<theme_value>DV_SYM_VALVE</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="LINEARROWS">
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+		<theme_theme net_obj_type_attr="cams_orifice" name_attr="Orifice" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="LINEALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="LINECOLOUR">
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_O_SQUARE</theme_value>
+					<theme_value>DV_SYM_O_SQUARE</theme_value>
+					<theme_value>DV_SYM_O_SQUARE</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="LINEARROWS">
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+		<theme_theme net_obj_type_attr="cams_sluice" name_attr="Sluice" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="LINEALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="LINECOLOUR">
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_H_RECT</theme_value>
+					<theme_value>DV_SYM_H_RECT</theme_value>
+					<theme_value>DV_SYM_H_RECT</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="LINEARROWS">
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+		<theme_theme net_obj_type_attr="cams_weir" name_attr="Weir" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme basic_theme="1" name_attr="Base Theme" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NULL" subtheme_enabled="1">
+				<theme_values property="LINEALPHA">
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+					<theme_value>255</theme_value>
+				</theme_values>
+				<theme_values property="LINECOLOUR">
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+					<theme_value>128000064</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="SYMBOL">
+					<theme_value>DV_SYM_F_SQRE</theme_value>
+					<theme_value>DV_SYM_F_SQRE</theme_value>
+					<theme_value>DV_SYM_F_SQRE</theme_value>
+				</theme_values>
+			</theme_subtheme>
+			<theme_subtheme name_attr="System Type" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_NSTR" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="system_type" unit_code_attr="" sql_string="" flag_field="0" results_field="0" b_2d_triangles_attr="0" sql_field="0" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="1" range_scale_type_attr="0" autoscale_attr="0" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="1">C</theme_bin>
+					<theme_bin fixed_bin_attr="1">F</theme_bin>
+					<theme_bin fixed_bin_attr="1">LD</theme_bin>
+					<theme_bin fixed_bin_attr="1">O</theme_bin>
+					<theme_bin fixed_bin_attr="1">S</theme_bin>
+					<theme_bin fixed_bin_attr="1">T</theme_bin>
+					<theme_bin fixed_bin_attr="1">U</theme_bin>
+					<theme_bin fixed_bin_attr="1">W</theme_bin>
+					<theme_bin fixed_bin_attr="1">Z</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>200240200</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>000190000</theme_value>
+					<theme_value>168124028</theme_value>
+					<theme_value>192192192</theme_value>
+					<theme_value>000105000</theme_value>
+					<theme_value>000000255</theme_value>
+					<theme_value>178000255</theme_value>
+					<theme_value>000000000</theme_value>
+					<theme_value>127255255</theme_value>
+					<theme_value>128255128</theme_value>
+				</theme_values>
+				<theme_values property="LINEWIDTH">
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>3</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>1</theme_value>
+				</theme_values>
+				<theme_values property="LINEARROWS">
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>1</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+					<theme_value>0</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+	</theme_themes>
+	<auto_label_map>
+		<nep_auto_label nep_al_obj_type_attr="-3" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="-2" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="-1" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="132864" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="132888" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="132972" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="132976" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163842" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163844" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163846" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163847" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163849" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163850" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="163852" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263937" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263943" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263945" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263952" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263953" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263954" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263955" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263956" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263957" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="263958" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="264040" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="264046" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="264057" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="294918" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="294920" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="294923" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050370" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050371" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050373" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050376" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050391" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050393" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050395" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050396" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050397" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050398" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050400" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050401" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050402" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050403" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050404" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050405" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050406" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050407" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050408" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050409" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050458" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050460" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050462" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050464" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050485" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050487" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050491" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050493" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050495" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050497" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050499" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050501" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050503" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050505" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050507" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050509" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050511" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050512" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050513" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050514" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081346" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081347" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081348" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081349" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081350" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081351" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081352" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081353" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081354" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081355" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081356" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081357" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081358" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081359" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081360" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081361" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081362" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1081363" nep_al_status_attr="0"/>
+	</auto_label_map>
+</NetEditParams>
+

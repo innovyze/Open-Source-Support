@@ -62,26 +62,26 @@ def print_csv_inflows_file(open_net)
   end
 end
 
-def import_node_loads(open_net,folder_path,mh_set)
 
+def import_node_loads(open_net, folder_path, mh_set)
   # Define the configuration and CSV file paths
-  val=WSApplication.prompt "Manhole Loads for an InfoSewer Scenario",
-  [
-  ['Pick the Scenario Name that Matches the InfoSewer Dataset ','String',nil,nil,'FOLDER','Manhole Folder']
-  ],false
-    # Exit the program if the user cancelled the prompt
-    return  if val.nil?
-  csv  = val[0] + "\\mhhyd.csv"
+  val = WSApplication.prompt "Manhole Loads for an InfoSewer Scenario", [
+    ['Pick the Scenario Name that Matches the InfoSewer Dataset ', 'String', nil, nil, 'FOLDER', 'Manhole Folder']
+  ], false
+
+  # Exit the program if the user cancelled the prompt
+  return if val.nil?
+  
+  csv = val[0] + "\\mhhyd.csv"
   puts csv
 
-  # Initialize an empty array to hold the hashes
-  rows = []
+  # Initialize a hash to hold the rows
+  rows = {}
 
   # Open and read the CSV file
-  CSV.foreach(csv, headers: true).with_index do |row, index|
-    # Add the row to the array as a hash
-    rows << {
-      "ID" => row[0], 
+  CSV.foreach(csv, headers: true) do |row|
+    row_hash = {
+      "ID" => row[0],
       "DIAMETER" => row[1],
       "RIM_ELEV" => row[2],
       "LOAD1" => row[4],
@@ -105,126 +105,107 @@ def import_node_loads(open_net,folder_path,mh_set)
       "LOAD10" => row[40],
       "PATTERN10" => row[42]
     }
+    rows[row_hash["ID"].strip.downcase] = row_hash
   end
 
-  # save the rows
-  rows.each do |row|
-    open_net.row_objects('hw_node').each do |ro|
-      if ro.node_id.strip.downcase == row["ID"].strip.downcase then
-        ro.user_number_1 = row["DIAMETER"]
-        ro.user_number_2 = row["RIM_ELEV"]
-        ro.user_number_3 = row["LOAD1"]
-        ro.user_number_4 = row["LOAD2"]
-        ro.user_number_5 = row["LOAD3"]
-        ro.user_number_6 = row["LOAD4"]
-        ro.user_number_7 = row["LOAD5"]
-        ro.user_number_8 = row["LOAD6"]
-        ro.user_number_9 = row["LOAD7"]
-        ro.user_number_10 = row["LOAD8"]
-        ro.write
-        break
-      end
-    end
+  # Save the rows to the nodes and subcatchments
+  open_net.row_objects('hw_node').each do |ro|
+    row = rows[ro.node_id.strip.downcase]
+    next unless row
+
+    ro.user_number_1 = row["DIAMETER"]
+    ro.user_number_2 = row["RIM_ELEV"]
+    ro.user_number_3 = row["LOAD1"]
+    ro.user_number_4 = row["LOAD2"]
+    ro.user_number_5 = row["LOAD3"]
+    ro.user_number_6 = row["LOAD4"]
+    ro.user_number_7 = row["LOAD5"]
+    ro.user_number_8 = row["LOAD6"]
+    ro.user_number_9 = row["LOAD7"]
+    ro.user_number_10 = row["LOAD8"]
+    ro.write
   end
 
-    rows.each do |row|
-      open_net.row_objects('hw_subcatchment').each do |ro|
-        if ro.subcatchment_id == row["ID"] then
-          ro.user_number_1 = row["LOAD1"]
-          ro.user_number_2 = row["LOAD2"]
-          ro.user_number_3 = row["LOAD3"]
-          ro.user_number_4 = row["LOAD4"]
-          ro.user_number_5 = row["LOAD5"]
-          ro.user_number_6 = row["LOAD6"]
-          ro.user_number_7 = row["LOAD7"]
-          ro.user_number_8 = row["LOAD8"]
-          ro.user_number_9 = row["LOAD9"]
-          ro.user_number_10 = row["LOAD10"]          
-          ro.user_text_1 = row["PATTERN1"]
-          ro.user_text_2 = row["PATTERN2"]
-          ro.user_text_3 = row["PATTERN3"]
-          ro.user_text_4 = row["PATTERN4"]
-          ro.user_text_5 = row["PATTERN5"]
-          ro.user_text_6 = row["PATTERN6"]
-          ro.user_text_7 = row["PATTERN7"]
-          ro.user_text_8 = row["PATTERN8"]
-          ro.user_text_9 = row["PATTERN9"]
-          ro.user_text_10 = row["PATTERN10"]
-          ro.write
-          break
-        end
-      end
-    end
+  open_net.row_objects('hw_subcatchment').each do |ro|
+    row = rows[ro.subcatchment_id.strip.downcase]
+    next unless row
+
+    ro.user_number_1 = row["LOAD1"]
+    ro.user_number_2 = row["LOAD2"]
+    ro.user_number_3 = row["LOAD3"]
+    ro.user_number_4 = row["LOAD4"]
+    ro.user_number_5 = row["LOAD5"]
+    ro.user_number_6 = row["LOAD6"]
+    ro.user_number_7 = row["LOAD7"]
+    ro.user_number_8 = row["LOAD8"]
+    ro.user_number_9 = row["LOAD9"]
+    ro.user_number_10 = row["LOAD10"]
+    ro.user_text_1 = row["PATTERN1"]
+    ro.user_text_2 = row["PATTERN2"]
+    ro.user_text_3 = row["PATTERN3"]
+    ro.user_text_4 = row["PATTERN4"]
+    ro.user_text_5 = row["PATTERN5"]
+    ro.user_text_6 = row["PATTERN6"]
+    ro.user_text_7 = row["PATTERN7"]
+    ro.user_text_8 = row["PATTERN8"]
+    ro.user_text_9 = row["PATTERN9"]
+    ro.user_text_10 = row["PATTERN10"]
+    ro.write
+  end
 end
+
 #========================================================================
 # Access the current open network in the application
 open_net = WSApplication.current_network
 
-    # Define the configuration and CSV file paths
-    csv=WSApplication.prompt "Manhole Hydraulics and loads for an InfoSewer Scenario",
-    [
-    ['Pick the Scenario Name for the InfoSewer Dataset ','String',nil,nil,'FOLDER','Manhole Folder']
-    ],false
-    puts csv
-#========================================================================
-      # Initialize an empty array to hold the hashes
-      rows = []
+# Define the configuration and CSV file paths
+csv = WSApplication.prompt "Manhole Hydraulics and loads for an InfoSewer Scenario", [
+  ['Pick the Scenario Name for the InfoSewer Dataset ', 'String', nil, nil, 'FOLDER', 'Manhole Folder']
+], false
 
-      csv_file_path  = File.join(csv, "scenario.csv")
-      puts csv_file_path
+puts csv
 
-      # Headers to exclude
-      exclude_headers = ["USE_TIME", "TIME_SET", "USE_REPORT", "REPORT_SET", "USE_OPTION", "OPTION_SET","PISLT_SET"]
+# Initialize an empty array to hold the hashes
+rows = []
 
-      # Read the CSV file
-      CSV.open(csv_file_path, 'r', headers: true) do |csv|
+csv_file_path = File.join(csv, "scenario.csv")
+puts csv_file_path
 
-      # Process the rows
-      csv.each do |row|
-        row_string = ""
-        row.headers.each do |header|
-          unless row[header].nil? || exclude_headers.include?(header)
-            row_string += sprintf("%-15s: %s, ", header, row[header])
-          end
-        end
-        puts row_string
-          # Add the row to the array as a hash
-          rows << row.to_h
-        end
+# Headers to exclude
+exclude_headers = ["USE_TIME", "TIME_SET", "USE_REPORT", "REPORT_SET", "USE_OPTION", "OPTION_SET", "PISLT_SET"]
+
+# Read the CSV file
+CSV.open(csv_file_path, 'r', headers: true) do |csv|
+  # Process the rows
+  csv.each do |row|
+    row_string = ""
+    row.headers.each do |header|
+      unless row[header].nil? || exclude_headers.include?(header)
+        row_string += sprintf("%-15s: %s, ", header, row[header])
       end
+    end
+    puts row_string
+    rows << row.to_h
+  end
+end
+
 #========================================================================
 
 open_net.scenarios do |scenario|
   open_net.current_scenario = scenario
-  text = WSApplication.message_box("Scenario #{open_net.current_scenario} to Import", 'OK', 'Information', nil)
-    puts "Importing for Scenario #{open_net.current_scenario}"
-      # Initialize 'mh_set' variable
-      mh_set = nil
-        rows.each do |row|  
-          if row['ID'] == open_net.current_scenario
-            puts "Row: #{row['ID']}, Current Scenario: #{open_net.current_scenario}, MH_SET: #{row['MH_SET']}"
-            if row['MH_SET'].nil?
-              puts "MH_SET is nil"
-            elsif !row['MH_SET'].is_a?(String)
-              puts "MH_SET is not a string: #{row['MH_SET']}"
-            else
-              mh_set = row['MH_SET'].upcase
-            end
-            break # Exit the loop once the matching row is found
-          end
-        end      
-        # Set pipe_set to 'BASE' if the current scenario is 'BASE'
-        if open_net.current_scenario.upcase == 'BASE' || mh_set.nil?
-          mh_set = 'BASE'
-        end
-    
-        text = WSApplication.message_box("MH_Set is #{mh_set} to Import", 'OK', 'Information', nil)
+  puts "Importing for Scenario #{open_net.current_scenario}"
 
-    open_net.transaction_begin
-    import_node_loads(open_net,csv,mh_set)
-    open_net.transaction_commit
-    # Call the print_csv_inflows_file method
-    print_csv_inflows_file(open_net)
+  mh_set = rows.find { |row| row['ID'] == open_net.current_scenario }&.fetch('MH_SET', 'BASE')&.upcase
+  mh_set ||= 'BASE'
+
+  puts "MH_Set is #{mh_set} to Import"
+
+  open_net.transaction_begin
+  import_node_loads(open_net, csv, mh_set)
+  open_net.transaction_commit
+
+  # Call the print_csv_inflows_file method
+  print_csv_inflows_file(open_net)
 end
 
 # Indicate the completion of the import process

@@ -62,26 +62,26 @@ def print_csv_inflows_file(open_net)
   end
 end
 
-def import_node_loads(open_net)
 
+def import_node_loads(open_net)
   # Define the configuration and CSV file paths
-  val=WSApplication.prompt "Manhole Loads for an InfoSewer Scenario",
-  [
-  ['Pick the Scenario Name that Matches the InfoSewer Dataset ','String',nil,nil,'FOLDER','Manhole Folder']
-  ],false
-    # Exit the program if the user cancelled the prompt
-    return  if val.nil?
-  csv  = val[0] + "\\mhhyd.csv"
+  val = WSApplication.prompt "Manhole Loads for an InfoSewer Scenario", [
+    ['Pick the Scenario Name that Matches the InfoSewer Dataset ', 'String', nil, nil, 'FOLDER', 'Manhole Folder']
+  ], false
+
+  # Exit the program if the user cancelled the prompt
+  return if val.nil?
+
+  csv = val[0] + "\\mhhyd.csv"
   puts csv
 
-  # Initialize an empty array to hold the hashes
-  rows = []
+  # Initialize a hash to hold the rows
+  rows = {}
 
   # Open and read the CSV file
-  CSV.foreach(csv, headers: true).with_index do |row, index|
-    # Add the row to the array as a hash
-    rows << {
-      "ID" => row[0], 
+  CSV.foreach(csv, headers: true) do |row|
+    row_hash = {
+      "ID" => row[0],
       "DIAMETER" => row[1],
       "RIM_ELEV" => row[2],
       "LOAD1" => row[4],
@@ -105,62 +105,62 @@ def import_node_loads(open_net)
       "LOAD10" => row[40],
       "PATTERN10" => row[42]
     }
+    rows[row_hash["ID"].strip.downcase] = row_hash
   end
 
-  # save the rows
-  rows.each do |row|
-    open_net.row_objects('hw_node').each do |ro|
-      if ro.node_id.strip.downcase == row["ID"].strip.downcase then
-        ro.user_number_1 = row["DIAMETER"]
-        ro.shaft_area = row["DIAMETER"]
-        ro.chamber_area = row["DIAMETER"]
-        ro.user_number_2 = row["RIM_ELEV"]
-        ro.ground_level = row["RIM_ELEV"]
-        ro.write
-        break
-      end
-    end
+  # Save the rows to the nodes
+  open_net.row_objects('hw_node').each do |ro|
+    row = rows[ro.node_id.strip.downcase]
+    next unless row
+
+    ro.user_number_1 = row["DIAMETER"]
+    ro.shaft_area = row["DIAMETER"]
+    ro.chamber_area = row["DIAMETER"]
+    ro.user_number_2 = row["RIM_ELEV"]
+    ro.ground_level = row["RIM_ELEV"]
+    ro.write
   end
 
-    rows.each do |row|
-      open_net.row_objects('hw_subcatchment').each do |ro|
-        if ro.subcatchment_id == row["ID"] then
-          ro.system_type = 'Sanitary'
-          ro.user_number_1 = row["LOAD1"]
-          ro.user_number_2 = row["LOAD2"]
-          ro.user_number_3 = row["LOAD3"]
-          ro.user_number_4 = row["LOAD4"]
-          ro.user_number_5 = row["LOAD5"]
-          ro.user_number_6 = row["LOAD6"]
-          ro.user_number_7 = row["LOAD7"]
-          ro.user_number_8 = row["LOAD8"]
-          ro.user_number_9 = row["LOAD9"]
-          ro.user_number_10 = row["LOAD10"]          
-          ro.user_text_1 = row["PATTERN1"]
-          ro.user_text_2 = row["PATTERN2"]
-          ro.user_text_3 = row["PATTERN3"]
-          ro.user_text_4 = row["PATTERN4"]
-          ro.user_text_5 = row["PATTERN5"]
-          ro.user_text_6 = row["PATTERN6"]
-          ro.user_text_7 = row["PATTERN7"]
-          ro.user_text_8 = row["PATTERN8"]
-          ro.user_text_9 = row["PATTERN9"]
-          ro.user_text_10 = row["PATTERN10"]
-          ro.write
-          break
-        end
-      end
-    end
+  # Save the rows to the subcatchments
+  open_net.row_objects('hw_subcatchment').each do |ro|
+    row = rows[ro.subcatchment_id.strip.downcase]
+    next unless row
+
+    ro.system_type = 'Sanitary'
+    ro.user_number_1 = row["LOAD1"]
+    ro.user_number_2 = row["LOAD2"]
+    ro.user_number_3 = row["LOAD3"]
+    ro.user_number_4 = row["LOAD4"]
+    ro.user_number_5 = row["LOAD5"]
+    ro.user_number_6 = row["LOAD6"]
+    ro.user_number_7 = row["LOAD7"]
+    ro.user_number_8 = row["LOAD8"]
+    ro.user_number_9 = row["LOAD9"]
+    ro.user_number_10 = row["LOAD10"]
+    ro.user_text_1 = row["PATTERN1"]
+    ro.user_text_2 = row["PATTERN2"]
+    ro.user_text_3 = row["PATTERN3"]
+    ro.user_text_4 = row["PATTERN4"]
+    ro.user_text_5 = row["PATTERN5"]
+    ro.user_text_6 = row["PATTERN6"]
+    ro.user_text_7 = row["PATTERN7"]
+    ro.user_text_8 = row["PATTERN8"]
+    ro.user_text_9 = row["PATTERN9"]
+    ro.user_text_10 = row["PATTERN10"]
+    ro.write
+  end
 end
+
 #========================================================================
 # Access the current open network in the application
 open_net = WSApplication.current_network
 
-    open_net.transaction_begin
-    import_node_loads(open_net)
-    open_net.transaction_commit
-    # Call the print_csv_inflows_file method
-    print_csv_inflows_file(open_net)
+open_net.transaction_begin
+import_node_loads(open_net)
+open_net.transaction_commit
+
+# Call the print_csv_inflows_file method
+print_csv_inflows_file(open_net)
 
 # Indicate the completion of the import process
 puts "Finished Import of InfoSewer to ICM InfoWorks"
