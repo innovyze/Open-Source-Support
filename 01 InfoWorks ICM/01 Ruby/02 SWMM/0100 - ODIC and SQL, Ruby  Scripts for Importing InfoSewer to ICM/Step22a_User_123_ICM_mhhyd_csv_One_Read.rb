@@ -193,12 +193,31 @@ end
 
 open_net.scenarios do |scenario|
   open_net.current_scenario = scenario
-  puts "Importing for Scenario #{open_net.current_scenario}"
-
-  mh_set = rows.find { |row| row['ID'] == open_net.current_scenario }&.fetch('MH_SET', 'BASE')&.upcase
-  mh_set ||= 'BASE'
+  text = WSApplication.message_box("Scenario #{open_net.current_scenario} to Import", 'OK', 'Information', nil)
+    puts "Importing for Scenario #{open_net.current_scenario}"
+      # Initialize 'mh_set' variable
+      mh_set = nil
+        rows.each do |row|  
+          if row['ID'] == open_net.current_scenario
+            puts "Row: #{row['ID']}, Current Scenario: #{open_net.current_scenario}, MH_SET: #{row['MH_SET']}"
+            if row['MH_SET'].nil?
+              puts "MH_SET is nil"
+            elsif !row['MH_SET'].is_a?(String)
+              puts "MH_SET is not a string: #{row['MH_SET']}"
+            else
+              mh_set = row['MH_SET'].upcase
+            end
+            break # Exit the loop once the matching row is found
+          end
+        end      
+        # Set pipe_set to 'BASE' if the current scenario is 'BASE'
+        if open_net.current_scenario.upcase == 'BASE' || mh_set.nil?
+          mh_set = 'BASE'
+        end
 
   puts "MH_Set is #{mh_set} to Import"
+
+  text = WSApplication.message_box("MH_Set is #{mh_set} to Import", 'OK', 'Information', nil)
 
   open_net.transaction_begin
   import_node_loads(open_net, csv, mh_set)
