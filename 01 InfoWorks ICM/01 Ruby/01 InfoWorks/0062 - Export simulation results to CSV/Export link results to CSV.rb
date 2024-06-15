@@ -2,7 +2,7 @@ require 'date'
 
 # Options
 TIME_FORMAT = "%F %T"  # The format for time: 'YYYY-MM-DD HH:MM:SS'
-PRECISION = 2  # The number of decimal places for the result values
+PRECISION = 3  # The number of decimal places for the result values
 TABLE = '_links'  # The table from which the row objects will be selected
 FIELDS = ['us_flow', 'ds_flow', 'us_depth', 'ds_depth']  # The result fields to retrieve for each object
 

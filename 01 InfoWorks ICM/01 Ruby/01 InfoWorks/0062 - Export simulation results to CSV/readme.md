@@ -23,3 +23,21 @@ The script uses the WSApplication class to interact with the InfoWorks ICM appli
 The script uses the File class to write the CSV content to the file. It opens the file in write mode, writes the CSV content, and then closes the file. The script also prints a confirmation message after each file is written.
 
 This script is a useful tool for exporting simulation results to a more accessible format, which can then be used for further analysis or visualization.
+
+# Export link results to CSV.rb
+
+This Ruby script exports the results of a simulation from a network model in InfoWorks ICM to CSV files.
+
+## Key Features
+
+- **Time Formatting**: The script uses a specific time format ('YYYY-MM-DD HH:MM:SS') for the output CSV files.
+- **Precision**: The script formats the result values to a specified number of decimal places.
+- **Table Selection**: The script retrieves row objects from a specified table ('_links').
+- **Field Selection**: The script retrieves specific result fields ('us_flow', 'ds_flow', 'us_depth', 'ds_depth') for each object.
+- **Row Object Selection**: The script checks if any row objects have been selected in the specified table. If not, it provides a message to the user and exits.
+- **Timestep Handling**: The script retrieves the timesteps for the network and checks if the simulation starts at time 0 or a real date.
+- **CSV Construction**: The script constructs the CSV content, starting with a header that includes the IDs of the selected row objects. It then iterates over each timestep and adds the result values for each object to the CSV content.
+
+## Usage
+
+This script is typically used to export the results of a simulation from a network model in InfoWorks ICM to CSV files. The user can specify the table, fields, and row objects to include in the export.
