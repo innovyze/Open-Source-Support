@@ -70,6 +70,9 @@
 | 0062 | UI       | Export simulation results to CSV                                    | Network Data Set      |
 | 0063 | UI       | Scenario Maker (Names Only)                                         | Network Data Set      |
 | 0064 | UI       | Trace Upstream Subcatchments For a Given Node                       | Network Data Get      |
+| 0065 | UI       | GIS Export of Data Tables                                           | Network Data Get      |
+| 0065 | UI       | Export User Fields to CSV with User Name                            | Network Data Get      |
+|------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
 

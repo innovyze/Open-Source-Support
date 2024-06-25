@@ -78,3 +78,16 @@ result = WSApplication.prompt "Reading the InfoSewer Steady State RPT File",
       puts "Header: #{header.ljust(15)}, Mean: #{format('%.3f', mean).ljust(15)}, Max: #{format('%.3f', max).ljust(15)}, Min: #{format('%.3f', min).ljust(15)}, Count: #{count.to_s.ljust(15)}"
     end
   end
+
+
+  @echo off
+  setlocal enabledelayedexpansion
+  
+  for /D /R %%a in (*) do (
+      :: Replace slashes with underscores
+      set "folder=%%a"
+      set "folder=!folder:\=_!"
+  
+      :: Output to log file
+      echo !folder! >> log.txt
+  )
