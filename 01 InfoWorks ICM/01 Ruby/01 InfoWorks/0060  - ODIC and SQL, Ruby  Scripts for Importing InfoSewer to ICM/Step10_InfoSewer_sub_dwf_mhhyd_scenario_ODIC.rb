@@ -1,4 +1,5 @@
 require 'csv'
+
 # Access the current open network in the application
 open_net = WSApplication.current_network
 

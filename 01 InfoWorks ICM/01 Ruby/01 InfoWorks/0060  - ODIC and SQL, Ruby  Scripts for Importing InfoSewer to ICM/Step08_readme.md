@@ -6,9 +6,9 @@ Objective: The goal of this step is to import data related to Wet Well elevation
 
 ## How to Execute:
 
-Navigate to the ODIC Center in your ICM  interface.
-Locate the IEDB folder and select the file named Wwellhyd_CSV.
-Use the Configuration File (CFG) named Step8_Infosewer_wetwell_wwellhyd_csv.cfg for the import settings.
+Navigate to the ODIC in the ICM interface.\
+Locate the IEDB folder and select the file named WWELLHYD_CSV.\
+Use the Configuration File (CFG) named Step08_Infosewer_wetwell_wwellhyd_csv.cfg for the import settings.
 
 ## What Gets Imported:
 

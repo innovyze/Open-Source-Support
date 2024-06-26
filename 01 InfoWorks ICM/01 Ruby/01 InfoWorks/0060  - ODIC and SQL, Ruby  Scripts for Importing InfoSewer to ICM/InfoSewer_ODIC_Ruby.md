@@ -1,6 +1,6 @@
 # InfoSewer to ICM InfoWorks Import Script using OCIC
 
-This script automates the process of importing data from InfoSewer to ICM InfoWorks.
+This script automates the process of importing data from InfoSewer to ICM InfoWorks. Ensure that you have run the macro to convert each DBF file to CSV format prior to running this Ruby script.
 
 ## Steps
 
