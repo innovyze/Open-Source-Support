@@ -27,6 +27,7 @@ What should you expect to see on the GeoPlan of ICM? The node, the x, y, each no
 5. Use the Model tool Create dummy boundaries to make the polygons for the newly created Subcatchments
 
 ![Alt text](./media/image-28.png)
+
 Node ID. X, Y have been imported and dummy subcatchments exist
 
 ![Alt text](./media/image-29.png)
