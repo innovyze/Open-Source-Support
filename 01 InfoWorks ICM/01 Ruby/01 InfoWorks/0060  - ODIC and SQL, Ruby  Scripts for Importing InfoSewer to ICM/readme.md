@@ -8,48 +8,50 @@ DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM 
 ## InfoWorks Configuration Files and Step-by-Step Guides
 
 ### Step 1: Node and Manhole Configuration
-Step1_InfoSewer_Node_csv.cfg: Configuration settings for initializing nodes in the InfoSewer model.\
-Step1_readme.md: Provides detailed instructions and explanations for setting up nodes in Step 1.\
-Sub-Step 1a: Manhole-Specific Settings\
-Step1a_InfoSewer_Manhole_csv.cfg: Configuration for manhole-specific attributes in InfoSewer.\
-Step1a_readme.md: Documentation for configuring manholes, outlining parameters and how to apply them.\
-Sub-Step 1b: Subcatchment Boundaries\
+Step01_InfoSewer_Node_csv.cfg: Configuration settings for initializing nodes in the InfoSewer model.\
+Step01_readme.md: Provides detailed instructions and explanations for setting up nodes in Step 1.\
+
+Step 1a: Manhole-Specific Settings\
+Step01a_InfoSewer_Manhole_csv.cfg: Configuration for manhole-specific attributes in InfoSewer.\
+Step01a_readme.md: Documentation for configuring manholes, outlining parameters and how to apply them.\
+
+Step 1b: Subcatchment Boundaries\
 Step1b_Create_Dummy_Subcatchment_Boundaries: Likely a script or tool to create placeholder boundaries for subcatchments.\
-Step1b_readme.md: Instructions and guidelines for creating dummy subcatchment boundaries in the model.
+Step01b_readme.md: Instructions and guidelines for creating dummy subcatchment boundaries in the model.
 
 ### Step 2: Pipe and Link Configuration
-Step2a_InfoSewer_Pipe_CSV.cfg: Configuration for pipe-specific attributes in InfoSewer.\
-Step2a_readme.md: Documentation explaining the parameters and settings for configuring pipes.\
-Step2_InfoSewer_Link_csv.cfg: Configuration for link attributes in the InfoSewer network.\
-Step2_readme.md: Provides instructions for configuring the links between nodes.
+Step02a_InfoSewer_Pipe_CSV.cfg: Configuration for pipe-specific attributes in InfoSewer.\
+Step02a_readme.md: Documentation explaining the parameters and settings for configuring pipes.\
+Step02_InfoSewer_Link_csv.cfg: Configuration for link attributes in the InfoSewer network.\
+Step02_readme.md: Provides instructions for configuring the links between nodes.
 
 ### Step 3: Manhole Hydraulics
-Step3_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg: Configuration for hydraulic calculations related to manholes.\
-Step3_readme.md: Documentation for setting up manhole hydraulic calculations.
+Step03_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg: Configuration for hydraulic calculations related to manholes.\
+Step03_readme.md: Documentation for setting up manhole hydraulic calculations.
 
 ### Step 4: Link Hydraulics
-Step4_InfoSewer_link_hydraulics_pipehyd_csv.cfg: Configuration settings for hydraulic calculations related to pipes and links.\
-Step4_readme.md: Instructions for setting up hydraulic calculations for links.
+Step04_InfoSewer_link_hydraulics_pipehyd_csv.cfg: Configuration settings for hydraulic calculations related to pipes and links.\
+Step04_readme.md: Instructions for setting up hydraulic calculations for links.
 
 ### Step 5: Pump Curve Configuration
-Step5_InfoSewer_pump_curve_pumphyd_csv.cfg: Configuration for defining pump curves.\
-Step5_readme.md: Documentation explaining how to set up pump curves in the model.
+Step05_InfoSewer_pump_curve_pumphyd_csv.cfg: Configuration for defining pump curves.\
+Step05_readme.md: Documentation explaining how to set up pump curves in the model.
 
 ### Step 6: Pump Control
-Step6_InfoSewer_pump_control_control_csv.cfg: Configuration for pump control logic.\
-Step6_readme.md: Instructions for implementing pump control settings.
+Step06_InfoSewer_pump_control_control_csv.cfg: Configuration for pump control logic.\
+Step06_readme.md: Instructions for implementing pump control settings.
 
 ### Step 7: Subcatchment Dry Weather Flow
-Step7_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg: Configuration for dry weather flow in subcatchments.\
-Step7_readme.md: Instructions for configuring dry weather flows.
+Step07_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg: Configuration for dry weather flow in subcatchments.\
+Step07_readme.md: Instructions for configuring dry weather flows.
 
 ### Step 8: Wet Well Hydraulics
-Step8_Infosewer_wetwell_wwellhyd_csv.cfg: Configuration settings for the hydraulics of wet wells.\
-Step8_readme.md: Documentation for setting up wet well hydraulics.
+Step08_Infosewer_wetwell_wwellhyd_csv.cfg: Configuration settings for the hydraulics of wet wells.\
+Step08_readme.md: Documentation for setting up wet well hydraulics.
 
 ### Step 9: RDII Hydrograph
-Step9_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs.\
-Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
+Step09_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs.\
+Step09_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## SQL
 SQL Scripts to modify Node and Link Attributes:\
