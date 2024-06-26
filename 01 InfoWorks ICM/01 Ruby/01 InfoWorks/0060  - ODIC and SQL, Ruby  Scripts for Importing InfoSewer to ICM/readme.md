@@ -1,4 +1,4 @@
-**Title: Converting an InfoSewer Model to an ICM InfoWorks Network using ODIC, SQL**
+**Converting an InfoSewer Model to an InfoWorks Network using ODIC, SQL**
 
 ## Model Conversion
 Converting InfoSewer Model to ICM InfoWorks Network.md: Documentation detailing the steps for converting an InfoSewer model to an ICM InfoWorks Network.
@@ -18,9 +18,9 @@ SQL_Find_Pumps.sql: Identifies pumps in the model.
 SQL_FM_Roughness.sql: Sets the roughness coefficients.
 SQL_InfoSewer_Manhole_Area.sql: Sets or calculates the manhole areas.
 SQL_Make_Subcatchments.sql: Creates subcatchments in the model.
-SQL_Population_Flow.sql: Sets or calculates flow rates based on population data.
-SQL_Pump_On_Off.sql: Sets the on and off levels for pumps.
-SQL_WW.sql: Related to wet  well attributes.
+SQL_Population_Flow.sql: Sets or calculates flow rates based on population data.\
+SQL_Pump_On_Off.sql: Sets the on and off levels for pumps.\
+SQL_WW.sql: Related to wet  well attributes.\
 
 ![Alt text](image-5.png)
 

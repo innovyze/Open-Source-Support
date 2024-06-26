@@ -18,7 +18,7 @@ import_steps = [
     ['Subcatchment', 'Step7_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg', 'mhhyd.csv'],
     ['Pump', 'Step5_InfoSewer_pump_curve_pumphyd_csv.cfg', 'pumphyd.csv'],
     ['Pump', 'Step6_InfoSewer_pump_control_control_csv.cfg', 'control.csv'],
-    ['Node', 'Step8_Infosewer_wetwell_wwellhyd_csv.cfg', 'wwellhyd.csv'],
+    ['Node', 'Step8_InfoSewer_wetwell_wwellhyd_csv.cfg', 'wwellhyd.csv'],
     ['RTK Hydrograph', 'Step9_rdii_hydrograph_csv.cfg', 'Hydrograph.csv'],
     # MH DWF and Pipe Hydraulics 
     ['Subcatchment','Step10_InfoSewer_subcatchment_dwf_mhhyd_scenario.cfg', 'mhhyd.csv'],
@@ -35,4 +35,4 @@ import_steps.each do |layer, cfg_file, csv_file|
 end
 
 # Indicate the completion of the import process
-puts "Finished Import of InfoSewer to ICM InfoWorks"
+puts "Finished Import of InfoSewer to InfoWorks ICM"
