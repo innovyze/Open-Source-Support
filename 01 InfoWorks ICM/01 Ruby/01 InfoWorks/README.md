@@ -65,13 +65,15 @@
 | 0057 | UI       | Select header nodes                                                 | Network Data Get      |
 | 0058 | UI       | Select bifurcation nodes                                            | Network Data Get      |
 | 0059 | UI       | Select dry pipes                                                    | Network Data Get      |
-| 0060 | UI       | Update IDs for nodes, links, and subcatchments                      | Network Data Get      |
+| 0060 | UI       | ODIC and SQL, Ruby  Scripts for Importing InfoSewer to ICM          | Network Data Get      |
 | 0061 | UI       | Transfer conduit user defined headloss parameters between networks  | Network Data Set      |
 | 0062 | UI       | Export simulation results to CSV                                    | Network Data Set      |
 | 0063 | UI       | Scenario Maker (Names Only)                                         | Network Data Set      |
 | 0064 | UI       | Trace Upstream Subcatchments For a Given Node                       | Network Data Get      |
 | 0065 | UI       | GIS Export of Data Tables                                           | Network Data Get      |
-| 0065 | UI       | Export User Fields to CSV with User Name                            | Network Data Get      |
+| 0066 | UI       | Export User Fields to CSV with User Name                            | Network Data Get      |
+| 0067 | UI       | Set SWMM5 Buildup Washoff for HW_Subcatchments                      | Network Data Get      |
+| 0068 | UI       | Change All Node, Subs and Link IDs                                  | Network Data Get      |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
