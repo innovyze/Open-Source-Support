@@ -12,7 +12,7 @@ puts "Config Folder: #{cfg}"
 
 # List of import steps
 import_steps = [
-  ['RTK Hydrograph', 'Step9_rdii_hydrograph_csv.cfg', 'Hydrograph.csv']
+  ['RTK Hydrograph', 'Step09_rdii_hydrograph_csv.cfg', 'Hydrograph.csv']
 ]
 
 import_steps.each do |layer, cfg_file, csv_file|

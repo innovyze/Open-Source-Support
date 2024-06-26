@@ -9,7 +9,7 @@ puts cfg
 
 # List of import steps
 import_steps = [
-    ['Subcatchment', 'Step1b_InfoSewer_Subcachment_Manhole_csv.cfg', 'Node.csv']
+    ['Subcatchment', 'Step01b_InfoSewer_Subcachment_Manhole_csv.cfg', 'Node.csv']
 ]
 
 import_steps.each do |layer, cfg_file, csv_file|

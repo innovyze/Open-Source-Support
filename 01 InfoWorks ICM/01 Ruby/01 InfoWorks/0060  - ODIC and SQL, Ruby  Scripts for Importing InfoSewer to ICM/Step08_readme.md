@@ -16,17 +16,17 @@ The bottom and top elevations of Wet Wells are imported into the software.
 These Wet Wells are now treated as manholes within ICM.
 
 ## Step 2: Use SQL Scripts for Data Corrections and Conversions
-SQL_Pump_On_Off:\
+SET pump on and off:\
 This SQL script may need to be executed again to ensure that the pump's on/off settings are accurately represented in the model.
 
-SQL_FM_Roughness:\
+SET FM roughness:\
 Run this script if you encounter errors related to roughness coefficients in the model.
 
-SQL_InfoSewer_Manhole_Area:\
+SET caclulate manhole area:\
 This script will convert manhole diameters into areas, which is the format required for ICM.
 
-SQL_WW:\
-This SQL script will convert wet well diameters into shaft and chamber areas for nodes in the ICM model.
+SET calculate wet well area:\
+This SQL script will convert wet well diameters into shaft and chamber areas for nodes in ICM.
 
 ## Step 3: Perform Validation Checks
 Objective: To ensure that all imported and adjusted data is accurate, and that the model is ready for simulations or further analysis.

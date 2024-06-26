@@ -9,7 +9,7 @@ puts cfg
 
 # List of import steps
 import_steps = [
-    ['Subcatchment', 'Step7_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg', 'mhhyd.csv']
+    ['Subcatchment', 'Step07_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg', 'mhhyd.csv']
 ]
 
 begin

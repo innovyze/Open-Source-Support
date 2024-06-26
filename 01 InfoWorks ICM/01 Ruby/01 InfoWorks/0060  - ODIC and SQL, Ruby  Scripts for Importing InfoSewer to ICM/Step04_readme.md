@@ -1,6 +1,6 @@
 # Step 4 - Import Link Hydraulics using ODIC
 
-1. Import the file PIPEHYD.CSV in the IEDB folder using the ODIC and the CFG file Step4_InfoSewer_link_hydraulics_pipehyd_csv.cfg
+1. Import the file PIPEHYD.CSV in the IEDB folder using the ODIC and the CFG file Step04_InfoSewer_link_hydraulics_pipehyd_csv.cfg
 
 We now import the pipe lengths, roughness, diameter and inverts from the pipe hydraulics CSV file.
 
