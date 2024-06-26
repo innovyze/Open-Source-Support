@@ -1,7 +1,5 @@
 
-### Step 9: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographsRDII Hydrograph
-
-InfoSewer Hydrograph data: An explanation
+### Step 9: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs
 
 Using RDII or RTK or I&I Hydrographs in #INFOSEWER – InfoSewer from Innovyze has the features to model Infiltration/Inflow from Rainfall Events into a Sanitary or Combined Sewershed. There are three parameters - R, T, and K, a Sewershed Area, and a fraction division that divides up the overall R to the individual Rs.
 
