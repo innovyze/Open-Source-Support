@@ -3,4 +3,4 @@
 // Spatial Search: blank
 */
 
-Set node_id = subcatchment_id Where node_id  IS NULL
+SET node_id = subcatchment_id WHERE node_id  IS NULL
