@@ -1,4 +1,4 @@
-/* Manhole from defaulst in InfoSewer
+/* Manhole from defaults in InfoSewer
 // Object Type: All Nodes
 // Spatial Search: blank
 */
