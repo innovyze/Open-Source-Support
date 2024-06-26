@@ -9,11 +9,11 @@ DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM 
 
 ### Step 1: Node and Manhole Configuration
 Step01_InfoSewer_Node_csv.cfg: Configuration settings for initializing nodes in the InfoSewer model.\
-Step01_readme.md: Provides detailed instructions and explanations for setting up nodes in Step 1.\
+Step01_readme.md: Provides detailed instructions and explanations for setting up nodes in Step 1.
 
 Step 1a: Manhole-Specific Settings\
 Step01a_InfoSewer_Manhole_csv.cfg: Configuration for manhole-specific attributes in InfoSewer.\
-Step01a_readme.md: Documentation for configuring manholes, outlining parameters and how to apply them.\
+Step01a_readme.md: Documentation for configuring manholes, outlining parameters and how to apply them.
 
 Step 1b: Subcatchment Boundaries\
 Step1b_Create_Dummy_Subcatchment_Boundaries: Likely a script or tool to create placeholder boundaries for subcatchments.\
@@ -72,7 +72,7 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 - SET FM roughness.sql: Sets the roughness coefficients for forcemains
 
 **Subcatchments**
-- INSERT INTO make subcatchments.sql: Creates subcatchments in the model
+- Create_Subcatchments.sql: Creates subcatchments in the model
 - SET node_id = subcatchment_id.sql: Matches node_id with subcatchment_id
 - SET convert population.sql: Sets or calculates flow rates based on population data
 
