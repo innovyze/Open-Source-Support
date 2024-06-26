@@ -5,7 +5,7 @@ Converting InfoSewer Model to ICM InfoWorks Network.md: Documentation detailing 
 
 ## Macros and Utilities
 Excel_Macro_readme.md: Explains how to use Excel macros in the conversion process.\
-InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm: Excel workbook with VBA macros for converting InfoSewer and InfoSWMM data to DBF and CSV formats.
+InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm: Excel workbook with VBA macros for converting InfoSewer and InfoSWMM data from DBF to CSV format.
 
 SQL Scripts for Node and Link Attributes:\
 SET Node Type = Break.sql: Sets node type to 'Break'\
@@ -72,8 +72,6 @@ Step9_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration
 Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## Miscellaneous
-Step1b_Create_Dummy_Subcatchment_Boundaries: A guide to create dummy subcatchment boundaries.
-
 This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, CFG configuration files for modeling steps, and documentation to guide users through the process.
 
 ![Alt text](image-6.png)
