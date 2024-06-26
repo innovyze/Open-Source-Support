@@ -63,7 +63,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0050 - Assign Subcatchment to nearest 'Storage' type Node
 - 0051 - Additional DWF Node IDs
 - 0052 - Stats for ICM Network Tables
-- 0053 - Scenario Counter
+- 0053 - Scenario Maker (Names Only)
 - 0054 - InfoWorks as Background Network to ICM SWMM Current Network
 - 0055 - Scenario Maker - Specific
 - 0056 - Listview of the currently selected network objects
@@ -155,7 +155,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0147 - 
 - 0148 - 
 - 0149 - 
-- 0150 - 
+- 0150 - Scenario Sensitivity - InfoWorks Link Mannings N
 
 
 ## SWMM5 Versions

@@ -18,3 +18,46 @@ This Ruby script is used to generate the boundaries for polygons with a specifie
 
 This script is useful for modifying the shape of selected polygons in an InfoWorks ICM network. It can be used with various types of polygons, including 'hw_2d_infiltration_zone', 'hw_2d_permeable_zone', 'hw_mesh_zone', 'hw_roughness_zone', 'hw_porous_polygon', and 'hw_polygon'.
 ![alt text](image.png)
+
+
+                               +--------------------+
+                               |     InfoDrainage   |
+                               +--------------------+
+                                        |
+                                        v
++--------------------+         +--------------------+        +--------------------+
+|       Pipes        |<------->|  Unified Attribute |<------>|      Manholes      |
+|--------------------|         |       Table        |        +--------------------+
+| - Diameter         |         +--------------------+        | - Diameter         |
+| - Length           |                ^   ^                  | - Rim Elevation    |
+| - Invert Levels    |                |   |                  | - Invert Levels    |
+| - Roughness        |                |   |                  | - Ground Level     |
++--------------------+                |   |                  +--------------------+
+                                      |   |
+                                      |   |
+                                      |   |
+                                      |   |
+                                      |   |
+                                      |   |
++--------------------+                |   |                  +--------------------+
+|      Inlets        |                |   |                  |      Outlets       |
+|--------------------|                |   |                  +--------------------+
+| - Location         |                |   |                  | - Location         |
+| - Type             |                |   |                  | - Type             |
+| - Capacity         |                |   |                  | - Capacity         |
++--------------------+                |   |                  +--------------------+
+                                      |   |
+                                      |   |
+                                      |   |
+                                      |   |
+                                      |   |
+                                      |   |
+                                      v   v
++--------------------+         +--------------------+        +--------------------+
+|       SuDS         |<------->|  Unified Attribute |<------>|   Sub-Catchments   |
+|--------------------|         |       Table        |        +--------------------+
+| - Type             |         +--------------------+        | - Area             |
+| - Location         |                                      | - Runoff Coefficient|
+| - Capacity         |                                      | - Peak Flow         |
++--------------------+                                      +--------------------+
+

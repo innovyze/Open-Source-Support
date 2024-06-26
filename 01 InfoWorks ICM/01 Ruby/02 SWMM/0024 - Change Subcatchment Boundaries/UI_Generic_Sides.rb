@@ -36,7 +36,7 @@ net.row_object_collection('hw_subcatchment').each do |polygon|
         boundary_array = polygon.boundary_array
 
         # Set the new boundary array
-        sides = 5 
+        sides = 19 
         polygon.boundary_array = generate_polygon_boundary(boundary_array, sides)  # Change the number of sides here
         polygon.write
     end

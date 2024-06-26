@@ -1,0 +1,90 @@
+<NetEditParams NetworkType_attr="Model Network" version="0">
+	<theme_themes>
+		<theme_theme net_obj_type_attr="hw_conduit" name_attr="Conduit" show_in_key_window="1" show_in_print_legend="1">
+			<theme_subtheme name_attr="us_d/D%" show_in_key_window="1" show_in_print_legend="1" scale_min="0.00000000000000000000e+00" scale_max="-1.00000000000000000000e+00" zoom_min_attr="0.00000000000000000000e+00" zoom_max_attr="-1.00000000000000000000e+00" field_type="NVT_DOUBLE" subtheme_enabled="1" range_type="0">
+				<theme_field field_name="expr:d/D" unit_code_attr="" sql_string="FIXED((sim.us_depth*12.0/conduit_height)*100,1)" flag_field="0" results_field="1" b_2d_triangles_attr="0" sql_field="1" sql_precision="6" risk_field="0" joined_field="0"/>
+				<theme_range range_type="2" range_scale_type_attr="0" autoscale_attr="1" nep_rel_pallette_attr="0" absvalue_attr="0" show_in_auto_label_attr="0" themed_nulls_attr="0" themed_lower_attr="1" min_bin_value_attr="0.00000000000000000000e+00" use_min_max_elev_attr="0" min_elev_value_attr="0.00000000000000000000e+00" max_elev_value_attr="0.00000000000000000000e+00">
+					<theme_bin fixed_bin_attr="0">5.00000000000000000000e+00</theme_bin>
+					<theme_bin fixed_bin_attr="0">3.51999994913736955482e+01</theme_bin>
+					<theme_bin fixed_bin_attr="0">6.53999989827473910964e+01</theme_bin>
+					<theme_bin fixed_bin_attr="0">9.55999984741210937500e+01</theme_bin>
+				</theme_range>
+				<theme_values property="LINECOLOUR">
+					<theme_value>255000000</theme_value>
+					<theme_value>000255000</theme_value>
+					<theme_value>063191000</theme_value>
+					<theme_value>127127000</theme_value>
+					<theme_value>191063000</theme_value>
+					<theme_value>255000000</theme_value>
+				</theme_values>
+			</theme_subtheme>
+		</theme_theme>
+	</theme_themes>
+	<auto_label_map>
+		<nep_auto_label nep_al_obj_type_attr="-3" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="-2" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="-1" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="131073" nep_al_status_attr="1"/>
+		<nep_auto_label nep_al_obj_type_attr="262146" nep_al_status_attr="1"/>
+		<nep_auto_label nep_al_obj_type_attr="262147" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262148" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262149" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262150" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262151" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262152" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262162" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262163" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262164" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262165" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262166" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262167" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262170" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262173" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262174" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262175" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="262182" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="524300" nep_al_status_attr="1"/>
+		<nep_auto_label nep_al_obj_type_attr="1048590" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048608" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048612" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048622" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048629" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048650" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048655" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048665" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048668" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048672" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048677" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048680" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048681" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048688" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048689" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048690" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048691" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048692" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048693" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048695" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048698" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048699" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048700" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1048701" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050960" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050961" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="1050962" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435495" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435496" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435497" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435498" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435499" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435500" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435507" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435510" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435534" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435547" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435570" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435582" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="268435583" nep_al_status_attr="0"/>
+		<nep_auto_label nep_al_obj_type_attr="536871015" nep_al_status_attr="0"/>
+	</auto_label_map>
+</NetEditParams>
+
