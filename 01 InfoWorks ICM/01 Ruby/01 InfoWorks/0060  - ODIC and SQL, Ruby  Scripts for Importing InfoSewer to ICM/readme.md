@@ -61,6 +61,7 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 - SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'
 - SET ground_level = chamber_roof+1 .sql: Sets ground level based on the chamber roof
 - SET calculate manhole area.sql: Calculates area information from diameters imported from InfoSewer
+- SET manhole to 4 ft diameter.sql: Calculated area based on assumption of 4 ft diameter
 - SET calculate wet well area.sql: Calculates area information from diameters imported from InfoSewer
 - SET calculate inverts.sql: Manages invert levels of nodes
 
