@@ -1,6 +1,6 @@
 # Step 8 - Import Wet Well Hydraulics using ODIC
 
-Step 1: Import Wet Well Elevations Using ODIC
+## Step 1: Import Wet Well Elevations Using ODIC
 
 Objective: The goal of this step is to import data related to Wet Well elevation from InfoSewer for further analysis. These Wet Wells will be converted into manholes in ICM.
 
@@ -36,7 +36,7 @@ Objective: To ensure that all imported and adjusted data is accurate, and that t
 Run the validation tool available in ICM.
 Outcome:
 
-The validation process should complete without any errors. If errors do occur, revisit the previous steps and correct the discrepancies before proceeding
+The validation process should complete without any errors. If errors do occur, revisit the previous steps and correct the discrepancies before proceeding.
 
 ![Alt text](./media/image-32.png)
 
