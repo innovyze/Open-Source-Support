@@ -1,11 +1,10 @@
-**Converting an InfoSewer Model to an InfoWorks Network using ODIC, SQL**
+**Converting an InfoSewer Model to an InfoWorks Network**
 
-## Model Conversion
-Converting InfoSewer Model to ICM InfoWorks Network.md: Documentation detailing the steps for converting an InfoSewer model to an ICM InfoWorks Network.
+This folder contains scripts and files to assist in the model conversion from InfoSewer to InfoWorks ICM (InfoWorks network)
 
 ## Macros and Utilities
-Excel_Macro_readme.md: Explains how to use Excel macros in the conversion process.\
-InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm: Excel workbook with VBA macros for converting InfoSewer and InfoSWMM data from DBF to CSV format.
+DBF_to_CSV_Excel_Macro_README.md: Explains how to use Excel macro in the conversion process.\
+DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM tabular data from DBF to CSV format.
 
 SQL Scripts for Node and Link Attributes:\
 SET Node Type = Break.sql: Sets node type to 'Break'\
@@ -22,8 +21,6 @@ SQL_Make_Subcatchments.sql: Creates subcatchments in the model\
 SQL_Population_Flow.sql: Sets or calculates flow rates based on population data\
 SQL_Pump_On_Off.sql: Sets the on and off levels for pumps\
 SQL_WW.sql: Related to wet well attributes
-
-![Alt text](image-5.png)
 
 ## Configuration Files and Step-by-Step Guides
 
