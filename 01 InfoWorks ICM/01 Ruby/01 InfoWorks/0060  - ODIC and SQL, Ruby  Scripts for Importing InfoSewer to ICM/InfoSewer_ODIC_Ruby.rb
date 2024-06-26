@@ -15,12 +15,12 @@ cfg = WSApplication.prompt("InfoSewer CFG File Folder", [
 # List of import steps
 # Each step is an array that includes the layer name, the configuration file name, and the CSV file name
 import_steps = [
-    ['Node', 'Step1_InfoSewer_Node_csv.cfg', 'Node.csv'],
-    ['Node', 'Step1a_InfoSewer_Manhole_csv.cfg', 'manhole.csv'],
-    ['Conduit', 'Step2_InfoSewer_Link_csv.cfg', 'Link.csv'],
-    ['Pump', 'Step5_InfoSewer_pump_curve_pumphyd_csv.cfg', 'pumphyd.csv'],
-    ['Pump', 'Step6_InfoSewer_pump_control_control_csv.cfg', 'control.csv'],
-    ['Node', 'Step8_Infosewer_wetwell_wwellhyd_csv.cfg', 'wwellhyd.csv']
+    ['Node', 'Step01_InfoSewer_Node_csv.cfg', 'Node.csv'],
+    ['Node', 'Step01a_InfoSewer_Manhole_csv.cfg', 'manhole.csv'],
+    ['Conduit', 'Step02_InfoSewer_Link_csv.cfg', 'Link.csv'],
+    ['Pump', 'Step05_InfoSewer_pump_curve_pumphyd_csv.cfg', 'pumphyd.csv'],
+    ['Pump', 'Step06_InfoSewer_pump_control_control_csv.cfg', 'control.csv'],
+    ['Node', 'Step08_Infosewer_wetwell_wwellhyd_csv.cfg', 'wwellhyd.csv']
 ]
 
 # Iterate over each import step
