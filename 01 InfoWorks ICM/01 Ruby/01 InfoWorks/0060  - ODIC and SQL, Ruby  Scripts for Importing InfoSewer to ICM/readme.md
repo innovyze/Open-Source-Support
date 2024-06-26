@@ -1,4 +1,4 @@
-**Converting an InfoSewer Model to an InfoWorks Network**
+# Model Conversion from InfoSewer to InfoWorks ICM
 
 This folder contains scripts and files to assist in the model conversion from InfoSewer to InfoWorks ICM (InfoWorks network)
 
@@ -68,10 +68,6 @@ Step8_readme.md: Documentation for setting up wet well hydraulics.
 Step9_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs.\
 Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
-## Miscellaneous
-This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, CFG configuration files for modeling steps, and documentation to guide users through the process.
-
-![Alt text](image-6.png)
 
 ## How about Steady State InfoSewer in ICM?
 
