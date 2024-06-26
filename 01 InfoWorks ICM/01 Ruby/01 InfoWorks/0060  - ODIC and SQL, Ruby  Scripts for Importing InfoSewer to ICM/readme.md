@@ -54,19 +54,19 @@ Step09_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltratio
 Step09_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## SQL
-**Scripts to modify Node, Link, and Subcatchment attributes:**
+**Scripts to modify Node, Link, and Subcatchment attributes:**\
 ***Nodes***
 - SET node_type = 'Break'.sql: Sets node type to 'Break'\
 - SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'\
 - SET ground_level = chamber_roof+1 .sql: Sets ground level based on the chamber roof\
 - SET calculate manhole area.sql: Calculates area information from diameters imported from InfoSewer\
 - SET calculate wet well area.sql: Calculates area information from diameters imported from InfoSewer\
-- SET calculate inverts.sql: Manages invert levels of nodes
+- SET calculate inverts.sql: Manages invert levels of nodes\
 ***Links***
 - INSERT INTO Find Pumps.sql: Find_Pumps.sql: Identifies pumps in the model\
 - SET pump on and off.sql: Calculates and sets the on and off levels for pumps\
 - SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes\
-- SET FM roughness.sql: Sets the roughness coefficients for forcemains
+- SET FM roughness.sql: Sets the roughness coefficients for forcemains\
 ***Subcatchments***
 - INSERT INTO make subcatchments.sql: Creates subcatchments in the model\
 - SET node_id = subcatchment_id.sql: Matches node_id with subcatchment_id\
