@@ -3,4 +3,4 @@
 // Spatial Search: blank
 */
 
-Set number_of_barrels = 1 where number_of_barrels = 0;
+SET number_of_barrels = 1 WHERE number_of_barrels = 0;

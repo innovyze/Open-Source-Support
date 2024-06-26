@@ -54,25 +54,27 @@ Step09_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltratio
 Step09_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## SQL
-SQL Scripts to modify Node and Link Attributes:\
-SET Node Type = Break.sql: Sets node type to 'Break'\
-Set node_id = subcatchment_id.sql: Matches node_id with subcatchment_id\
-SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'\
-SQL number_of_barrels.sql: Calculates and sets the number of barrels for pipes\
-SQL Area from InfoSewer.sql: Retrieves area information from InfoSewer\
-SQL Inverts.sql: Manages invert levels of nodes\
-SQL Set ground_level = chamber_roof.sql: Sets the ground level based on the chamber roof\
-SQL_Find_Pumps.sql: Identifies pumps in the model\
-SQL_FM_Roughness.sql: Sets the roughness coefficients\
-SQL_InfoSewer_Manhole_Area.sql: Sets or calculates the manhole areas\
-SQL_Make_Subcatchments.sql: Creates subcatchments in the model\
-SQL_Population_Flow.sql: Sets or calculates flow rates based on population data\
-SQL_Pump_On_Off.sql: Sets the on and off levels for pumps\
-SQL_WW.sql: Related to wet well attributes
+**Scripts to modify Node, Link, and Subcatchment attributes:**
+***Nodes***
+- SET node_type = 'Break'.sql: Sets node type to 'Break'\
+- SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'\
+- SET ground_level = chamber_roof+1 .sql: Sets ground level based on the chamber roof\
+- SET calculate manhole area.sql: Calculates area information from diameters imported from InfoSewer\
+- SET calculate wet well area.sql: Calculates area information from diameters imported from InfoSewer\
+- SET calculate inverts.sql: Manages invert levels of nodes
+***Links***
+- INSERT INTO Find Pumps.sql: Find_Pumps.sql: Identifies pumps in the model\
+- SET pump on and off.sql: Calculates and sets the on and off levels for pumps\
+- SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes\
+- SET FM roughness.sql: Sets the roughness coefficients for forcemains
+***Subcatchments***
+- INSERT INTO make subcatchments.sql: Creates subcatchments in the model\
+- SET node_id = subcatchment_id.sql: Matches node_id with subcatchment_id\
+- SET convert population.sql: Sets or calculates flow rates based on population data
 
 ## How about Steady State InfoSewer in ICM?
 
-To effectively manage your ICM model simulations, you have a couple of options to consider:
+There are a couple of options to consider:
 
 - **Utilizing the Ending State of a Previous Simulation**:
     - **Run the ICM Model**: Start by running your ICM model as usual.
