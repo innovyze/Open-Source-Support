@@ -76,30 +76,6 @@ This collection of files provides a comprehensive toolkit for working with waste
 
 ![Alt text](image-6.png)
 
-
-## Background Refinement
-
-When transitioning from InfoSWMM to an ICM SWMM network, and eventually converting it to an ICM InfoWorks network, users may encounter discrepancies in flow data. This raises the question: **What could be causing these differences in flow readings?**
-
-## Key Factors
-
-- **DWF Allocator Tool in InfoSWMM**: InfoSWMM's DWF (Dry Weather Flow) Allocator tool leverages GIS data to estimate DWF from parcel information. This can lead to multiple DWF values per node in InfoSWMM, which is permissible and also supported in ICM SWMM.
-
-- **Limitation in SWMM5**: Unlike InfoSWMM or ICM SWMM, SWMM5 allows only one DWF value per node. To address this in ICM SWMM, while maintaining fidelity to the original InfoSWMM data, we introduced an 'additional DWF' table. This table accommodates the extra DWF values from InfoSWMM that exceed the single-value limit of SWMM5.
-
-- **Unit Conversion Challenges**: A notable aspect is the unit compatibility. ICM primarily operates in CMS, MGD, or CFS units. When InfoSWMM data is in these units, the conversion to ICM is straightforward. However, if InfoSWMM uses LPS (liters per second) or GPM (gallons per minute), manual conversion becomes necessary. For instance:
-    - LPS data needs division by 1000.
-    - GPM data requires multiplication by the factor 1440 / 1,000,000.
-
-### Illustration
-
-The accompanying image demonstrates how to adjust the baseline flow in SQL, considering these unit conversions. This step is crucial for ensuring accuracy when transferring DWF data from InfoSWMM to ICM.
-
-## Conclusion
-
-This process underscores the importance of careful data management and conversion when transitioning between different network models. Understanding the nuances of each system’s data handling capabilities is key to ensuring consistency and accuracy in flow data across various platforms.
-
-
 ## How about Steady State InfoSewer in ICM?
 
 To effectively manage your ICM model simulations, you have a couple of options to consider:
@@ -116,8 +92,3 @@ To effectively manage your ICM model simulations, you have a couple of options t
     - **Run for a Brief Period**: Like the first option, run this simulation for a short duration, such as one minute. This approach is beneficial for analyzing the initial behavior of the network under specific conditions, without the influence of prior states.
 
 Both methods offer unique insights and can be chosen based on the specific requirements of your study. The first option provides a seamless continuation from a previous state, ideal for studying ongoing processes or cumulative effects. The second option allows for a fresh start, useful for comparative studies or examining initial system responses.
-
-# Introduction
-
-We're on the move 🔄 from our legacy software like XPSWMM, InfoSewer, and InfoSWMM, to the advanced Autodesk ICM Standard and ICM Ultimate 🌐. To make this switch smooth for our users, we've enabled direct imports 🔄 from InfoSWMM to ICM SWMM networks and XPSWMM XPX files to both ICM InfoWorks and ICM SWMM 📁. For those transitioning from InfoSewer, we've got Ruby and ODIC CFG files on our Github, accessible via the ICM Technical Information Hub 🔗. Plus, there's a treasure trove of about 100 Knowledge Center Service (KCS) articles in the ICM Online help file 📚 - just search for 'InfoSewer', 'InfoSWMM', or 'XPSWMM' to find detailed guidance 💡. Our aim? A seamless, informed transition for all our users into the new era of Autodesk products 🚀🌟.
-
