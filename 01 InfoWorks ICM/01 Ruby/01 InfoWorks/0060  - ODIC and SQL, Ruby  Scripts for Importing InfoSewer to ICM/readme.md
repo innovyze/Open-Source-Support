@@ -5,22 +5,23 @@ Converting InfoSewer Model to ICM InfoWorks Network.md: Documentation detailing 
 
 ## Macros and Utilities
 Excel_Macro_readme.md: Explains how to use Excel macros in the conversion process.\
-InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm: Excel workbook with VBA macros for converting InfoSewer and InfoSWMM data to DBF and CSV formats.\
-SQL Scripts for Node and Link Attributes\
-SET Node Type = Break.sql: Sets node type to 'Break'.\
-Set node_id = subcatchment_id.sql: Matches node_id with subcatchment_id.\
-SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'.\
-SQL number_of_barrels.sql: Calculates and sets the number of barrels for pipes.\
-SQL Area from InfoSewer.sql: Retrieves area information from InfoSewer.\
-SQL Inverts.sql: Manages invert levels of nodes.\
-SQL Set ground_level = chamber_roof.sql: Sets the ground level based on the chamber roof.\
-SQL_Find_Pumps.sql: Identifies pumps in the model.\
-SQL_FM_Roughness.sql: Sets the roughness coefficients.\
-SQL_InfoSewer_Manhole_Area.sql: Sets or calculates the manhole areas.\
-SQL_Make_Subcatchments.sql: Creates subcatchments in the model.\
-SQL_Population_Flow.sql: Sets or calculates flow rates based on population data.\
-SQL_Pump_On_Off.sql: Sets the on and off levels for pumps.\
-SQL_WW.sql: Related to wet  well attributes.
+InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm: Excel workbook with VBA macros for converting InfoSewer and InfoSWMM data to DBF and CSV formats.
+
+SQL Scripts for Node and Link Attributes:\
+SET Node Type = Break.sql: Sets node type to 'Break'\
+Set node_id = subcatchment_id.sql: Matches node_id with subcatchment_id\
+SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'\
+SQL number_of_barrels.sql: Calculates and sets the number of barrels for pipes\
+SQL Area from InfoSewer.sql: Retrieves area information from InfoSewer\
+SQL Inverts.sql: Manages invert levels of nodes\
+SQL Set ground_level = chamber_roof.sql: Sets the ground level based on the chamber roof\
+SQL_Find_Pumps.sql: Identifies pumps in the model\
+SQL_FM_Roughness.sql: Sets the roughness coefficients\
+SQL_InfoSewer_Manhole_Area.sql: Sets or calculates the manhole areas\
+SQL_Make_Subcatchments.sql: Creates subcatchments in the model\
+SQL_Population_Flow.sql: Sets or calculates flow rates based on population data\
+SQL_Pump_On_Off.sql: Sets the on and off levels for pumps\
+SQL_WW.sql: Related to wet well attributes
 
 ![Alt text](image-5.png)
 
@@ -71,7 +72,7 @@ Step9_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration
 Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## Miscellaneous
-Step1b_Create_Duumy_Subcatchment_Boundaries: A guide to create dummy subcatchment boundaries.
+Step1b_Create_Dummy_Subcatchment_Boundaries: A guide to create dummy subcatchment boundaries.
 
 This collection of files provides a comprehensive toolkit for working with wastewater network models, particularly for converting, modifying, and understanding InfoSewer and ICM InfoWorks models. It contains SQL scripts for data manipulation, CFG configuration files for modeling steps, and documentation to guide users through the process.
 
