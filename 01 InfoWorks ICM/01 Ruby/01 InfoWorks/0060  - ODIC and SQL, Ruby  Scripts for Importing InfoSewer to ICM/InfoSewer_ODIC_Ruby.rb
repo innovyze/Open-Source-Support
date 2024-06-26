@@ -3,12 +3,18 @@ cn = WSApplication.current_network
 
 # Define the configuration and CSV file paths
 # The user is prompted to select the folders containing the configuration and CSV files
-csv = WSApplication.prompt("InfoSewer IEDB Folder", [
-    ['Pick the Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
-  ], false)
-cfg = WSApplication.prompt("InfoSewer CFG File Folder", [
-    ['Pick the Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
-  ], false)
+val = WSApplication.prompt("ODIC CFG Files Read by this Ruby Code TO Convert Infosewer to ICM InfoWorks", [
+    ['Pick the IEDB Folder', 'String', nil, nil, 'FOLDER', 'IEDB Folder'],
+    ['Pick the CFG File Folder', 'String', nil, nil, 'FOLDER', 'CFG Folder'],
+    ['ODIC CFG Files Read by this Ruby Code', 'String'],
+    ['Step01_InfoSewer_Node_csv.cfg', 'String'],
+    ['Step02_InfoSewer_Link_csv.cfg', 'String'],
+    ['Step05_InfoSewer_pump_curve_pumphyd_csv.cfg', 'String'],
+    ['Step06_InfoSewer_pump_control_control_csv.cfg', 'String'],
+    ['Step08_Infosewer_wetwell_wwellhyd_csv.cfg', 'String']
+    ], false)
+  csv = val[0]
+  cfg = val[1]
   puts csv
   puts cfg
 
