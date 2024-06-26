@@ -4,7 +4,7 @@
 
 This macro converts Excel files with the ".dbf" extension located in a specified folder to CSV format and saves them in another specified folder. It prompts the user to select the source and destination folders. Then, it loops through all the ".dbf" files in the source folder, opens them one by one, saves them as CSV files in the destination folder, and closes them. The Excel macro file is called InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm. The folder to convert is the IEDB folder.
 
-2. Import the file NODE.CSV in the IEDB folder using the ODIC and the CFG file Step1_InfoSewer_Node_csv.cfg
+2. Import the file NODE.CSV in the IEDB folder using the ODIC and the CFG file Step01_InfoSewer_Node_csv.cfg
 
 This imports all nodes, manholes, chambers, outlets and wet wells into ICM. What should you expect to see on the GeoPlan of ICM? The node, the x, y, each node has a user_text_10 of WW. This will be changed later as we import the node hydraulic information.
 

@@ -3,7 +3,7 @@ cn = WSApplication.current_network
 
 # Define the configuration and CSV file paths
 # The user is prompted to select the folders containing the configuration and CSV files
-val = WSApplication.prompt("ODIC CFG Files Read by this Ruby Code TO Convert Infosewer to ICM InfoWorks", [
+val = WSApplication.prompt("ODIC CFG Files Read by this Ruby Code to Convert Infosewer to ICM InfoWorks", [
     ['Pick the IEDB Folder', 'String', nil, nil, 'FOLDER', 'IEDB Folder'],
     ['Pick the CFG File Folder', 'String', nil, nil, 'FOLDER', 'CFG Folder'],
     ['ODIC CFG Files Read by this Ruby Code', 'String'],
