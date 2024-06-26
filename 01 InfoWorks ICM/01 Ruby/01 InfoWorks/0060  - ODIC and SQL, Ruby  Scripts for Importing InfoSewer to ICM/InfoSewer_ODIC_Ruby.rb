@@ -11,7 +11,7 @@ val = WSApplication.prompt("ODIC CFG Files Read by this Ruby Code to Convert Inf
     ['Step02_InfoSewer_Link_csv.cfg', 'String'],
     ['Step05_InfoSewer_pump_curve_pumphyd_csv.cfg', 'String'],
     ['Step06_InfoSewer_pump_control_control_csv.cfg', 'String'],
-    ['Step08_Infosewer_wetwell_wwellhyd_csv.cfg', 'String']
+    ['Step08_InfoSewer_wetwell_wwellhyd_csv.cfg', 'String']
     ], false)
   csv = val[0]
   cfg = val[1]
@@ -26,7 +26,7 @@ import_steps = [
     ['Conduit', 'Step02_InfoSewer_Link_csv.cfg', 'Link.csv'],
     ['Pump', 'Step05_InfoSewer_pump_curve_pumphyd_csv.cfg', 'pumphyd.csv'],
     ['Pump', 'Step06_InfoSewer_pump_control_control_csv.cfg', 'control.csv'],
-    ['Node', 'Step08_Infosewer_wetwell_wwellhyd_csv.cfg', 'wwellhyd.csv']
+    ['Node', 'Step08_InfoSewer_wetwell_wwellhyd_csv.cfg', 'wwellhyd.csv']
 ]
 
 # Iterate over each import step
