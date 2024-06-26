@@ -1,28 +1,11 @@
 # Model Conversion from InfoSewer to InfoWorks ICM
 
-This folder contains scripts and files to assist in the model conversion from InfoSewer to InfoWorks ICM (InfoWorks network)
+This repository contains scripts and supporting files to assist in the model conversion from InfoSewer to InfoWorks ICM (InfoWorks network)
 
-## Macros and Utilities
-DBF_to_CSV_Excel_Macro_README.md: Explains how to use Excel macro in the conversion process.\
-DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM tabular data from DBF to CSV format.
+## DBF to CSV File Conversion: Excel Macro
+DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM tabular data from DBF to CSV format. Used prior to beginning the model conversion process.
 
-SQL Scripts for Node and Link Attributes:\
-SET Node Type = Break.sql: Sets node type to 'Break'\
-Set node_id = subcatchment_id.sql: Matches node_id with subcatchment_id\
-SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'\
-SQL number_of_barrels.sql: Calculates and sets the number of barrels for pipes\
-SQL Area from InfoSewer.sql: Retrieves area information from InfoSewer\
-SQL Inverts.sql: Manages invert levels of nodes\
-SQL Set ground_level = chamber_roof.sql: Sets the ground level based on the chamber roof\
-SQL_Find_Pumps.sql: Identifies pumps in the model\
-SQL_FM_Roughness.sql: Sets the roughness coefficients\
-SQL_InfoSewer_Manhole_Area.sql: Sets or calculates the manhole areas\
-SQL_Make_Subcatchments.sql: Creates subcatchments in the model\
-SQL_Population_Flow.sql: Sets or calculates flow rates based on population data\
-SQL_Pump_On_Off.sql: Sets the on and off levels for pumps\
-SQL_WW.sql: Related to wet well attributes
-
-## Configuration Files and Step-by-Step Guides
+## InfoWorks Configuration Files and Step-by-Step Guides
 
 ### Step 1: Node and Manhole Configuration
 Step1_InfoSewer_Node_csv.cfg: Configuration settings for initializing nodes in the InfoSewer model.\
@@ -68,6 +51,22 @@ Step8_readme.md: Documentation for setting up wet well hydraulics.
 Step9_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs.\
 Step9_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
+## SQL
+SQL Scripts to modify Node and Link Attributes:\
+SET Node Type = Break.sql: Sets node type to 'Break'\
+Set node_id = subcatchment_id.sql: Matches node_id with subcatchment_id\
+SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'\
+SQL number_of_barrels.sql: Calculates and sets the number of barrels for pipes\
+SQL Area from InfoSewer.sql: Retrieves area information from InfoSewer\
+SQL Inverts.sql: Manages invert levels of nodes\
+SQL Set ground_level = chamber_roof.sql: Sets the ground level based on the chamber roof\
+SQL_Find_Pumps.sql: Identifies pumps in the model\
+SQL_FM_Roughness.sql: Sets the roughness coefficients\
+SQL_InfoSewer_Manhole_Area.sql: Sets or calculates the manhole areas\
+SQL_Make_Subcatchments.sql: Creates subcatchments in the model\
+SQL_Population_Flow.sql: Sets or calculates flow rates based on population data\
+SQL_Pump_On_Off.sql: Sets the on and off levels for pumps\
+SQL_WW.sql: Related to wet well attributes
 
 ## How about Steady State InfoSewer in ICM?
 
