@@ -15,7 +15,7 @@ This imports all nodes, manholes, chambers, outlets and wet wells into ICM. What
 
 3. Import the file MANHOLE.CSV in the IEDB folder using the ODIC and the CFG file Step01a_InfoSewer_Manhole_csv.cfg
 
-What should you expect to see on the GeoPlan of ICM? The node, the x, y, each node now has a user_text_10 of Manhole if it was a Manhole in InfoSewer. The Wet Wells remain as WW. Manholes also have the manhole information table which is imported to the user text fields of each imported manhole. Note, import by Asset ID after the nodes are first imported.
+What should you expect to see on the GeoPlan of ICM? Nodes have X-Y coordinates and each node now has a user_text_10 of Manhole if it was a Manhole in InfoSewer. The Wet Wells remain as WW. Manholes also have the manhole information table which is imported to the user text fields of each imported manhole. Note, import by Asset ID after the nodes are first imported.
 
 ![Alt text](image-26.png)
 
