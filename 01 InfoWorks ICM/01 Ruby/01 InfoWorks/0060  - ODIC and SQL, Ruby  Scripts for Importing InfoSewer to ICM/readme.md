@@ -16,7 +16,7 @@ Step01a_InfoSewer_Manhole_csv.cfg: Configuration for manhole-specific attributes
 Step01a_readme.md: Documentation for configuring manholes, outlining parameters and how to apply them.
 
 Step 1b: Subcatchment Boundaries\
-Step1b_Create_Dummy_Subcatchment_Boundaries: Likely a script or tool to create placeholder boundaries for subcatchments.\
+Step1b_Create_Dummy_Subcatchment_Boundaries: Create placeholder boundaries for subcatchments.\
 Step01b_readme.md: Instructions and guidelines for creating dummy subcatchment boundaries in the model.
 
 ### Step 2: Pipe and Link Configuration
