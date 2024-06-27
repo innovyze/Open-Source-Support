@@ -14,7 +14,7 @@ cfg = WSApplication.prompt("InfoSewer CFG File Folder", [
 
 # List of import steps
 import_steps = [
-    ['Node', 'Step3_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg', 'mhhyd.csv']
+    ['Node', 'Step03_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg', 'mhhyd.csv']
 ]
 
 import_steps.each do |layer, cfg_file, csv_file|

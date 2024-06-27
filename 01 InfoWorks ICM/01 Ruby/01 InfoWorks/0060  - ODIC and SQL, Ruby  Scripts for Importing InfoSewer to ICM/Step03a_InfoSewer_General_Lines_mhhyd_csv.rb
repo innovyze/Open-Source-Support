@@ -9,17 +9,17 @@ puts cfg
 
 # List of import steps
 import_steps = [
-    ['Node', 'Step1_InfoSewer_Node_csv.cfg', 'Node.csv'],
-    ['Node', 'Step1a_InfoSewer_Manhole_csv.cfg', 'manhole.csv'],
-    ['Subcatchment', 'Step1b_InfoSewer_Manhole_csv.cfg', 'Node.csv'],
-    ['Conduit', 'Step2_InfoSewer_Link_csv.cfg', 'Link.csv'],
-    ['Node', 'Step3_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg', 'mhhyd.csv'],
-    ['Conduit', 'Step4_InfoSewer_link_hydraulics_pipehyd_csv.cfg', 'pipehyd.csv'],
-    ['Subcatchment', 'Step7_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg', 'mhhyd.csv'],
-    ['Pump', 'Step5_InfoSewer_pump_curve_pumphyd_csv.cfg', 'pumphyd.csv'],
-    ['Pump', 'Step6_InfoSewer_pump_control_control_csv.cfg', 'control.csv'],
-    ['Node', 'Step8_Infosewer_wetwell_wwellhyd_csv.cfg', 'Node.csv'],
-    ['RTK Hydrograph', 'Step9_rdii_hydrograph_csv.cfg', 'Hydrograph.csv'],
+    ['Node', 'Step01_InfoSewer_Node_csv.cfg', 'Node.csv'],
+    ['Node', 'Step01a_InfoSewer_Manhole_csv.cfg', 'manhole.csv'],
+    ['Subcatchment', 'Step01b_InfoSewer_Manhole_csv.cfg', 'Node.csv'],
+    ['Conduit', 'Step02_InfoSewer_Link_csv.cfg', 'Link.csv'],
+    ['Node', 'Step03_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg', 'mhhyd.csv'],
+    ['Conduit', 'Step04_InfoSewer_link_hydraulics_pipehyd_csv.cfg', 'pipehyd.csv'],
+    ['Subcatchment', 'Step07_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg', 'mhhyd.csv'],
+    ['Pump', 'Step05_InfoSewer_pump_curve_pumphyd_csv.cfg', 'pumphyd.csv'],
+    ['Pump', 'Step06_InfoSewer_pump_control_control_csv.cfg', 'control.csv'],
+    ['Node', 'Step08_Infosewer_wetwell_wwellhyd_csv.cfg', 'Node.csv'],
+    ['RTK Hydrograph', 'Step09_rdii_hydrograph_csv.cfg', 'Hydrograph.csv'],
     # MH DWF and Pipe Hydraulics 
     ['Subcatchment','Step10_InfoSewer_subcatchment_dwf_mhhyd_scenario.cfg', 'mhhyd.csv'],
     ['Conduit','Step11_InfoSewer_pipehyd_scenario.cfg', 'pipehyd.csv']
