@@ -66,7 +66,7 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 - SET calculate inverts.sql: Manages invert levels of nodes
 
 **Links**
-- INSERT INTO Find Pumps.sql: Find_Pumps.sql: Identifies pumps in the model
+- Find_Pumps.sql: Identifies pumps in the model
 - SET pump on and off.sql: Calculates and sets the on and off levels for pumps
 - SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes
 - SET FM roughness.sql: Sets the roughness coefficients for forcemains

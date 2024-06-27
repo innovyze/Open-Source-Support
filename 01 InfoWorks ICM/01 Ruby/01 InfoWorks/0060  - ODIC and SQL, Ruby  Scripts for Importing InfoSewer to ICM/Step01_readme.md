@@ -2,7 +2,7 @@
 
 1. Convert the DBF files within the InfoSewer model to CSV for ICM Open Data Import Center (ODIC)
 
-This macro converts Excel files with the ".dbf" extension located in a specified folder to CSV format and saves them in another specified folder. It prompts the user to select the source and destination folders. Then, it loops through all the ".dbf" files in the source folder, opens them one by one, saves them as CSV files in the destination folder, and closes them. The Excel macro file is called InfoSewer_InfoSWMM_VBA_DBF_CSV_Conversion.xlsm. The folder to convert is the IEDB folder.
+This macro converts Excel files with the ".dbf" extension located in a specified folder to CSV format and saves them in another specified folder. It prompts the user to select the source and destination folders. Then, it loops through all the ".dbf" files in the source folder, opens them one by one, saves them as CSV files in the destination folder, and closes them. The Excel macro file is called DBF_to_CSV.xlsm. The folder to convert is the IEDB folder.
 
 2. Import the file NODE.CSV in the IEDB folder using the ODIC and the CFG file Step01_InfoSewer_Node_csv.cfg
 
