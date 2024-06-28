@@ -1,4 +1,4 @@
-/* Set Outfall Nodes
+/* Assign Outfall Nodes
 //Object Type: All Nodes
 //Spatial Search: blank
 */
