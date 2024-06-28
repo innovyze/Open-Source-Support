@@ -1,6 +1,6 @@
 /* Set pump on and off
 // Object Type: Pump
-// Spatial Search: blank
+// Spatial Search: Nearest
 */
 
 /*  Convert the switch_on_level and switch_off_level from depth to delevation based on the chamber floor elevation */
