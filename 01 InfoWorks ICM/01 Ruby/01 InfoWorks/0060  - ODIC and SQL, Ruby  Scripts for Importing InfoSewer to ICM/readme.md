@@ -9,72 +9,48 @@ DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM 
 
 ### Step 1: Node and Manhole Configuration
 Step01_InfoSewer_Node_csv.cfg: Configuration settings for initializing nodes in the InfoSewer model.\
-Step01_readme.md: Provides detailed instructions and explanations for setting up nodes in Step 1.
-
-Step 1a: Manhole-Specific Settings\
 Step01a_InfoSewer_Manhole_csv.cfg: Configuration for manhole-specific attributes in InfoSewer.\
-Step01a_readme.md: Documentation for configuring manholes, outlining parameters and how to apply them.
-
-Step 1b: Subcatchment Boundaries\
-Step1b_Create_Dummy_Subcatchment_Boundaries: Likely a script or tool to create placeholder boundaries for subcatchments.\
-Step01b_readme.md: Instructions and guidelines for creating dummy subcatchment boundaries in the model.
 
 ### Step 2: Pipe and Link Configuration
-Step02a_InfoSewer_Pipe_CSV.cfg: Configuration for pipe-specific attributes in InfoSewer.\
-Step02a_readme.md: Documentation explaining the parameters and settings for configuring pipes.\
 Step02_InfoSewer_Link_csv.cfg: Configuration for link attributes in the InfoSewer network.\
-Step02_readme.md: Provides instructions for configuring the links between nodes.
 
 ### Step 3: Manhole Hydraulics
 Step03_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg: Configuration for hydraulic calculations related to manholes.\
-Step03_readme.md: Documentation for setting up manhole hydraulic calculations.
 
 ### Step 4: Link Hydraulics
 Step04_InfoSewer_link_hydraulics_pipehyd_csv.cfg: Configuration settings for hydraulic calculations related to pipes and links.\
-Step04_readme.md: Instructions for setting up hydraulic calculations for links.
 
 ### Step 5: Pump Curve Configuration
 Step05_InfoSewer_pump_curve_pumphyd_csv.cfg: Configuration for defining pump curves.\
-Step05_readme.md: Documentation explaining how to set up pump curves in the model.
 
 ### Step 6: Pump Control
 Step06_InfoSewer_pump_control_control_csv.cfg: Configuration for pump control logic.\
-Step06_readme.md: Instructions for implementing pump control settings.
 
 ### Step 7: Subcatchment Dry Weather Flow
 Step07_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg: Configuration for dry weather flow in subcatchments.\
-Step07_readme.md: Instructions for configuring dry weather flows.
 
 ### Step 8: Wet Well Hydraulics
 Step08_Infosewer_wetwell_wwellhyd_csv.cfg: Configuration settings for the hydraulics of wet wells.\
-Step08_readme.md: Documentation for setting up wet well hydraulics.
 
 ### Step 9: RDII Hydrograph
 Step09_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs.\
-Step09_readme.md: Provides guidelines and instructions for setting up RDII hydrographs.
 
 ## SQL
 Scripts to modify Node, Link, and Subcatchment attributes:
 
 **Nodes**
-- SET node_type = 'Break'.sql: Sets node type to 'Break'
 - SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'
-- SET ground_level = chamber_roof+1 .sql: Sets ground level based on the chamber roof
 - SET calculate manhole area.sql: Calculates area information from diameters imported from InfoSewer
-- SET manhole to 4 ft diameter.sql: Calculated area based on assumption of 4 ft diameter
 - SET calculate wet well area.sql: Calculates area information from diameters imported from InfoSewer
-- SET calculate inverts.sql: Manages invert levels of nodes
 
 **Links**
-- INSERT INTO Find Pumps.sql: Find_Pumps.sql: Identifies pumps in the model
+- Find_Pumps.sql: Identifies pumps in the model
 - SET pump on and off.sql: Calculates and sets the on and off levels for pumps
 - SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes
 - SET FM roughness.sql: Sets the roughness coefficients for forcemains
 
 **Subcatchments**
 - Create_Subcatchments.sql: Creates subcatchments in the model
-- SET node_id = subcatchment_id.sql: Matches node_id with subcatchment_id
-- SET convert population.sql: Sets or calculates flow rates based on population data
 
 ## How about Steady State InfoSewer in ICM?
 

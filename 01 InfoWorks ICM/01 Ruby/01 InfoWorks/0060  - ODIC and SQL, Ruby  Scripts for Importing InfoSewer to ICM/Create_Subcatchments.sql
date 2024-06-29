@@ -1,5 +1,5 @@
-/* Make Subcatchments
-// Object Type: All Nodes and Subcatchments
+/* Create Subcatchments
+// Object Type: All Nodes
 // Spatial Search: blank
 */
 
