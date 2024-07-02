@@ -7,47 +7,37 @@ DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM 
 
 ## InfoWorks Configuration Files and Step-by-Step Guides
 
-### Step 1: Node and Manhole Configuration
-Step01_InfoSewer_Node_csv.cfg: Configuration settings for initializing nodes in the InfoSewer model.\
-Step01a_InfoSewer_Manhole_csv.cfg: Configuration for manhole-specific attributes in InfoSewer.\
+Step 1: Node and Manhole Configuration
 
-### Step 2: Pipe and Link Configuration
-Step02_InfoSewer_Link_csv.cfg: Configuration for link attributes in the InfoSewer network.\
+Step 2: Pipe and Link Configuration
 
-### Step 3: Manhole Hydraulics
-Step03_InfoSewer_manhole_hydraulics_mhhyd_csv.cfg: Configuration for hydraulic calculations related to manholes.\
+Step 3: Manhole Hydraulics
 
-### Step 4: Link Hydraulics
-Step04_InfoSewer_link_hydraulics_pipehyd_csv.cfg: Configuration settings for hydraulic calculations related to pipes and links.\
+Step 4: Link Hydraulics
 
-### Step 5: Pump Curve Configuration
-Step05_InfoSewer_pump_curve_pumphyd_csv.cfg: Configuration for defining pump curves.\
+Step 5: Pump Curve Configuration
 
-### Step 6: Pump Control
-Step06_InfoSewer_pump_control_control_csv.cfg: Configuration for pump control logic.\
+Step 6: Pump Control
 
-### Step 7: Subcatchment Dry Weather Flow
-Step07_InfoSewer_subcatchment_dwf_mhhyd_csv.cfg: Configuration for dry weather flow in subcatchments.\
+Step 7: Subcatchment Dry Weather Flow
 
-### Step 8: Wet Well Hydraulics
-Step08_Infosewer_wetwell_wwellhyd_csv.cfg: Configuration settings for the hydraulics of wet wells.\
+Step 8: Wet Well Hydraulics
 
-### Step 9: RDII Hydrograph
-Step09_rdii_hydrograph_csv.cfg: Configuration for Rainfall-Dependent Infiltration and Inflow (RDII) hydrographs.\
+Step 9: RDII Hydrograph
+
 
 ## SQL
 Scripts to modify Node, Link, and Subcatchment attributes:
 
 **Nodes**
 - SET node_type = 'Outfall'.sql: Sets node type to 'Outfall'
-- SET calculate manhole area.sql: Calculates area information from diameters imported from InfoSewer
 - SET calculate wet well area.sql: Calculates area information from diameters imported from InfoSewer
 
 **Links**
 - Find_Pumps.sql: Identifies pumps in the model
 - SET pump on and off.sql: Calculates and sets the on and off levels for pumps
 - SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes
-- SET FM roughness.sql: Sets the roughness coefficients for forcemains
+- SET FM roughness to Mannings.sql: Sets the roughness coefficients for forcemains
 
 **Subcatchments**
 - Create_Subcatchments.sql: Creates subcatchments in the model
