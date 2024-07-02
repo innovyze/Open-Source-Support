@@ -1,5 +1,5 @@
 /* All Nodes shaft and chamber area
-// Object Type: All Nodes and Subcatchments
+// Object Type: All Nodes
 // Spatial Search: blank
 */
 
