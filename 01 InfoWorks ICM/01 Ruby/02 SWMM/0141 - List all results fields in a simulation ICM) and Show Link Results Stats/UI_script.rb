@@ -43,14 +43,13 @@ puts "Time step size: #{ts_size}"
 
 # Get the list of timesteps
 ts = cn.list_timesteps
-puts ts.map(&:abs).join(", ")
 
 print_table_results(cn)
 
 # Calculate the time interval in seconds assuming the time steps are evenly spaced
 time_interval = (ts[1] - ts[0]).abs
 # Print the time interval in seconds and minutes
-puts "Time interval: %.4f seconds or %.4f minutes" % [time_interval, time_interval / 60.0]
+puts "Time interval: %.4f seconds or %.4f minutes" % [time_interval*86400.0, time_interval*1440.0]
 
 # Define the result field names to fetch the results for all selected nodes
 result_field_names = [
@@ -60,7 +59,7 @@ result_field_names = [
   'us_depth', 'us_flow', 'us_froude', 'us_invert', 'us_qcum', 'us_totalhead',
   'us_vel', 'volume', 'ds_depth', 'ds_flow', 'ds_froude', 'ds_invert', 'ds_qcum',
   'ds_totalhead', 'ds_vel', 'max_ds_depth', 'max_ds_flow', 'max_ds_froude',
-  'max_ds_totalhead', 'max_ds_vel'
+  'max_ds_totalhead', 'max_ds_vel','us_tau','ds_tau'
 ]
 
 # Iterate through the selected objects in the network
