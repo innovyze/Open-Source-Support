@@ -1,21 +1,40 @@
-# 0140 - List all results fields in a simulation (ICM) and Show Node Results
+# Subcatchment Dimension Calculator
 
-This Ruby script is used to analyze data from a network in the InfoWorks ICM software. Here's a summary of what it does:
+This Ruby script calculates the dimensions of subcatchments based on their boundary points. It computes the perimeter, maximum width, and maximum height for each subcatchment and updates the catchment dimension using a specified constant `K`. The script is designed to work with a specific data structure that includes subcatchment information and boundary points.
 
-- It first sets up the current network (`cn`) and retrieves the count and list of timesteps.
+## Features
 
-- It then defines a function `print_table_results(cn)` which iterates over each table in the network, and for each table, it checks each row object to see if it has a 'results_fields' property. If it does, it adds the field names to a results array and prints them.
+- **Perimeter Calculation**: Computes the perimeter of each subcatchment by summing the distances between consecutive boundary points.
+- **Dimension Calculation**: Determines the maximum width and maximum height from the boundary points.
+- **Dimension Update**: Updates the catchment dimension using the formula `K * max(max_width, max_height)` or `K * perimeter`, depending on the configuration.
+- **Flexible `K` Value**: Supports `K` as a decimal value, allowing for more precise dimension calculations.
 
-- The script then calls `print_table_results(cn)` to print the tables and their result fields in the current network.
+## Configuration
 
-- It calculates the time interval in seconds assuming the time steps are evenly spaced and prints the time interval in seconds and minutes.
+Before running the script, ensure that the following variables are configured according to your data and requirements:
 
-- It defines an array `result_field_names` with the names of the result fields to fetch the results for all selected nodes.
+- `SQRT_Area`: Set to `true` if the catchment dimension should be calculated using the square root of the area. Otherwise, set to `false`.
+- `Width_Perimeter`: Set to `true` if the catchment dimension should be calculated using the perimeter. Otherwise, set to `false`.
+- `K`: A constant used in the dimension calculation. Can be a decimal value.
 
-- It iterates over each selected object in the network. For each object, it tries to get the row object for the current node. If the row object is not `nil`, it iterates over each result field name.
+## Usage
 
-- For each result field name, it checks if the count of results matches the count of timesteps. If it does, it initializes variables to keep track of statistics and iterates over the results to calculate the total, total integrated over time, min, max, and count.
+1. Ensure your Ruby environment is set up and that you have access to the data structure containing the subcatchment information.
+2. Configure the script variables (`SQRT_Area`, `Width_Perimeter`, and `K`) as needed.
+3. Run the script in your Ruby environment. The script will iterate over each subcatchment, calculate the necessary dimensions, and update the catchment dimension accordingly.
 
-- It then calculates the mean value if the count is greater than 0 and prints the total, total integrated over time, mean, max, min values, and count.
+## Output
 
-- If an error occurs while processing a node or a field does not exist for a node, it handles the error and continues with the next node or field.
+The script outputs the following information for each subcatchment:
+
+- Subcatchment ID
+- Calculated perimeter
+- Maximum width
+- Maximum height
+- Updated catchment dimension
+
+Additionally, it prints the total dimension changes before and after the update for all subcatchments.
+
+## Note
+
+This script is designed to work with a specific data structure and may require adjustments to fit your particular data setup. Ensure that the `boundary_array` and `subcatchment_id` are correctly defined and accessible within your data structure.

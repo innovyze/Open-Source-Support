@@ -5,7 +5,7 @@ val = WSApplication.prompt "Choose USA or SI Units SWMM5 Subcatchment Width Calc
 [
   ['USA Units','Boolean',false],
   ['SI  Units','Boolean',true],
-  ['Width = 1.7 * MaxHeight, Width)', 'Boolean',false],
+  ['Width = 1.7 * Max(Height, Width)', 'Boolean',false],
   ['Width = K * SQRT(Area)', 'Boolean',false],
   ['Width = K * Perimeter', 'Boolean',false],
   ['Width = Area / Flow Length', 'Boolean',false],
@@ -14,7 +14,6 @@ val = WSApplication.prompt "Choose USA or SI Units SWMM5 Subcatchment Width Calc
 ], false
 USA = val[0]
 SI  = val[1]
-puts K
 K   = val[6].to_f
 K   = K.to_f
 K   = 1.0 if K.nil? || K == 0
