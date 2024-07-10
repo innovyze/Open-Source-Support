@@ -42,6 +42,9 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 **Subcatchments**
 - Create_Subcatchments.sql: Creates subcatchments in the model
 
+**RTK Hydrograph**
+- Assign R Values.sql: Calculates and assigns R values to corresponding fields in ICM
+
 ## How about Steady State InfoSewer in ICM?
 
 There are a couple of options to consider:
