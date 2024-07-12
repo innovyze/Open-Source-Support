@@ -2,6 +2,8 @@
 
 This repository contains scripts and supporting files to assist in the model conversion from InfoSewer to InfoWorks ICM (InfoWorks network)
 
+Instructions for use of these files are provided here: https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Knowledge-Importing-InfoSewer-to-InfoWorks-ICM-Overview-of-all-Import-Steps.html
+
 ## DBF to CSV File Conversion: Excel Macro
 DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM tabular data from DBF to CSV format. Used prior to beginning the model conversion process.
 
@@ -15,15 +17,15 @@ Step 3: Manhole Hydraulics
 
 Step 4: Link Hydraulics
 
-Step 5: Pump Curve Configuration
+Step 5: Pump Hydraulics
 
 Step 6: Pump Control
 
-Step 7: Subcatchment Dry Weather Flow
+Step 7: Subcatchment Loadings
 
 Step 8: Wet Well Hydraulics
 
-Step 9: RDII Hydrograph
+Step 9: RDII Hydrographs
 
 
 ## SQL
@@ -34,17 +36,13 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 - SET calculate wet well area.sql: Calculates area information from diameters imported from InfoSewer
 
 **Links**
-- Find_Pumps.sql: Converts conduits to pumps in the model
+- Find_Pumps.sql: Identifies pumps in the model
 - SET pump on and off.sql: Calculates and sets the on and off levels for pumps
 - SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes
-- Use full solution for forcemains.sql: Sets parameters to use full solution
-- Use forcemain solution for forcemains.sql: Sets parameters to use forcemain solution
+- SET FM roughness to Mannings.sql: Sets the roughness coefficients for forcemains
 
 **Subcatchments**
 - Create_Subcatchments.sql: Creates subcatchments in the model
-
-**RTK Hydrograph**
-- Assign R Values.sql: Calculates and assigns R values to corresponding fields in ICM
 
 ## How about Steady State InfoSewer in ICM?
 
