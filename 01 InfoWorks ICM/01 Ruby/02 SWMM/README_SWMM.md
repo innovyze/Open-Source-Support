@@ -37,7 +37,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0024 - Change Subcatchment Boundaries
 - 0025 - Get Minimum X, Y for All Nodes
 - 0026 - Common Operations
-- 0027 - Copy selected subcatchments five times
+- 0027 - Copy selected subcatchments User Defined Times
 - 0028 - Percentage change in runoff surfaces upstream node into new scenario
 - 0029 - Runoff surfaces from selected subcatchments
 - 0030 - Connect subcatchment to nearest node
