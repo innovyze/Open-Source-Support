@@ -24,4 +24,4 @@ SELECT node_id, node_id, 0.10, x, y, 100
   Filter the records from the 'node' table where the node_type is 'Manhole'.
   Only records that meet this condition will be inserted into the 'subcatchment' table.
 */
-WHERE node_type = 'Manhole';
+WHERE user_text_10 = 'Manhole';
