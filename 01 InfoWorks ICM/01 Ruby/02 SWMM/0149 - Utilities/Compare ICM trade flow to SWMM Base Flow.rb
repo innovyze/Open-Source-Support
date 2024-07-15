@@ -27,8 +27,9 @@ cn_subcatchments.each do |subcatchment|
     # Ensure trade_flow and base_flow are not nil
     trade_flow = trade_flow.nil? ? 0.0 : trade_flow
     base_flow = base_flow.nil? ? 0.0 : base_flow
-    if base_flow + trade_flow != 0
-      puts "Node ID: #{node_id}, Trade Flow: #{format('%.5f', trade_flow)}, Base Flow: #{format('%.5f', base_flow)}"
+    # Print only if the sum of base_flow and trade_flow is not zero
+    if base_flow + trade_flow != 0.0
+    puts "Node ID: #{node_id.slice(0, 25).ljust(20)} Trade Flow: #{format('%10.5f', trade_flow)}, Base Flow: #{format('%10.5f', base_flow)}"
     end
     
     # Update totals with nil checks
@@ -40,5 +41,5 @@ cn_subcatchments.each do |subcatchment|
 end
 
 # Print totals
-puts "Total Trade Flow: #{total_trade_flow}"
-puts "Total Base Flow : #{total_base_flow}"
+puts "CN subcatchment.trade_flow: #{format('%.4f', total_trade_flow)}"
+puts "BN node.base_flow         : #{format('%.4f', total_base_flow)}"
