@@ -1,4 +1,2 @@
 # Copy objects to new transportable
-This script copies a model object (in this example it is a Model Group with 3 child model objects) from a standalone database, creates a new transportable database, and pastes the model object to the new database.
-
-![](gif001.gif)
+These scripts demonstrate how to copy data from a Standalone or Workgroup Database into a Transportable Database using Exchange.
