@@ -19,7 +19,7 @@ def import_dwf(open_net)
   id_counts = Hash.new(0)
 
   scenario_csv = "#{folder_path}/dwf.csv"
-  puts "Scenario CSV: #{scenario_csv}"
+  puts "\nScenario CSV: #{scenario_csv}"
 
   # Headers to exclude
   exclude_headers = ["ALLOC_CODE","ITEM"]
@@ -39,10 +39,10 @@ def import_dwf(open_net)
       row_string = ""
       row.headers.each do |header|
         unless row[header].nil? || exclude_headers.include?(header)
-          row_string += sprintf("%-15s: %s, ", header, row[header])
+          row_string += sprintf("%s: %s, ", header, row[header])
         end
       end
-      puts row_string
+      #######puts row_string
 
       # Add the row to the array as a hash
       rows << row.to_h
@@ -59,7 +59,7 @@ def import_dwf(open_net)
       # Update nodes
         ro = id_to_node[row["ID"]]
           if ro
-            puts "Updating node #{ro.node_id}, Count: #{id_counts[ro.node_id]}"
+            ##### puts "Updating node #{ro.node_id}, Count: #{id_counts[ro.node_id]}"
             if(id_counts[id]==1) then ro.base_flow = row["VALUE"].to_f end
               ro.additional_dwf.each do |additional_dwf|
                 additional_dwf.baseline = 0.0
@@ -74,7 +74,7 @@ def import_dwf(open_net)
     #puts "ID: #{id}, Total Flow: #{stats[:total].to_f}, Count: #{stats[:count]}"
   end
   # Print the total flow for all rows and the count of all rows
-  puts "Total Flow for All Rows: #{total_flow_all_rows}, Count: #{rows.size}"
+  puts "\nTotal Flow Imported: #{total_flow_all_rows.round(4)}, Count: #{rows.size}"
   # Return the rows
   rows
 end
