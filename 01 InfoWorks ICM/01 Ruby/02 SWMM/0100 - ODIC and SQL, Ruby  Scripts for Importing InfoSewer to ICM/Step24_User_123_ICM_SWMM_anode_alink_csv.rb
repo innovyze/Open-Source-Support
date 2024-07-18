@@ -3,7 +3,7 @@ require 'pathname'
 
 def import_anode(open_net, parent_object)
   # Prompt the user to pick a folder
-  val = WSApplication.prompt("Facilty for an InfoSWMM Scenario", [
+  val = WSApplication.prompt("Facility for an InfoSWMM Scenario", [
     ['Pick the Scenario Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
   ], false)
 
@@ -115,4 +115,4 @@ import_anode(open_net,parent_object)
 open_net.transaction_commit
 
 # Indicate the completion of the import process
-puts "Finished the Import of InfoSewer/InfoSWMM Facility Manager Active Elements to ICM SWMM and InfoWorks Selection Sets" 
+puts "Finished the Import of InfoSWMM Facility Manager Active Elements to ICM SWMM Selection Sets" 
