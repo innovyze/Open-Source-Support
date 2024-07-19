@@ -1,0 +1,22 @@
+IWTDB002
+#Children,1,"(425,273,269)"
+#Parent,1,0
+#UsedBy,1,()
+#Uses,1,()
+Comment,0,
+CreationGUID,1,{A0EC1283-8DA3-4C97-8FAE-8882BD1E5190}
+Hidden,1,0
+ID,1,1
+Live Group,0,
+Master Group,0,
+ModificationGUID,1,{A0EC1283-8DA3-4C97-8FAE-8882BD1E5190}
+ModifiedBy,1,Innovyze
+Name,1,Model Group
+NoInheritUserRoles,0,
+Parent,0,
+RecycledBy,0,
+RecycleParent,0,
+RecycleParentType,0,
+WhenCreated,1,40939.69598380
+WhenModified,1,40939.69598380
+WhenRecycled,0,
