@@ -23,4 +23,3 @@ end
 
 # Indicate the completion of the import process
 puts "Finished Import of InfoSewer to ICM InfoWorks"
-
