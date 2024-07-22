@@ -1,5 +1,5 @@
 #This script can be used to create selection lists for active elements in each scenario (Scenario folder)
-#This script can also be used to create seleciton lists for each selection set from InfoSWMM (Selection folder)
+#This script can also be used to create selection lists for each selection set from InfoSWMM (Selection folder)
 
 # Required libraries
 require 'csv'
