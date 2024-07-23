@@ -8,6 +8,7 @@ A Folder with Specific CSV Files: You'll be asked to select a folder on your com
 - Selection List_Nodes.csv
 - Selection List_Links.csv
 - Selection List_Subcatchments.csv
+
 The script will work even if you only have one or two of these files.
 
 Content in CSV Files: Each of these CSV files should have a list of IDs in a column. The column should be named Node ID for Selection List_Nodes.csv, Link ID for Selection List_Links.csv, and Subcatchment ID for Selection List_Subcatchments.csv.
