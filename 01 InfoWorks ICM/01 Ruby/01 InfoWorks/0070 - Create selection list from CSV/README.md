@@ -5,13 +5,13 @@ This Ruby script helps you create a selection list in your network from data sto
 ## Inputs You Need:
 
 A Folder with Specific CSV Files: You'll be asked to select a folder on your computer. This folder should have one or more of the following CSV files, named exactly as:
-- Selection List_Nodes.csv
-- Selection List_Links.csv
-- Selection List_Subcatchments.csv
+- Nodes.csv
+- Links.csv
+- Subcatchments.csv
 
 The script will work even if you only have one or two of these files.
 
-Content in CSV Files: Each of these CSV files should have a list of IDs in a column. The column should be named Node ID for Selection List_Nodes.csv, Link ID for Selection List_Links.csv, and Subcatchment ID for Selection List_Subcatchments.csv. For links, the IDs should be of format us_node_id.link_suffix.
+Content in CSV Files: Each of these CSV files should have a list of IDs in a column. The column should be named Node ID for Nodes.csv, Link ID for Links.csv, and Subcatchment ID for Subcatchments.csv. For links, the IDs should be of format us_node_id.link_suffix.
 
 ## What The Script Does:
 

@@ -13,13 +13,13 @@ def create_selection_list_from_csv(open_net, parent_object)
   return if folder_path.nil?
 
   folder_path = folder_path[0]
-  puts "Selected folder: #{folder_path}"
+  puts "Selection list data location: #{folder_path}"
 
   # Define the paths to the CSV files
   csv_files = {
-    node: "#{folder_path}/Selection List_Nodes.csv",
-    link: "#{folder_path}/Selection List_Links.csv",
-    subcatchment: "#{folder_path}/Selection List_Subcatchments.csv"
+    node: "#{folder_path}/Nodes.csv",
+    link: "#{folder_path}/Links.csv",
+    subcatchment: "#{folder_path}/Subcatchments.csv"
   }
 
   # Clear any existing selection in the network
@@ -31,11 +31,13 @@ def create_selection_list_from_csv(open_net, parent_object)
     next unless File.exist?(csv_file)
 
     # Select entities using the IDs from the CSV file
+    puts "\nSelected #{type}s:"
     CSV.foreach(csv_file, headers: true) do |row|
       id = row["#{type.capitalize} ID"]
       if entity = open_net.row_object("_#{type}s", id)
         entity.selected = true
         entity.write
+        puts "#{id}"
       end
     end
   end
@@ -59,7 +61,7 @@ def create_selection_list_from_csv(open_net, parent_object)
   sl = parent_object.new_model_object 'Selection List', list_name
   open_net.save_selection sl
   puts "\nSelection List '#{list_name}' has been created within model group '#{group.name}'."
-  puts "Refresh the database to view the new selection list."
+  puts "Refresh the database to view the new selection list in the database tree."
 end
 
 # Access the current network
