@@ -108,9 +108,9 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0095 - Export SWMM5 Calibration Files - Downstream Depth
 - 0096 - Export SWMM5 Calibration Files - Downstream Flow
 - 0097 - Export SWMM5 Calibration Files - Upstream Flow
-- 0099 - Common Operations
-- 0100 - ODIC and SQL, Ruby Scripts for Importing InfoSewer to ICM
-- 0101 - ODIC. SQL and Ruby for InfoSWMM Scenario Import
+- 0099 - Compare ICM Headloss in Ruby Script
+- 0100 - InfoSewer to ICM SWMM Loads and InfoSWMM Scenario Tools
+- 0101 - Useful notes and common operations
 - 0102 - ICM InfoWorks Results to SWMM5 Node Inflows Summary Table
 - 0103 - ICM InfoWorks Results to SWMM5 Node Depths Summary Table
 - 0104 - ICM InfoWorks Results to SWMM5 Node Surcharging Table
