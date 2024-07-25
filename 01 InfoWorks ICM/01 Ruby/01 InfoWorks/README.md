@@ -75,6 +75,8 @@
 | 0067 | UI       | Set SWMM5 Buildup Washoff for HW_Subcatchments                      | Network Data Get      |
 | 0068 | UI       | Change All Node, Subs and Link IDs                                  | Network Data Get      |
 | 0069 | EX       | Exports and imports database objects (event files)                  | Database Data Export/Import|
+| 0070 | UI       | Create selection list from CSV                                      | Database Data Import  |
+| 0071 | UI       | Run Python Scripts from UI                                          | Network Data Get      |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
