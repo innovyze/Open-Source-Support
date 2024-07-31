@@ -3,6 +3,18 @@
 
 cn = WSApplication.current_network
 
+val = WSApplication.prompt "Scenario Sensitivity Parameter Selection",
+[
+  ['USA Units','Boolean',false],
+  ['SI  Units','Boolean',true],
+  ['Width = 1.7 * Max(Height, Width)', 'Boolean',false],
+  ['Width = K * SQRT(Area)', 'Boolean',false],
+  ['Width = K * Perimeter', 'Boolean',false],
+  ['Width = Area / Flow Length', 'Boolean',false],
+  ['K value 0.2 to 5 default of 1', 'String'],
+  ['Choose the Unit type and Width Option', 'String']
+], false
+
 THANK_YOU_MESSAGE1 = "That's it! You've successfully added scenarios your ICM InfoWorks network. Thank you for using our Ruby script."
 THANK_YOU_MESSAGE2 = "If you have any questions or need further assistance, don't hesitate to reach out to the Autodesk EBCS Team."
 THANK_YOU_MESSAGE3 = "Happy Modeling! or Happy Modelling! (depending on your location)"

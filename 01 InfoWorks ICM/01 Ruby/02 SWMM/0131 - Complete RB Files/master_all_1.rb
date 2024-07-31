@@ -10838,7 +10838,7 @@ puts "Finished Import of InfoSewer to ICM InfoWorks"
 open_net = WSApplication.current_network
 
 # Prompt the user to pick a folder
-csv = WSApplication.prompt "Folder for an InfoSewer IED", 
+csv = WSApplication.prompt "Folder for an InfoSewer IEDD", 
 [ ['Pick the IEDB Folder ','String',nil,nil,'FOLDER','IEDB Folder']], false
 
 cfg = 'C:\\Users\\dickinre\\Documents\\Open-Source-Support-main\\01 InfoWorks ICM\\InfoSewer to ICM\\Open-Source-Support\\01 InfoWorks ICM\\01 Ruby\\02 SWMM\\0100 - ODIC and SQL Scripts for Importing InfoSewer to ICM'

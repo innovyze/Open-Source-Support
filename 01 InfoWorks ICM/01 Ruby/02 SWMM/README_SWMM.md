@@ -37,7 +37,7 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0024 - Change Subcatchment Boundaries
 - 0025 - Get Minimum X, Y for All Nodes
 - 0026 - Common Operations
-- 0027 - Copy selected subcatchments five times
+- 0027 - Copy selected subcatchments User Defined Times
 - 0028 - Percentage change in runoff surfaces upstream node into new scenario
 - 0029 - Runoff surfaces from selected subcatchments
 - 0030 - Connect subcatchment to nearest node
@@ -108,9 +108,9 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0095 - Export SWMM5 Calibration Files - Downstream Depth
 - 0096 - Export SWMM5 Calibration Files - Downstream Flow
 - 0097 - Export SWMM5 Calibration Files - Upstream Flow
-- 0099 - Common Operations
-- 0100 - ODIC and SQL, Ruby Scripts for Importing InfoSewer to ICM
-- 0101 - ODIC. SQL and Ruby for InfoSWMM Scenario Import
+- 0099 - Compare ICM Headloss in Ruby Script
+- 0100 - InfoSewer to ICM SWMM Loads and InfoSWMM Scenario Tools
+- 0101 - Useful notes and common operations
 - 0102 - ICM InfoWorks Results to SWMM5 Node Inflows Summary Table
 - 0103 - ICM InfoWorks Results to SWMM5 Node Depths Summary Table
 - 0104 - ICM InfoWorks Results to SWMM5 Node Surcharging Table
@@ -139,8 +139,10 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0129 - ICM Information Hub Finder
 - 0130 - InfoSewer Peaking Factors
 - 0131 - Complete RB Files
-- 0134 - 
-- 0135 - Create Subs from polygon
+- 0132 - Runoff Surface Tables
+- 0133 - InfoWorks Land Use Tables
+- 0134 - Input Message Box
+- 0135 - Subcatchment Grid Area Table
 - 0136 - InfoWorks Sub, Land Use with Runoff Surfaces Table
 - 0137 - Creates Subs from Polygons
 - 0138 - Input Message Box
@@ -152,11 +154,14 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
 - 0144 - Create nodes from polygon subcatchment boundary
 - 0145 - Change 2D Polygon Boundaries
 - 0146 - Add 2D Results Points in a Polygon
-- 0147 - 
-- 0148 - 
-- 0149 - 
+- 0147 - List all results fields in a simulation (ICM SWMM) and Show Link Results Stats
+- 0148 - Read Inflows File
+- 0149 - Utilities
 - 0150 - Scenario Sensitivity - InfoWorks Link Mannings N
-
+- 0151 - Read SWMM5 RPT File
+- 0152 - Read InfoSewer Steady State Report File
+- 0153 - Tau or Shear Stress non QM Calculations
+- 0154 - Ruby for some InfoSWMM Subcatchment Manager Tools
 
 ## SWMM5 Versions
 

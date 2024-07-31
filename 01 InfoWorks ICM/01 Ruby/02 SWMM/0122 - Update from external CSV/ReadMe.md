@@ -1,0 +1,2 @@
+If you have a CSV file which has a reference value and a data value, but not the ID value of the objects in the network.
+You would like to update Node objects (`user_text_2` field) with the value in CSV second column using the value in CSV first column as a lookup comparison with `user_text_1` on the Node object.

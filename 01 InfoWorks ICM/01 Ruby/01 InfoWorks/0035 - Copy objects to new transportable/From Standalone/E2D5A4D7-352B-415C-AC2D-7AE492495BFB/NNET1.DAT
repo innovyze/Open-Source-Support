@@ -1,0 +1,27 @@
+IWTDB002
+#Children,1,()
+#Parent,1,431
+#UsedBy,1,()
+#Uses,1,()
+CheckInGUID,0,
+Comment,0,
+Computer,0,
+CreationGUID,1,{482ED20D-F8C3-413D-A7C9-9D283BF3AF22}
+Current,0,
+Default,0,
+Hidden,0,
+ID,0,
+Locked,0,
+Model Group,1,1
+ModificationGUID,1,{482ED20D-F8C3-413D-A7C9-9D283BF3AF22}
+ModifiedBy,1,dasilvr
+Name,1,Model network
+Parent,0,
+RecycledBy,0,
+RecycleParent,0,
+RecycleParentType,0,
+ServerBranchID,0,
+WhenCreated,1,43166.71092593
+WhenModified,1,43166.71092593
+WhenRecycled,0,
+WhenValidated,0,

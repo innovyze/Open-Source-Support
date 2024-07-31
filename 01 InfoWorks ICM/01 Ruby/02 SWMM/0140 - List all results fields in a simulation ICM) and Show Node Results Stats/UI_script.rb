@@ -1,3 +1,4 @@
+# Import the 'date' library
 require 'date'
 
 def print_table_results(cn)
@@ -44,7 +45,6 @@ puts "Time step size: #{ts_size}"
 
 # Get the list of timesteps
 ts = cn.list_timesteps
-puts ts.map(&:abs).join(", ")
 
 print_table_results(cn)
 
