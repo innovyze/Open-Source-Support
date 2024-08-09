@@ -124,8 +124,8 @@ end
 net.transaction_begin
 
 # SQL 01_SET node_type = 'Outfall'
-net.run_SQL("_nodes", "SET node_type = 'Outfall' WHERE user_text_3 = '2';
-SET user_text_10 = 'Outfall' WHERE user_text_3 = '2';")
+net.run_SQL("_nodes", "SET node_type = 'Outfall' WHERE user_text_2 = '2';
+SET user_text_10 = 'Outfall' WHERE user_text_2 = '2';")
 
 # SQL 02_Create_Subcatchments
 net.run_SQL("_nodes", "INSERT INTO subcatchment (subcatchment_id, node_id, total_area, x, y, connectivity)
