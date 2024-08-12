@@ -8,7 +8,7 @@ require 'pathname'
 # Method to import anode
 def import_anode(open_net, parent_object)
   # Prompt the user for folder selection
-  val = WSApplication.prompt("Facility for an InfoSWMM Scenario", [
+  val = WSApplication.prompt("Active Elements for an InfoSewer/InfoSWMM Scenario", [
     ['Pick the Scenario Folder', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
   ], false)
 
@@ -17,7 +17,7 @@ def import_anode(open_net, parent_object)
 
   folder_path = val[0]
   puts "Selected folder: #{folder_path}"
-  puts "\nNote: If the CSV File is empty, it means all nodes or links are active in the InfoSWMM Scenario."
+  puts "\nNote: If the CSV File is empty, it means all nodes or links are active in the InfoSewer/InfoSWMM Scenario."
   puts "\n"
 
   # Hashes to store links, nodes, and subcatchments
@@ -96,6 +96,7 @@ def import_anode(open_net, parent_object)
     sl = parent_object.new_model_object 'Selection List', $selection_set.to_s
     puts s1 = sl.name
     open_net.save_selection sl
+    puts "\n"
   end
 end
 
@@ -118,8 +119,13 @@ end
 
 # Start a transaction and call the import_anode method
 open_net.transaction_begin
-import_anode(open_net, parent_object)
-open_net.transaction_commit
+begin 
+  import_anode(open_net, parent_object)
+  open_net.transaction_commit
+rescue => e
+  open_net.transaction_rollback
+  puts "Error importing active elements: #{e.message}"
+end
 
 # Print completion message
-puts "\nFinished the Import of InfoSWMM Facility Manager Active Elements to ICM SWMM Selection Lists"
+puts "\nFinished the Import of InfoSewer/InfoSWMM Facility Manager Active Elements to ICM Selection Lists"
