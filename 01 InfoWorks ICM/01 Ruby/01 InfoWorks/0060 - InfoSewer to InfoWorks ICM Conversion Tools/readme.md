@@ -1,17 +1,17 @@
-# Model Conversion from InfoSewer to InfoWorks ICM
+# InfoSewer to InfoWorks ICM Conversion Tools
 
 This repository contains scripts and supporting files to assist in the model conversion from InfoSewer to InfoWorks ICM (InfoWorks network)
 
 Instructions for use of these files are provided here: https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Knowledge-Importing-InfoSewer-to-InfoWorks-ICM-Overview-of-all-Import-Steps.html
 
 ## DBF to CSV File Conversion: Excel Macro
-DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer tabular data from DBF to CSV format. Used prior to beginning the model conversion process.
+DBF_to_CSV.xlsm: This macro automates the conversion of InfoSewer tabular data from DBF to CSV format. Used prior to beginning the model conversion process.
 
-## InfoWorks Configuration Files and Step-by-Step Guides
+## Configuration (CFG) Files
 
-Step 1: Node and Manhole Configuration
+Step 1: Manhole/Node Configuration
 
-Step 2: Pipe and Link Configuration
+Step 2: Pipe/Link Configuration
 
 Step 3: Manhole Hydraulics
 
@@ -19,7 +19,7 @@ Step 4: Link Hydraulics
 
 Step 5: Pump Hydraulics
 
-Step 6: Pump Control
+Step 6: Pump Controls
 
 Step 7: Subcatchment Loadings
 
@@ -27,8 +27,7 @@ Step 8: Wet Well Hydraulics
 
 Step 9: RDII Hydrographs
 
-
-## SQL
+## SQL Scripts
 Scripts to modify Node, Link, and Subcatchment attributes:
 
 **Nodes**
@@ -45,6 +44,16 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 
 **Subcatchments**
 - Create_Subcatchments.sql: Creates subcatchments in the model
+
+## Ruby Import BASE
+- InfoSewer_to_InfoWorks_Base.rb: This companion ruby script automates the documented 9-step process in a single script. 
+
+## Scenario Tools
+- Create Scenarios from InfoSewer.rb: This ruby script utilizes the SCENARIO.CSV to create scenarios from InfoSewer model. Created scenarios are a copy of the Base network in InfoWorks ICM. Scenario data will not be populated.
+- InfoWorks Selection Lists from Scenarios or Selection Set.rb: This ruby script utilizes the ANODE.CSV and ALINK.CSV located within either the Scenario folder or the SS (Selection Set) folder to create selection lists. The ANODE and ALINK files within the Scenario folder indicate which nodes and links are active in that scenario, while the ANODE and ALINK files within the SS folder indicate nodes and links which should be selected. 
+
+## Pattern Tools
+- Patterns_to_ICM_CSV.xlsm: This macro automates the conversion of diurnal pattern data into a format that InfoWorks ICM can recognize and use.
 
 ## How about Steady State InfoSewer in ICM?
 
