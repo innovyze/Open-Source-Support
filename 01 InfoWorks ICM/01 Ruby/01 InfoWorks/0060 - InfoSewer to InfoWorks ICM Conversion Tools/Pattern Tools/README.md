@@ -14,7 +14,11 @@ Finally, the manipulated data is saved as a new CSV file in the user-specified o
 
 3. Import the generated CSV to InfoWorks model group as the appropriate event type:
 
+### Trade waste
+
 ![alt text](image.png)
+
+### Waste water
 
 ![alt text](image-1.png)
 
