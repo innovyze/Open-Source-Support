@@ -5,7 +5,7 @@ This repository contains scripts and supporting files to assist in the model con
 Instructions for use of these files are provided here: https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Knowledge-Importing-InfoSewer-to-InfoWorks-ICM-Overview-of-all-Import-Steps.html
 
 ## DBF to CSV File Conversion: Excel Macro
-DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer and InfoSWMM tabular data from DBF to CSV format. Used prior to beginning the model conversion process.
+DBF_to_CSV.xlsm: Excel macro-enabled workbook to convert InfoSewer tabular data from DBF to CSV format. Used prior to beginning the model conversion process.
 
 ## InfoWorks Configuration Files and Step-by-Step Guides
 
@@ -41,6 +41,7 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 - SET number_of_barrels.sql: Calculates and sets the number of barrels for pipes
 - Use full solution for forcemains.sql: Sets parameters to use full solution
 - Use forcemain solution for forcemains.sql: Sets parameters to use forcemain solution
+- Insert pump curves.sql: Inserts pump curve data for 1-point (design point) and 3-point (exponential) pump curves
 
 **Subcatchments**
 - Create_Subcatchments.sql: Creates subcatchments in the model
