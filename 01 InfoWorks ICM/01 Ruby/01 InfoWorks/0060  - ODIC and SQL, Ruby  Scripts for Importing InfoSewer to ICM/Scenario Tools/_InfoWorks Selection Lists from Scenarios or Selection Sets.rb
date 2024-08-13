@@ -1,6 +1,8 @@
 # This script creates selection lists for active elements in each scenario (Scenario folder)
 # It can also create selection lists for each selection set (Select/SS folder)
 
+# DBF files must be converted to CSV files prior to running the script
+
 # Required libraries
 require 'csv'
 require 'pathname'
