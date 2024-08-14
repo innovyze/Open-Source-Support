@@ -1,5 +1,5 @@
 
-# Last Updated: 2024-07-12
+# Last Updated: 2024-08-09
 
 =begin
 This script is used to import data from InfoSewer BASE scenario to InfoWorks ICM. It follows several steps to complete the import:
@@ -124,8 +124,8 @@ end
 net.transaction_begin
 
 # SQL 01_SET node_type = 'Outfall'
-net.run_SQL("_nodes", "SET node_type = 'Outfall' WHERE user_text_3 = '2';
-SET user_text_10 = 'Outfall' WHERE user_text_3 = '2';")
+net.run_SQL("_nodes", "SET node_type = 'Outfall' WHERE user_text_2 = '2';
+SET user_text_10 = 'Outfall' WHERE user_text_2 = '2';")
 
 # SQL 02_Create_Subcatchments
 net.run_SQL("_nodes", "INSERT INTO subcatchment (subcatchment_id, node_id, total_area, x, y, connectivity)
@@ -185,6 +185,19 @@ net.run_SQL("_nodes", "SET chamber_area = 3.14159 * (chamber_area/2) * (chamber_
 SET shaft_area = 3.14159 * (shaft_area/2) * (shaft_area/2) WHERE user_text_10 = 'WW';
 SET ground_level = ground_level + chamber_floor WHERE user_text_10 = 'WW'")
 
+# SQL 10_Insert pump curves
+net.run_SQL("hw_pump", "
+SET link_type = 'ROTPMP' WHERE user_text_1 = 1 OR user_text_1 = 2;
+INSERT INTO [Head Discharge] (head_discharge_id) SELECT asset_id FROM Pump;
+SET head_discharge_id = asset_id;
+DELETE ALL FROM [Head discharge].HDP_table;
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, 1.33 * user_number_3, 0 FROM Pump WHERE user_text_1 = 1;
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_3, user_number_4  FROM Pump WHERE user_text_1 = 1;
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, 0, 2 * user_number_4  FROM Pump WHERE user_text_1 = 1;
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_2, 0 FROM Pump WHERE user_text_1 = 2;
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_3, user_number_4  FROM Pump WHERE user_text_1 = 2;
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_5, user_number_6  FROM Pump WHERE user_text_1 = 2;")
+
 # Commit the transaction
 net.transaction_commit
 
@@ -223,4 +236,4 @@ import_steps_v.each do |layer, cfg_file, shp_file|
 end
 
 # Print a message indicating that the import process is finished
-puts "\nFinished import of InfoSewer to InfoWorks ICM"
+puts "\nFinished import of InfoSewer BASE scenario to InfoWorks ICM"

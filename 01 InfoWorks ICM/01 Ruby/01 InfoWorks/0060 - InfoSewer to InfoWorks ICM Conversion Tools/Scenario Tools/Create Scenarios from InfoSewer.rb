@@ -5,7 +5,7 @@ require 'pathname'
 # Define the method to import scenarios
 def import_scenario(open_net)
   # Prompt the user to select a folder
-  val = WSApplication.prompt "Import InfoSewer or InfoSWMM Scenarios", [['Select the IEDB or ISDB Folder','String',nil,nil,'FOLDER','IEDB or ISDB Folder']], false
+  val = WSApplication.prompt "Import InfoSewer Scenarios from CSVs", [['Select the IEDB Folder','String',nil,nil,'FOLDER','IEDB Folder']], false
   folder_path = val[0]
   # Print the selected folder path
   puts "Folder path: #{folder_path}"
@@ -20,8 +20,8 @@ def import_scenario(open_net)
   scenario_csv = "#{folder_path}/scenario.csv"
   puts "\nScenario CSV: #{scenario_csv}"
 
-  # Define the headers to exclude when reading the CSV file
-  exclude_headers = ["FAC_TYPE", "USECLIMATE", "USE_REPORT", "USE_OPTION","PISLT_SET"]
+  # Define the headers to exclude when reading the CSV file, applicable to InfoSWMM and InfoSewer
+  exclude_headers = ["FAC_TYPE", "USECLIMATE", "USE_TIME","USE_REPORT", "USE_OPTION"]
 
   # Open and read the CSV file
   CSV.open(scenario_csv, 'r', headers: true) do |csv|
