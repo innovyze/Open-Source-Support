@@ -22,7 +22,7 @@ end
 		if !t[1].nil?
 			suffix=t[1]+'_'
 		end
-		prefix="#{folder}\\#{t[0]}_#{suffix}#{ro.id}"
+		prefix="#{folder}\\#{t[0]}_#{suffix}#{ro.id.gsub(/[^0-9A-Za-z_-]/, '--')}"		## Non-"0-9A-Za-z_-" characters in the Survey ID will be changed to '--'
 		net.generate_report(t[0],t[1],ro.id,prefix+'.doc')		## Generate a Word report
 		#net.generate_report(t[0],t[1],ro.id,prefix+'.html')		## Generate a HTML report
 		n+=1
