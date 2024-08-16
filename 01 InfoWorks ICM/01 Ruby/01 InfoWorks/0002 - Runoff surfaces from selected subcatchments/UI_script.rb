@@ -8,7 +8,7 @@ net.row_objects('hw_land_use').each do |lu|
         (1..10).each do |i|
                 runoffSurface=lu['runoff_index_'+i.to_s]
                 if !runoffSurface.nil?
-                        puts runoffSurface
+                        puts "Runoff Surface: #{runoffSurface},    Land Use ID: #{lu.land_use_id}"
                         if selectedRunoffSurfaces.has_key? runoffSurface.to_s
                                 selectedLandUses[lu.id.to_s]=0
                                 lu.selected=true
@@ -18,6 +18,7 @@ net.row_objects('hw_land_use').each do |lu|
 end
 net.row_objects('hw_subcatchment').each do |s|
         if selectedLandUses.has_key? s.land_use_id
-                s.selected=true
+          puts "Subcatchment: #{s.id}, Land Use ID: #{s.land_use_id}"
+          s.selected = true
         end
-end
+      end

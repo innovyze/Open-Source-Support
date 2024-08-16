@@ -1,4 +1,4 @@
-# InfoWorks SWMM Networks
+# ICM SWMM Networks
 In InfoWorks SWMM, the data representing the stormwater network (such as pipes, nodes, and subcatchments) is organized into tables. These tables often have names beginning with sw_, for example sw_pipe, sw_node, etc. The different attributes of these elements (such as their dimensions, materials, and locations) are represented as fields within these tables.
 
 The comment suggests that while these Ruby scripts are intended for use with InfoWorks SWMM, they may also work with Autodesk Innovyze's InfoWorks ICM (Integrated Catchment Modeling) to some extent, because the code structure is often very similar. However, there are important differences to be aware of.
@@ -9,141 +9,192 @@ This means that if you're trying to use these Ruby scripts with Autodesk Innovyz
 
 In conclusion, while these Ruby scripts are designed to work specifically with Autodesk In | Network Data  |novyze's InfoWorks SWMM, they might be adaptable for use with InfoWorks ICM or other similar software packages, but such adaptation would likely require some adjustments to the code.
 
-|------|------|---------------------------------------------------------|
-|------|------|---------------------------------------------------------|
-| ID   | Type | Name                                                    |
-|------|------|---------------------------------------------------------|
-| 0001 | UI   | Pipe Length Statistics                                  |
-| 0002 | UI   | Quick Trace                                             |
-| 0003 | UI   | Scenario Maker                                          |
-| 0004 | UI   | New ICM InfoWorks and ICM SWMM Scenarios                |
-| 0005 | UI   | Change All Node and Link IDs                            |
-| 0006 | UI   | Add Total Area for Subcatchments                        |
-| 0007 | UI   | Count Objects In the Database                           |
-| 0008 | UI   | Select Upstream Subcatchments from a Node Multilinks    |
-| 0009 | UI   | ICM Binary Results Export                               |
-| 0010 | UI   | List all results fields in a simulation                 |
-| 0011 | UI   | Pipe Length Selection                                   |
-| 0012 | UI   | ODEC Export Node and Conduit tables to CSV and MIF      |
-| 0013 | UI   | Depression Storage Statistics                           |
-| 0014 | UI   | Find all flags in all objects of a network model        |
-| 0015 | UI   | Pipe Diameter Statistics                                |
-| 0016 | UI   | All Link Parameter Statistics                           |
-| 0017 | UI   | All Node Parameter Statistics                           |
-| 0018 | UI   | All Subcatchment Parameter Statistics                   |
-| 0019 | UI   | Distribute attachment details by a shared value         |
-| 0020 | UI   | Generate Individual Reports for a Selection of Objects  |
-| 0021 | UI   | Create a node from polygon boundary                     |
-| 0022 | UI   | Output CSV of calcs based on Subcatchment Data          |
-| 0023 | UI   | Rename Nodes & Links using Name Generation pattern      |
-| 0024 | UI   | Input Message Box                                       |
-| 0025 | UI   | Get Minimum X, Y for All Nodes                          |
-| 0026 | UI   | Make_Subcatchments_From_Imported_InfoSewer_Manholes     |
-| 0027 | UI   | Copy a subcatchment and rename it                       |
-| 0028 | UI   | Percent change in runoff surfaces upstream              |
-| 0029 | UI   | Runoff surfaces from selected subcatchments             |
-| 0030 | UI   | Connect subcatchment to nearest node                    |
-| 0031 | UI   | List all results fields in a simulation                 |
-| 0032 | UI   | List Network Fields-Structure                           |
-| 0033 | UI   | Output the Array BLOB values as a clustered value       |
-| 0034 | UI   | Display Export geometries                               |
-| 0035 | UI   | List Master Database Objects Contents                   |
-| 0036 | UI   | Create Selection List                                   |
-| 0037 | UI   | Select Isolated Nodes                                   |
-| 0038 | UI   | Remove rows from a blob field                           |
-| 0039 | UI   | Calculate subcatchment areas in all nodes upstream a    |
-| 0040 | UI   | Create a new selection list using a SQL query           |
-| 0041 | UI   | Get results from all timesteps for Links, US_FLOW       |
-| 0042 | UI   | Get results from all timesteps for Subcatchments, All   |
-| 0043 | UI   | Get results from all timesteps for Manholes, Qnode      |
-| 0044 | UI   | Get results from all timesteps for Manholes, All Param  |
-| 0045 | UI   | Get results from all timesteps for Links, All Params    |
-| 0046 | UI   | Output SUDS control as CSV                              |
-| 0047 | UI   | Select links sharing the same us and ds node ids        |
-| 0048 | UI   | Delete all scenarios except Base                        |
-| 0049 | UI   | Clear SUDS from subcatchments                           |
-| 0050 | UI   | Assign Subcatchment to nearest 'Storage' type Node      |
-| 0051 | UI   | Additional DWF Node IDs                                 |
-| 0052 | UI   | Make a Table of the Run Parameters in ICM               |
-| 0053 | UI   | Scenario Counter                              b         |
-| 0054 | UI   |                                                         |
-| 0055 | UI   |                                                         |
-| 0056 | UI   | Listview of the currently selected network objects      |
-| 0057 | UI   | Scenario Maker                                          |
-| 0058 | UI   | Bifurcation Nodes                                       |
-| 0059 | UI   | Dry Pipes                                               |
-| 0060 | UI   | Find All Network Elements                               |
-| 0061 | UI   | Flow Survey                                             |
-| 0062 | UI   | Header Nodes                                            |
-| 0063 | UI   | ICM SWMM All Tables                                     |
-| 0064 | UI   | ICM SWMM Network Overview                               |
-| 0065 | UI   | Put Run Parameters                                      |
-| 0066 | UI   | Get Run Parameters                                      |
-| 0067 | UI   | ICM Ruby Tutorials                                      |
-| 0068 | UI   | ICM InfoWorks All Table Names                           |
-| 0069 | UI   | Make an Overview of All Network Elements                |
-| 0070 | UI   | Upstream Subcatchments from an Outfall                  |
-| 0071 | UI   | Raingages, All Output Parameters                        |
-| 0072 | UI   | Find Root Model Group                                   |
-| 0073 | UI   | Rename Exported Image & Attachment Files                |
-| 0074 | UI   | Capacity Assurance White Paper (InfoNet)                |
-| 0075 | UI   | Sandbox Instance Evaluation and Class Scope             |
-| 0076 | UI   | InfoWorks vs SWMM CSV Comparison                        |
-| 0077 | UI   | ICM InfoWorks UX Tables                                 |
-| 0078 | UI   | ICM SWMM UX Tables                                      |
-| 0079 | UI   | ICM SWMM IWR Tables                                     |
-| 0080 | UI   | ICM InfoWorks IWR Tables                                |
-| 0081 | UI   | Export Compare Network Versions to CSV                  |
-| 0082 | UI   | Create SuDS for All Subcatchments                       |
-| 0083 | UI   | Find the Time of Max DS Depth in all Selected Links     |
-| 0084 | UI   | Change All Node, Subs and Link IDs                      |
-| 0085 | UI   | Export SWMM5 Calibration Files - Node Runoff            |
-| 0086 | UI   | Export SWMM5 Calibration Files - Groundwater Elev       |
-| 0087 | UI   | Export SWMM5 Calibration Files - Groundwater Flow       |
-| 0088 | UI   | Export SWMM5 Calibration Files - Node Flooding          |
-| 0089 | UI   | Export SWMM5 Calibration Files - Node Flood Depth       |
-| 0090 | UI   | Export SWMM5 Calibration Files - Node Level             |
-| 0091 | UI   | Export SWMM5 Calibration Files - Node Lateral Inflow    |
-| 0092 | UI   | Export SWMM5 Calibration Files - Downstream Velocity    |
-| 0093 | UI   | Export SWMM5 Calibration Files - Upstream Velocity      |
-| 0094 | UI   | Export SWMM5 Calibration Files - Upstream Depth         |
-| 0095 | UI   | Export SWMM5 Calibration Files - Downstream Depth       |
-| 0096 | UI   | Export SWMM5 Calibration Files - Downstream Flow        |
-| 0097 | UI   | Export SWMM5 Calibration Files - Upstream Flow          |
-| 0098 | UI   | Compare ICM Inlets to HEC22 Inlets                      |
-| 0099 | UI   | Compare ICM Headloss in Ruby Script                     |
-| 0100 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
-| 0101 | UI   | Common Operations                                       |
-| 0102 | UI   | ICM IWR Results to SWMM5 Node Inflows Summary Table     |
-| 0103 | UI   | ICM IWR Results to SWMM5 Node Depths Summary            |
-| 0104 | UI   | ICM IWR Results to SWMM5 Node Surcharging               |
-| 0105 | UI   | ICM IWR Results to SWMM5 Link Flows Summary             |
-| 0106 | UI   | ICM IWR Results to SWMM5 Link Flows Summary             |
-| 0107 | UI   | ICM IWR Results to SWMM5 to Subcatchment Runoff Summary |
-| 0108 | UI   | Locate Missing Attachments on a Standalone Database     |
-| 0109 | UI   | 1A ODEC Callback Examples                               |
-| 0110 | UI   | ODIC Export                                             |   
-| 0111 | UI   | ODIC Import                                             |
-| 0112 | UI   | 2A ODIC Callback Examples                               |
-| 0113 | UI   | Import an InfoWorks ICM SWMM Model InfoAsset Manager    |
-| 0114 | UI   | GIS Export                                              |
-| 0115 | UI   | Export Dashboard                                        |
-| 0116 | UI   | Export Choice List values                               |
-| 0117 | UI   | Import-Export Snapshot file                             |
-| 0118 | UI   | Bulk Data Import                                        |
-| 0119 | UI   | Export to CSV                                           |
-| 0120 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
-| 0121 | UI   | ODIC and SQL Scripts for Importing InfoSewer to ICM     |
-| 0122 | UI   | Update from external CSV                                |
-| 0123 | UI   | Update an object with values through comparison         |
-| 0124 | UI   | Network Tracing                                         |
-| 0125 | UI   | Tracing                                                 |
-| 0126 | UI   | Copy selected subcatchments with user suffix            |
-| 0127 | UI   |                                                         |
-| 0128 | UI   |                                                         |
-| 0129 | UI   |                                                         |
-| 0130 | UI   |                                                         |
-|------|------|---------------------------------------------------------|
+## ICM SWMM Ruby Folders
+
+- 0001 - Pipe Length Statistics
+- 0002 - Quick Trace
+- 0003 - Scenario Maker
+- 0004 - New ICM Scenarios
+- 0005 - Change All Subcatchment, Node and Link IDs
+- 0006 - Add Total Area for Subs
+- 0007 - Count Objects In the Database
+- 0008 - Select Upstream Subcatchments from a Node with Multilinks
+- 0009 - ICM Binary Results Export
+- 0010 - List all results fields in a simulation (SWMM or ICM)
+- 0011 - Pipe Length Histogram
+- 0012 - ODEC Export Node and Conduit tables to CSV and MIF
+- 0013 - Depression Storage Statistics
+- 0014 - Find all flags in all objects of a network model
+- 0015 - Pipe Diameter Statistics
+- 0016 - All Link Parameter Statistics
+- 0017 - All Node Parameter Statistics
+- 0018 - All Subcatchment Parameter Statistics
+- 0019 - Distribute attachment details by a shared value
+- 0020 - Generate Individual Reports for a Selection of Objects
+- 0021 - Create nodes from polygon, subcatchment boundary
+- 0022 - Output CSV of calcs based on Subcatchment Data
+- 0023 - Rename Nodes & Links using Name Generation pattern
+- 0024 - Change Subcatchment Boundaries
+- 0025 - Get Minimum X, Y for All Nodes
+- 0026 - Common Operations
+- 0027 - Copy selected subcatchments User Defined Times
+- 0028 - Percentage change in runoff surfaces upstream node into new scenario
+- 0029 - Runoff surfaces from selected subcatchments
+- 0030 - Connect subcatchment to nearest node
+- 0031 - List all results fields in a Simulation
+- 0032 - List Network Fields-Structure
+- 0033 - Make an Inflows File from User Fields
+- 0034 - Display Export geometries
+- 0035 - List Complete Database Objects Contents
+- 0036 - Create Selection List
+- 0037 - Select Isolated Nodes
+- 0038 - Remove rows from a blob field
+- 0039 - Calculate subcatchment areas in all nodes upstream a node
+- 0040 - Create a new selection list using a SQL query
+- 0041 - Get results from all timesteps for Links, US Flow, DS Flow
+- 0042 - Get results from all timesteps for Subcatchments, All Params
+- 0043 - Get results from all timesteps for Manholes, Qnode
+- 0044 - Get results from all timesteps for Manholes, All Params
+- 0045 - Get results from all timesteps for Links, All Params
+- 0046 - Output SUDS control as CSV
+- 0047 - Select links sharing the same us and ds node ids
+- 0048 - Delete all scenarios except Base
+- 0049 - Clear SUDS from subcatchments
+- 0050 - Assign Subcatchment to nearest 'Storage' type Node
+- 0051 - Additional DWF Node IDs
+- 0052 - Stats for ICM Network Tables
+- 0053 - Scenario Maker (Names Only)
+- 0054 - InfoWorks as Background Network to ICM SWMM Current Network
+- 0055 - Scenario Maker - Specific
+- 0056 - Listview of the currently selected network objects
+- 0057 - Bifurcation Nodes
+- 0058 - Header Nodes
+- 0059 - Dry Pipes
+- 0060 - Compare ICM Headloss in Ruby Script
+- 0060 - Find All Network Elements
+- 0061 - Compare ICM Inlets to HEC22 Inlets
+- 0063 - ICM SWMM All Tables
+- 0064 - ICM SWMM Network Overview
+- 0065 - Get and Put Run Dialog Parameters
+- 0066 - ICM results against measured data within the UI
+- 0067 - ICM Ruby Tutorials
+- 0068 - ICM InfoWorks All Table Names
+- 0069 - Make an Overview of All Network Elements
+- 0070 - Upstream Subcatchments from an Outfall
+- 0071 - Raingages, All Output Parameters
+- 0072 - Find Root Model Group
+- 0073 - Rename Exported Image & Attachment Files
+- 0074 - Capacity Assurance White Paper
+- 0075 - Sandbox Instance Evaluation and Class Scope
+- 0076 - InfoWorks vs SWMM CSV Comparison
+- 0077 - ICM InfoWorks UX Tables
+- 0078 - ICM SWMM UX Tables
+- 0079 - ICM SWMM IWR Tables
+- 0080 - ICM InfoWorks IWR Tables
+- 0081 - Export Compare Network Versions to CSV
+- 0082 - Create SuDS for All Subcatchments
+- 0083 - Find Time of Max DS Depth
+- 0084 - Change All Node, Subs and Link IDs
+- 0085 - Export SWMM5 Calibration Files - Node Flooding
+- 0086 - Export SWMM5 Calibration Files - Groundwater Elev
+- 0087 - Export SWMM5 Calibration Files - Groundwater Flow
+- 0088 - Export SWMM5 Calibration Files - Runoff
+- 0089 - Export SWMM5 Calibration Files - Node Flood Depth
+- 0090 - Export SWMM5 Calibration Files - Node Level
+- 0091 - Export SWMM5 Calibration Files - Node Lateral Inflow
+- 0092 - Export SWMM5 Calibration Files - Downstream Velocity
+- 0093 - Export SWMM5 Calibration Files - Upstream Velocity
+- 0094 - Export SWMM5 Calibration Files - Upstream Depth
+- 0095 - Export SWMM5 Calibration Files - Downstream Depth
+- 0096 - Export SWMM5 Calibration Files - Downstream Flow
+- 0097 - Export SWMM5 Calibration Files - Upstream Flow
+- 0099 - Compare ICM Headloss in Ruby Script
+- 0100 - InfoSewer to ICM SWMM Loads and InfoSWMM Scenario Tools
+- 0101 - Useful notes and common operations
+- 0102 - ICM InfoWorks Results to SWMM5 Node Inflows Summary Table
+- 0103 - ICM InfoWorks Results to SWMM5 Node Depths Summary Table
+- 0104 - ICM InfoWorks Results to SWMM5 Node Surcharging Table
+- 0105 - ICM InfoWorks Results to SWMM5 Conduit Surcharging Summary Table
+- 0106 - ICM InfoWorks Results to SWMM5 Link Flows Summary Table
+- 0107 - ICM InfoWorks Results to SWMM5 Subcatchment Runoff Summary
+- 0108 - Spatial Scripts
+- 0109 - Statistics for Node User Numbers
+- 0110 - Statistics for Link User Numbers
+- 0111 - All Node and Link URL Stats
+- 0112 - Add Nine 1D Results Points
+- 0114 - GIS Export of Data Tables
+- 0116 - Export Choice List values
+- 0117 - Import-Export Snapshot file
+- 0118 - Bulk Data Import
+- 0119 - Export to CSV
+- 0120 - Import-Export XML
+- 0121 - Find Duplicate Link IDs
+- 0122 - Update from external CSV
+- 0123 - Update an object with values of another object through comparison
+- 0124 - Network Trace
+- 0125 - Tracing
+- 0126 - Copy selected subcatchments with user suffix
+- 0127 - Kutter Sql for ICM SWMM
+- 0128 - InfoSewer Gravity Main Report, from ICM InfoWorks
+- 0129 - ICM Information Hub Finder
+- 0130 - InfoSewer Peaking Factors
+- 0131 - Complete RB Files
+- 0132 - Runoff Surface Tables
+- 0133 - InfoWorks Land Use Tables
+- 0134 - Input Message Box
+- 0135 - Subcatchment Grid Area Table
+- 0136 - InfoWorks Sub, Land Use with Runoff Surfaces Table
+- 0137 - Creates Subs from Polygons
+- 0138 - Input Message Box
+- 0139 - InfoWorks 2D Parameter Statistics
+- 0140 - List all results fields in a simulation ICM and Show Node Results Stats
+- 0141 - List all results fields in a simulation ICM and Show Subcatchment Results Stats
+- 0142 - Create nodes from polygon subcatchment boundary
+- 0143 - List all results fields in a simulation ICM and Show Flap Valve Results Stats
+- 0144 - Create nodes from polygon subcatchment boundary
+- 0145 - Change 2D Polygon Boundaries
+- 0146 - Add 2D Results Points in a Polygon
+- 0147 - List all results fields in a simulation (ICM SWMM) and Show Link Results Stats
+- 0148 - Read Inflows File
+- 0149 - Utilities
+- 0150 - Scenario Sensitivity - InfoWorks Link Mannings N
+- 0151 - Read SWMM5 RPT File
+- 0152 - Read InfoSewer Steady State Report File
+- 0153 - Tau or Shear Stress non QM Calculations
+- 0154 - Ruby for some InfoSWMM Subcatchment Manager Tools
+
+## SWMM5 Versions
+
+| Release Date | Versions   | Developers     | FEMA Approval | LID Controls | Major Release |
+|--------------|------------|----------------|---------------|--------------|---------------|
+| 08/07/2023   | SWMM 5.2.4 | EPA            | Yes           | Yes          |               |
+| 03/03/2023   | SWMM 5.2.3 | EPA            | Yes           | Yes          |               |
+| 12/01/2022   | SWMM 5.2.2 | EPA            | Yes           | Yes          |               |
+| 08/11/2022   | SWMM 5.2.1 | EPA            | Yes           | Yes          |               |
+| 02/01/2022   | SWMM 5.2   | EPA            | Yes           | Yes          | Yes           |
+| 07/20/2020   | SWMM 5.1.015 | EPA          | Yes           | Yes          |               |
+| 02/18/2020   | SWMM 5.1.014 | EPA          | Yes           | Yes          | Yes           |
+| 08/09/2018   | SWMM 5.1.013 | EPA          | Yes           | Yes          | Yes           |
+| 03/14/2017   | SWMM 5.1.012 | EPA          | Yes           | Yes          | Yes           |
+| 08/22/2016   | SWMM 5.1.011 | EPA          | Yes           | Yes          | Yes           |
+| 08/20/2015   | SWMM 5.1.010 | EPA          | Yes           | Yes          | Yes           |
+| 04/30/2015   | SWMM 5.1.009 | EPA          | Yes           | Yes          | Yes           |
+| 04/17/2015   | SWMM 5.1.008 | EPA          | Yes           | Yes          |               |
+| 10/09/2014   | SWMM 5.1.007 | EPA          | Yes           | Yes          |               |
+| 06/02/2014   | SWMM 5.1.006 | EPA          | Yes           | Yes          |               |
+| 03/27/2014   | SWMM 5.1.001 | EPA          | Yes           | Yes          |               |
+| 04/21/2011   | SWMM 5.0.022 | EPA          | Yes           | Yes          |               |
+| 08/20/2010   | SWMM 5.0.019 | EPA          | Yes           | Yes          |               |
+| 03/19/2008   | SWMM 5.0.013 | EPA          | Yes           | Yes          |               |
+| 08/17/2005   | SWMM 5.0.005 | EPA, CDM     | Yes           | No           |               |
+| 11/30/2004   | SWMM 5.0.004 | EPA, CDM     | No            | No           |               |
+| 11/25/2004   | SWMM 5.0.003 | EPA, CDM     | No            | No           |               |
+| 10/26/2004   | SWMM 5.0.001 | EPA, CDM     | No            | No           |               |
+| 2001–2004    | SWMM5        | EPA, CDM     | No            | No           |               |
+| 1988–2004    | SWMM4        | UF, OSU, CDM | No            | No           |               |
+| 1981–1988    | SWMM3        | UF, CDM      | No            | No           |               |
+| 1975–1981    | SWMM2        | UF           | No            | No           |               |
+| 1969–1971    | SWMM1        | UF, CDM, M&E | No            | No           |               |
 
 ## Name notes on the meaning of the prefixes
 
@@ -179,3 +230,26 @@ In conclusion, while these Ruby scripts are designed to work specifically with A
     * `Simulations Data Get`  - Obtaining simulation data
     * `System Automation`     - Misc system tasks
     * `Developer Tools`       - Tools that can help you make / learn how to make Ruby scripts.
+
+    # InfoWorks ICM Ruby Integration: Exchange vs UI
+
+InfoWorks ICM provides two main ways to integrate with Ruby: Exchange and UI. Each of these has its own strengths and limitations, and they are intended for different use cases.
+
+## Exchange
+
+Exchange is a powerful tool for manipulating tree objects 🗂, creating and opening databases 💽, running simulations 🏁, and more. It provides a lower-level access to the database, allowing you to control and manipulate the data directly.
+
+However, Exchange does not have access to UI elements like graphs 📊 and dialogs 💬. This means that you cannot use Exchange to interact with the user interface of InfoWorks ICM. Exchange scripts are typically run from the command line and do not require the InfoWorks ICM user interface to be open.
+
+## UI
+
+UI, on the other hand, allows you to manipulate the currently open network(s) 🌐. You can import and export data 💾, select objects 👉, and run scripts that produce output in the UI 💻.
+
+However, the UI integration does not allow you to open or close databases, access tree objects directly, or run simulations. It is limited to working on the current open network 🌐.
+
+## Summary
+
+In summary, Exchange gives you more low-level database control 🤓 but no UI access 🚫💻, while UI allows you to manipulate the current network with some UI interactions 💻 but with less low-level control ⚙️.
+
+The Exchange products are intended for command line or automated tasks ⚙️, while the UI Ruby integration allows some scripting on open networks with UI interaction 💻. So they provide different levels of access tailored to their intended use cases.
+

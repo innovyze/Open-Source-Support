@@ -14,7 +14,8 @@ SELECT SELECTED ds_node.node_id+'_COL'INTO $A;
 SELECT SELECTED ds_node.X +1.41 INTO $X;
 SELECT SELECTED ds_node.y +1.41 INTO $Y;
 
-SELECT SELECTED ds_invert INTO$ Invert;
+SELECT SELECTED ds_invert INTO $Invert;
+
 INSERT INTO node (node_id, x, y) VALUES ($A, $X, $Y);
 INSERT INTO orifice (us_node_id,ds_node_id, link_suffix, invert) VALUES ($US, $A, 2, $invert);
 DESELECT ALL;

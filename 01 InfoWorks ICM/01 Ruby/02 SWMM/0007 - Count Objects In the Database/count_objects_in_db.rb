@@ -35,6 +35,11 @@ database.root_model_objects.each do |rmo|
 end
 
 # Print the result
-counts.each { |table, count| puts format("%s: %i object(s)", table, count)}
+counts.each do |table, count|
+  table_name_without_master = table.gsub('Master','Primary')
+  puts format("%s: %i object(s)", table_name_without_master, count)
+end
+
+
 
 

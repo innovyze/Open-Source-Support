@@ -1,65 +1,26 @@
-
 # InfoWorks to SWMM5 Calibration File Generator
 
-This Ruby script is designed to assist in generating SWMM5 calibration files from InfoWorks ICM output data.
+This script generates a SWMM5 Calibration file from an InfoWorks network.
 
-## Requirements
+## How it works
 
-- Ruby
-- Access to an InfoWorks ICM model
+1. The script first imports the 'date' library and gets the current network object from InfoWorks.
+2. It retrieves the list of timesteps and ensures there's more than one timestep before proceeding.
+3. The script calculates the time interval in seconds assuming the time steps are evenly spaced.
+4. It defines the result field name as 'RUNOFF'.
+5. The script outputs the headers for the SWMM5 Calibration File.
+6. It then iterates through the selected objects in the network.
+7. For each selected object, the script tries to get the row object for the current link using the upstream node id.
+8. If the row object is not a link, it skips the iteration.
+9. The script uses the Asset ID in a puts statement for the SWMM5 Calibration file.
+10. It gets the results for the specified field.
+11. If the results size matches the timesteps size, it iterates through the results and updates statistics.
+12. For each result, it calculates the exact time for this result.
+13. The script then calculates the number of days, hours, and minutes from the current time.
+14. It outputs the formatted data for SWMM5.
+15. If the results size doesn't match the timesteps size, it outputs a mismatch error message.
+16. If any error occurs during processing an object, it outputs an error message.
 
-## Usage
+## Error Handling
 
-1. Ensure you have the `date` library available in Ruby.
-2. Obtain the current network object from InfoWorks ICM.
-3. Define your asset mapping for the network.
-4. Run the script within the context of your InfoWorks ICM network with the necessary data loaded.
-
-## Script
-
-```ruby
-require 'date'
-
-# Get the current network object from InfoWorks
-net = WSApplication.current_network
-
-# Define the complete mapping table
-asset_mapping = {
-  'mid9.1' => 'outlet',
-  'Inflow.1' => 'pipe1',
-  # ... (additional mappings)
-}
-
-# Get the list of timesteps
-ts = net.list_timesteps
-
-# Check for sufficient timesteps
-if ts.size <= 1
-  puts "Not enough timesteps available!"
-  exit
-end
-
-# Calculate the time interval
-time_interval = (ts[1] - ts[0]) * 24 * 60 * 60
-
-# Define the result field name
-res_field_name = 'us_flow'
-
-# Output headers for the calibration file
-puts ";Flows for Selected Conduits"
-puts ";Conduit  Day      Time  Flow"
-puts ";-----------------------------"
-
-# Process each selected link in the network
-net.each_selected do |sel|
-  # ... (rest of the processing logic)
-end
-```
-
-## Note
-
-The script assumes that the time steps are evenly spaced and that the result field name corresponds to the upstream flow of the links.
-
----
-
-Generated with the assistance of GPT-4.
+The script has built-in error handling. If any error occurs during processing an object, it outputs an error message with the ID of the object and the field that caused the error.

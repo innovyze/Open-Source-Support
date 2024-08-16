@@ -36,4 +36,15 @@ options,									# specified options override the default options
 'C:\Temp\Geodatabase.gdb'					# import from file geodatabase name
 )
 
+nw.odic_import_ex(
+'GDB',										# import data format => ESRI GeoDatabase
+'C:\Temp\GDBConfig.cfg',					# field mapping config file
+options,									# specified options override the default options
+
+## table group
+'pipe',										# import to table name
+'PipeClass',								# import from feature class
+'C:\Temp\Geodatabase.gdb'					# import from file geodatabase name
+)
+
 puts 'Import from GDB completed'

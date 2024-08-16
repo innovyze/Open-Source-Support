@@ -1,26 +1,31 @@
-# InfoWorks SWMM Networks and the Length of Links
+# Link Length Analysis Script
 
-These Ruby scripts are intended to work with the InfoWorks SWMM network and InfoWorks Networks
+This script analyzes the lengths of all links in an InfoWorks ICM model network and selects the smallest 10 percent of link lengths.
 
-##SW is SWMM
-##HW is ICM or its grandfather HydroWorks
+## How it Works
 
-The given code snippet is designed to identify and select the smallest 10 percent of link lengths within a network, presumably in a hydraulic modeling application. Here's a summary of its functionality:
+1. The script first accesses the current network and clears any existing selection.
 
-Initialize Network and Variables: The current network is accessed, and the selection is cleared. An empty array link_lengths is initialized to store the lengths of the links.
+2. It then iterates over each link in the network, storing the lengths of the links in an array.
 
-Collect Link Lengths: The code iterates through all objects in 'sw_conduit' (presumably stormwater conduits), collecting their lengths and storing them in the link_lengths array.
+3. The script calculates the threshold length for the smallest 10 percent of link lengths and the median length (50th percentile).
 
-Calculate Threshold Length: The threshold length for the lowest 10 percent of links is calculated. It is determined by finding the range of link lengths (maximum - minimum) and taking 10 percent of that range, added to the minimum length.
+4. It then iterates over each link in the network again. If a link's length is below the threshold or median length, the link is selected and added to a list of selected links.
 
-Select Links Below Threshold: The code again iterates through the 'sw_conduit' objects, selecting those whose lengths are below the calculated threshold. The selected links are stored in the selected_links array.
+5. Finally, the script prints the minimum and maximum link lengths, the threshold length for the smallest 10 percent, the median length, the number of links below the threshold, and the total number of links. If no links were selected, it prints a message indicating this.
 
-Print Results or Message: If any links are selected, the code prints out the following information:
+| ------------------------------------ | ------ |
+| Description                          | Value  |
+| ------------------------------------ | ------ |
+| Minimum link length                  | 30.86  |
+| Maximum link length                  | 357.94 |
+| Threshold length for lowest 10%      | 63.57  |
+| Median link length (50th percentile) | 164.21 |
+| Number of links below threshold      | 4      |
+| Total number of links                | 9      |
+| ------------------------------------ | ------ |
 
-Minimum link length
-Maximum link length
-Threshold length for the lowest 10 percent
-Number of links below the threshold
-Total number of links
-If no links were selected, a message stating "No links were selected." is printed.
-In essence, the code is a utility for analyzing the distribution of link lengths within a network, specifically focusing on the shortest 10 percent of links. It could be useful for identifying areas of the network that may have specific design characteristics or performance implications.
+
+## Usage
+
+To use this script, simply run it in the context of an open network in InfoWorks ICM. The script will automatically analyze the lengths of all links, select the smallest 10 percent of link lengths, and print the results.

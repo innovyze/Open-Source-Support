@@ -1,5 +1,5 @@
 $path_project = File.dirname(__FILE__)
-puts "Opening master database..."
+puts "Opening primary database..."
 $db_name = "standalone.icmm"
 $db_file = "#{$path_project}\\#{$db_name}"
 $db = WSApplication.open $db_file,false

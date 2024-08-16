@@ -56,7 +56,7 @@ def dijkstra(start, target)
           index = working.size - 1
         end
 
-        working[index]._val = current._val + link.length
+        working[index]._val = current._val + link.conduit_length
         working[index]._from = current
         working[index]._link = link
       end

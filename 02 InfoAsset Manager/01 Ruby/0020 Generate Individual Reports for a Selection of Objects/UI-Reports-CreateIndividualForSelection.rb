@@ -20,7 +20,7 @@ end
 		if !t[1].nil?
 			suffix=t[1]+'_'
 		end
-		prefix="c:\\temp\\Report_#{t[0]}_#{suffix}_#{ro.id}"	## Export folder location and report name pre-fix
+		prefix="c:\\temp\\Report_#{t[0]}_#{suffix}_#{ro.id.gsub(/[^0-9A-Za-z_-]/, '--')}"	## Export folder location and report name pre-fix - Non-"0-9A-Za-z_-" characters in the Survey ID will be changed to '--'
 		net.generate_report(t[0],t[1],ro.id,prefix+'.doc')		## Generate a Word report
 		#net.generate_report(t[0],t[1],ro.id,prefix+'.html')		## Generate a HTML report
 		n+=1
