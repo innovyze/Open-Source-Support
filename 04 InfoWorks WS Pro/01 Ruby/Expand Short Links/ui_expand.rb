@@ -14,7 +14,7 @@ EXPAND_OPTIONS = {
 }
 
 # Get the current network - this is the UI method
-network = WSApplication.current_network
+network = WSApplication.current_network()
 
 # Expanding only works on selected objects, so select every object of each table
 network.clear_selection
@@ -23,19 +23,6 @@ EXPAND_TABLES.each { |table| network.row_objects(table).each { |ro| ro.selected 
 # Expand short links within a transaction
 network.transaction_begin
 network.expand_short_links(EXPAND_OPTIONS)
-
-# Simplify links
-network.row_objects_selection("_links").each do |link|
-	link["bends"] = [
-		link.us_node["X"],
-		link.us_node["Y"],
-		link.ds_node["X"],
-		link.ds_node["Y"],
-	]
-
-	link.write
-end
-
 network.transaction_commit
 
 # Clear the selection to tidy up

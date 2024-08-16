@@ -1,3 +1,5 @@
+# @param start [WSRowObject]
+# @param target [WSRowObject]
 def dijkstra(start, target)
   working = Array.new
   working_hash = Hash.new

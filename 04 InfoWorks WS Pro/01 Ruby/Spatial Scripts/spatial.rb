@@ -2,7 +2,7 @@
 # https://turfjs.org/
 # https://github.com/Turfjs/turf
 
-module InnoSpatial
+module AdskSpatial
   extend self
 
   # Splits all links around a node.
@@ -23,22 +23,44 @@ module InnoSpatial
   # @chunk_size [Numeric] length of each chunk
   # @param normalize [Boolean] whether to normalize the chunk sizes (avoid annoying small lines at the ends)
   def split_link_into_chunks(network, link, chunk_size, normalize = true)
-    length = InnoSpatial.link_length(link)
+    length = link_length(link)
 
     if chunk_size >= length
       puts format("Cannot split link %s of length %0.2fm into chunks of size %0.2fm", link.id, length, chunk_size)
       return
     end
 
+    # Get segment count & chunk size, based on whether we're normalising
     segments = (length / chunk_size).floor
-    if normalize
-      chunk_size_norm = (length / segments)
-      (segments - 1).times do |i|
-        InnoSpatial.split_link_at_distance(network, link, chunk_size_norm, i + 1)
-      end
+    if normalize      
+      chunk_size_use = (length / segments)
+      segments -= 1
     else
-      segments.times do |i|
-        InnoSpatial.split_link_at_distance(network, link, chunk_size, i + 1)
+      chunk_size_use = chunk_size
+    end
+
+    # Split the link, filling the new links array, change our current link to the post-split from the last operation
+    new_links = [link]
+    segments.times do |i|
+      us, ds = split_link_at_distance(network, new_links.last, chunk_size_use, i + 1)
+      new_links << ds      
+    end
+
+    return new_links
+  end
+
+  # Tidies up customer allocation from splitting a link - simply allocates to the first/last pipe in the split for now
+  # 
+  # @param network [WSOpenNetwork]
+  # @param split_links [Hash<String, Array<WSLink>>] hash of the split link's original ID, and an array of the new links (WSLink)
+  #   e.g. {"30493.20302.1" => [WSlink, WSlink, WSlink]}
+  def cleanup_customer_allocation(network, split_links, flag = nil)
+    network.row_objects('wn_address_point').each do |customer|
+      split = split_links[customer['allocated_pipe_id']]
+      if split
+        customer['allocated_pipe_id'] = customer['demand_at_us_node'] ? split.first.id : split.last.id
+        customer['demand_at_us_node_flag'] = flag
+        customer.write
       end
     end
   end
@@ -54,7 +76,7 @@ module InnoSpatial
     link_length = link_length(link)
     if distance >= link_length
       puts format("Link %s has length of %0.2f, cannot split with distance of %0.2f", link.id, link_length, distance)
-      return
+      return nil, nil
     end
 
     index = 0 # Current vertex index, so we know where we split
@@ -105,15 +127,18 @@ module InnoSpatial
       new_link[field.name] = link[field.name]
     end
 
-    # The new link becomes the pre-split link
-    new_link['bends'] = pre_bends
-    new_link['ds_node_id'] = split_node.id
+    # The existing link is US
+    link['bends'] = pre_bends
+    link['ds_node_id'] = split_node.id
+    link.write
+
+    # The new link is DS
+    new_link['bends'] = post_bends
+    new_link['us_node_id'] = split_node.id
     new_link.write
 
-    # The existing link becomes the post-split link (to make it easy to chain operations i.e. line chunks)
-    link['bends'] = post_bends
-    link['us_node_id'] = split_node.id
-    link.write
+    # Return the US, DS
+    return link, new_link
   end
 
   # Calculate the euclidean length of a link.
@@ -166,4 +191,28 @@ module InnoSpatial
     pct = percent.clamp(0, 1)
     return (1 - pct) * a + pct * b
   end
+
+  def navigate_us(ro)
+    return navigate(ro, :us)
+  end
+
+  def navigate_ds(ro)
+    return navigate(ro, :ds)
+  end
+
+  def navigate(ro, dir = :us)
+    case ro
+    when WSNode
+      return (dir == :us ? ro.us_links : ro.ds_links)
+    when WSLink
+      node = (dir == :us ? ro.us_node : ro.ds_node)
+      links = []
+      node&.us_links.each { |link| links << link unless link.id == ro.id }
+      node&.ds_links.each { |link| links << link unless link.id == ro.id }
+      return links
+    else
+      return []
+    end
+  end
+
 end

@@ -6,7 +6,7 @@ PRECISION = 2
 TABLE = '_nodes' # e.g. _links, wn_node, wn_hydrant
 RESULT = 'pressure' # e.g. flow
 
-network = WSApplication.current_network
+network = WSApplication.current_network()
 network_name = network.network_model_object.name
 
 file = WSApplication.file_dialog(false, 'csv', 'Comma Seperated Value file', network_name, false, true)
