@@ -187,7 +187,8 @@ SET ground_level = ground_level + chamber_floor WHERE user_text_10 = 'WW'")
 # SQL 10_Insert pump curves
 net.run_SQL("hw_pump", "
 SET link_type = 'ROTPMP' WHERE user_text_1 = 1 OR user_text_1 = 2;
-INSERT INTO [Head Discharge] (head_discharge_id) SELECT asset_id FROM Pump;
+SELECT WHERE link_type = 'ROTPMP';
+INSERT INTO [Head Discharge] (head_discharge_id) SELECT SELECTED asset_id FROM Pump;
 SET head_discharge_id = asset_id;
 DELETE ALL FROM [Head discharge].HDP_table;
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, 1.33 * user_number_3, 0 FROM Pump WHERE user_text_1 = 1;
@@ -195,7 +196,8 @@ INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_t
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, 0, 2 * user_number_4  FROM Pump WHERE user_text_1 = 1;
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_2, 0 FROM Pump WHERE user_text_1 = 2;
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_3, user_number_4  FROM Pump WHERE user_text_1 = 2;
-INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_5, user_number_6  FROM Pump WHERE user_text_1 = 2;")
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_5, user_number_6  FROM Pump WHERE user_text_1 = 2;
+DESELECT ALL")
 
 # Commit the transaction
 net.transaction_commit

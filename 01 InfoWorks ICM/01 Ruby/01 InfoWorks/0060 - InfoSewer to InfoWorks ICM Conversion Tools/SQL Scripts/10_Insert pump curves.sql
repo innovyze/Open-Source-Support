@@ -5,9 +5,12 @@
 
 /* Set single point and three point pumps to rotodynamic */ 
 SET link_type = 'ROTPMP' WHERE user_text_1 = 1 OR user_text_1 = 2;
+
+/* Select pumps which require a head discharge table*/
+SELECT WHERE link_type = 'ROTPMP';
  
 /* Insert head discharge tables using Pump Asset IDs */
-INSERT INTO [Head Discharge] (head_discharge_id) SELECT asset_id FROM Pump;
+INSERT INTO [Head Discharge] (head_discharge_id) SELECT SELECTED asset_id FROM Pump;
  
 /* Assign head discharge to pump as pump asset id */
 SET head_discharge_id = asset_id;
@@ -28,3 +31,6 @@ INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_t
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_3, user_number_4  FROM Pump WHERE user_text_1 = 2;
  
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_5, user_number_6  FROM Pump WHERE user_text_1 = 2;
+
+/* Reset selection */
+DESELECT ALL;
