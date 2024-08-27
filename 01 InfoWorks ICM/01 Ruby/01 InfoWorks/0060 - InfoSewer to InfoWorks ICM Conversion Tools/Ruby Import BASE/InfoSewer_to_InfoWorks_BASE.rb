@@ -1,5 +1,4 @@
-
-# Last Updated: 2024-08-09
+# Last Updated: 2024-08-14
 
 =begin
 This script is used to import data from InfoSewer BASE scenario to InfoWorks ICM. It follows several steps to complete the import:
@@ -25,7 +24,7 @@ Overall, this script is designed to automate the process of importing and prepro
 net = WSApplication.current_network
 
 # Prompt user to select the IEDB, SHP, and CFG file locations
-file_locations = WSApplication.prompt("File Locations", [
+file_locations = WSApplication.prompt("Provide Import File Locations", [
     ['Folder containing shapefiles', 'String', nil, nil, 'FOLDER', 'Scenario Folder'],
     ['Folder containing CSVs', 'String', nil, nil, 'FOLDER', 'Scenario Folder'],
     ['Folder containing CFG files', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
@@ -37,7 +36,7 @@ csv = file_locations[1]
 cfg = file_locations[2]
 
 # Output the chosen paths
-puts "Imported information from the following folders:"
+puts "Imported information from the following locations:"
 puts shp
 puts csv
 puts cfg
@@ -95,7 +94,7 @@ import_steps_i.each do |layer, cfg_file, csv_file|
         # Import CSV data to the specified layer using the given configuration file 
         net.odic_import_ex('csv', File.join(cfg, cfg_file), options, layer, File.join(csv, csv_file))
         # Output success message after successful import
-        puts "Imported #{layer} layer from #{cfg_file}"
+        puts "   Imported to #{layer} table from #{csv_file} using #{cfg_file}"
     # Catch any errors that occur during the import process
     rescue StandardError => e
         # Output error message if an error occurs during import
@@ -114,7 +113,7 @@ options = {
 import_steps_ii.each do |layer, cfg_file, csv_file|
     begin
         net.odic_import_ex('csv', File.join(cfg, cfg_file), options, layer, File.join(csv, csv_file))
-        puts "Imported #{layer} layer from #{cfg_file}"
+        puts "   Imported to #{layer} table from #{csv_file} using #{cfg_file}"
     rescue StandardError => e
         puts ("An error occurred during the import of #{layer} from #{cfg_file}: #{e.message}")
     end
@@ -167,7 +166,7 @@ options = {
 import_steps_iii.each do |layer, cfg_file, csv_file|
     begin
         net.odic_import_ex('csv', File.join(cfg, cfg_file), options, layer, File.join(csv, csv_file))
-        puts "Imported #{layer} layer from #{cfg_file}"
+        puts "   Imported to #{layer} table from #{csv_file} using #{cfg_file}"
     rescue StandardError => e
         puts ("An error occurred during the import of #{layer} from #{cfg_file}: #{e.message}")
     end
@@ -188,7 +187,8 @@ SET ground_level = ground_level + chamber_floor WHERE user_text_10 = 'WW'")
 # SQL 10_Insert pump curves
 net.run_SQL("hw_pump", "
 SET link_type = 'ROTPMP' WHERE user_text_1 = 1 OR user_text_1 = 2;
-INSERT INTO [Head Discharge] (head_discharge_id) SELECT asset_id FROM Pump;
+SELECT WHERE link_type = 'ROTPMP';
+INSERT INTO [Head Discharge] (head_discharge_id) SELECT SELECTED asset_id FROM Pump;
 SET head_discharge_id = asset_id;
 DELETE ALL FROM [Head discharge].HDP_table;
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, 1.33 * user_number_3, 0 FROM Pump WHERE user_text_1 = 1;
@@ -196,7 +196,8 @@ INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_t
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, 0, 2 * user_number_4  FROM Pump WHERE user_text_1 = 1;
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_2, 0 FROM Pump WHERE user_text_1 = 2;
 INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_3, user_number_4  FROM Pump WHERE user_text_1 = 2;
-INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_5, user_number_6  FROM Pump WHERE user_text_1 = 2;")
+INSERT INTO [Head discharge].HDP_table (head_discharge_id, HDP_table.head, HDP_table.discharge) SELECT asset_id, user_number_5, user_number_6  FROM Pump WHERE user_text_1 = 2;
+DESELECT ALL")
 
 # Commit the transaction
 net.transaction_commit
@@ -212,7 +213,7 @@ options = {
 import_steps_iv.each do |layer, cfg_file, csv_file|
     begin
         net.odic_import_ex('csv', File.join(cfg, cfg_file), options, layer, File.join(csv, csv_file))
-        puts "Imported #{layer} layer from #{cfg_file}"
+        puts "   Imported to #{layer} table from #{csv_file} using #{cfg_file}"
     rescue StandardError => e
         puts ("An error occurred during the import of #{layer} from #{cfg_file}: #{e.message}")
     end
@@ -229,11 +230,27 @@ options = {
 import_steps_v.each do |layer, cfg_file, shp_file|
     begin
         net.odic_import_ex('shp', File.join(cfg, cfg_file), options, layer, File.join(shp, shp_file))
-        puts "Imported #{layer} layer from #{cfg_file}"
+        puts "   Imported to #{layer} table from #{shp_file} using #{cfg_file}"
     rescue StandardError => e
         puts ("An error occurred during the import of #{layer} from #{cfg_file}: #{e.message}")
     end
 end
 
 # Print a message indicating that the import process is finished
-puts "\nFinished import of InfoSewer BASE scenario to InfoWorks ICM"
+puts "\nFinished import of InfoSewer BASE scenario network data to InfoWorks ICM"
+
+# Print notable limitations of the import process
+puts "\nNotable limitations of the import process:"
+puts "   Converts only the BASE scenario from InfoSewer to InfoWorks."
+puts "   Does not convert pattern data."
+puts "   Does not apply flow data in final locations. Loads 1 through 10 are imported to the Subcatchment table in the user number fields. It is up to the user to decide how to apply the loads."
+puts "   Does not apply flow patterns in final locations. Patterns 1 through 10 are imported to the Subcatchment table in the user text fields. It is up to the user to decide how to apply the patterns."
+puts "   Does not convert Extra Loadings, Flow Splits, or Pipe Infiltration."
+puts "   Does not import rainfall data or create a simulation."
+
+# Print potential next steps for the user
+puts "\nPotential next steps:"
+puts "   Validate the network and resolve any errors."
+puts "   Use Scenario Tools available on Github to assist in importing scenarios."
+puts "   Use Pattern Tools available on Github to assist in importing diurnal patterns."
+puts "   Assign loads and patterns to the appropriate fields within the subcatchment table."
