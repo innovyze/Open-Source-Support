@@ -2,7 +2,7 @@
 
 In Infoworks WS Pro version 2024.2 and above, the `WSDatabase.find_model_object` method has been deprecated as it was no longer supported with Workgroup databases. This is because Workgroup databases do not enforce unique names for model objects, so the method could not return a single unique reference reliably.
 
-If you are writing a new script, we recommend finding an alternative approach due to the potential for duplicate names in the database. However, this demonstrate two ways to fix existing scripts without needing to many any significant changes.
+If you are writing a new script, we recommend finding an alternative approach due to the potential for duplicate names in the database. However, this demonstrates two ways to fix existing scripts without needing too many significant changes.
 
 ## Script 1 - find_model_object.rb
 
