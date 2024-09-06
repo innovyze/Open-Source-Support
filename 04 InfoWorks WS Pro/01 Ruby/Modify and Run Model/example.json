@@ -1,0 +1,11 @@
+{
+  "database": null,
+  "run_id": 3171,
+  "run_time": "2024/01/01 00:00",
+  "updates": [
+    { "id": "290848", "table": "wn_valve", "fields": { "mode": "THV", "opening": 0 } },
+    { "id": "290874", "table": "wn_valve", "fields": { "mode": "THV", "opening": 0 } }
+  ],
+  "flag": "upd",
+  "message": "Update"
+}

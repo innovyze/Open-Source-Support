@@ -3,11 +3,9 @@ In InfoWorks SWMM, the data representing the stormwater network (such as pipes, 
 
 The comment suggests that while these Ruby scripts are intended for use with InfoWorks SWMM, they may also work with Autodesk Innovyze's InfoWorks ICM (Integrated Catchment Modeling) to some extent, because the code structure is often very similar. However, there are important differences to be aware of.
 
-In particular, the naming convention for tables in InfoWorks ICM is different. Instead of starting with sw_, tables in ICM usually start with hw_ (for "HydroWorks", the original name of InfoWorks ICM). The field names within these tables can also be different between SWMM and ICM.
+In particular, the naming convention for tables in InfoWorks ICM is different. Instead of starting with sw_, tables in ICM usually start with hw_ (for "HydroWorks", a predecessor of InfoWorks ICM). The field names within these tables can also be different between SWMM and InfoWorks.
 
 This means that if you're trying to use these Ruby scripts with Autodesk Innovyze's InfoWorks ICM, you may need to modify the code to account for these differences in table and field names. Without such modifications, the scripts might not work as intended or might produce errors.
-
-In conclusion, while these Ruby scripts are designed to work specifically with Autodesk In | Network Data  |novyze's InfoWorks SWMM, they might be adaptable for use with InfoWorks ICM or other similar software packages, but such adaptation would likely require some adjustments to the code.
 
 ## ICM SWMM Ruby Folders
 
@@ -252,4 +250,3 @@ However, the UI integration does not allow you to open or close databases, acces
 In summary, Exchange gives you more low-level database control 🤓 but no UI access 🚫💻, while UI allows you to manipulate the current network with some UI interactions 💻 but with less low-level control ⚙️.
 
 The Exchange products are intended for command line or automated tasks ⚙️, while the UI Ruby integration allows some scripting on open networks with UI interaction 💻. So they provide different levels of access tailored to their intended use cases.
-
