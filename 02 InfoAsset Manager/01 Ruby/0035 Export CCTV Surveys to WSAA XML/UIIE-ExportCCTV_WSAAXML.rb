@@ -10,7 +10,8 @@ $filenamePrefix = "\\"#"export_"+Time.now.strftime("%Y%m%d_%H%M")+"_"
 $projectID = "uuid"				##Default Project ID if null on survey or single XML
 $comments = ""				##Comments for XML root header
 $files=false				##Individual XML files per survey	>> Boolean
-
+$exportImages=false			##Export images >> Boolean
+$exportImagesLoc=$exportLoc	##Export images location
 
 ## END OF IEXCHANGE CONFIG
 
