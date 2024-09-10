@@ -2,15 +2,16 @@
 
 $database = "//localhost:40000/DATABASE"				##Database Location & Name
 $networkID = 4				##Network ID number
-$exportLoc = "C:\\Temp\\"				##Export location folder
+$exportLoc = "C:\\Temp"				##Export location folder
 $configLoc = File.dirname(WSApplication.script_file)
-$imagesConfigLoc=File.dirname(WSApplication.script_file)+"\\imagesExport.cfg"
+$imagesConfigLoc = File.dirname(WSApplication.script_file)+"\\imagesExport.cfg"
 $logFile = $exportLoc+"Output.txt"				##Log file location & name
-$filenamePrefix="\\"#"export_"+Time.now.strftime("%Y%m%d_%H%M")+"_"
-$projectID="uuid"				##Default Project ID if null on survey or single XML
-$comments=""				##Comments for XML root header
+$filenamePrefix = "\\"
+$projectID = "uuid"				##Default Project ID if null on survey or single XML
+$comments = ""				##Comments for XML root header
 $files=false				##Individual XML files per survey	>> Boolean
-
+$exportImages=false			##Export images >> Boolean
+$exportImagesLoc=$exportLoc	##Export images location
 
 ## END OF IEXCHANGE CONFIG
 
