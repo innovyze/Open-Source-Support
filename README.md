@@ -42,6 +42,13 @@ An SQL query consists of a number of clauses separated by semi-colons. Each clau
 
 Within the GUI users can create Stored Query objects where SQL queries can be built using a dialog.
 
+# How to Contribute
+We welcome contributions from the modeling community! If you have any great scripts that you would like to share, please submit a [pull request](https://github.com/innovyze/Open-Source-Support/pulls), or send them to support@innovyze.com. We will review them and try to upload them to the repository as soon as possible.
+
+Additionally, if you find any bugs or make any enhancements to our existing scripts, please let us know. Your feedback is valuable in improving the quality of the scripts.
+
+Together, let's grow and improve the InfoWorks ICM modeling experience!
+
 # Disclaimer
 ## Structure
 This project is currently growing in a rather organic fashion. We might decide to change the structure, which might mean broken links. We're also open to structure changes by users if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
