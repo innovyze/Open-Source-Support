@@ -14,13 +14,20 @@ def import_anode_and_alink(open_net, parent_object)
     ['Pick the Scenario or Select/SS Folder', 'String', nil, nil, 'FOLDER', 'Scenario/Selection Folder']
   ], false)
 
-  # End function if user cancels the prompt
-  return if val.nil?
+# Check if the user clicked 'Cancel'
+if val.nil? || val.empty?
+  WSApplication.message_box("Import process was canceled. No selection lists were created. Script aborted.", "OK", "!", false)
+  return
+end
 
   folder_path = val[0]
-  puts "Selected folder: #{folder_path}"
-  puts "\nNote: If the selection list is empty for a scenario, all nodes and links may be active in the InfoSewer/InfoSWMM Scenario."
-  puts "\n"
+
+# Check if all required file locations are provided
+if folder_path.nil? || folder_path.empty?
+  WSApplication.message_box("Invalid folder path provided. Script aborted.", "OK", "!", false)
+  return
+end
+
 
   # Hashes to store links, nodes, and subcatchments
   id_to_link = {}
@@ -115,7 +122,13 @@ end
 # Start a transaction and call the function to create the selection list
 open_net.transaction_begin
 begin
-  import_anode_and_alink(open_net, parent_object)
+  if import_anode_and_alink(open_net, parent_object)
+  # Print completion message
+  puts "Selected folder: #{folder_path}"
+  puts "\nNote: If the selection list is empty for a scenario, all nodes and links may be active in the InfoSewer/InfoSWMM Scenario."
+  puts "\nFinished the creation of ICM Selection Lists from InfoSewer or InfoSWMM Scenarios or Selection Sets."
+  puts "\nRefresh the database to view the new selection lists in the database tree."  
+  end
   open_net.transaction_commit
 rescue => e
   open_net.transaction_rollback
@@ -124,7 +137,3 @@ end
 
 # Clear any existing selection in the network
 open_net.clear_selection
-
-# Print completion message
-puts "\nFinished the creation of ICM Selection Lists from InfoSewer or InfoSWMM Scenarios or Selection Sets."
-puts "\nRefresh the database to view the new selection lists in the database tree."

@@ -6,19 +6,36 @@ require 'pathname'
 def import_scenario(open_net)
   # Prompt the user to select a folder
   val = WSApplication.prompt "Import InfoSWMM Scenarios from CSVs", [['Select the ISDB Folder','String',nil,nil,'FOLDER','ISDB Folder']], false
-  folder_path = val[0]
-  # Print the selected folder path
-  puts "Folder path: #{folder_path}"
+  
+# Check if the user clicked 'Cancel'
+if val.nil? || val.empty?
+  WSApplication.message_box("Import process was canceled. No scenarios were created. Script aborted.", "OK", "!", false)
+  return
+end
+  
+folder_path = val[0]
 
-  # If no folder path is given, exit the method
-  return unless folder_path
+# Check if all required file locations are provided
+if folder_path.nil? || folder_path.empty?
+  WSApplication.message_box("Invalid folder path provided. Script aborted.", "OK", "!", false)
+  return
+end
 
-  # Initialize an array to hold the rows from the CSV file
-  rows = []
+# Define the path to the scenario CSV file
+scenario_csv = "#{folder_path}/Scenario.csv"
 
-  # Define the path to the scenario CSV file
-  scenario_csv = "#{folder_path}/scenario.csv"
-  puts "\nScenario CSV: #{scenario_csv}"
+ # Check if the scenario CSV file exists
+ unless File.exist?(scenario_csv)
+  WSApplication.message_box("Scenario.csv not found in the provided folder. Script aborted.", "OK", "!", false)
+  return
+end
+
+# Print the selected folder path
+puts "Folder path: #{folder_path}"
+puts "\nScenario CSV: #{scenario_csv}"
+
+# Initialize an array to hold the rows from the CSV file
+rows = []
 
   # Define the headers to exclude when reading the CSV file, applicable to InfoSWMM and InfoSewer
   exclude_headers = ["FAC_TYPE", "USECLIMATE", "USE_TIME","USE_REPORT", "USE_OPTION"]
@@ -68,6 +85,9 @@ open_net = WSApplication.current_network
 
 # Call the method to import scenarios
 sorted_rows = import_scenario(open_net)
+
+# If sorted_rows is nil, exit the script gracefully
+return if sorted_rows.nil?
 
 # Initialize a counter for the number of scenarios added
 added_scenarios_count = 0
