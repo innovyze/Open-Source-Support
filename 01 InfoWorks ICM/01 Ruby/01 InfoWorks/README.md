@@ -77,6 +77,8 @@
 | 0069 | EX       | Exports and imports database objects (event files)                  | Database Data Export/Import|
 | 0070 | UI       | Create selection list from CSV                                      | Database Data Import  |
 | 0071 | UI       | Run Python Scripts from UI                                          | Network Data Get      |
+| 0072 | UI       | Access link geometry data                                           | Network Data Get      |
+| 0073 | UI       | Populate storage array data                                         | Network Data Get      |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions

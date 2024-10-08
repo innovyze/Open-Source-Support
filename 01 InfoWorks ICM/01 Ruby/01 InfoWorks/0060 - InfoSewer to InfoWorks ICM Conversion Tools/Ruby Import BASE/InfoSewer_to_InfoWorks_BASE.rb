@@ -1,4 +1,4 @@
-# Last Updated: 2024-08-14
+# Last Updated: 2024-10-04
 
 =begin
 This script is used to import data from InfoSewer BASE scenario to InfoWorks ICM. It follows several steps to complete the import:
@@ -30,10 +30,22 @@ file_locations = WSApplication.prompt("Provide Import File Locations", [
     ['Folder containing CFG files', 'String', nil, nil, 'FOLDER', 'Scenario Folder']
   ], false)
 
+# Check if the user clicked 'Cancel'
+if file_locations.nil? || file_locations.empty?
+    WSApplication.message_box("Import process was canceled. No data was imported. Script aborted.", "OK", "!", false)
+    return
+end
+
 # Assign the user-selected paths to shp, csv, and cfg variables
 shp = file_locations[0]
 csv = file_locations[1]
 cfg = file_locations[2]
+
+# Check if all required file locations are provided
+if shp.nil? || shp.empty? || csv.nil? || csv.empty? || cfg.nil? || cfg.empty?
+    WSApplication.message_box("One or more file location(s) missing. Script aborted.", "OK", "!", false)
+    return
+end
 
 # Output the chosen paths
 puts "Imported information from the following locations:"

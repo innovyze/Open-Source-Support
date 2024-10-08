@@ -13,7 +13,12 @@ def create_selection_list_from_csv(open_net, parent_object)
   return if folder_path.nil?
 
   folder_path = folder_path[0]
-  puts "Selection list data location: #{folder_path}"
+
+  # Check if all required file locations are provided
+  if folder_path.nil? || folder_path.empty?
+    WSApplication.message_box("Folder location not provided. Script aborted.", "OK", "!", false)
+   return
+  end
 
   # Define the paths to the CSV files
   csv_files = {
@@ -21,6 +26,12 @@ def create_selection_list_from_csv(open_net, parent_object)
     link: "#{folder_path}/Links.csv",
     subcatchment: "#{folder_path}/Subcatchments.csv"
   }
+
+  # Check if at least one CSV file exists to proceed
+  unless csv_files.values.any? { |file| File.exist?(file) }
+    WSApplication.message_box("No valid CSV files found in the provided folder. Script aborted.", "OK", "!", false)
+    return
+  end
 
   # Clear any existing selection in the network
   open_net.clear_selection
@@ -60,8 +71,7 @@ def create_selection_list_from_csv(open_net, parent_object)
   # Create and save the selection list
   sl = parent_object.new_model_object 'Selection List', list_name
   open_net.save_selection sl
-  puts "\nSelection List '#{list_name}' has been created within model group '#{group.name}'."
-  puts "Refresh the database to view the new selection list in the database tree."
+
 end
 
 # Access the current network
@@ -84,5 +94,10 @@ end
 
 # Start a transaction and call the function to create the selection list
 open_net.transaction_begin
-create_selection_list_from_csv(open_net, parent_object)
+if create_selection_list_from_csv(open_net, parent_object)
+  puts "Selection list data location: #{folder_path}"
+  puts "\nSelection List '#{list_name}' has been created within model group '#{group.name}'."
+  puts "Refresh the database to view the new selection list in the database tree."
+end
+
 open_net.transaction_commit
