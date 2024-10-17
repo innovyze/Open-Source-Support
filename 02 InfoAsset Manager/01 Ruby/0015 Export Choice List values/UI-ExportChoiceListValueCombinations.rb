@@ -1,4 +1,4 @@
-# Displays on screen (line 21) & outputs to CSV (line 22) a combination of all choice list Values separated by commas.
+# Displays on screen (line 21) & outputs to CSV (line 22) a combination of all choice list Values for the fields set separated by commas.
 
 require 'csv'
 
