@@ -1,4 +1,4 @@
-# Outputs the values from the Pipe table fields the ID, system_type, pipe_type, user_text_29 converting the choice values to the descriptions
+# Outputs the values from the Pipe table fields the ID, system_type, pipe_type, user_text_29 converting the choice values to the descriptions - if no value in choice list, field value exported
 
 require 'csv'
 
@@ -60,9 +60,9 @@ CSV.open("C:\\TEMP\\export.csv", "wb") do |csv|
 		#puts ut29["A"]
 		
 		
-		puts("#{ro.us_node_id}"+"."+"#{ro.ds_node_id}"+"."+"#{ro.link_suffix}"","+((ro.system_type.empty?) ? "" : systemType[ro.system_type])+","+((ro.pipe_type.empty?) ? "" : pipeType[ro.pipe_type])+","+((ro.user_text_29.empty?) ? "" : ut29[ro.user_text_29]))
+		puts("#{ro.us_node_id}"+"."+"#{ro.ds_node_id}"+"."+"#{ro.link_suffix}"","+(((ro.system_type.empty?) ? "" : ro.system_type.empty? ? "" : (systemType.key?(ro.system_type) ? systemType[ro.system_type] : "#{ro.system_type}")))+","+(ro.pipe_type.empty? ? "" : (pipeType.key?(ro.pipe_type) ? pipeType[ro.pipe_type] : "#{ro.pipe_type}"))+","+(ro.user_text_29.empty? ? "" : (ut29.key?(ro.user_text_29) ? ut29[ro.user_text_29] : "#{ro.user_text_29}")))
 		
-		csv << ["#{ro.us_node_id}"+"."+"#{ro.ds_node_id}"+"."+"#{ro.link_suffix}" , ((ro.system_type.empty?) ? "" : systemType[ro.system_type]) , ((ro.pipe_type.empty?) ? "" : pipeType[ro.pipe_type]) , ((ro.user_text_29.empty?) ? "" : ut29[ro.user_text_29])]
+		csv << ["#{ro.us_node_id}"+"."+"#{ro.ds_node_id}"+"."+"#{ro.link_suffix}" , (((ro.system_type.empty?) ? "" : ro.system_type.empty? ? "" : (systemType.key?(ro.system_type) ? systemType[ro.system_type] : "#{ro.system_type}"))) , (ro.pipe_type.empty? ? "" : (pipeType.key?(ro.pipe_type) ? pipeType[ro.pipe_type] : "#{ro.pipe_type}")) , ((ro.user_text_29.empty?) ? "" : (ut29.key?(ro.user_text_29) ? ut29[ro.user_text_29] : "#{ro.user_text_29}"))]
 		
 	end
 end
