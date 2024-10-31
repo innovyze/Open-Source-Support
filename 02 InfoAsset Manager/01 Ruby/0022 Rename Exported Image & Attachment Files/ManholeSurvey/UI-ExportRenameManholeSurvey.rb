@@ -53,7 +53,7 @@ CSV.foreach(exportfile, :headers=>true) do |row|
             filename = row[exportname]
             fileTo = File.join(exportloc, filename.gsub(/[^0-9A-Za-z. _-]/, '') + File.extname(fileFrom))
             
-            filenew = row[exportname]
+            filenew = fileTo
             unless found.include? filenew
                 File.rename(fileFrom, fileTo)
                 found << filenew
