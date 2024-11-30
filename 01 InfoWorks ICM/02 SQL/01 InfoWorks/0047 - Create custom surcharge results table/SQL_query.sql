@@ -21,4 +21,4 @@ PROMPT LINE $DiaSelection 'Diameter (in) >=:' LIST $Dia;
 PROMPT DISPLAY;
 
 /* Display a SQL table with conduits meeting the defined criteria */
-SELECT us_node_id, ds_node_id, link_suffix, conduit_width, sim.max_Surcharge WHERE (sim.max_Surcharge >= $SurchargeSelection AND conduit_width >= $DiaSelection)0046 - Set Runoff Surface 'fixed runoff coefficient' in associated Subcatchment copy
+SELECT us_node_id, ds_node_id, link_suffix, conduit_width, sim.max_Surcharge WHERE (sim.max_Surcharge >= $SurchargeSelection AND conduit_width >= $DiaSelection)
