@@ -6,7 +6,7 @@
 /* Load simulation results onto the GeoPlan prior to running the query */
 
 /* Define picklist of surcharge values */
-LIST $Surcharge = 0.0, 0.3, 0.5, 0.7, 0.8, 0.95, 0.99, 1.01;
+LIST $Surcharge = 0.0, 0.3, 0.5, 0.7, 0.75, 0.8, 0.95, 0.99, 1.01;
 
 /* Define picklist of diameters (inches) */
 LIST $Dia = 0, 6, 8, 10, 15, 18, 21, 24, 27, 30, 36, 42, 48;
