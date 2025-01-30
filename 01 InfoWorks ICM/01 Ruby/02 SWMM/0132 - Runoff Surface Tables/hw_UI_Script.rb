@@ -69,3 +69,45 @@ runoff_surface_variables.each do |variables|
   row = variables.values.each_with_index.map { |value, index| index == 5 ? value.to_s[0, 20].ljust(20) : value.to_s[0, 15].ljust(15) }.join(", ")
   puts row
 end
+
+# Prompt the user for various parameters
+parameters = WSApplication.prompt("Runoff Surface Fields in the Subcatchment Grid",
+  [
+  ['Runoff surface ID', 'String', ''],
+  ['Description', 'String', ''],
+  ['Runoff routing type', 'String', ''],
+  ['Runoff routing value', 'String', ''],
+  ['Runoff volume type', 'String', ''],
+  ['Surface type', 'String', ''],
+  ['Ground slope', 'String', ''],
+  ['Initial loss type', 'String', ''],
+  ['Initial loss value', 'String', ''],
+  ['Initial abstraction factor', 'String', ''],
+  ['Routing model', 'String', ''],
+  ['Fixed runoff coefficient', 'String', ''],
+  ['Minimum runoff', 'String', ''],
+  ['Maximum runoff', 'String', ''],
+  ['RAFTS adapt factor', 'String', ''],
+  ['Equivalent Manning\'s n', 'String', ''],
+  ['Wal. proc. distribution', 'String', ''],
+  ['New UK depth', 'String', ''],
+  ['SCS depth', 'String', ''],
+  ['Initial infiltration', 'String', ''],
+  ['Limiting infiltration', 'String', ''],
+  ['Decay factor', 'String', ''],
+  ['Horton drying time', 'String', ''],
+  ['Horton max infiltration volume', 'String', ''],
+  ['Recovery factor', 'String', ''],
+  ['Number of reservoirs', 'String', ''],
+  ['Depression Loss', 'String', ''],
+  ['Green-Ampt suction', 'String', ''],
+  ['Green-Ampt conductivity', 'String', ''],
+  ['Green-Ampt deficit', 'String', ''],
+  ['Horner alpha', 'String', ''],
+  ['Horner beta', 'String', ''],
+  ['Horner recovery (min)', 'String', ''],
+  ['Initial loss porosity', 'String', ''],
+  ['Infiltration loss coefficient', 'String', ''],
+  ['Maximum deficit', 'String', '']
+], false
+)
