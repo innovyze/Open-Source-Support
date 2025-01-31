@@ -5,54 +5,14 @@ require 'date'
 # Initialize an array to store all statistics
 all_stats = []
 
-# Access the current open network in the application
-cn = WSApplication.current_network
+# Get the current network object from InfoWorks
+net = WSApplication.current_network
 
-# Ensure a network is open
-unless cn
-  raise 'No network is currently open. Please open a network and try again.'
-end
-
-# Define constants for object types
-OBJECT_TYPES = {
-  'Nodes' => 'hw_node',
-  'Links' => 'hw_conduit',
-  'Subcatchments' => 'hw_subcatchment',
-  'Land Uses' => 'hw_land_use',
-  'Runoff Surfaces' => 'hw_runoff_surface',
-  'SuDS Controls' => 'hw_suds_control'
-}
-
-# Dynamically get the count of each object type in the network and convert to zero decimal places
-object_counts = OBJECT_TYPES.transform_values { |type| cn.row_objects(type).size.to_i }
-
-# Define the layout for the prompt
-layout = [
-  ['ICM InfoWorks Version', 'READONLY', WSApplication.version],
-  *object_counts.map { |name, count| ["Number of #{name} in the Network", 'NUMBER', count] },
-  ['USA Units CFS', 'BOOLEAN', true],
-  ['USA Units MGD', 'BOOLEAN', false],
-  ['SI Units CMS', 'BOOLEAN', false]
-]
-
-# Display the prompt and get user input
-begin
-  user_input = WSApplication.prompt('ICM InfoWorks Network Information', layout, true)
-rescue StandardError => e
-  puts "An error occurred while displaying the prompt: #{e.message}"
-  exit
-end
-
-# Remember the selected units
-use_usa_units_cfs = user_input[7] 
-use_usa_units_mgd = user_input[8] 
-use_si_units_cms = user_input[9] 
-
-# Get the count of timesteps
-ts_size = cn.list_timesteps.count
+# Get the count of timesteps timesteps
+ts_size = net.list_timesteps.count
 
 # Get the list of timesteps
-ts = cn.list_timesteps
+ts = net.list_timesteps
 
 # Define the result field names to fetch the results for all selected Subcatchments
 field_names = [
@@ -65,13 +25,10 @@ field_names = [
   'qsurf09', 'qsurf10', 'qsurf11', 'qsurf12'
 ]
 
-# Calculate the time interval in seconds assuming the time steps are evenly spaced
-time_interval = (ts[1] - ts[0]).abs
-
 # Iterate through the selected objects in the network
-cn.each_selected do |sel|
+net.each_selected do |sel|
   begin
-    ro = cn.row_object('_subcatchments', sel.id)
+    ro = net.row_object('_subcatchments', sel.id)
     raise "Object with ID #{sel.id} is not a subcatchment." if ro.nil?
 
     field_names.each do |res_field_name|
@@ -85,26 +42,29 @@ cn.each_selected do |sel|
           max_value = -Float::INFINITY
           count = 0
 
+          # Assuming the time steps are evenly spaced, calculate the time interval in seconds
+          time_interval = (ts[1] - ts[0]) * 24 * 60 * 60 if ts.size > 1
+
           ro.results(res_field_name).each_with_index do |result, time_step_index|
-            value = result.to_f
-            total += value
-            total_integrated_over_time += value * time_interval
-            min_value = [min_value, value].min
-            max_value = [max_value, value].max
+            total += result.to_f
+            total_integrated_over_time += result.to_f * time_interval 
+            min_value = [min_value, result.to_f].min
+            max_value = [max_value, result.to_f].max
             count += 1
           end
 
           mean_value = count > 0 ? total / count : 0
 
           total_integrated_over_time /= 3600.0 if res_field_name == 'rainfall'
-          total_integrated_over_time = total_integrated_over_time * 12.0 / (sel.total_area * 43560.0) if res_field_name != 'rainfall'
+          total_integrated_over_time = total_integrated_over_time * 1000.0 / (sel.total_area * 10000.0) if res_field_name != 'rainfall'
           
           (1..12).each do |i|
             field_name = "qsurf%02d" % i
             area_percent_key = "area_percent_#{i}".to_sym
-
+          
             if res_field_name == field_name && sel.respond_to?(area_percent_key)
               area_percent_value = sel.send(area_percent_key) / 100.0
+              puts area_percent_value
               total_integrated_over_time *= area_percent_value
             end
           end
@@ -113,7 +73,7 @@ cn.each_selected do |sel|
           all_stats << {
             subcatchment_id: sel.id,
             field_name: res_field_name,
-            sum: total_integrated_over_time,
+            sum: total_integrated_over_time ,
             mean: mean_value,
             max: max_value,
             min: min_value,
@@ -122,36 +82,27 @@ cn.each_selected do |sel|
           }
         end
 
-      rescue StandardError => e
-        #puts "Error processing field #{res_field_name} for subcatchment #{sel.id}: #{e.message}"
+      rescue
         next
       end
     end
 
-  rescue StandardError => e
-    #puts "Error processing subcatchment #{sel.id}: #{e.message}"
+  rescue => e
     next
   end
 end
 
 # Print the summary header
-puts '  ******************************************************************'
-puts '  Subcatchment Runoff Summary (ICM InfoWorks) in SWMMM5 RPT Format *'
-puts '  ******************************************************************'
+puts '  *******************************************'
+puts '  Subcatchment Runoff Summary (ICM InfoWorks)'
+puts '  *******************************************'
 puts ''
 puts '  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
-
-if use_si_units_cms
-  puts '                            Total      Total      Total      Total    qsurf01    qsurf02      Total       Total     Peak     Runoff    qsurf03    qsurf04    qsurf05    qsurf06    qsurf07    qsurf08    qsurf09    qsurf10    qsurf11    qsurf12'
-  puts '                           Precip      Runon       Evap      Infil     Runoff     Runoff     Runoff      Runoff   Runoff      Coeff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff'
-  puts '  Subcatchment                 mm         mm         mm         mm         mm         mm         mm    10^6 L/s      CMS                    mm         mm         mm         mm         mm         mm         mm         mm         mm         mm'
-else
-  puts '                            Total      Total      Total      Total    qsurf01    qsurf02      Total       Total     Peak     Runoff    qsurf03    qsurf04    qsurf05    qsurf06    qsurf07    qsurf08    qsurf09    qsurf10    qsurf11    qsurf12'
-  puts '                           Precip      Runon       Evap      Infil     Runoff     Runoff     Runoff      Runoff   Runoff      Coeff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff'
-  puts '  Subcatchment                 in         in         in         in         in         in         in    10^6 gal      CFS                    in         in         in         in         in         in         in         in         in         in'
-end
-
+puts '                            Total      Total      Total      Total    qsurf01    qsurf02      Total       Total     Peak     Runoff    qsurf03    qsurf04    qsurf05    qsurf06    qsurf07    qsurf08    qsurf09    qsurf10    qsurf11    qsurf12'
+puts '                           Precip      Runon       Evap      Infil     Runoff     Runoff     Runoff      Runoff   Runoff      Coeff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff     Runoff'
+puts '  Subcatchment                 mm         mm         mm         mm         mm         mm         mm    10^6 ltr      CMS                    mm         mm         mm         mm         mm         mm         mm         mm         mm         mm'
 puts '  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
+
 field_width = 10 # Width for the field value
 id_width = 21   # Width for the subcatchment ID 
 
@@ -175,58 +126,67 @@ aggregated_data.each do |sub_id, data|
   output_line = "#{'%*s ' % [id_width, sub_id]}"
 
   # Append stats for specific fields to the output line
-  %w[rainfall evaprate qinfsoil qsurf01 qsurf02 runoff].each do |field|
-    if data[field]
-      stats = data[field]
-      output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
-    else
-      output_line += " #{'%*s' % [field_width, 'N/A']}"
-    end
+  # Example for rainfall
+  if data['rainfall']
+    stats = data['rainfall']
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
   end
+  if data['rainfall']
+    stats = data['rainfall']
+    output_line += " #{'%*.3f' % [field_width, stats[:min]]}"
+  end
+  if data['evaprate']
+    stats = data['evaprate']
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
+  end
+  if data['qinfsoil']
+    stats = data['qinfsoil']
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
+  end
+  if data['qsurf01']
+    stats = data['qsurf01']
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
+  end
+  if data['qsurf02']
+    stats = data['qsurf02']
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
+  end
+  if data['runoff']
+    stats = data['runoff']
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
+  end
+
+  # Similar blocks can be added for other fields like 'evaprate', 'qinfsoil', etc.
 
   # Example for runoff (with specific calculations for second and third runoff values)
   if data['runoff']
     stats = data['runoff']
-    if use_usa_units_cfs
-      second_runoff = stats[:sum] * 43560.0 / 12.0 * 7.48 * stats[:area] / 1000.0 / 1000.0
-    elsif use_usa_units_mgd
-      second_runoff = stats[:sum] * 43560.0 / 12.0 * 7.48 * stats[:area] / 1000.0 / 1000.0 / 24.0
-    elsif use_si_units_cms
-      second_runoff = stats[:sum] * 10000.0 / 304.8 * 1000.0 * stats[:area] / 1000.0 / 1000.0
-    end
-    third_runoff = stats[:max]
-    if use_usa_units_mgd
-      third_runoff = third_runoff * 1.54723 # Convert MGD to CFS
-    end
+    second_runoff = stats[:sum] * 10000.0 / 1000.0 / 1000.0 *  stats[:area] 
+    third_runoff  = stats[:max] 
     output_line += " #{'%*.3f' % [field_width, second_runoff]}"
     output_line += " #{'%*.3f' % [field_width, third_runoff]}"
-  else
-    output_line += " #{'%*s' % [field_width, 'N/A']}"
-    output_line += " #{'%*s' % [field_width, 'N/A']}"
   end
 
   # Calculate and append runoff coefficient (RC)
-  rainfall_sum = data['rainfall'] ? data['rainfall'][:sum] : 0
-  runoff_sum = data['runoff'] ? data['runoff'][:sum] : 0
+rainfall_sum = data['rainfall'] ? data['rainfall'][:sum] : 0
+runoff_sum = data['runoff'] ? data['runoff'][:sum] : 0
 
-  # Ensure rainfall_sum is not zero to avoid division by zero
-  if rainfall_sum > 0
-    rc = runoff_sum / rainfall_sum
-    output_line += " #{'%*.3f' % [field_width, rc]}"
-  else
-    output_line += " #{'%*s' % [field_width, 'N/A']}"  # If no rainfall data, RC cannot be computed
-  end
+# Ensure rainfall_sum is not zero to avoid division by zero
+if rainfall_sum > 0
+  rc = runoff_sum / rainfall_sum
+  output_line += " #{'%*.3f' % [field_width, rc]}"
+else
+  output_line += " #{'%*s' % [field_width, 'N/A']}"  # If no rainfall data, RC cannot be computed
+end
 
-  # Check and append qsurf03 to qsurf12
-  (3..12).each do |i|
-    key = "qsurf%02d" % i  # Generates qsurf03, qsurf04, ..., qsurf12
-    if data[key]
-      stats = data[key]
-      output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
-    else
-      output_line += " #{'%*s' % [field_width, 'N/A']}"
-    end
+# Check and append qsurf03 to qsurf12
+(3..12).each do |i|
+  key = "qsurf%02d" % i  # Generates qsurf03, qsurf04, ..., qsurf12
+  if data[key]
+    stats = data[key]
+    output_line += " #{'%*.3f' % [field_width, stats[:sum]]}"
   end
+end
 
   puts output_line
 end
