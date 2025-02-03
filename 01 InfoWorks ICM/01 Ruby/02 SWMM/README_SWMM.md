@@ -9,31 +9,31 @@ This means that if you're trying to use these Ruby scripts with Autodesk Innovyz
 
 ## ICM SWMM Ruby Folders
 
-- 0001 - Pipe Length Statistics
-- 0002 - Quick Trace
-- 0003 - Scenario Maker
-- 0004 - New ICM Scenarios
-- 0005 - Change All Subcatchment, Node and Link IDs
-- 0006 - Add Total Area for Subs
-- 0007 - Count Objects In the Database
-- 0008 - Select Upstream Subcatchments from a Node with Multilinks
-- 0009 - ICM Binary Results Export
-- 0010 - List all results fields in a simulation (SWMM or ICM)
-- 0011 - Pipe Length Histogram
-- 0012 - ODEC Export Node and Conduit tables to CSV and MIF
-- 0013 - Depression Storage Statistics
-- 0014 - Find all flags in all objects of a network model
-- 0015 - Pipe Diameter Statistics
-- 0016 - All Link Parameter Statistics
-- 0017 - All Node Parameter Statistics
-- 0018 - All Subcatchment Parameter Statistics
-- 0019 - Distribute attachment details by a shared value
-- 0020 - Generate Individual Reports for a Selection of Objects
-- 0021 - Create nodes from polygon, subcatchment boundary
-- 0022 - Output CSV of calcs based on Subcatchment Data
-- 0023 - Rename Nodes & Links using Name Generation pattern
-- 0024 - Change Subcatchment Boundaries
-- 0025 - Get Minimum X, Y for All Nodes
+•   0001 - Element and Field Statistics
+•	0002 - Tracing Tools
+•	0003 - Scenario Tools
+•	0004 - Scenario Sensitivity - InfoWorks
+•	0005 - Import Export of Data Tables
+•	0006 - ICM SWMM vs ICM InfoWorks All Tables
+•	0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM
+•	0008 - Database Field Tools for Elements and Results
+•	0009 - Polygon Subcatchment Boundary Tools
+•	0010 - List all results fields with Stats
+•	0011 - Get results from all timesteps in the IWR File
+•	0012 - ICM InfoWorks Results to SWMM5 Summary Tables
+•	0013 - SUDS or LID Tools
+•	0014 - InfoSewer to ICM Comparison Tools
+•	0015 - Export SWMM5 Calibration Files
+•	0016 - InfoSWMM and SWMM5 Tools in Ruby
+•	0017 - Subcatchment Grid and Tabs Tools
+•	0018 - Create Selection list using a SQL query
+•	0019 - Node Connection Tools
+•	0020 - All Node, Subs and Link IDs Tools
+•	0021 - Change the Geometry or Rename IDs
+•	0022 - TBA
+•	0023 - TBA
+•	0024 - Utilities
+•	0025 - Miscellaneous
 
 ## SWMM5 Versions
 

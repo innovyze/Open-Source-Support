@@ -1,25 +1,28 @@
-# Subcatchment Duplication Script for InfoWorks ICM
+# Ruby Script: Subcatchment Copy Generator for ICM InfoWorks
 
-This script duplicates selected subcatchments in an InfoWorks ICM model network and appends a specified suffix to the ID of each new subcatchment.
+This script is used to create multiple copies of selected subcatchments in an InfoWorks ICM application.
 
-## How it Works
+## Steps
 
-1. The script first sets a list of suffixes that will be appended to the IDs of the new subcatchments.
+1. The script first accesses the current network in the application.
 
-2. It then accesses the current network and initializes counters for the number of original selected subcatchments and the number of new subcatchments added.
+2. It asks the user for the number of copies they want to create.
 
-3. The script loops through all subcatchments in the network. For each subcatchment that is selected, it increments the counter for original selected subcatchments.
+3. The script then iterates over each subcatchment in the current network. If the subcatchment is selected, it proceeds to create the specified number of copies.
 
-4. For each suffix in the list of suffixes, the script begins a transaction, creates a new subcatchment object, and sets its ID to the ID of the original subcatchment with the suffix appended.
+4. For each copy, the script does the following:
+   - Starts a transaction. This allows all changes to be committed at once at the end of the script.
+   - Creates a new subcatchment object.
+   - Names the new subcatchment with a "_c_<number>" suffix, where <number> is the copy number.
+   - Iterates over each field in the subcatchment. If the field is not the subcatchment name, it copies the field value from the original subcatchment to the new subcatchment.
+   - Writes the changes to the new subcatchment.
+   - Ends the transaction, making all changes permanent.
 
-5. The script then loops through each field in the new subcatchment object. For each field that is not the subcatchment ID, it copies the value from the original subcatchment.
+## Ruby Code
 
-6. After all fields have been copied, the script increments the counter for new subcatchments added, writes the changes to the new subcatchment object, and commits the transaction.
+```ruby
+# ... (code omitted for brevity)
 
-7. After all selected subcatchments have been processed, the script prints the number of original selected subcatchments and the number of new subcatchments added.
-
-## Usage
-
-To use this script, simply run it in the context of an open network in InfoWorks ICM with some subcatchments selected. The script will automatically duplicate each selected subcatchment for each suffix in the list, append the suffix to the ID of each new subcatchment, and print the number of original selected subcatchments and new subcatchments added.
-
-![Alt text](diagram(2).png)
+# usage example
+net = WSApplication.current_network
+# ... (code omitted for brevity)
