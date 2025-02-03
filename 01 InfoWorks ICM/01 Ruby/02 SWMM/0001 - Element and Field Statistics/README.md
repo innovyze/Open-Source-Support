@@ -1,31 +1,55 @@
-# Link Length Analysis Script
 
-This script analyzes the lengths of all links in an InfoWorks ICM model network and selects the smallest 10 percent of link lengths.
+markdown
+# Folder Structure
 
-## How it Works
+## 01 Ruby
+- **01 InfoWorks**
 
-1. The script first accesses the current network and clears any existing selection.
+## 02 SWMM
+- **0001 - Element and Field Statistics**
+  - `0001 - Ruby for HW and SW.gif`
+  - `expand Pipe Length Statistics.rb`
+  - `How it works.png`
+  - `hw_UI_Script All Link Parameter Statistics.rb`
+  - `hw_UI_Script All Node Parameter Statistics.rb`
+  - `hw_UI_Script All Subcatchment Parameter Statistics.rb`
+  - `hw_UI_Script Depression Storage Statistics.rb`
+  - `hw_UI_Script InfoWorks 2D Parameter Statistics.rb`
+  - `hw_UI_Script Pipe Diameter Statistics.rb`
+  - `hw_UI_Script Pipe Length Histogram.rb`
+  - `hw_UI_Script Pipe Length Statistics.rb`
+  - `hw_UI_script Statistics for Link User Numbers.rb`
+  - `hw_UI_script Statistics for Node User Numbers.rb`
+  - `image.png`
+  - `Pipe Length Histogram.md`
 
-2. It then iterates over each link in the network, storing the lengths of the links in an array.
+---
 
-3. The script calculates the threshold length for the smallest 10 percent of link lengths and the median length (50th percentile).
+### Description
 
-4. It then iterates over each link in the network again. If a link's length is below the threshold or median length, the link is selected and added to a list of selected links.
+This project directory contains scripts and documentation related to Ruby for HydroWorks (HW) and Storm Water Management Model (SWMM). The `01 Ruby` and `01 InfoWorks` folders likely contain foundational scripts or documentation for Ruby programming in the context of InfoWorks.
 
-5. Finally, the script prints the minimum and maximum link lengths, the threshold length for the smallest 10 percent, the median length, the number of links below the threshold, and the total number of links. If no links were selected, it prints a message indicating this.
+The `02 SWMM` directory delves into more specific statistical analysis scripts for various elements and fields within SWMM:
 
-| ------------------------------------ | ------ |
-| Description                          | Value  |
-| ------------------------------------ | ------ |
-| Minimum link length                  | 30.86  |
-| Maximum link length                  | 357.94 |
-| Threshold length for lowest 10%      | 63.57  |
-| Median link length (50th percentile) | 164.21 |
-| Number of links below threshold      | 4      |
-| Total number of links                | 9      |
-| ------------------------------------ | ------ |
+- **Element and Field Statistics:** This subdirectory includes a variety of Ruby scripts designed to extract and analyze different parameters within SWMM models, such as:
+  - Link, Node, and Subcatchment parameters
+  - Pipe diameter and length statistics
+  - User number statistics for links and nodes
+  - Depression storage statistics
+  - 2D parameter statistics specific to InfoWorks
 
+Additionally, there are visual aids (`How it works.png`, `image.png`) and a markdown file (`Pipe Length Histogram.md`) which might provide explanations or results visualizations for the scripts.
 
-## Usage
+### Usage
 
-To use this script, simply run it in the context of an open network in InfoWorks ICM. The script will automatically analyze the lengths of all links, select the smallest 10 percent of link lengths, and print the results.
+To use these scripts, you would typically:
+1. Ensure you have Ruby installed on your system.
+2. Navigate to the appropriate directory.
+3. Run the Ruby scripts from the command line or integrate them into your workflow with SWMM or InfoWorks.
+
+### Note
+
+- Ensure you have the necessary permissions and environment setup to run these scripts.
+- Always backup your data before running new scripts, especially when dealing with statistical analysis which might alter or process large datasets.
+
+This README provides a structure based on the directory listing in the image, offering a brief on what each script might be used for and general usage instructions. If there's any specific detail or additional context you want to include, please let me know!

@@ -1,42 +1,60 @@
-## Summary of Ruby Script for Analyzing Network Timesteps
 
-### Overview
-This script, written in Ruby, interfaces with the InfoWorks software to analyze time-stepped data in a network model. It focuses on calculating statistical measures for flow data (upstream and downstream) across selected network objects, assuming evenly spaced timesteps.
 
-### Key Steps
+markdown
+#  Folder Structure
 
-1. **Import Libraries**
-   - Utilizes the `date` library for handling date and time operations.
+## OPEN-SOURCE-SUPPORT
+- **01 InfoWorks ICM**
+  - **01 Ruby**
+  - **01 InfoWorks**
+  - **02 SWMM**
+    - **0001 - Element and Field Statistics**
+      - *(Content omitted for brevity)*
+    - **0002 - Tracing Tools**
+      - *(Content omitted for brevity)*
+    - **0003 - Scenario Tools**
+      - *(Content omitted for brevity)*
+    - **0004 - Scenario Sensitivity - InfoWorks**
+      - *(Content omitted for brevity)*
+    - **0005 - Import Export of Data Tables**
+      - *(Content omitted for brevity)*
+    - **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+      - *(Content omitted for brevity)*
+    - **0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM**
+      - *(Content omitted for brevity)*
+    - **0008 - Database Field Tools for Elements and Results**
+      - *(Content omitted for brevity)*
+    - **0009 - Polygon Subcatchment Boundary Tools**
+      - *(Content omitted for brevity)*
+    - **0010 - List all results fields with Stats**
+      - *(Content omitted for brevity)*
+    - **0011 - Get results from all timesteps in the IWR File**
+      - *(Content omitted for brevity)*
+    - **0012 - ICM InfoWorks Results to SWMM5 Summary Tables**
+      - *(Content omitted for brevity)*
+    - **0013 - SUDS or LID Tools**
+      - *(Content omitted for brevity)*
+    - **0014 - InfoSewer to ICM Comparison Tools**
+      - `hw_UI_script_infoSewer_Gravity_Main_Report_from_ICM_InfoWorks.rb`
+      - `hw_UI_script_infoSewer_Peaking_Factors.rb`
+      - `hw_UI_script_MakeSubcatchmentsFrom_Imported_InfoSewer_Manholes.md`
+      - `hw_UI_script_MakeSubcatchmentsFrom_Imported_InfoSewer_Manholes.rb`
+      - `png001.png`
+      - `readme_steady_state.rb`
+      - `README.md`
+      - `sw_UI_script_MakeSubcatchments_From_Imported_InfoSewer_Manholes.rb`
+      - `ui_script_Read_infoSewer_Steady_State_Report_File.rb`
 
-2. **Retrieve Network Object**
-   - Fetches the current network object from InfoWorks using `WSApplication.current_network`.
+---
 
-3. **List Timesteps**
-   - Acquires a list of timesteps available in the network model.
+### Description
 
-4. **Check for Adequate Timesteps**
-   - Ensures there are more than one timestep available to proceed with the analysis.
+This section focuses on the **0014 - InfoSewer to ICM Comparison Tools** directory under the `01 InfoWorks` folder within `01 Ruby`, which contains scripts and files for comparing or importing data from InfoSewer to InfoWorks ICM:
 
-5. **Calculate Time Interval**
-   - Determines the time interval in seconds between the first two timesteps.
-
-6. **Define Result Fields**
-   - Sets the fields of interest for analysis: `us_flow` (upstream flow) and `ds_flow` (downstream flow).
-
-7. **Iterate Over Selected Objects**
-   - Processes each selected object in the network:
-     - Retrieves related data using the object's ID.
-     - Checks if the object is a valid link.
-     - For each result field, gathers and verifies the timestep results.
-
-8. **Statistics Computation**
-   - For each valid link and result field, calculates:
-     - Total integrated flow over time.
-     - Mean, maximum, and minimum flow values.
-     - Counts the number of timesteps analyzed.
-
-9. **Error Handling**
-   - Catches and logs any errors that occur during the processing of each object.
-
-### Output
-- The script outputs the time interval in both seconds and minutes, along with detailed statistics for each link and specified result field, including sum, mean, max, min values, and the count of timesteps.
+- **Gravity Main Report:** `hw_UI_script_infoSewer_Gravity_Main_Report_from_ICM_InfoWorks.rb` generates or compares gravity main reports from ICM InfoWorks based on InfoSewer data.
+- **Peaking Factors:** `hw_UI_script_infoSewer_Peaking_Factors.rb` deals with peaking factors, possibly for flow analysis or comparison between InfoSewer and ICM.
+- **Subcatchments Creation:** 
+  - `hw_UI_script_MakeSubcatchmentsFrom_Imported_InfoSewer_Manholes.md` and `hw_UI_script_MakeSubcatchmentsFrom_Imported_InfoSewer_Manholes.rb` are scripts for creating subcatchments from manholes imported from InfoSewer into ICM.
+  - `sw_UI_script_MakeSubcatchments_From_Imported_InfoSewer_Manholes.rb` is similar but tailored for SWMM, suggesting a process for integrating InfoSewer data into SWMM via ICM.
+- **Visual Aid:** `png001.png` might be an image illustrating the process or results of the comparison or import tools.
+- **Steady State Report:** `readme_steady_state.rb` and `ui_script_Read_infoSewer_Steady_State_Report_File.rb` handle reading or processing steady state reports from InfoSewer, useful for static

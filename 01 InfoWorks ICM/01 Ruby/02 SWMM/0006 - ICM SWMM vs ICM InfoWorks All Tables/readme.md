@@ -1,82 +1,67 @@
-## Code Summary: Counting Tables in an ICM SWMM Network
 
-### Purpose
-This Ruby script is designed to count all the tables in an ICM SWMM (Stormwater Management Model) Network.
+markdown
+# Folder Structure
 
-### Process Flow
+## OPEN-SOURCE-SUPPORT
+- **01 InfoWorks ICM**
+  - **01 Ruby**
+  - **01 InfoWorks**
+  - **02 SWMM**
+    - **0001 - Element and Field Statistics**
+      - *(Content omitted for brevity)*
+    - **0002 - Tracing Tools**
+      - *(Content omitted for brevity)*
+    - **0003 - Scenario Tools**
+      - *(Content omitted for brevity)*
+    - **0004 - Scenario Sensitivity - InfoWorks**
+      - *(Content omitted for brevity)*
+    - **0005 - Import Export of Data Tables**
+      - *(Content omitted for brevity)*
+    - **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+      - `compare_icm_swmm_icm_files.rb`
+      - `EX Run Parameters.rb`
+      - `ICM InfoWorks All Table Names.rb`
+      - `ICM SWMM All Tables.rb`
+      - `ICM SWMM Network Overview.rb`
+      - `readme.md`
+      - `Sensor_Comparison.rb`
+      - `sw_hw_UI_Set_Script_CN_BN.rb`
+      - `sw_UI_Get_script_CN_BN.rb`
+      - `sw_UI_Script_additional_dwf_nodes_icm_swmm.rb`
+      - `sw_UI_Script_Calculate statistics for baseline data.rb`
 
-1. **Begin Block**
-   - The script starts with a `begin` block to handle any exceptions that might occur.
+---
 
-2. **Accessing the Current Network**
-   - `net = WSApplication.current_network`: Retrieves the current network.
-   - The script raises an error if no current network is found.
+### Description
 
-3. **Defining Table Names**
-   - A list of table names related to the ICM SWMM network is defined. This includes tables like `sw_conduit`, `sw_node`, `sw_weir`, etc.
+This section focuses on the **0006 - ICM SWMM vs ICM InfoWorks All Tables** directory under the `02 SWMM` folder, which contains Ruby scripts for comparing and analyzing data between ICM SWMM and ICM InfoWorks:
 
-4. **Counting Rows in Each Table**
-   - The script iterates through each table name.
-   - For each table, it accesses the row objects.
-   - Counts the number of rows (elements) in each table.
-   - Prints the table name along with the count of its rows.
+- **File Comparison:** `compare_icm_swmm_icm_files.rb` is designed to compare files between ICM SWMM and ICM InfoWorks.
+- **Run Parameters:** `EX Run Parameters.rb` likely deals with setting or extracting run parameters for simulations or analyses.
+- **Table Names:** `ICM InfoWorks All Table Names.rb` retrieves or lists all table names within ICM InfoWorks.
+- **All Tables:** `ICM SWMM All Tables.rb` provides functionality to work with all tables in ICM SWMM.
+- **Network Overview:** `ICM SWMM Network Overview.rb` offers an overview of the network in ICM SWMM, useful for understanding the structure or connectivity.
+- **Sensor Comparison:** `Sensor_Comparison.rb` might compare sensor data or configurations between different models or scenarios.
+- **Script Setting:** `sw_hw_UI_Set_Script_CN_BN.rb` and `sw_UI_Get_script_CN_BN.rb` are scripts for setting and getting certain script parameters or data (possibly related to Curve Numbers or Building Numbers).
+- **Dry Weather Flow Nodes:** `sw_UI_Script_additional_dwf_nodes_icm_swmm.rb` handles additional dry weather flow nodes in ICM SWMM.
+- **Baseline Data Statistics:** `sw_UI_Script_Calculate statistics for baseline data.rb` calculates statistics for baseline data, providing a base for comparison or analysis.
 
-5. **Error Handling**
-   - If a table is not found, an error message is raised.
-   - Any other exceptions are caught and their message is printed.
+### Usage
 
-### Notes
-- The script is useful for getting an overview of the elements present in an ICM SWMM network.
-- It provides a count of elements for each specified table, which can be essential for data analysis and network management.
-- Exception handling is implemented to ensure the script does not fail silently.
+To use the scripts within the `0006 - ICM SWMM vs ICM InfoWorks All Tables` directory:
 
-=======================================================================
-Knowledge Acquisition and Training Environment (KATE)
-=======================================================================
-SWMM5's nonlinear hydrology offers several key advantages over both the Rational Method and SCS Unit Hydrograph approaches:
+1. **Environment Setup:** Ensure Ruby is installed on your system.
+2. **Navigation:** Navigate to the `0006 - ICM SWMM vs ICM InfoWorks All Tables` subdirectory under `02 SWMM`.
+3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for comparing or analyzing data between ICM SWMM and ICM InfoWorks.
 
-## Comprehensive Modeling Capabilities
+For example, to compare files:
+```sh
+ruby compare_icm_swmm_icm_files.rb
 
-**Distributed Analysis**
-SWMM5 uses kinematic wave routing which allows separate modeling of both impervious and pervious areas within a single subbasin, providing more accurate representation of urban runoff characteristics[1]. This distributed approach better captures the different responses from various surface types compared to the lumped parameters used in SCS method.
+Note
+Always check for permissions before running scripts that might access or modify files.
+Backup your data before executing scripts that could alter or process data extensively.
+The readme.md file within this directory might contain specific instructions, notes, or prerequisites for running these comparison scripts.
 
-**Hydrologic Processes**
-SWMM5 accounts for multiple hydrologic processes including:
-- Time-varying rainfall patterns
-- Evaporation from surface water
-- Infiltration into unsaturated soil layers
-- Interflow between groundwater and drainage systems
-- Surface ponding and routing[5]
 
-## Technical Advantages
-
-**Nonlinear Response**
-The kinematic wave technique produces a nonlinear response to rainfall excess, unlike the linear response of unit hydrographs[1]. This better represents the actual physical behavior of urban runoff.
-
-**Urban Applications**
-SWMM5 is particularly effective for urban areas because:
-- It generates sharp runoff responses that match observed urban drainage patterns[1]
-- It can simulate complex drainage networks including pipes, channels, storage devices, and various control structures[5]
-- It provides detailed results beyond just peak flows, including full runoff hydrographs and routing calculations[4]
-
-## Limitations of Other Methods
-
-**Rational Method Limitations**
-- Only provides peak discharge estimates, not complete hydrographs[6]
-- Uses simplified assumptions about rainfall intensity and timing[6]
-- Best suited only for small watersheds and preliminary screening[6]
-
-**SCS Method Limitations**
-- Uses averaged runoff characteristics that can underestimate peak flows in urban areas[1]
-- Less accurate for small storm events[2]
-- Provides less detailed results compared to SWMM's comprehensive output[4]
-
-Citations:
-[1] https://www.openswmm.org/Topic/3206/swmm5-hydrology-and-the-scs-method
-[2] https://www.dep.state.pa.us/dep/subject/advcoun/stormwater/Manual_DraftJan05/Section09-jan-rev.pdf
-[3] https://learn.hydrologystudio.com/hydrology-studio/knowledge-base/rational-method-vs-scs-method/
-[4] https://www.openswmm.org/Topic/4199/swmm-versus-rational-method-for-calculating-the-surface-water
-[5] https://en.wikipedia.org/wiki/Storm_Water_Management_Model
-[6] https://www.openswmm.org/Topic/6525/swmm-vs-rational-method
-[7] https://www.semswa.org/files/047af3e3d/Chapter-6-Hydrology.pdf
-[8] https://www.openswmm.org/Topic/16652/advantages-of-swmm
+This README now focuses exclusively on the `0006 - ICM SWMM vs ICM InfoWorks All Tables` folder, detailing its contents and usage. 

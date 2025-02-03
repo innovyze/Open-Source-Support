@@ -1,39 +1,41 @@
 # ICM SWMM Networks
-In InfoWorks SWMM, the data representing the stormwater network (such as pipes, nodes, and subcatchments) is organized into tables. These tables often have names beginning with sw_, for example sw_pipe, sw_node, etc. The different attributes of these elements (such as their dimensions, materials, and locations) are represented as fields within these tables.
+
+In InfoWorks SWMM, the data representing the stormwater network (such as pipes, nodes, and subcatchments) is organized into tables. These tables often have names beginning with `sw_`, for example `sw_pipe`, `sw_node`, etc. The different attributes of these elements (such as their dimensions, materials, and locations) are represented as fields within these tables.
 
 The comment suggests that while these Ruby scripts are intended for use with InfoWorks SWMM, they may also work with Autodesk Innovyze's InfoWorks ICM (Integrated Catchment Modeling) to some extent, because the code structure is often very similar. However, there are important differences to be aware of.
 
-In particular, the naming convention for tables in InfoWorks ICM is different. Instead of starting with sw_, tables in ICM usually start with hw_ (for "HydroWorks", a predecessor of InfoWorks ICM). The field names within these tables can also be different between SWMM and InfoWorks.
+In particular, the naming convention for tables in InfoWorks ICM is different. Instead of starting with `sw_`, tables in ICM usually start with `hw_` (for "HydroWorks", a predecessor of InfoWorks ICM). The field names within these tables can also be different between SWMM and InfoWorks.
 
 This means that if you're trying to use these Ruby scripts with Autodesk Innovyze's InfoWorks ICM, you may need to modify the code to account for these differences in table and field names. Without such modifications, the scripts might not work as intended or might produce errors.
 
-## ICM SWMM Ruby Folders
+## ICM SWMM Ruby Folders (Composite 2025)
 
-•   0001 - Element and Field Statistics
-•	0002 - Tracing Tools
-•	0003 - Scenario Tools
-•	0004 - Scenario Sensitivity - InfoWorks
-•	0005 - Import Export of Data Tables
-•	0006 - ICM SWMM vs ICM InfoWorks All Tables
-•	0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM
-•	0008 - Database Field Tools for Elements and Results
-•	0009 - Polygon Subcatchment Boundary Tools
-•	0010 - List all results fields with Stats
-•	0011 - Get results from all timesteps in the IWR File
-•	0012 - ICM InfoWorks Results to SWMM5 Summary Tables
-•	0013 - SUDS or LID Tools
-•	0014 - InfoSewer to ICM Comparison Tools
-•	0015 - Export SWMM5 Calibration Files
-•	0016 - InfoSWMM and SWMM5 Tools in Ruby
-•	0017 - Subcatchment Grid and Tabs Tools
-•	0018 - Create Selection list using a SQL query
-•	0019 - Node Connection Tools
-•	0020 - All Node, Subs and Link IDs Tools
-•	0021 - Change the Geometry or Rename IDs
-•	0022 - TBA
-•	0023 - TBA
-•	0024 - Utilities
-•	0025 - Miscellaneous
+- **0001 - Element and Field Statistics**
+- **0002 - Tracing Tools**
+- **0003 - Scenario Tools**
+- **0004 - Scenario Sensitivity - InfoWorks**
+- **0005 - Import Export of Data Tables**
+- **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+- **0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM**
+- **0008 - Database Field Tools for Elements and Results**
+- **0009 - Polygon Subcatchment Boundary Tools**
+- **0010 - List all results fields with Stats**
+- **0011 - Get results from all timesteps in the IWR File**
+- **0012 - ICM InfoWorks Results to SWMM5 Summary Tables**
+- **0013 - SUDS or LID Tools**
+- **0014 - InfoSewer to ICM Comparison Tools**
+- **0015 - Export SWMM5 Calibration Files**
+- **0016 - InfoSWMM and SWMM5 Tools in Ruby**
+- **0017 - Subcatchment Grid and Tabs Tools**
+- **0018 - Create Selection list using a SQL query**
+- **0019 - Node Connection Tools**
+- **0020 - All Node, Subs and Link IDs Tools**
+- **0021 - Change the Geometry or Rename IDs**
+- **0022 - TBA**
+- **0023 - TBA**
+- **0024 - Utilities**
+- **0025 - Miscellaneous**
+
 
 ## SWMM5 Versions
 

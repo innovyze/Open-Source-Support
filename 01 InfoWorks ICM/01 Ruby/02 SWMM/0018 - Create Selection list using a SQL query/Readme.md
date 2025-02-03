@@ -1,38 +1,90 @@
-# Introduction
-With the release of InfoAsset Manager 2021.2 a new Ruby UI method has been created to allow multiple Reports to be created for each individual item in the current network selection.  So instead of creating a single Report for all 5 CCTV Surveys currently selected, 5 Reports will be generated for each individual Survey.  
-The process can only be run from the interface: **Network** > **Run Ruby Script…** - note, an IExchange licence is not required to run scripts from the interface.  
-
-## Supported Report Types
-The Reports which are supported to be generated via this method are:  
-- Manhole Report  -  ['cams_manhole',nil]  
-- Manhole Survey Report  -  ['cams_manhole_survey',nil]  
-- CCTV Survey Report  -  ['cams_cctv_survey','nil']  
-- CCTV Survey Report (MSCC format)  -  ['cams_cctv_survey','MSCC']  
-- CCTV Survey Report (PACP format)  -  ['cams_cctv_survey','PACP']  
-- Pipe Clean Report  -  ['cams_pipe_clean',nil]  
-- Pipe Repair Report  -  ['cams_pipe_repair',nil]  
-- Manhole Repair Report  -  ['cams_manhole_repair',nil]  
-- FOG Inspection Report  -  ['cams_fog_inspection',nil]  
-All can be produced in either Word (.doc) or HTML (.html) formats.  
-
-## [UI-Reports-CreateIndividualForSelection.rb](./UI-Reports-CreateIndividualForSelection.rb)
-Set on line 23 the folder (and filename prefix), replacing `c:\\temp\\Report_` to the folder (and optionally) the filename prefix desired.  
-## [UI-Reports-CreateIndividualForSelection_folder.rb](./UI-Reports-CreateIndividualForSelection_folder.rb)
-This script is the same as [UI-Reports-CreateIndividualForSelection.rb](./UI-Reports-CreateIndividualForSelection.rb) but instead of needing to enter the export location into the script itself, a prompt dialog will appear to select a folder to save the reports into.
-
-### Customising The Script
-To change/add in report types to export, change line 6 (tables=) to the type(s) as detailed in the supported reports section.  
-Each individual report type should be separated by a comma, and within an overarching square bracket pair – as shown in the commented-out section of the syntax after the double-hash.  
-To generate reports in HTML format, change "'.doc'" on line 24 or uncomment line 25 - so the file-type suffix is "'.html'".  
-
-## The Ruby Method
-net.generate_report(Table_Name,Suffix,Title,Output_File_Name)  
-1. Table name  
-2. Suffix (usually nil but can be MSCC or PACP for CCTV surveys)  
-3. Title (this is the one that usually says 'selection' or whatever on the reports, but you can say what you like)  
-4. Output file name (.doc or .html - it uses the suffix to decide which report to do)  
-The report is always for the selected object.  
 
 
-### Version Compatibility
-The generate_report method is available in InfoAsset Manager 2021.2 and later.  
+markdown
+# Folder Structure
+
+## OPEN-SOURCE-SUPPORT
+- **01 InfoWorks ICM**
+  - **01 Ruby**
+    - **01 InfoWorks**
+    - **02 SWMM**
+      - **0001 - Element and Field Statistics**
+        - *(Content omitted for brevity)*
+      - **0002 - Tracing Tools**
+        - *(Content omitted for brevity)*
+      - **0003 - Scenario Tools**
+        - *(Content omitted for brevity)*
+      - **0004 - Scenario Sensitivity - InfoWorks**
+        - *(Content omitted for brevity)*
+      - **0005 - Import Export of Data Tables**
+        - *(Content omitted for brevity)*
+      - **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+        - *(Content omitted for brevity)*
+      - **0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM**
+        - *(Content omitted for brevity)*
+      - **0008 - Database Field Tools for Elements and Results**
+        - *(Content omitted for brevity)*
+      - **0009 - Polygon Subcatchment Boundary Tools**
+        - *(Content omitted for brevity)*
+      - **0010 - List all results fields with Stats**
+        - *(Content omitted for brevity)*
+      - **0011 - Get results from all timesteps in the IWR File**
+        - *(Content omitted for brevity)*
+      - **0012 - ICM InfoWorks Results to SWMM5 Summary Tables**
+        - *(Content omitted for brevity)*
+      - **0013 - SUDS or LID Tools**
+        - *(Content omitted for brevity)*
+      - **0014 - InfoSewer to ICM Comparison Tools**
+        - *(Content omitted for brevity)*
+      - **0015 - Export SWMM5 Calibration Files**
+        - *(Content omitted for brevity)*
+      - **0016 - InfoSWMM and SWMM5 Tools in Ruby**
+        - *(Content omitted for brevity)*
+      - **0017 - Subcatchment Grid and Tabs Tools**
+        - *(Content omitted for brevity)*
+      - **0018 - Create Selection list using a SQL query**
+        - `2021.4.1 Transportable.icmt`
+        - `gif001.gif`
+        - `Readme.md`
+        - `UI_Script_Select links sharing the same us and ds node ids.rb`
+        - `UI_Script.rb`
+        - `UI_CreateSelectionList.rb`
+        - `UI_Reports-CreateIndividualForSelection_folder.rb`
+        - `UI_Reports-CreateIndividualForSelection.rb`
+        - `UI_SelectIsolatedNodes.rb`
+
+---
+
+### Description
+
+This section focuses on the **0018 - Create Selection list using a SQL query** directory under the `02 SWMM` folder, which contains scripts and files for creating selection lists using SQL queries within SWMM:
+
+- **Transportable File:** `2021.4.1 Transportable.icmt` is likely a transportable file for InfoWorks ICM, possibly used for testing or demonstration purposes in the context of SQL query operations.
+- **Visual Aid:** `gif001.gif` might be a GIF animation showing how to use one of the scripts or the result of a SQL query selection.
+- **Documentation:** `Readme.md` provides documentation or instructions for the tools within this directory.
+- **Scripts:**
+  - `UI_Script_Select links sharing the same us and ds node ids.rb` is a script designed to select links that share the same upstream (us) and downstream (ds) node IDs, which can be useful for network analysis or data cleanup.
+  - `UI_Script.rb` could be a general UI script or a base script for user interface interactions related to SQL query operations.
+  - `UI_CreateSelectionList.rb` is specifically for creating selection lists using SQL queries, facilitating the extraction or management of data based on specific criteria.
+  - `UI_Reports-CreateIndividualForSelection_folder.rb` and `UI_Reports-CreateIndividualForSelection.rb` are scripts for generating individual reports for selections, with one possibly handling folder operations.
+  - `UI_SelectIsolatedNodes.rb` is used to select nodes that are isolated in the network, which might be useful for identifying errors or for specific analysis in network topology.
+
+### Usage
+
+To use the scripts within the `0018 - Create Selection list using a SQL query` directory:
+
+1. **Environment Setup:** Ensure Ruby is installed on your system.
+2. **Navigation:** Navigate to the `0018 - Create Selection list using a SQL query` subdirectory under `02 SWMM`.
+3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for creating selection lists or managing data with SQL queries.
+
+For example, to select links sharing the same upstream and downstream node IDs:
+```sh
+ruby UI_Script_Select links sharing the same us and ds node ids.rb
+
+Note
+Always check for permissions before running scripts that might access or modify your model data.
+Backup your data before executing scripts that could alter or process datasets extensively.
+The Readme.md file within this directory might contain specific instructions, notes, or prerequisites for running these SQL query tools.
+
+
+This README now focuses exclusively on the `0018 - Create Selection list using a SQL query` folder, detailing its contents and usage.  

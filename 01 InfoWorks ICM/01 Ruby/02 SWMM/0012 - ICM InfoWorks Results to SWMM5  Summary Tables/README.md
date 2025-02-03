@@ -1,119 +1,72 @@
-# Common Operations
 
-These pages cover some useful notes and common operations you may need to do in Ruby.
+markdown
+# Project Structure
 
-## General
+## OPEN-SOURCE-SUPPORT
+- **01 InfoWorks ICM**
+  - **01 Ruby**
+  - **01 InfoWorks**
+  - **02 SWMM**
+    - **0001 - Element and Field Statistics**
+      - *(Content omitted for brevity)*
+    - **0002 - Tracing Tools**
+      - *(Content omitted for brevity)*
+    - **0003 - Scenario Tools**
+      - *(Content omitted for brevity)*
+    - **0004 - Scenario Sensitivity - InfoWorks**
+      - *(Content omitted for brevity)*
+    - **0005 - Import Export of Data Tables**
+      - *(Content omitted for brevity)*
+    - **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+      - *(Content omitted for brevity)*
+    - **0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM**
+      - *(Content omitted for brevity)*
+    - **0008 - Database Field Tools for Elements and Results**
+      - *(Content omitted for brevity)*
+    - **0009 - Polygon Subcatchment Boundary Tools**
+      - *(Content omitted for brevity)*
+    - **0010 - List all results fields with Stats**
+      - *(Content omitted for brevity)*
+    - **0011 - Get results from all timesteps in the IWR File**
+      - *(Content omitted for brevity)*
+    - **0012 - ICM InfoWorks Results to SWMM5 Summary Tables**
+      - `hw_UI_script_swmm5_conduit_surcharge_summary_table.rb`
+      - `hw_UI_script_swmm5_node_depths_summary_table.rb`
+      - `hw_UI_script_swmm5_node_inflows_summary_table.rb`
+      - `hw_UI_script_swmm5_node_surcharge_summary_table.rb`
+      - `hw_UI_script_swmm5_runoff_summary_table.rb`
+      - `hw_UI_script_swmm5_link_flows_summary_table.rb`
+      - `README.md`
 
-As of version 2024.2, InfoWorks WS Pro and InfoWorks ICM both ship with Ruby 2.4.0. Due to the integration it is not possible to use Ruby Gems (i.e. external libraries from Ruby's package manager) without manually linking the files, but you can use the majority of the Ruby Standard Library. Documentation for the Standard Library (abbreviated stdlib) [can be found here](https://ruby-doc.org/stdlib-2.4.0/).
+---
 
-### Directories (i.e. Paths)
+### Description
 
-When pointing to a directory or file on your computer, the directory separator can be Unix-style (forward) or Windows-style (backward). i.e.:
+This section focuses on the **0012 - ICM InfoWorks Results to SWMM5 Summary Tables** directory under the `02 SWMM` folder, which contains Ruby scripts for converting or summarizing results from ICM InfoWorks into SWMM5 compatible summary tables:
 
-- **Unix:** "C:/Badger/Penguin.csv"
-- **Windows:** "C:\Badger\Penguin.csv"
+- **Conduit Surcharge:** `hw_UI_script_swmm5_conduit_surcharge_summary_table.rb` generates a summary table for conduit surcharge data.
+- **Node Depths:** `hw_UI_script_swmm5_node_depths_summary_table.rb` creates a summary table for node depth results.
+- **Node Inflows:** `hw_UI_script_swmm5_node_inflows_summary_table.rb` provides a summary table for node inflows.
+- **Node Surcharge:** `hw_UI_script_swmm5_node_surcharge_summary_table.rb` summarizes node surcharge information.
+- **Runoff:** `hw_UI_script_swmm5_runoff_summary_table.rb` deals with creating a summary table for runoff data.
+- **Link Flows:** `hw_UI_script_swmm5_link_flows_summary_table.rb` generates a summary table for link flows.
 
-Ruby can work with both, but prefers the Unix-style. WS Pro methods can also work with both, but will return Windows-style e.g. from a `#WSApplication.file_dialog` call.
+### Usage
 
-When working with Windows-style paths, remember to escape the backwards slash i.e. `"C:\\Badger\\Penguin.csv"` otherwise Ruby will interpret the backwards slash as a special character (e.g. `\n` is a newline, `\r\n` is a carriage return)
+To use the scripts within the `0012 - ICM InfoWorks Results to SWMM5 Summary Tables` directory:
 
-You can switch between them by using `gsub("/","\\")` (for Unix to Windows) or `gsub("\\","/")` (for Windows to Unix). E.g.
+1. **Environment Setup:** Ensure Ruby is installed on your system.
+2. **Navigation:** Navigate to the `0012 - ICM InfoWorks Results to SWMM5 Summary Tables` subdirectory under `02 SWMM`.
+3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow to convert ICM InfoWorks results into SWMM5 summary tables.
 
-```ruby
-win_path = "C:\\Badger\\Penguin.csv"
-unix_path = win_path.gsub("\\","/")
-```
+For example, to generate a summary table for conduit surcharge:
+```sh
+ruby hw_UI_script_swmm5_conduit_surcharge_summary_table.rb
 
-## Network Data
-
-### Links
-
-Links are a common geometry type, so knowing how to work with them can be useful. All links have three required fields: `us_node_id`, `ds_node_id`, and `suffix`. The `OID` or `ID` of a link is the combination of all three separated by periods (i.e. `us.ds.suffix`).
-
-If you create a new link and set an upstream and downstream node, the geometry is handled automatically (in fact, the update is linked to setting the upstream and downstream nodes). If you need to work directly with the geometry of a link then this data is stored in the `bends` field, which is not visible in the user interface. The `bends` field is an array containing the position of each vertex (point) along the line, in a sequence of X,Y,X,Y numbers. A simple link between two points would have a minimum of 4 entries in this array, representing the start and end vertices.
-
-#### Simplify Link Geometry
-
-To simplify the geometry of a link:
-
-```ruby
-network.row_objects_selection("_links").each do |link|
-  link["bends"] = [link.us_node["X"], link.us_node["Y"], link.ds_node["X"], link.ds_node["Y"]]
-  link.write
-end
-```
-
-#### Reverse Link
-
-To reverse a link:
-
-```ruby
-network.row_objects_selection("_links").each do |link|
-  old_bends = link["bends"]
-  new_bends = Array.new
-  while !old_bends.empty?
-    new_bends.concat(old_bends.pop(2))
-  end
-
-  old_us_id = link["us_node_id"]
-  link["us_node_id"] = link["ds_node_id"]
-  link["ds_node_id"] = old_us_id
-  link["bends"] = new_bends
-
-  link.write
-end
-```
-
-### Structured Data
-
-Structured data, also referred to as Structs or Blobs, are the tables within an object e.g. node demand by category, or a fixed head profile. They behave like an array, except they have a fixed size so we cannot dynamically add to them without first changing that size.
-
-For these examples, assume that we have a reservoir object, and we want to work with the Depth Volume curve.
-
-```ruby
-network = WSApplication.current_network
-res = network.row_object('wn_reservoir', 'MyRes')
-```
-
-We want to check what the first volume is. We could save the structure to a variable, then the first row (index 0), and access the field 'volume':
-
-```ruby
-depth_struct = res.depth_volume
-depth_struct_row = depth_struct[0]
-puts depth_struct_row['volume']
-```
-
-Or we could write this as one line:
-
-```ruby
-puts res.depth_volume[0]['volume']
-```
-
-We can write data to structs, though we have to be sure that the index exists e.g. by using `#size = 1`
-
-```ruby
-depth_struct = res.depth_volume
-depth_struct[0]['volume'] = 100
-depth_struct.write
-```
-
-If we have an array of values we want to put into the depth volume, we first have to make sure the size of the struct matches our array, and then iterate the array, placing the values at the appropriate indexes:
-
-```ruby
-values = [
-  [1, 100],
-  [5, 1000]
-]
-
-depth_struct = res.depth_volume
-depth_struct.size = values.size
-
-values.each_with_index do |(depth, volume), i| # (depth, volume) is splitting each array within values
-  depth_struct[i]['depth'] = depth
-  depth_struct[i]['volume'] = volume
-end
-
-depth_struct.write
-```
+Note
+Always ensure you have the necessary permissions to run these scripts, especially since they might involve reading or writing result data.
+Backup your data before executing scripts that could alter or process datasets extensively.
+The README.md file within this directory might contain specific instructions, notes, or prerequisites for running these conversion scripts.
 
 
+This README now focuses exclusively on the `0012 - ICM InfoWorks Results to SWMM5 Summary Tables` folder, detailing its contents and usage.  

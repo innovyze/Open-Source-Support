@@ -1,3 +1,57 @@
+
+markdown
+# Folder Structure
+
+## OPEN-SOURCE-SUPPORT
+- **01 InfoWorks ICM**
+  - **01 Ruby**
+  - **01 InfoWorks**
+  - **02 SWMM**
+    - **0001 - Element and Field Statistics**
+      - *(Content omitted for brevity)*
+    - **0002 - Tracing Tools**
+      - *(Content omitted for brevity)*
+    - **0003 - Scenario Tools**
+      - *(Content omitted for brevity)*
+    - **0004 - Scenario Sensitivity - InfoWorks**
+      - `image.png`
+      - `readme.md`
+      - `Scenario_GIM.rb`
+      - `Scenario_Link_Data.rb`
+
+---
+
+### Description
+
+This section focuses on the **0004 - Scenario Sensitivity - InfoWorks** directory under the `02 SWMM` folder, which contains Ruby scripts designed for scenario sensitivity analysis within InfoWorks:
+
+- **Visual Aids:** `image.png` likely provides visual support or examples for the scripts or concepts within this directory.
+- **Documentation:** `readme.md` contains detailed information or instructions on how to use the scripts in this folder.
+- **Scenario Sensitivity Analysis:** 
+  - `Scenario_GIM.rb` handles Global Importance Measures (GIM) for scenario sensitivity, which helps in understanding the impact of different parameters or scenarios on the model's outcomes.
+  - `Scenario_Link_Data.rb` deals with analyzing data related to links in different scenarios, providing insights into how changes in scenarios affect network connectivity or flow.
+
+### Usage
+
+To use the scripts within the `0004 - Scenario Sensitivity - InfoWorks` directory:
+
+1. **Environment Setup:** Ensure Ruby is installed on your system.
+2. **Navigation:** Navigate to the `0004 - Scenario Sensitivity - InfoWorks` subdirectory under `02 SWMM`.
+3. **Execution:** Run the Ruby scripts from the command line or integrate them into your InfoWorks workflow.
+
+For example, to run the GIM scenario analysis:
+```sh
+ruby Scenario_GIM.rb
+
+Note
+Always ensure you have the necessary permissions to run these scripts.
+Backup your data before running scripts that might alter or analyze extensive datasets.
+The readme.md file within this directory might contain specific instructions, notes, or prerequisites for running these sensitivity analysis scripts.
+
+
+This README now focuses exclusively on the `0004 - Scenario Sensitivity - InfoWorks` folder, detailing its contents and usage.  
+
+
 # Extended Markdown Summary for the “Scenario Sensitivity Parameter” Ruby Script
 
 Below is an extended documentation and commentary for a **Ruby script** that interacts with an InfoWorks ICM (or equivalent InfoWorks WS) network to **create and manage scenarios** based on adjusting infiltration parameters. This script:
