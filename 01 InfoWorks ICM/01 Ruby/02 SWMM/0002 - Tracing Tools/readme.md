@@ -1,24 +1,25 @@
-# QuickTrace Script for InfoWorks ICM Networks
+# Total Area Calculation Script for Selected Subcatchments in InfoWorks ICM SWMM
 
-This script performs a trace between two selected nodes in an InfoWorks ICM model network, selecting all nodes and links along the path.
+This script calculates the total area of all selected subcatchments in an InfoWorks ICM SWMM model network.
 
 ## How it Works
 
-1. The script first initializes the current network.
+1. The script first accesses the current network.
 
-2. It then defines a method `process_node` that performs a trace from a given node to a destination node. This method uses Dijkstra's algorithm to find the shortest path, considering each conduit link as a path with a cost equal to its length and each non-conduit link as a path with a fixed cost.
+2. It then initializes a total area counter and a subcatchment count to zero.
 
-3. The `doit` method checks if exactly two nodes are selected in the network. If not, it prints a message asking the user to select two nodes. If two nodes are selected, it performs a trace from the first selected node to the second selected node using the `process_node` method, and selects all nodes and links along the path.
+3. The script retrieves all subcatchments in the network and iterates over each one.
 
-4. Finally, the script creates a new instance of the `QuickTrace` class and calls the `doit` method.
+4. If a subcatchment is selected, its area is added to the total area and the subcatchment count is incremented.
 
-![Alt text](image.png)
+5. After all subcatchments have been processed, the script prints the total area of all selected subcatchments (formatted to three decimal places) and the number of selected subcatchments.
+
+6. If the total area is zero, the script prints a message indicating that no subcatchments were selected or that none of the selected subcatchments have a non-zero area.
+
+                                Total Area: 3107.387
+                                Number of selected subcatchments: 168
+                                Thank you for using Ruby in ICM SWMM
 
 ## Usage
 
-To use this script, simply run it in the context of an open network in InfoWorks ICM with exactly two nodes selected. The script will automatically perform a trace from the first selected node to the second selected node, select all nodes and links along the path, and print the total number of nodes and links found and the total length of the links.
-
-# Additional Information:
-
-The code seems to have been sourced from a GitHub repository and is specifically tailored for ICM InfoWorks Networks.
-The script uses a basic Dijkstra-like approach to find the shortest path between two nodes based on link lengths or a default value.
+To use this script, simply run it in the context of an open network in InfoWorks ICM SWMM with some subcatchments selected. The script will automatically calculate the total area of all selected subcatchments and print the total area, the number of selected subcatchments, and a thank you message.
