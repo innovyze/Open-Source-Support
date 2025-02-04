@@ -222,7 +222,7 @@ while c<n
 		header.add_element("ADA").text = (o.weather.empty?) ? nil : o.weather				##Precipitation
 		header.add_element("ADB").text = (o.temperature =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/ && !o.temperature.nil?) ? o.temperature : nil				##Temperature
 		unless o.temperature =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/ || o.temperature.empty?
-			log "	Invalid temperature value: '#{o.temperature}'"
+			log "	ADB - Invalid temperature value: '#{o.temperature}'"
 		end
 		header.add_element("ADC").text = (o.flow_control.empty?) ? nil : o.flow_control				##Flow control measures
 		header.add_element("ADD").text = (o.tidal_influence.empty?) ? nil : o.tidal_influence				##Tidal influence
