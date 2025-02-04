@@ -1,165 +1,41 @@
 # ICM SWMM Networks
-In InfoWorks SWMM, the data representing the stormwater network (such as pipes, nodes, and subcatchments) is organized into tables. These tables often have names beginning with sw_, for example sw_pipe, sw_node, etc. The different attributes of these elements (such as their dimensions, materials, and locations) are represented as fields within these tables.
+
+In InfoWorks SWMM, the data representing the stormwater network (such as pipes, nodes, and subcatchments) is organized into tables. These tables often have names beginning with `sw_`, for example `sw_pipe`, `sw_node`, etc. The different attributes of these elements (such as their dimensions, materials, and locations) are represented as fields within these tables.
 
 The comment suggests that while these Ruby scripts are intended for use with InfoWorks SWMM, they may also work with Autodesk Innovyze's InfoWorks ICM (Integrated Catchment Modeling) to some extent, because the code structure is often very similar. However, there are important differences to be aware of.
 
-In particular, the naming convention for tables in InfoWorks ICM is different. Instead of starting with sw_, tables in ICM usually start with hw_ (for "HydroWorks", a predecessor of InfoWorks ICM). The field names within these tables can also be different between SWMM and InfoWorks.
+In particular, the naming convention for tables in InfoWorks ICM is different. Instead of starting with `sw_`, tables in ICM usually start with `hw_` (for "HydroWorks", a predecessor of InfoWorks ICM). The field names within these tables can also be different between SWMM and InfoWorks.
 
 This means that if you're trying to use these Ruby scripts with Autodesk Innovyze's InfoWorks ICM, you may need to modify the code to account for these differences in table and field names. Without such modifications, the scripts might not work as intended or might produce errors.
 
-## ICM SWMM Ruby Folders
+## ICM SWMM Ruby Folders (Composite 2025)
 
-- 0001 - Pipe Length Statistics
-- 0002 - Quick Trace
-- 0003 - Scenario Maker
-- 0004 - New ICM Scenarios
-- 0005 - Change All Subcatchment, Node and Link IDs
-- 0006 - Add Total Area for Subs
-- 0007 - Count Objects In the Database
-- 0008 - Select Upstream Subcatchments from a Node with Multilinks
-- 0009 - ICM Binary Results Export
-- 0010 - List all results fields in a simulation (SWMM or ICM)
-- 0011 - Pipe Length Histogram
-- 0012 - ODEC Export Node and Conduit tables to CSV and MIF
-- 0013 - Depression Storage Statistics
-- 0014 - Find all flags in all objects of a network model
-- 0015 - Pipe Diameter Statistics
-- 0016 - All Link Parameter Statistics
-- 0017 - All Node Parameter Statistics
-- 0018 - All Subcatchment Parameter Statistics
-- 0019 - Distribute attachment details by a shared value
-- 0020 - Generate Individual Reports for a Selection of Objects
-- 0021 - Create nodes from polygon, subcatchment boundary
-- 0022 - Output CSV of calcs based on Subcatchment Data
-- 0023 - Rename Nodes & Links using Name Generation pattern
-- 0024 - Change Subcatchment Boundaries
-- 0025 - Get Minimum X, Y for All Nodes
-- 0026 - Common Operations
-- 0027 - Copy selected subcatchments User Defined Times
-- 0028 - Percentage change in runoff surfaces upstream node into new scenario
-- 0029 - Runoff surfaces from selected subcatchments
-- 0030 - Connect subcatchment to nearest node
-- 0031 - List all results fields in a Simulation
-- 0032 - List Network Fields-Structure
-- 0033 - Make an Inflows File from User Fields
-- 0034 - Display Export geometries
-- 0035 - List Complete Database Objects Contents
-- 0036 - Create Selection List
-- 0037 - Select Isolated Nodes
-- 0038 - Remove rows from a blob field
-- 0039 - Calculate subcatchment areas in all nodes upstream a node
-- 0040 - Create a new selection list using a SQL query
-- 0041 - Get results from all timesteps for Links, US Flow, DS Flow
-- 0042 - Get results from all timesteps for Subcatchments, All Params
-- 0043 - Get results from all timesteps for Manholes, Qnode
-- 0044 - Get results from all timesteps for Manholes, All Params
-- 0045 - Get results from all timesteps for Links, All Params
-- 0046 - Output SUDS control as CSV
-- 0047 - Select links sharing the same us and ds node ids
-- 0048 - Delete all scenarios except Base
-- 0049 - Clear SUDS from subcatchments
-- 0050 - Assign Subcatchment to nearest 'Storage' type Node
-- 0051 - Additional DWF Node IDs
-- 0052 - Stats for ICM Network Tables
-- 0053 - Scenario Maker (Names Only)
-- 0054 - InfoWorks as Background Network to ICM SWMM Current Network
-- 0055 - Scenario Maker - Specific
-- 0056 - Listview of the currently selected network objects
-- 0057 - Bifurcation Nodes
-- 0058 - Header Nodes
-- 0059 - Dry Pipes
-- 0060 - Compare ICM Headloss in Ruby Script
-- 0060 - Find All Network Elements
-- 0061 - Compare ICM Inlets to HEC22 Inlets
-- 0063 - ICM SWMM All Tables
-- 0064 - ICM SWMM Network Overview
-- 0065 - Get and Put Run Dialog Parameters
-- 0066 - ICM results against measured data within the UI
-- 0067 - ICM Ruby Tutorials
-- 0068 - ICM InfoWorks All Table Names
-- 0069 - Make an Overview of All Network Elements
-- 0070 - Upstream Subcatchments from an Outfall
-- 0071 - Raingages, All Output Parameters
-- 0072 - Find Root Model Group
-- 0073 - Rename Exported Image & Attachment Files
-- 0074 - Capacity Assurance White Paper
-- 0075 - Sandbox Instance Evaluation and Class Scope
-- 0076 - InfoWorks vs SWMM CSV Comparison
-- 0077 - ICM InfoWorks UX Tables
-- 0078 - ICM SWMM UX Tables
-- 0079 - ICM SWMM IWR Tables
-- 0080 - ICM InfoWorks IWR Tables
-- 0081 - Export Compare Network Versions to CSV
-- 0082 - Create SuDS for All Subcatchments
-- 0083 - Find Time of Max DS Depth
-- 0084 - Change All Node, Subs and Link IDs
-- 0085 - Export SWMM5 Calibration Files - Node Flooding
-- 0086 - Export SWMM5 Calibration Files - Groundwater Elev
-- 0087 - Export SWMM5 Calibration Files - Groundwater Flow
-- 0088 - Export SWMM5 Calibration Files - Runoff
-- 0089 - Export SWMM5 Calibration Files - Node Flood Depth
-- 0090 - Export SWMM5 Calibration Files - Node Level
-- 0091 - Export SWMM5 Calibration Files - Node Lateral Inflow
-- 0092 - Export SWMM5 Calibration Files - Downstream Velocity
-- 0093 - Export SWMM5 Calibration Files - Upstream Velocity
-- 0094 - Export SWMM5 Calibration Files - Upstream Depth
-- 0095 - Export SWMM5 Calibration Files - Downstream Depth
-- 0096 - Export SWMM5 Calibration Files - Downstream Flow
-- 0097 - Export SWMM5 Calibration Files - Upstream Flow
-- 0099 - Compare ICM Headloss in Ruby Script
-- 0100 - InfoSewer to ICM SWMM Loads and InfoSWMM Scenario Tools
-- 0101 - Useful notes and common operations
-- 0102 - ICM InfoWorks Results to SWMM5 Node Inflows Summary Table
-- 0103 - ICM InfoWorks Results to SWMM5 Node Depths Summary Table
-- 0104 - ICM InfoWorks Results to SWMM5 Node Surcharging Table
-- 0105 - ICM InfoWorks Results to SWMM5 Conduit Surcharging Summary Table
-- 0106 - ICM InfoWorks Results to SWMM5 Link Flows Summary Table
-- 0107 - ICM InfoWorks Results to SWMM5 Subcatchment Runoff Summary
-- 0108 - Spatial Scripts
-- 0109 - Statistics for Node User Numbers
-- 0110 - Statistics for Link User Numbers
-- 0111 - All Node and Link URL Stats
-- 0112 - Add Nine 1D Results Points
-- 0114 - GIS Export of Data Tables
-- 0116 - Export Choice List values
-- 0117 - Import-Export Snapshot file
-- 0118 - Bulk Data Import
-- 0119 - Export to CSV
-- 0120 - Import-Export XML
-- 0121 - Find Duplicate Link IDs
-- 0122 - Update from external CSV
-- 0123 - Update an object with values of another object through comparison
-- 0124 - Network Trace
-- 0125 - Tracing
-- 0126 - Copy selected subcatchments with user suffix
-- 0127 - Kutter Sql for ICM SWMM
-- 0128 - InfoSewer Gravity Main Report, from ICM InfoWorks
-- 0129 - ICM Information Hub Finder
-- 0130 - InfoSewer Peaking Factors
-- 0131 - Complete RB Files
-- 0132 - Runoff Surface Tables
-- 0133 - InfoWorks Land Use Tables
-- 0134 - Input Message Box
-- 0135 - Subcatchment Grid Area Table
-- 0136 - InfoWorks Sub, Land Use with Runoff Surfaces Table
-- 0137 - Creates Subs from Polygons
-- 0138 - Input Message Box
-- 0139 - InfoWorks 2D Parameter Statistics
-- 0140 - List all results fields in a simulation ICM and Show Node Results Stats
-- 0141 - List all results fields in a simulation ICM and Show Subcatchment Results Stats
-- 0142 - Create nodes from polygon subcatchment boundary
-- 0143 - List all results fields in a simulation ICM and Show Flap Valve Results Stats
-- 0144 - Create nodes from polygon subcatchment boundary
-- 0145 - Change 2D Polygon Boundaries
-- 0146 - Add 2D Results Points in a Polygon
-- 0147 - List all results fields in a simulation (ICM SWMM) and Show Link Results Stats
-- 0148 - Read Inflows File
-- 0149 - Utilities
-- 0150 - Scenario Sensitivity - InfoWorks Link Mannings N
-- 0151 - Read SWMM5 RPT File
-- 0152 - Read InfoSewer Steady State Report File
-- 0153 - Tau or Shear Stress non QM Calculations
-- 0154 - Ruby for some InfoSWMM Subcatchment Manager Tools
+- **0001 - Element and Field Statistics**
+- **0002 - Tracing Tools**
+- **0003 - Scenario Tools**
+- **0004 - Scenario Sensitivity - InfoWorks**
+- **0005 - Import Export of Data Tables**
+- **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+- **0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM**
+- **0008 - Database Field Tools for Elements and Results**
+- **0009 - Polygon Subcatchment Boundary Tools**
+- **0010 - List all results fields with Stats**
+- **0011 - Get results from all timesteps in the IWR File**
+- **0012 - ICM InfoWorks Results to SWMM5 Summary Tables**
+- **0013 - SUDS or LID Tools**
+- **0014 - InfoSewer to ICM Comparison Tools**
+- **0015 - Export SWMM5 Calibration Files**
+- **0016 - InfoSWMM and SWMM5 Tools in Ruby**
+- **0017 - Subcatchment Grid and Tabs Tools**
+- **0018 - Create Selection list using a SQL query**
+- **0019 - Node Connection Tools**
+- **0020 - All Node, Subs and Link IDs Tools**
+- **0021 - Change the Geometry or Rename IDs**
+- **0022 - TBA**
+- **0023 - TBA**
+- **0024 - Utilities**
+- **0025 - Miscellaneous**
+
 
 ## SWMM5 Versions
 
