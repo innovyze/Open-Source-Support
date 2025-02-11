@@ -4,7 +4,7 @@ net = WSApplication.current_network
 all_subs = net.row_object_collection('hw_subcatchment')
 
 # Create a hash to map node IDs to their subcatchments
-node_sub_hash_map = {}
+node_sub_hash_map = Hash.new { |hash, key| hash[key] = [] }
 
 # Get all nodes from the network
 all_nodes = net.row_object_collection('hw_node')
