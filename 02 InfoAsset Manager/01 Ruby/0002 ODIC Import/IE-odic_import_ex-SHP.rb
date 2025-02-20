@@ -13,6 +13,8 @@ nw.reserve
 ## Open the network
 net = nw.open
 
+## Update the network
+nw.update
 
 puts 'Start import'
 

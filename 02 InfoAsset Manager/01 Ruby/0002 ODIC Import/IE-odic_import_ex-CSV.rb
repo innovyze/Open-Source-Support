@@ -1,8 +1,6 @@
 
 begin
 
-#WSApplication.use_arcgis_desktop_licence
-
 ## Open a database
 db = WSApplication.open('localhost:40000/database',false)
 
@@ -15,6 +13,8 @@ nw.reserve
 ## Open the network
 net = nw.open
 
+## Update the network
+nw.update
 
 puts 'Start import'
 
