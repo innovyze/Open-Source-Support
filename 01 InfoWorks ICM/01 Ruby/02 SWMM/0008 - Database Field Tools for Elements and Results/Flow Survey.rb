@@ -28,11 +28,14 @@ def ustrace(link)
 	end
 	return [usnodes,uslinks]
 end
-val=WSApplication.prompt "Flow Monitor Input Dialog Box",
+val = WSApplication.prompt "Flow Monitor Input Dialog Box",
 [
-['ID of Master Group or Model Group where selection list will be saved','String'],
-['Above ID is of Master Group/ Model Group?','String','Model group',nil,'LIST',['Model group','Master group']]
-],true
+  ['This tool traces upstream nodes and links from selected flow', 'String'], 
+  ['monitors and saves the selection list in the specified group.', 'String'],
+  ['ID of Master Group or Model Group where selection list will be saved', 'String'],
+  ['Above ID is of Master Group/ Model Group?', 'String', 'Model group', nil, 'LIST', ['Model group', 'Master group']]
+], true
+
 db=WSApplication.current_database
 mo=db.model_object_from_type_and_id(val[1],val[0].to_i)
 flow_monitors_links=net.row_objects_selection('_links')

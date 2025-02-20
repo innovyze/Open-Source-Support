@@ -1,4 +1,21 @@
 #InfoWorks ICM Technical Information Hub
+=begin
+This script displays a comprehensive technical information hub for InfoWorks ICM and SWMM Networks.
+It presents a formatted menu of resources organized into categories including:
+- Support channels (Innovyze and Autodesk)
+- Download portals
+- Version information and release notes
+- Licensing details
+- Technical documentation
+- Configuration guides
+- Learning resources
+- Scripting/API documentation
+- Cloud capabilities
+
+Each category contains relevant links and resources for users of InfoWorks ICM software.
+The output is formatted in two sections with aligned columns for better readability.
+=end
+
 
 puts "1/ InfoWorks ICM Technical Information Hub for InfoWorks and SWMM Networks"
 puts "https://boards.autodesk.com/4bf242?token=a671af9e76"

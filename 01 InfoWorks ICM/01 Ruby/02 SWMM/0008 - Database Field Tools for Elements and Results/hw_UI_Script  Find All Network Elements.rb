@@ -13,10 +13,12 @@ begin
         row_objects.each do |obj|
             hash_map[obj.id] << obj.id
         end   
-        printf "%-20s \n", "Name"
-        hash_map.each do |name, id|
-            printf "#{type.capitalize} %-20s \n", name
-        end
+        printf "%-20s \n", type
+        hash_map.each_with_index do |(name, id), index|
+            printf "#{type.capitalize} %-20s ", name
+            printf "\n" if (index + 1) % 8 == 0
+          end
+          printf "\n" unless hash_map.size % 8 == 0 
     end
 
     # Process nodes, links, subcatchments, and pumps

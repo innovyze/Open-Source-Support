@@ -65,3 +65,26 @@ The readme.md file within this directory might contain specific instructions, no
 
 
 This README now focuses exclusively on the `0006 - ICM SWMM vs ICM InfoWorks All Tables` folder, detailing its contents and usage. 
+
+ 
+
+ 
+## 5. Database Field Tools for Elements and Results/Flow Survey.rb
+This script traces upstream nodes and links from selected flow monitors and saves the selection list in the specified group.
+
+### Key Features:
+- Traces upstream nodes and links from selected flow monitors.
+- Saves the selection list in the specified group.
+- Includes a prompt for user input to specify the group ID and type (Model group or Master group).
+
+### Example Usage:
+
+Flow Monitor Input Dialog Box
+This tool traces upstream nodes and links from selected flow monitors and saves the selection list in the specified group. ID of Master Group or Model Group where selection list will be saved: [User Input] Above ID is of Master Group/ Model Group?: [User Input]
+
+Note
+Always check for permissions before running scripts that might access or modify files.
+Backup your data before executing scripts that could alter or process data extensively.
+The readme.md file within this directory might contain specific instructions, notes, or prerequisites for running these comparison scripts.
+This README now focuses exclusively on the 0006 - ICM SWMM vs ICM InfoWorks All Tables folder, detailing its contents and usage.
+
