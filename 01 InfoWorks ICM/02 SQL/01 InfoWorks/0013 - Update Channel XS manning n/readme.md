@@ -1,10 +1,10 @@
-For channels, you cannot directly batch edit the cross-section profile in the grid. You can only edit one profile a time through the channel object properties window.
+For channels, you cannot directly batch edit the cross-section profile in the grid. You can only edit one profile at a time through the channel object properties window.
 
 <img src="./media/image1.png" style="width:5.38474in;height:4.15573in" alt="A screenshot of a computer Description automatically generated" />
 
-For batch editing, SQL let you directly access the data.
+For batch editing, SQL lets you directly access the data.
 
-# Viewing cross-Section data
+# Viewing cross-section data
 
 You can show all the profile data in a single table using this query.
 

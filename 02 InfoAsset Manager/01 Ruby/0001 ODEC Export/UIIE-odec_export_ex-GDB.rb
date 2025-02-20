@@ -17,7 +17,6 @@ params = Hash.new
     #params['Units Behaviour'] = 'Native'				# Native or User | Default = Native
     #params['Append'] = false							# Boolean, True to enable 'Append to existing data' | Default = FALSE	
     #params['Previous Version'] = 0                 	# Integer, Previous version, if not zero differences are exported | Default = 0
-    #params['WGS84'] = false							# Boolean | Default = FALSE
     #params['Don't Update Geometry'] = false			# Boolean | Default = FALSE
 
 configPath = 'C:\\Data\\Geodatabase\\CFGs\\'

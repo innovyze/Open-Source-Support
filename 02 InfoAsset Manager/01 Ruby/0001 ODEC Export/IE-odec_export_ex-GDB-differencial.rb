@@ -74,7 +74,6 @@ options['Error File'] = errorfile					# Default = nil
 #options['Append'] = false							# Boolean, True to enable 'Append to existing data' | Default = FALSE
 #options['Export Selection'] = false				# Boolean, True to export the selected objects only | Default = FALSE
 options['Previous Version'] = last_commit_id_table	# Integer, Previous version, if not zero differences are exported | Default = 0
-#options['WGS84'] = false							# Boolean | Default = FALSE
 #options['Don't Update Geometry'] = false			# Boolean | Default = FALSE
 
 

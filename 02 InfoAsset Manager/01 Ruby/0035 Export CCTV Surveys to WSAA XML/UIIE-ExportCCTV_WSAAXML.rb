@@ -220,7 +220,10 @@ while c<n
 		header.add_element("ACN").text = (o.year_laid.empty?) ? nil : o.year_laid				##Year came into operation
 		header.add_element("ACO").text = (o.jointing_method.empty?) ? nil : o.jointing_method				##Jointing method
 		header.add_element("ADA").text = (o.weather.empty?) ? nil : o.weather				##Precipitation
-		header.add_element("ADB").text = (o.temperature.empty?) ? nil : o.temperature				##Temperature
+		header.add_element("ADB").text = (o.temperature =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/ && !o.temperature.nil?) ? o.temperature : nil				##Temperature
+		unless o.temperature =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/ || o.temperature.empty?
+			log "	ADB - Invalid temperature value: '#{o.temperature}'"
+		end
 		header.add_element("ADC").text = (o.flow_control.empty?) ? nil : o.flow_control				##Flow control measures
 		header.add_element("ADD").text = (o.tidal_influence.empty?) ? nil : o.tidal_influence				##Tidal influence
 		header.add_element("ADE").text = (o.comments.empty?) ? nil : o.comments				##General comment
