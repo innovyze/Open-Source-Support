@@ -13,9 +13,9 @@ ro.each do |s|
 		unless join.empty?              ## If the array is not empty
 			val=join.join('; ')              ## Set the array's values into a variable, each value in the array is seperated by a semicolon
 			puts "#{s.id} :	#{val}"             ## Output the values with the object id
+			s.comments=val              ## Write the values into the 'comments' field on the object
+			s.write
 		end
-		s.comments=val              ## Write the values into the 'comments' field on the object
-		s.write
 	end
 end
 net.transaction_commit
