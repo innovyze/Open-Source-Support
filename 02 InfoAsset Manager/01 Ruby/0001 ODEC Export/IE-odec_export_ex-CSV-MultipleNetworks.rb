@@ -3,9 +3,9 @@
 networks=Array.new
 networks = [8,6]	## Network IDs for export into the array
 
-db = WSApplication.open('//localhost:40000/2025/IA_2025.4')		## Database to connect to
+db = WSApplication.open('//localhost:40000/Databasename')		## Database to connect to
 
-errorFile = 'C:\\TEMP\\JUNK\\ExportErrors.txt'		## Error file for ODEC errors
+errorFile = 'C:\\TEMP\\ExportErrors.txt'		## Error file for ODEC errors
 params = Hash.new									## Hash for ODEC options
     params['Error File'] = errorFile                    # Default = nil
     #params['Export Selection'] = false                 # Boolean, True to export the selected objects only | Default = FALSE
@@ -17,12 +17,12 @@ params = Hash.new									## Hash for ODEC options
     #params['Previous Version'] = 0                 	# Integer, Previous version, if not zero differences are exported | Default = 0
     #params['Don't Update Geometry'] = false			# Boolean | Default = FALSE
 
-configPath = "C:\\TEMP\\JUNK\\"		## Folder containing *.cfg files
+configPath = "C:\\TEMP\\"		## Folder containing *.cfg files
 
 networks.each { |n|		## Run through the array of Network IDs
 	nw=db.model_object_from_type_and_id('Collection Network',n)		## Define the Network to use
 	on=nw.open														## Open the Network
-	exportFile="C:\\Temp\\junk\\network_"+n.to_s+".csv"				## Export filename for this network - unique filename if not appending to the existing file
+	exportFile="C:\\Temp\\network_"+n.to_s+".csv"	    			## Export filename for this network - unique filename if not appending to the existing file
 	on.odec_export_ex('CSV', configPath+'export.cfg', params, 'Pipe', exportFile)		## Run the ODEC export
 	
 	puts "Exported #{nw.id} #{nw.name}"
