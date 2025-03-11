@@ -81,10 +81,11 @@ begin
   # Print table details (optional)
   print_table_results(cn)
 
-  # Define the result fields for HW Node, HW Conduit, and HW Pump assets.
-  HW_NODE_FIELDS = %w[DEPNOD FLOOD_LEVEL FLOODDEPTH FLOODVOLUME FLVOL MAX_DEPNOD MAX_FLOODDEPTH MAX_FLOODVOLUME MAX_FLVOL MAX_QINFNOD MAX_QNODE MAX_QRAIN QINCUM QINFNOD QNODE QRAIN VFLOOD VGROUND MAX_VOLUME VOLBAL VOLUME PCVOLBAL]
-  HW_CONDUIT_FIELDS = %w[HEIGHT HYDGRAD LENGTH MAX_QINFLNK MAX_QLINK MAX_SURCHARGE MAX_US_DEPTH MAX_US_FLOW MAX_US_FROUDE MAX_US_TOTALHEAD MAX_US_VEL MAXSURCHARGESTATE PFC QINFLNK QLICUM QLINK SURCHARGER TYPE US_DEPTH US_FLOW US_FROUDE US_INVERT US_QCUM US_TOTALHEAD US_VEL VOLUME DS_DEPTH DS_FLOW DS_FROUDE DS_INVERT DS_QCUM DS_TOTALHEAD DS_VEL MAX_DS_DEPTH MAX_DS_FLOW MAX_DS_FROUDE MAX_DS_TOTALHEAD MAX_DS_VEL]
-  HW_PUMP_FIELDS = HW_CONDUIT_FIELDS.dup
+  # Define the result fields for HW Node, HW Conduit, HW Pump, and HW Subcatchment assets.
+  HW_NODE_FIELDS     = %w[DEPNOD FLOOD_LEVEL FLOODDEPTH FLOODVOLUME FLVOL MAX_DEPNOD MAX_FLOODDEPTH MAX_FLOODVOLUME MAX_FLVOL MAX_QINFNOD MAX_QNODE MAX_QRAIN QINCUM QINFNOD QNODE QRAIN VFLOOD VGROUND MAX_VOLUME VOLBAL VOLUME PCVOLBAL]
+  HW_CONDUIT_FIELDS  = %w[HEIGHT HYDGRAD LENGTH MAX_QINFLNK MAX_QLINK MAX_SURCHARGE MAX_US_DEPTH MAX_US_FLOW MAX_US_FROUDE MAX_US_TOTALHEAD MAX_US_VEL MAXSURCHARGESTATE PFC QINFLNK QLICUM QLINK SURCHARGER TYPE US_DEPTH US_FLOW US_FROUDE US_INVERT US_QCUM US_TOTALHEAD US_VEL VOLUME DS_DEPTH DS_FLOW DS_FROUDE DS_INVERT DS_QCUM DS_TOTALHEAD DS_VEL MAX_DS_DEPTH MAX_DS_FLOW MAX_DS_FROUDE MAX_DS_TOTALHEAD MAX_DS_VEL]
+  HW_PUMP_FIELDS     = HW_CONDUIT_FIELDS.dup
+  HW_SUBCATCHMENT_FIELDS = %w[effrain evapprof EVAPRATE max_EVAPRATE max_qcatch max_qfoul max_qinfsoil max_qrdii max_qsurf01 max_qtrade qbase qcatch qfoul qinfsoil qrdii qsurf01 qtrade rainprof max_qsurf02 max_RAINFALL qsurf02 RAINFALL max_qsurf03 qsurf03 max_runoff runoff]
 
   # Process each selected asset. No CSV file is created.
   cn.each_selected do |asset|
@@ -97,6 +98,9 @@ begin
       
       ro_pump = cn.row_object('hw_pump', asset.id)
       process_results(ro_pump, asset.id, HW_PUMP_FIELDS, time_interval, ts_size, 'HW Pump') if ro_pump
+      
+      ro_subcatchment = cn.row_object('hw_subcatchment', asset.id)
+      process_results(ro_subcatchment, asset.id, HW_SUBCATCHMENT_FIELDS, time_interval, ts_size, 'HW Subcatchment') if ro_subcatchment
     rescue => e
       puts "Error processing asset ID #{asset.id}: #{e.message}"
     end

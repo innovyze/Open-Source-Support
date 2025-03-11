@@ -102,6 +102,8 @@ begin
   SW_PUMP_FIELDS    = %w[FLOW]
   SW_ORIFICE_FIELDS = %w[FLOW]
   SW_WEIR_FIELDS    = %w[FLOW]
+  # Added new field set for SW_SUBCATCHMENT
+  SW_SUBCATCHMENT_FIELDS = %w[rainfall snow_depth evaporation_loss infiltration_loss runoff total_precipitation total_runon total_evaporation total_infiltration total_runoff_depth imperv_runoff perv_runoff total_runoff_volume peak_runoff peak_runoff_time runoff_coefficient]
 
   # Process each selected asset in the current network
   cn.each_selected do |sel|
@@ -118,8 +120,11 @@ begin
       ro_orifice = cn.row_object('sw_orifice', sel.id)
       process_results(ro_orifice, sel.id, SW_ORIFICE_FIELDS, time_interval, ts_size, 'Orifice') if ro_orifice
 
-      ro_weirs = cn.row_object('sw_weirs', sel.id)
+      ro_weirs = cn.row_object('sw_weir', sel.id)
       process_results(ro_weirs, sel.id, SW_WEIR_FIELDS, time_interval, ts_size, 'Weirs') if ro_weirs
+
+      ro_subcatchment = cn.row_object('sw_subcatchment', sel.id)
+      process_results(ro_subcatchment, sel.id, SW_SUBCATCHMENT_FIELDS, time_interval, ts_size, 'Subcatchment') if ro_subcatchment
     rescue => e
       # Optionally log errors:
       # puts "Error processing asset ID #{sel.id}: #{e.message}"
