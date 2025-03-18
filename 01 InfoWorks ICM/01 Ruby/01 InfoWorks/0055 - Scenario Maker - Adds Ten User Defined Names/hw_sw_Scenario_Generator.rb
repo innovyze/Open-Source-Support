@@ -1,9 +1,8 @@
 # Original Source https://github.com/ngerdts7/ICM_Tools123
-# RED + ChatGPT edits 
 
 current_network = WSApplication.current_network
 
-THANK_YOU_MESSAGE = 'Thank you for using Ruby in ICM InfoWorks'
+MESSAGE = 'Thank you for using Ruby in InfoWorks ICM'
 
 scenarios=Array.new
 scenarios = 
@@ -25,11 +24,13 @@ current_network.scenarios do |scenario|
         current_network.delete_scenario(scenario)
     end
 end
-puts 'All scenarios deleted'
+puts 'All existing scenarios deleted'
 
 scenarios.each do |scenario|
 	current_network.add_scenario(scenario,nil,'')
   end
-
-puts THANK_YOU_MESSAGE
-
+puts "\n"
+puts 'New scenarios added: ' + scenarios.length.to_s
+puts "\t" + scenarios.join("\n\t")
+puts "\n"
+puts MESSAGE
