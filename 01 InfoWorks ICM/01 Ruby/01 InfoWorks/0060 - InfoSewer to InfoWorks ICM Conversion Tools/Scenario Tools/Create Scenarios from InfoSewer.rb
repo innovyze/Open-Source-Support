@@ -119,3 +119,4 @@ end
 
 # Print the total number of scenarios added
 puts "\nTotal scenarios added: #{added_scenarios_count}"
+puts "\nNote: This script makes copies of the Base scenario and renames them to the corresponding InfoSewer scenario names. It does not import the scenario data from InfoSewer datasets."

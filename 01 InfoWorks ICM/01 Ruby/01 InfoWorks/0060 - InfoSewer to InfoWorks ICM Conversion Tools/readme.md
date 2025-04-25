@@ -50,7 +50,12 @@ Scripts to modify Node, Link, and Subcatchment attributes:
 
 ## Scenario Tools
 - Create Scenarios from InfoSewer.rb: This ruby script utilizes the SCENARIO.CSV to create scenarios from InfoSewer model. Created scenarios are a copy of the Base network in InfoWorks ICM. Scenario data will not be populated.
-- InfoWorks Selection Lists from Scenarios or Selection Set.rb: This ruby script utilizes the ANODE.CSV and ALINK.CSV located within either the Scenario folder or the SS (Selection Set) folder to create selection lists. The ANODE and ALINK files within the Scenario folder indicate which nodes and links are active in that scenario, while the ANODE and ALINK files within the SS folder indicate nodes and links which should be selected. 
+- InfoWorks Selection Lists from Scenarios or Selection Set.rb: This ruby script utilizes the ANODE.CSV and ALINK.CSV located within either the Scenario folder or the SS (Selection Set) folder to create selection lists. The ANODE and ALINK files within the Scenario folder indicate which nodes and links are active in that scenario, while the ANODE and ALINK files within the SS folder indicate nodes and links which should be selected.
+- Import Series: This script series utilizes the SCENARIO.CSV to determine which InfoSewer datasets should be used to populate scenario data within InfoWorks ICM. For example, the MHHYD script imports the appropriate MH_SET data for each scenario.
+    - Import_Scenario_Data_MHHYD.rb
+    - Import_Scenario_Data_PIPEHYD.rb
+    - Import_Scenario_Data_PUMPHYD.rb
+    - Import_Scenario_Data_WWELLHYD.rb
 
 ## Pattern Tools
 - Patterns_to_ICM_CSV.xlsm: This macro automates the conversion of diurnal pattern data into a format that InfoWorks ICM can recognize and use.
