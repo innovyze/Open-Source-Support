@@ -3,21 +3,21 @@ This script is designed to clean 'Bank line - Bank data' in an InfoWorks ICM mod
 
 ## How it Works
 
-    The script first accesses the current network.
+1. The script first accesses the current network.
 
-    It checks if any bank lines are selected. If none are selected, it informs the user via a message box and proceeds to process all bank lines. If bank lines are selected, it processes only the selected bank lines.
+2. It checks if any bank lines are selected. If none are selected, it informs the user via a message box and proceeds to process all bank lines. If bank lines are selected, it processes only the selected bank lines.
 
-    The script collects all bank line points into a bankpointsblob array. Each point includes the bank line ID, X, Y, Z values, and a reference to the bank line object.
+3. The script collects all bank line points into a bankpointsblob array. Each point includes the bank line ID, X, Y, Z values, and a reference to the bank line object.
 
-    It collects all cross section line points into a xspointsblob array, containing X and Y values for each point.
+4. It collects all cross section line points into a xspointsblob array, containing X and Y values for each point.
 
-    The script iterates over each bank point in bankpointsblob and checks for a matching X and Y coordinate in xspointsblob. If a match is found, it moves to the next bank point.
+5. The script iterates over each bank point in bankpointsblob and checks for a matching X and Y coordinate in xspointsblob. If a match is found, it moves to the next bank point.
 
-    If no match is found for a bank point, the script sets its Z value to null and writes the updated bank line back to the network.
+6. If no match is found for a bank point, the script sets its Z value to null and writes the updated bank line back to the network.
 
-    If no bank lines were selected initially, the script selects all bank lines in the network.
+7. If no bank lines were selected initially, the script selects all bank lines in the network.
 
-    The script commits the transaction and displays a completion message with instructions for the next steps (customisable).
+8. The script commits the transaction and displays a completion message with instructions for the next steps (customisable).
 
 ## Usage
 To use this script, simply run it in the context of an open network in InfoWorks ICM. If you want to process specific bank lines, select them before running the script. The script will clean the bank line data and provide guidance for further actions.
@@ -27,6 +27,6 @@ After the script completes its operation, it will display the following message:
 
 This message guides you to the next steps required to finalize the bank line processing.
 
-Feel free to reach out if you have any questions or need further assistance!
-
 ![](gif001.gif)
+
+Feel free to reach out if you have any questions or need further assistance!
