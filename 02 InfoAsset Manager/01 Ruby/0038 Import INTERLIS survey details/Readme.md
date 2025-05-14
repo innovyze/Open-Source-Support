@@ -5,7 +5,7 @@ The script reads the XML to insert 'VSA_KEK_2020_LV95.KEK.Normschachtschaden' el
 It also reads the 'VSA_KEK_2020_LV95.KEK.Datei' section where the 'art' element is "Foto" (line 24) and "digitales_Video" (line 26) to match these based on the 'Objekt' element to match the observation to import in the image filenames and video filenames respectively.  
   
 When running the script, an Open XML File dialog will show to select the XML file to import.  
-This will update existing surveys within the Manhole Survey table with the REF values on the details the Survevy ID within the database. The data is imported into the details table, appending onto any existing data.  
+This will update existing surveys within the Manhole Survey table with the REF values on the details the Survey ID within the database. The data is imported into the details table, appending onto any existing data.  
 Observation values imported are sorted (line 111) on the 'distanz' then 'videozaehlerstand' values.  
 The "digitales_Video" value is also set into the 'video_file_in' field (line 135) on the survey.  
 
