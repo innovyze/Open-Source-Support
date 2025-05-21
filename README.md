@@ -1,22 +1,22 @@
-# Innovyze open source scripts
+# Autodesk Water Infrastructure Open Source Support
 
-This repository will host open source code that can be used in the Innovyze Workgroup products. This includes Ruby for the UI/Exchange, SQL and other useful scripts.
+This repository will host open source code that can be used in the Autodesk Water products. This includes Ruby for the UI/Exchange, SQL and other information.
 
-The [Exchange](https://help.autodesk.com/view/IWICMS/2025/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html) documentation includes (almost) all available Ruby methods and will be updated regularly.
+The [Exchange](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html) documentation includes (almost) all available Ruby methods and will be updated regularly.
 
 ## Scope
 
-Scripts posted here are generally developed by Innovyze Support on the back of a specific customer request, but we're not programmers. Therefore, the scripts might not always be entirely optimised. Feel welcome to contribute with pull requests and raise issues for changes that you'd like to see.
+Scripts posted here are generally developed by Autodesk Support on the back of a specific customer request, but we're not programmers. Therefore, the scripts might not always be entirely optimised. Feel welcome to contribute with pull requests and raise issues for changes that you'd like to see.
 
 It would be a desirable by-product if this space reached enough critical mass that a community of like-minded users would help each other, suggest improvements and propose new ideas. Feel free to make use of [Issues](https://github.com/innovyze/Open-Source-Support/issues).
 
-This is not the place to develop bespoke code for customers, nor ever will we post it here. This can be requested from Innovyze within the scope of an implementation project.
+This is not the place to develop bespoke code for customers, nor ever will we post it here. This can be requested from Autodesk within the scope of an implementation project.
 
 ## Languages
 
 ### Ruby
 
-Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the [Exchange](https://help.autodesk.com/view/IWICMS/2025/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html) documentation.
+Ruby scripts are split into those which run from the UI and those which run via the Exchange API. The differences between the two are explicit in the [Exchange](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html) documentation.
 
 In this repository:
 
@@ -39,9 +39,9 @@ This example BAT script passes an `EX_script.rb` Ruby script to the `IExchange.e
 
 Multiple scripts performing a similar task can be stored under the same folder. These should be appended with the suffix `_v?`, where `?` is an integer representing each variant.
 
-### SQL (of the Innovyze Workgroup Products variety)
+### SQL (of the Autodesk Water Workgroup Products variety)
 
-Innovyze implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria.
+Autodesk Water implements its own subset of SQL (Structured Query Language) for selecting and updating network objects using specified criteria.
 An SQL query consists of a number of clauses separated by semi-colons. Each clause can do one of the following:
 
 * Select objects
@@ -63,10 +63,10 @@ Together, let's grow and improve the InfoWorks ICM / WS Pro modelling experience
 
 ### Structure
 
-This project is currently growing in a rather organic fashion. We might decide to change the structure, which might mean broken links. We're also open to structure changes by users if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
+This project is currently growing in an organic fashion. We might decide to change the structure, which might mean broken links. We're also open to structure changes by users if they improve usability. We'll try to avoid this as best as possible, but during the early stages of the project this can happen frequently.
 
 ### Liability
 
-Innovyze Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate.
+Autodesk Support will post and moderate code posted here in good faith. This is open source and is available for anyone to interrogate.
 
-**Innovyze is not liable for unintended consequences of code posted here, nor does it have a responsibility for maintaining it.**
+**Autodesk is not liable for unintended consequences of code posted here, nor does it have a responsibility for maintaining it.**

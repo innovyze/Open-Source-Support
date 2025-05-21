@@ -34,13 +34,13 @@ In the Node theme window, add a new SQL Expression,
 
 Enter the calculation in the SQL window, use the field type to switch between node attributes and result attributes (note: FIXED is a function the round the results to 2 decimal places.). Refer to the help pages for more details:
 
-- [Node Results Data Fields](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-18FD4962-1E97-491A-AD6E-6DF35191301D)
+- [Node Results Data Fields](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-18FD4962-1E97-491A-AD6E-6DF35191301D)
 
-- [Node Data Fields (InfoWorks)](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-18DCDEB6-621C-4127-8C04-365D3CDC4C7E)
+- [Node Data Fields (InfoWorks)](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-18DCDEB6-621C-4127-8C04-365D3CDC4C7E)
 
-- [SQL in InfoWorks ICM](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-F416C0A8-90BC-47F0-9A38-18FBEF65EFB8)
+- [SQL in InfoWorks ICM](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-F416C0A8-90BC-47F0-9A38-18FBEF65EFB8)
 
-- [Edit Expressions Dialog](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-E5FF8FBF-1EA5-4836-98AE-178EBC6302FD)
+- [Edit Expressions Dialog](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-E5FF8FBF-1EA5-4836-98AE-178EBC6302FD)
 
 <img src="./media/image6.png" style="width:4.70774in;height:2.86423in" alt="A screenshot of a computer Description automatically generated" />
 
@@ -98,7 +98,7 @@ Drag and drop the saved theme to a GeoPlan will apply the theme to the opened ne
 
 ## Show the freeboard label on the GeoPlan
 
-First go to “Properties and Themes” window, then click on “Auto Labels and Tooltips” tab. Then add the SQL expression to the label text. For more information, refer to [Custom Autolabels Text Dialog](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-E3E52C96-8654-460C-A017-1BBB0345AC21).
+First go to “Properties and Themes” window, then click on “Auto Labels and Tooltips” tab. Then add the SQL expression to the label text. For more information, refer to [Custom Autolabels Text Dialog](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-E3E52C96-8654-460C-A017-1BBB0345AC21).
 
 <img src="./media/image12.png" style="width:6.5in;height:5.15625in" alt="A screenshot of a computer Description automatically generated" />
 
