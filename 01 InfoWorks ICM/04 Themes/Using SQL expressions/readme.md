@@ -1,8 +1,6 @@
----
-title: How to use SQL expression to visualize results on the GeoPlan (map)
----
+# How to use SQL expression to visualize results on the GeoPlan (map)
 
-# Introduction
+## Introduction
 
 To calculate and visualize parameters that are not reported as an attribute or results field in InfoWorks ICM, you can use SQL expression to create a custom field.
 
@@ -18,7 +16,7 @@ For example, freeboard is measured as the distance from the ground of the manhol
 
 <img src="./media/image1.png" style="width:6.5in;height:3.07847in" alt="A screenshot of a computer Description automatically generated" />
 
-# Add the SQL expression
+## Add the SQL expression
 
 Dragging the result into the GeoPlan.
 
@@ -46,7 +44,7 @@ Enter the calculation in the SQL window, use the field type to switch between no
 
 <img src="./media/image6.png" style="width:4.70774in;height:2.86423in" alt="A screenshot of a computer Description automatically generated" />
 
-# Add the GeoPlan (map) theme
+## Add the GeoPlan (map) theme
 
 For nodes with small freeboard, we would like to show a symbol as a large red circle. For nodes with a large freeboard, we would like to show it as a small blue circle.
 
@@ -60,7 +58,7 @@ Notes:
 
 - Color and size ramps can be automatically interpolated between the first and last values. For the color ramp, (7) select color for worst case, (8) and green for best case, and (9) click on the auto-theme button to interpolate the rest.
 
-# Save the theme as an object of file
+## Save the theme as an object of file
 
 For complex or commonly used themes, you can save it as a ICM object or a \*.iws file for later use.
 
@@ -92,13 +90,13 @@ The following steps are similar if you export the theme. To save to database obj
 
 <img src="./media/image10.png" style="width:2.60384in;height:3.87452in" alt="A screenshot of a computer Description automatically generated" />
 
-# Apply a saved Theme
+## Apply a saved Theme
 
 Drag and drop the saved theme to a GeoPlan will apply the theme to the opened network.
 
 <img src="./media/image11.png" style="width:5.66596in;height:2.11432in" alt="A computer screen shot of a computer Description automatically generated" />
 
-# Show the freeboard label on the GeoPlan
+## Show the freeboard label on the GeoPlan
 
 First go to “Properties and Themes” window, then click on “Auto Labels and Tooltips” tab. Then add the SQL expression to the label text. For more information, refer to [Custom Autolabels Text Dialog](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-E3E52C96-8654-460C-A017-1BBB0345AC21).
 
@@ -124,12 +122,12 @@ And the freeboard will show on the profile table.
 
 <img src="./media/image17.png" style="width:5.97842in;height:2.56218in" alt="A screenshot of a computer Description automatically generated" />
 
-# Save the long section settings
+## Save the long section settings
 
 Similar to the Geoplan theme, you can also export the long section settings as an iws file.
 
 <img src="./media/image18.png" style="width:6.3013in;height:6.24922in" alt="A screenshot of a computer Description automatically generated" />
 
-# Conclusion
+## Conclusion
 
 Using SQL expressions in GeoPlan allows you to create custom fields and visualize the results. This tutorial guides you through the process of adding and applying custom themes, as well as saving and applying saved themes. By following these steps, you can enhance your data visualization and analysis capabilities in GeoPlan.
