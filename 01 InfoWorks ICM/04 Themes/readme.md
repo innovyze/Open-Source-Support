@@ -1,8 +1,6 @@
----
-title: Sample InfoWorks ICM GeoPlan Themes
----
+# Sample InfoWorks ICM GeoPlan Themes
 
-# Introduction
+## Introduction
 
 You can create beautiful maps without leaving InfoWorks ICM using the built-in GeoPlan tools. In the sample transportable database, you’ll find a long list of commonly used themes. To make your own map, all you need is to drag and drop the theme you like from the sample group to your own model.
 
@@ -24,7 +22,7 @@ If you are using an earlier version of the database, you can load the \*.iws fil
 
 <img src="./media/image2.png" style="width:4.89611in;height:3.53346in" alt="A screenshot of a computer Description automatically generated" />
 
-# Review the themes
+## Review the themes
 
 You can review the themes using the sample models,
 
@@ -52,9 +50,9 @@ To review the settings of the themes,
 
 <img src="./media/image4.png" style="width:4.561in;height:3.4802in" alt="A screenshot of a computer Description automatically generated" />
 
-# Themes List
+## Themes List
 
-## Node
+### Node
 
 <img src="./media/image5.png" style="width:1.8617in;height:0.83908in" alt="A math equations on a white background Description automatically generated" />
 
@@ -64,7 +62,7 @@ To review the settings of the themes,
 
 <img src="./media/image8.png" style="width:2.70799in;height:1.54147in" alt="A screenshot of a math equation Description automatically generated" />
 
-## Conduit
+### Conduit
 
 <img src="./media/image9.png" style="width:2.34346in;height:1.17694in" alt="A white background with black text Description automatically generated" />
 
@@ -74,7 +72,7 @@ To review the settings of the themes,
 
 <img src="./media/image12.png" style="width:2.60384in;height:2.20806in" alt="A screenshot of a computer Description automatically generated" />
 
-## Applications
+### Applications
 
 1D results only
 
@@ -84,7 +82,7 @@ To review the settings of the themes,
 
 <img src="./media/image14.png" style="width:2.96838in;height:3.15586in" alt="A screenshot of a computer program Description automatically generated" />
 
-## Autolabels
+### Autolabels
 
 To show autolabels, first turn it on for the layer.
 
