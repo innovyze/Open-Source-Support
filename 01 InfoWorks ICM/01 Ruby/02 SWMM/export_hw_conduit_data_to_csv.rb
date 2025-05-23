@@ -115,21 +115,11 @@ rescue => e
   exit
 end
 
-# Optional: List available methods for a conduit object (for debugging/development)
-# conduit_example = cn.row_objects('hw_conduit').first
-# if conduit_example
-#   puts "Available methods for hw_conduit object (example):"
-#   puts conduit_example.methods.sort
-# else
-#   puts "No conduits in the network to check methods for."
-# end
-
 prompt_options = [
-  ['Folder for Exported File', 'String', nil, nil, 'FOLDER', 'Export Folder'],
-  ['SELECT/DESELECT ALL FIELDS', 'Boolean', false] # ADDED: Select All Option
+  ['Folder for Exported File', 'String', nil, nil, 'FOLDER', 'Export Folder']
 ]
 FIELDS_TO_EXPORT.each do |field_config|
-  prompt_options << [field_config[0], 'Boolean', field_config[2]] # field_config[0] is label, [2] is default checked state
+  prompt_options << [field_config[0], 'Boolean', field_config[2]]
 end
 
 options = WSApplication.prompt("Select options for CSV export of SELECTED hw_conduit rows", prompt_options, false)
@@ -142,33 +132,25 @@ puts "Starting script at #{Time.now}"
 start_time = Time.now
 
 export_folder = options[0]
-select_all_state = options[1] # ADDED: Get the state of "SELECT ALL"
-
 unless export_folder && !export_folder.empty?
   puts "ERROR: Export folder not specified."
   exit
 end
-
 begin
   Dir.mkdir(export_folder) unless Dir.exist?(export_folder)
 rescue Errno::EACCES => e
-  puts "ERROR: Permission denied creating directory '#{export_folder}' - #{e.message}"
-  exit
+   puts "ERROR: Permission denied creating directory '#{export_folder}' - #{e.message}"
+   exit
 rescue => e
-  puts "ERROR: Could not create directory '#{export_folder}' - #{e.message}"
-  exit
+   puts "ERROR: Could not create directory '#{export_folder}' - #{e.message}"
+   exit
 end
 file_path = File.join(export_folder, "selected_pipes_export_#{Time.now.strftime('%Y%m%d_%H%M%S')}.csv")
 
 selected_fields = []
 header = []
 FIELDS_TO_EXPORT.each_with_index do |field_config, index|
-  # options[0] is folder_path
-  # options[1] is select_all_state
-  # options[index + 2] corresponds to FIELDS_TO_EXPORT[index]
-  individual_field_selected = options[index + 2]
-
-  if select_all_state || individual_field_selected # MODIFIED: Logic for selecting fields
+  if options[index + 1]
     selected_fields << { attribute: field_config[1], header: field_config[3] }
     header << field_config[3]
   end
@@ -186,59 +168,40 @@ begin
     csv << header
 
     puts "Processing conduits... (Checking selection status for each)"
-    # Consider using cn.selection('hw_conduit') if performance is an issue on very large networks
-    # However, iterating all and checking `pipe.selected` is fine for most cases and robust.
+    # NOTE: This iterates ALL conduits. Using cn.selection is generally faster.
     cn.row_objects('hw_conduit').each do |pipe|
-      # Check if pipe exists, has a 'selected' property/method, and it's true
-      if pipe && pipe.respond_to?(:selected) && pipe.selected
-        # --- Process Selected Pipe ---
-        conduit_count += 1
-        row_data = []
-        selected_fields.each do |field_info|
-          begin
-            value = pipe.send(field_info[:attribute])
-            # ICM specific: Handle potential array or complex object values if necessary
-            # For example, point_array might be an array of arrays.
-            if value.is_a?(Array) && field_info[:attribute] == :point_array
-               # Example: Join points into a string: "x1,y1;x2,y2;..."
-               # Adjust formatting as needed
-              row_data << value.map { |pt| "#{pt[0]},#{pt[1]}" }.join(';')
-            elsif value.is_a?(Array)
-              row_data << value.join(', ') # Generic array to comma-separated string
-            else
+       # Check if pipe exists, has a 'selected' property/method, and it's true
+       if pipe && pipe.respond_to?(:selected) && pipe.selected
+          # --- Process Selected Pipe ---
+          conduit_count += 1
+          row_data = []
+          selected_fields.each do |field_info|
+            begin
+              value = pipe.send(field_info[:attribute])
               row_data << (value.nil? ? "N/A" : value)
+            rescue NoMethodError
+              pipe_identifier = pipe.id rescue (pipe.asset_id rescue 'UNKNOWN_ID')
+              puts "Warning: Attribute '#{field_info[:attribute]}' not found for selected pipe '#{pipe_identifier}' (row #{conduit_count})"
+              row_data << "AttributeError"
+            rescue => e
+              pipe_identifier = pipe.id rescue (pipe.asset_id rescue 'UNKNOWN_ID')
+              puts "Warning: Error accessing attribute '#{field_info[:attribute]}' for selected pipe '#{pipe_identifier}' (row #{conduit_count}): #{e.message}"
+              row_data << "AccessError"
             end
-          rescue NoMethodError
-            pipe_identifier = pipe.id rescue (pipe.asset_id rescue 'UNKNOWN_ID')
-            puts "Warning: Attribute '#{field_info[:attribute]}' not found for selected pipe '#{pipe_identifier}' (row #{conduit_count})"
-            row_data << "AttributeError"
-          rescue => e
-            pipe_identifier = pipe.id rescue (pipe.asset_id rescue 'UNKNOWN_ID')
-            puts "Warning: Error accessing attribute '#{field_info[:attribute]}' for selected pipe '#{pipe_identifier}' (row #{conduit_count}): #{e.message}"
-            row_data << "AccessError"
           end
-        end
-        csv << row_data
-        # --- End Process Selected Pipe ---
-      end # if pipe selected
+          csv << row_data
+          # --- End Process Selected Pipe ---
+       end # if pipe selected
     end # cn.row_objects.each
   end # CSV.open block
 
+  # Check if any conduits were actually selected and written
   if conduit_count > 0
     puts "Successfully wrote #{conduit_count} selected conduits to #{file_path}"
   else
-    puts "No conduits were selected in the network, or file writing failed before processing any selected conduits."
-    # Clean up empty CSV file if no data was written
-    if File.exist?(file_path) && File.zero?(file_path)
-        puts "Deleting empty CSV file: #{file_path}"
-        File.delete(file_path)
-    elsif conduit_count == 0 && File.exist?(file_path) # Header might be written
-        header_only_size = CSV.generate_line(header).bytesize + ( Gem.win_platform? ? 2 : 1) # + CRLF or LF
-        if File.size(file_path) <= header_only_size
-            puts "Deleting CSV file with only header: #{file_path}"
-            File.delete(file_path)
-        end
-    end
+    puts "No conduits were selected in the network, or file writing failed before processing."
+    # Optional: Delete the empty file if no conduits were selected?
+    # File.delete(file_path) if File.exist?(file_path)
   end
 
 rescue Errno::EACCES => e
@@ -258,20 +221,15 @@ puts "Script finished at #{end_time}"
 puts "Time spent processing and writing: #{'%.2f' % time_spent} seconds"
 
 # Display summary prompt
-# Check if file path exists AND has data beyond just a header if conduit_count is 0
-file_exists_and_has_data = File.exist?(file_path) && (conduit_count > 0 || (File.exist?(file_path) && File.size(file_path) > (header.empty? ? 0 : CSV.generate_line(header).bytesize + ( Gem.win_platform? ? 2 : 1)) ) )
-
-if file_exists_and_has_data
+if File.exist?(file_path) || conduit_count > 0
   summary_layout = [
     ['Export File Path', 'READONLY', file_path],
-    ['Number of Selected Conduits Written', 'NUMBER', conduit_count],
-    ['Number of Fields Exported Per Conduit', 'NUMBER', selected_fields.count]
+    ['Number of Selected Conduits Written', 'NUMBER', conduit_count], # Updated label
+    ['Number of Fields Exported Per Conduit', 'NUMBER', selected_fields.count] # Updated label
   ]
   WSApplication.prompt('Export Summary (Selected Conduits)', summary_layout, false)
-elsif conduit_count == 0
-  WSApplication.message_box('No selected conduits were found or exported. The CSV file was not created or was empty.', 'Info', :OK, false)
 else
-  puts "No selected conduits were processed or file was not created/was empty." # Fallback message
+  puts "No selected conduits were processed or file was not created."
 end
 
 puts "Script execution complete."
