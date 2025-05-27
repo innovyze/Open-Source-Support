@@ -345,9 +345,9 @@ if file_exists_and_has_data
   ]
   WSApplication.prompt("Export Summary (Selected SWMM Subcatchments)", summary_layout, false)
 elsif subcatchments_written_count == 0 && subcatchments_iterated_count > 0
-  WSApplication.message_box("No SWMM Subcatchments were selected for export. The CSV file was not created or was empty (and thus deleted).", 'Info', :OK, false)
+  WSApplication.message_box("No SWMM Subcatchments were selected for export. The CSV file was not created or was empty (and thus deleted).",'OK',nil,false)
 else
-  WSApplication.message_box("Export for SWMM Subcatchments did not complete as expected. No subcatchments written. Check console messages. The CSV file may not exist or is empty.", 'Info', :OK, false)
+  WSApplication.message_box("Export for SWMM Subcatchments did not complete as expected. No subcatchments written. Check console messages. The CSV file may not exist or is empty.", 'OK',nil,false)
 end
 
 puts "\nScript execution for SWMM Subcatchments complete."

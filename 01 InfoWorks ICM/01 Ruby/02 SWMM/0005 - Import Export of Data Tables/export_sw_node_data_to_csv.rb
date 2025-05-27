@@ -123,6 +123,12 @@ if options.nil?
   exit
 end
 
+options = WSApplication.prompt("Select options for CSV export of SELECTED SWMM Subcatchment rows", prompt_options, false)
+if options.nil?
+  puts "User cancelled the operation. Exiting."
+  exit
+end
+
 puts "Starting script for SWMM Node export at #{Time.now}"
 start_time = Time.now
 
@@ -413,7 +419,7 @@ elsif nodes_written_count == 0 && nodes_iterated_count >= 0
   message += " The output file was not created or was empty (and thus deleted)." if !file_path.empty?
   WSApplication.message_box(message, 'Info', :OK, false)
 else 
-  WSApplication.message_box("Export for SWMM Nodes did not complete as expected. No nodes written. Check console messages.", 'Info', :OK, false)
+  WSApplication.message_box("Export for SWMM Nodes did not complete as expected. No nodes written. Check console messages.",'OK',nil,false)
 end
 
 puts "\nScript execution for SWMM Nodes complete."
