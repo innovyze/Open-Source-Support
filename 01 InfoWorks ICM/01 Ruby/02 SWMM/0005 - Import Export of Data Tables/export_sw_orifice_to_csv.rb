@@ -51,6 +51,18 @@ FIELDS_TO_EXPORT = [
   ['Include User Text 10', :user_text_10, false, 'UserTxt10']
 ].freeze
 
+# --- Helper Functions for Statistics ---
+def calculate_mean(arr)
+  return nil if arr.nil? || arr.empty?
+  arr.sum.to_f / arr.length
+end
+
+def calculate_std_dev(arr, mean)
+  return nil if arr.nil? || arr.empty? || mean.nil? || arr.length < 2
+  sum_sq_diff = arr.map { |x| (x - mean)**2 }.sum
+  Math.sqrt(sum_sq_diff / (arr.length - 1))
+end
+
 # --- Main Script Logic ---
 
 begin
@@ -68,19 +80,16 @@ rescue => e
 end
 
 # --- Optional Debugging Block ---
-# Uncomment the following lines to print available methods for the first 'sw_orifice' object.
-# This helps verify the symbols used in FIELDS_TO_EXPORT.
-# ---
-# orifice_example = cn.row_objects('sw_orifice').first # Target 'sw_orifice'
+# orifice_example = cn.row_objects('sw_orifice').first 
 # if orifice_example
 #   puts "--- DEBUG: Available methods for the first 'sw_orifice' object ---"
 #   puts orifice_example.methods.sort.inspect
-#   if orifice_example.respond_to?(:fields) # Some objects might have a .fields hash
+#   if orifice_example.respond_to?(:fields) 
 #      puts "\n--- DEBUG: Output of '.fields' method for the first 'sw_orifice' object ---"
 #      puts orifice_example.fields.inspect
 #   end
 #   puts "--- END DEBUG ---"
-#   # exit # Uncomment to stop after debugging
+#   # exit 
 # else
 #   puts "DEBUG: No 'sw_orifice' objects found in the network to inspect."
 # end
@@ -88,10 +97,15 @@ end
 
 prompt_options = [
   ['Folder for Exported File', 'String', nil, nil, 'FOLDER', 'Export Folder'],
-  ['SELECT/DESELECT ALL FIELDS', 'Boolean', false]
+  ['SELECT/DESELECT ALL FIELDS', 'Boolean', false],
+  ['Calculate Statistics for Numeric Fields', 'Boolean', false] # New option
 ]
 FIELDS_TO_EXPORT.each do |field_config|
-  prompt_options << [field_config[0], 'Boolean', field_config[2]]
+   if field_config.is_a?(Array) && field_config.length >= 3 && field_config[0].is_a?(String) && (field_config[2].is_a?(TrueClass) || field_config[2].is_a?(FalseClass))
+    prompt_options << [field_config[0], 'Boolean', field_config[2]]
+  else
+    puts "Warning: Skipping invalid entry in FIELDS_TO_EXPORT when building prompt: #{field_config.inspect}"
+  end
 end
 
 options = WSApplication.prompt("Select options for CSV export of SELECTED SWMM Orifice Objects", prompt_options, false)
@@ -105,6 +119,7 @@ start_time = Time.now
 
 export_folder = options[0]
 select_all_state = options[1]
+calculate_stats = options[2] # Get state of the new checkbox
 
 unless export_folder && !export_folder.empty?
   puts "ERROR: Export folder not specified. Exiting."
@@ -125,8 +140,13 @@ file_path = File.join(export_folder, "selected_swmm_orifices_export_#{timestamp}
 
 selected_fields_config = []
 header = []
+field_option_start_index = 3 
 FIELDS_TO_EXPORT.each_with_index do |field_config, index|
-  individual_field_selected = options[index + 2] # options[0] is folder, options[1] is select_all
+  unless field_config.is_a?(Array) && field_config.length >= 4
+    puts "Warning: Skipping invalid field_config during header/selection setup: #{field_config.inspect}"
+    next
+  end
+  individual_field_selected = options[index + field_option_start_index]
   if select_all_state || individual_field_selected
     selected_fields_config << { attribute: field_config[1], header: field_config[3], original_label: field_config[0] }
     header << field_config[3]
@@ -140,6 +160,7 @@ end
 
 orifices_iterated_count = 0
 orifices_written_count = 0
+numeric_data_for_stats = {} # To store numeric data
 
 begin
   CSV.open(file_path, "w") do |csv|
@@ -164,13 +185,15 @@ begin
         
         selected_fields_config.each do |field_info|
           attr_sym = field_info[:attribute]
+          value_for_csv = ""
+          value_for_stats = nil
           begin
-            value = orifice_obj.send(attr_sym)
+            raw_value = orifice_obj.send(attr_sym)
             
-            if value.is_a?(Array)
+            if raw_value.is_a?(Array)
               case attr_sym
               when :point_array
-                row_data << value.map { |pt|
+                value_for_csv = raw_value.map { |pt|
                   x_val = 'N/A'; y_val = 'N/A'
                   if pt.is_a?(Hash)
                     x_val = pt[:x] || pt['x']; y_val = pt[:y] || pt['y']
@@ -182,17 +205,37 @@ begin
                   "#{x_val.to_s.gsub(/[;,]/, '')},#{y_val.to_s.gsub(/[;,]/, '')}"
                 }.join(';')
               when :hyperlinks
-                row_data << value.map { |hl|
+                value_for_csv = raw_value.map { |hl|
                   desc = hl.is_a?(Hash) ? (hl[:description] || hl['description']) : (hl.respond_to?(:description) ? hl.description : '')
                   url = hl.is_a?(Hash) ? (hl[:url] || hl['url']) : (hl.respond_to?(:url) ? hl.url : '')
                   "#{desc.to_s.gsub(/[;,]/, '')},#{url.to_s.gsub(/[;,]/, '')}"
                 }.join(';')
               else
-                row_data << value.map{|item| item.to_s.gsub(/[;,]/, '')}.join(', ')
+                value_for_csv = raw_value.map{|item| item.to_s.gsub(/[;,]/, '')}.join(', ')
               end
             else
-              row_data << (value.nil? ? "" : value)
+              value_for_csv = (raw_value.nil? ? "" : raw_value)
+              if calculate_stats && !raw_value.nil? && raw_value.to_s != ""
+                begin
+                  if raw_value.is_a?(TrueClass)
+                    value_for_stats = 1.0
+                  elsif raw_value.is_a?(FalseClass)
+                    value_for_stats = 0.0
+                  else
+                    value_for_stats = Float(raw_value)
+                  end
+                rescue ArgumentError, TypeError
+                  # Not a number
+                end
+              end
             end
+            row_data << value_for_csv
+
+            if calculate_stats && !value_for_stats.nil?
+              numeric_data_for_stats[attr_sym] ||= []
+              numeric_data_for_stats[attr_sym] << value_for_stats
+            end
+
           rescue NoMethodError
             puts "Warning: Attribute (method) ':#{attr_sym}' (for field '#{field_info[:original_label]}') not found for SWMM Orifice '#{current_orifice_id_for_log}'."
             row_data << "AttributeMissing"
@@ -227,6 +270,63 @@ begin
       end
     end
   end
+  
+  if calculate_stats && orifices_written_count > 0
+    puts "\n--- Statistics for Exported Numeric Fields (SWMM Orifices) ---"
+    param_col_width = 30
+    count_col_width = 8
+    min_col_width = 12
+    max_col_width = 12
+    mean_col_width = 15
+    std_dev_col_width = 15
+    total_width = param_col_width + count_col_width + min_col_width + max_col_width + mean_col_width + std_dev_col_width + (6 * 3) # 6 columns, 7 separators
+
+    puts "-" * total_width
+    puts "| %-#{param_col_width}s | %-#{count_col_width}s | %-#{min_col_width}s | %-#{max_col_width}s | %-#{mean_col_width}s | %-#{std_dev_col_width}s |" % 
+         ["Parameter (Header)", "Count", "Min", "Max", "Mean", "Std Dev"]
+    puts "-" * total_width
+    
+    found_numeric_data_for_table = false
+    selected_fields_config.each do |field_info|
+      attr_sym = field_info[:attribute]
+      data_array = numeric_data_for_stats[attr_sym]
+
+      non_numeric_symbols = [
+        :id, :us_node_id, :ds_node_id, :link_type, :shape, 
+        :opening_type, :point_array, :branch_id, :notes, :hyperlinks
+      ]
+      
+      is_likely_text_or_id = field_info[:header].downcase.include?('id') ||
+                              field_info[:header].downcase.include?('type') ||
+                              field_info[:header].downcase.include?('shape') ||
+                              non_numeric_symbols.include?(attr_sym)
+
+      if data_array && !data_array.empty? && !is_likely_text_or_id
+        found_numeric_data_for_table = true
+        count_val = data_array.length
+        min_val = data_array.min
+        max_val = data_array.max
+        mean_val = calculate_mean(data_array)
+        std_dev_val = calculate_std_dev(data_array, mean_val)
+        display_header = field_info[:header].length > param_col_width ? field_info[:header][0...(param_col_width-3)] + "..." : field_info[:header]
+
+        puts "| %-#{param_col_width}s | %-#{count_col_width}d | %-#{min_col_width}.3f | %-#{max_col_width}.3f | %-#{mean_col_width}.3f | %-#{std_dev_col_width}s |" % [
+          display_header,
+          count_val, 
+          min_val, 
+          max_val, 
+          mean_val,
+          (std_dev_val.nil? ? "N/A (n<2)" : "%.3f" % std_dev_val)
+        ]
+      end
+    end
+    puts "-" * total_width
+    unless found_numeric_data_for_table
+        puts "No suitable numeric data found among selected fields to calculate statistics."
+    end
+  elsif calculate_stats
+    puts "\nNo orifices were written to the CSV, so no statistics calculated."
+  end
 
 rescue Errno::EACCES => e
   puts "FATAL ERROR: Permission denied writing to file '#{file_path}'. - #{e.message}"
@@ -256,7 +356,7 @@ if file_exists_and_has_data
 elsif orifices_written_count == 0 && orifices_iterated_count >= 0
   message = "No SWMM Orifice objects were selected for export."
   message += " The CSV file was not created or was empty (and thus deleted)." if !file_path.empty? && !File.exist?(file_path)
-  WSApplication.message_box(message, 'Info', :OK, false)
+  WSApplication.message_box(message, 'OK',nil,false)
 else
   WSApplication.message_box("Export for SWMM Orifices did not complete as expected. No orifices written. Check console messages. The CSV file may not exist or is empty.", 'Info', :OK, false)
 end

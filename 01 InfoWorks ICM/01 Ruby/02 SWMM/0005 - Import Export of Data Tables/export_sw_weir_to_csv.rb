@@ -110,7 +110,11 @@ prompt_options = [
   ['Calculate Statistics for Numeric Fields', 'Boolean', false] # New option for statistics
 ]
 FIELDS_TO_EXPORT.each do |field_config|
-  prompt_options << [field_config[0], 'Boolean', field_config[2]]
+  if field_config.is_a?(Array) && field_config.length >= 3 && field_config[0].is_a?(String) && (field_config[2].is_a?(TrueClass) || field_config[2].is_a?(FalseClass))
+    prompt_options << [field_config[0], 'Boolean', field_config[2]]
+  else
+    puts "Warning: Skipping invalid entry in FIELDS_TO_EXPORT when building prompt: #{field_config.inspect}"
+  end
 end
 
 options = WSApplication.prompt("Select options for CSV export of SELECTED SWMM Weir Objects", prompt_options, false)
@@ -148,6 +152,10 @@ header = []
 # Adjust index for reading field selection options due to the new "Calculate Statistics" option
 field_option_start_index = 3 
 FIELDS_TO_EXPORT.each_with_index do |field_config, index|
+  unless field_config.is_a?(Array) && field_config.length >= 4
+    puts "Warning: Skipping invalid field_config during header/selection setup: #{field_config.inspect}"
+    next
+  end
   individual_field_selected = options[index + field_option_start_index]
   if select_all_state || individual_field_selected
     selected_fields_config << { attribute: field_config[1], header: field_config[3], original_label: field_config[0] }
@@ -220,7 +228,13 @@ begin
               # Attempt to convert to float for statistics
               if calculate_stats && !raw_value.nil? && raw_value.to_s != ""
                 begin
-                  value_for_stats = Float(raw_value)
+                  if raw_value.is_a?(TrueClass) # Handle boolean true as 1
+                    value_for_stats = 1.0
+                  elsif raw_value.is_a?(FalseClass) # Handle boolean false as 0
+                    value_for_stats = 0.0
+                  else
+                    value_for_stats = Float(raw_value)
+                  end
                 rescue ArgumentError, TypeError
                   # Not a number, do nothing for stats for this value
                 end
@@ -272,39 +286,57 @@ begin
   # Calculate and print statistics if requested
   if calculate_stats && weirs_written_count > 0
     puts "\n--- Statistics for Exported Numeric Fields (SWMM Weirs) ---"
-    puts "----------------------------------------------------------------------------------------------------"
-    puts "| %-30s | %-10s | %-10s | %-15s | %-15s |" % ["Parameter", "Min", "Max", "Mean", "Std Dev"]
-    puts "----------------------------------------------------------------------------------------------------"
+    param_col_width = 30
+    count_col_width = 8
+    min_col_width = 12
+    max_col_width = 12
+    mean_col_width = 15
+    std_dev_col_width = 15
+    total_width = param_col_width + count_col_width + min_col_width + max_col_width + mean_col_width + std_dev_col_width + (6 * 3) # 6 columns, 7 separators
+
+    puts "-" * total_width
+    puts "| %-#{param_col_width}s | %-#{count_col_width}s | %-#{min_col_width}s | %-#{max_col_width}s | %-#{mean_col_width}s | %-#{std_dev_col_width}s |" % 
+         ["Parameter (Header)", "Count", "Min", "Max", "Mean", "Std Dev"]
+    puts "-" * total_width
     
-    found_numeric_data = false
+    found_numeric_data_for_table = false
     selected_fields_config.each do |field_info|
       attr_sym = field_info[:attribute]
       data_array = numeric_data_for_stats[attr_sym]
+      
+      # Define symbols that are definitely not numeric or are identifiers/complex types
+      non_numeric_symbols = [:id, :us_node_id, :ds_node_id, :link_type, :weir_curve, 
+                             :point_array, :branch_id, :notes, :hyperlinks]
+      
+      is_likely_text_or_id = field_info[:header].downcase.include?('id') ||
+                              field_info[:header].downcase.include?('type') ||
+                              field_info[:header].downcase.include?('curve') || # For Weir Curve ID
+                              non_numeric_symbols.include?(attr_sym)
 
-      if data_array && !data_array.empty?
-        found_numeric_data = true
+
+      if data_array && !data_array.empty? && !is_likely_text_or_id
+        found_numeric_data_for_table = true
+        count_val = data_array.length # Get count
         min_val = data_array.min
         max_val = data_array.max
         mean_val = calculate_mean(data_array)
         std_dev_val = calculate_std_dev(data_array, mean_val)
+        display_header = field_info[:header].length > param_col_width ? field_info[:header][0...(param_col_width-3)] + "..." : field_info[:header]
 
-        puts "| %-30s | %-10.3f | %-10.3f | %-15.3f | %-15s |" % [
-          field_info[:header], 
+
+        puts "| %-#{param_col_width}s | %-#{count_col_width}d | %-#{min_col_width}.3f | %-#{max_col_width}.3f | %-#{mean_col_width}.3f | %-#{std_dev_col_width}s |" % [
+          display_header, 
+          count_val, # Display count
           min_val, 
           max_val, 
           mean_val,
           (std_dev_val.nil? ? "N/A (n<2)" : "%.3f" % std_dev_val)
         ]
-      elsif [:point_array, :hyperlinks, :notes].include?(attr_sym) || field_info[:header].downcase.include?('id') || field_info[:header].downcase.include?('type')
-        # Skip non-numeric or identifier fields explicitly in the stats table for clarity
-      else
-         # Optionally, indicate fields for which no numeric data was found or that were not suitable for stats
-         # puts "| %-30s | %-10s | %-10s | %-15s | %-15s |" % [field_info[:header], "N/A", "N/A", "N/A", "N/A"]
       end
     end
-    puts "----------------------------------------------------------------------------------------------------"
-    unless found_numeric_data
-        puts "No numeric data found for selected fields to calculate statistics."
+    puts "-" * total_width
+    unless found_numeric_data_for_table
+        puts "No suitable numeric data found among selected fields to calculate statistics."
     end
   elsif calculate_stats
     puts "\nNo weirs were written to the CSV, so no statistics calculated."
@@ -339,7 +371,7 @@ if file_exists_and_has_data
 elsif weirs_written_count == 0 && weirs_iterated_count >= 0
   message = "No SWMM Weir objects were selected for export."
   message += " The CSV file was not created or was empty (and thus deleted)." if !file_path.empty? && !File.exist?(file_path)
-  WSApplication.message_box(message, 'Info', :OK, false)
+  WSApplication.message_box(message,'OK',nil,false)
 else
   WSApplication.message_box("Export for SWMM Weirs did not complete as expected. No weirs written. Check console messages. The CSV file may not exist or is empty.", 'Info', :OK, false)
 end
