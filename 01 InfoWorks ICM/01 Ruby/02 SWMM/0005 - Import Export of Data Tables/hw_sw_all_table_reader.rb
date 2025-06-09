@@ -1,4 +1,4 @@
-# Generic HWMM/SWMM Object Data Exporter with Statistics
+# Generic Infoworks/SWMM Object Data Exporter with Statistics
 #
 # This script allows users to select any object type (e.g., hw_node, sw_subcatchment)
 # and specific fields within that object type for export to a CSV file.
