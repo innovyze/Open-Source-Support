@@ -21,6 +21,8 @@ if val.nil? || val.empty?
 end
 
   folder_path = val[0]
+  puts "Selected folder: #{folder_path}"
+  puts "\n"
 
 # Check if all required file locations are provided
 if folder_path.nil? || folder_path.empty?
@@ -108,7 +110,7 @@ end
 
     # Save the selection list
     open_net.save_selection(sl)
-    puts "Created selection list: #{sl.name}\n"
+    puts "Created selection list: #{sl.name}"
   end
 end
 
@@ -135,7 +137,6 @@ open_net.transaction_begin
 begin
   if import_anode_and_alink(open_net, parent_object)
     # Print completion message
-    puts "Selected folder: #{folder_path}"
     puts "\nNote: If the selection list is empty for a scenario, all nodes and links may be active in the InfoSewer/InfoSWMM Scenario."
     puts "\nFinished the creation of ICM Selection Lists from InfoSewer or InfoSWMM Scenarios or Selection Sets."
     puts "\nRefresh the database to view the new selection lists in the database tree."
