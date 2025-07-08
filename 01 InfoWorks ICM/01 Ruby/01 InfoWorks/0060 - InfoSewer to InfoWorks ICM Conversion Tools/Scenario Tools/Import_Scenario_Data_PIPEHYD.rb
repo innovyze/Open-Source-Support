@@ -48,8 +48,8 @@ def print_statistics(open_net)
     total_value = sum
 
     # Print statistical information
-    printf("%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Mean: %-10.3f | Std Dev: %-10.2f | Total: %-10.2f\n",
-           field, data.size, min_value, max_value, mean_value, standard_deviation, total_value)
+    printf("%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Mean: %-10.3f\n",
+           field, data.size, min_value, max_value, mean_value)
   end
 end
 
@@ -188,11 +188,11 @@ open_net.scenarios do |scenario|
   puts "\nImporting PIPEHYD to scenario '#{scenario_id}' from InfoSewer Pipe Set '#{pipe_set}'"
   open_net.transaction_begin
   begin
-  import_pipe_hydraulics(open_net, csv_path)
-  open_net.transaction_commit
+    import_pipe_hydraulics(open_net, csv_path)
+    open_net.transaction_commit
   rescue => e
     open_net.transaction_rollback
-    puts "Error importing pump hydraulic data for scenario '#{scenario_id}': #{e.message}"
+    puts "Error importing pipe hydraulic data for scenario '#{scenario_id}': #{e.message}"
   end
 
   # Call the method to print CSV inflows file statistics
