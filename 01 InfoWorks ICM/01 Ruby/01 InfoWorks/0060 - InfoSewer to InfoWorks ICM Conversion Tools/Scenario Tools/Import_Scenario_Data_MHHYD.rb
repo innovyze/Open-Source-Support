@@ -49,8 +49,8 @@ def print_csv_inflows_file(open_net)
 
     # Print statistical information
     printf(
-      "%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Mean: %-10.3f | Std Dev: %-10.2f | Total: %-10.2f\n",
-      field, data.size, min_value, max_value, mean_value, standard_deviation, total_value
+      "%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Total: %-10.3f\n",
+      field, data.size, min_value, max_value, total_value
     )
   end
 end

@@ -39,8 +39,8 @@ def print_statistics(open_net)
     total_value = sum
 
     # Print statistical information
-    printf("%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Mean: %-10.3f | Std Dev: %-10.2f | Total: %-10.2f\n",
-           field, data.size, min_value, max_value, mean_value, standard_deviation, total_value)
+    printf("%-30s | Row Count: %-10d | Min: %-10.3f | Max: %-10.3f | Mean: %-10.3f | Total: %-10.2f\n",
+           field, data.size, min_value, max_value, mean_value, total_value)
   end
 end
 
@@ -173,8 +173,8 @@ open_net.scenarios do |scenario|
   puts "\nImporting PUMPHYD to scenario '#{scenario_id}' from InfoSewer Pump Set '#{pump_set}'"
   open_net.transaction_begin
   begin
-  import_pump_hydraulics(open_net, csv_path)
-  open_net.transaction_commit
+    import_pump_hydraulics(open_net, csv_path)
+    open_net.transaction_commit
   rescue => e
     open_net.transaction_rollback
     puts "Error importing pump hydraulic data for scenario '#{scenario_id}': #{e.message}"
@@ -186,7 +186,7 @@ end
 
 # Indicate the completion of the import process
 puts "\n
-User numbers were assigned values from InfoSewer fields as follows:
+User numbers in the pump table (hw_pump) were assigned values from InfoSewer fields as follows:
   user_number_1 = CAPACITY
   user_number_2 = SHUT_HEAD
   user_number_3 = DSGN_HEAD

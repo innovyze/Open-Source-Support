@@ -36,12 +36,21 @@ begin
   # Define a helper for formatted output
   def format_table_output(table_name, ids)
     output = "\n#{table_name.split('_').map(&:capitalize).join(' ')} (Count: #{ids.length}):\n"
-    output += "-" * 50 + "\n"
+    output += "-" * 80 + "\n"
     
     if ids.length > 0
       # Sort IDs for better readability
-      ids.sort.each_with_index do |id, index|
-        output += "  #{index + 1}. #{id}\n"
+      sorted_ids = ids.sort
+      
+      # Display 5 IDs per row
+      sorted_ids.each_slice(5).with_index do |row_ids, row_index|
+        row_output = ""
+        row_ids.each_with_index do |id, col_index|
+          item_number = row_index * 5 + col_index + 1
+          # Format each ID with consistent width for alignment
+          row_output += sprintf("%-3d. %-15s", item_number, id.to_s[0..14])
+        end
+        output += "  #{row_output}\n"
       end
     else
       output += "  No elements found\n"
