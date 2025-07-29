@@ -256,7 +256,7 @@ while c<n
 				observation = observations.add_element("OBSERVATION")
 				obid=SecureRandom.uuid
 				observation.add_element("OBSERVATIONID").text = obid
-				observation.add_element("CHAINAGE").text = (d.distance.nil?) ? nil : d.distance
+				observation.add_element("DISTANCE").text = (d.distance.nil?) ? nil : d.distance
 				observation.add_element("CODE").text = (d.code.empty?) ? nil : d.code
 				observation.add_element("CHAR1").text = (d.characterisation1.empty?) ? nil : d.characterisation1
 				observation.add_element("CHAR2").text = (d.characterisation2.empty?) ? nil : d.characterisation2
