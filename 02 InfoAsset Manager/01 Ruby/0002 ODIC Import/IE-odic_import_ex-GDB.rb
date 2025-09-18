@@ -37,7 +37,7 @@ options['Error File'] = 'C:\Temp\ImportErrorLog.txt'		## String | blank | Path o
 #options['Update Links From Points'] = false				## Boolean | false
 #options['Blob Merge'] = false								## Boolean | false
 #options['Use Network Naming Conventions'] = false			## Boolean | false
-#options['Import images'] = false							## Boolean | false | Asset networks only
+#options['Import Images'] = false							## Boolean | false | Asset networks only
 #options['Group Type'] = false								## Boolean | false | Asset networks only
 #options['Group Name'] = false								## Boolean | false | Asset networks only
 
