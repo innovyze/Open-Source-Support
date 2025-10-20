@@ -1,5 +1,7 @@
 # Autodesk Water Infrastructure Open Source Support
 
+📊 **[View Repository Traffic Analytics →](https://innovyze.github.io/Open-Source-Support/)**
+
 This repository will host open source code that can be used in the Autodesk Water products. This includes Ruby for the UI/Exchange, SQL and other information.
 
 The [Exchange](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html) documentation includes (almost) all available Ruby methods and will be updated regularly.
