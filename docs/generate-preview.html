@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Preview Image</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            color: #fff;
+            padding: 40px;
+            margin: 0;
+        }
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+        }
+        #chart {
+            margin-top: 20px;
+        }
+        .instructions {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .line { fill: none; stroke-width: 3; }
+        .line-total { stroke: #667eea; }
+        .line-unique { stroke: #f093fb; }
+        .axis text { fill: #999; font-size: 12px; }
+        .axis path, .axis line { stroke: rgba(255, 255, 255, 0.2); }
+        .grid line { stroke: rgba(255, 255, 255, 0.1); stroke-dasharray: 2,2; }
+        .grid path { stroke-width: 0; }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container" id="preview">
+        <h1>📊 Repository Traffic Analytics</h1>
+        <p class="subtitle">Last 3 Months - Views Trend</p>
+        <div id="chart"></div>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #667eea;"></div>
+                <span>Total Views</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f093fb;"></div>
+                <span>Unique Views</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>How to Generate Preview Image:</h3>
+        <p>1. Wait for the chart to load</p>
+        <p>2. Take a screenshot of the chart area</p>
+        <p>3. Save as <code>assets/images/preview.png</code></p>
+        <p>Or use browser dev tools to capture a screenshot</p>
+    </div>
+
+    <script>
+        async function generatePreview() {
+            try {
+                const views = await d3.csv('../traffic/views.csv');
+                
+                let data = views.map(d => ({
+                    date: new Date(d._date),
+                    total: +d.total_views,
+                    unique: +d.unique_views
+                })).sort((a, b) => a.date - b.date);
+
+                // Filter to last 3 months
+                const threeMonthsAgo = new Date();
+                threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+                data = data.filter(d => d.date >= threeMonthsAgo);
+
+                const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+                const width = 1100 - margin.left - margin.right;
+                const height = 400 - margin.top - margin.bottom;
+
+                const svg = d3.select('#chart')
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom)
+                    .append('g')
+                    .attr('transform', `translate(${margin.left},${margin.top})`);
+
+                const x = d3.scaleTime()
+                    .domain(d3.extent(data, d => d.date))
+                    .range([0, width]);
+
+                const maxY = d3.max(data, d => Math.max(d.total, d.unique));
+                const y = d3.scaleLinear()
+                    .domain([0, maxY * 1.1])
+                    .range([height, 0]);
+
+                // Grid
+                svg.append('g')
+                    .attr('class', 'grid')
+                    .attr('opacity', 0.1)
+                    .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
+                // Axes
+                const xAxis = svg.append('g')
+                    .attr('class', 'axis')
+                    .attr('transform', `translate(0,${height})`)
+                    .call(d3.axisBottom(x).ticks(8).tickFormat(d3.timeFormat('%b %d')));
+
+                xAxis.selectAll('text')
+                    .attr('transform', 'rotate(-45)')
+                    .style('text-anchor', 'end')
+                    .attr('dx', '-.8em')
+                    .attr('dy', '.15em');
+
+                svg.append('g')
+                    .attr('class', 'axis')
+                    .call(d3.axisLeft(y).ticks(6));
+
+                // Lines
+                const lineTotal = d3.line()
+                    .x(d => x(d.date))
+                    .y(d => y(d.total))
+                    .curve(d3.curveMonotoneX);
+
+                const lineUnique = d3.line()
+                    .x(d => x(d.date))
+                    .y(d => y(d.unique))
+                    .curve(d3.curveMonotoneX);
+
+                svg.append('path')
+                    .datum(data)
+                    .attr('class', 'line line-total')
+                    .attr('d', lineTotal);
+
+                svg.append('path')
+                    .datum(data)
+                    .attr('class', 'line line-unique')
+                    .attr('d', lineUnique);
+
+            } catch (error) {
+                console.error('Error generating preview:', error);
+                document.getElementById('chart').innerHTML = 
+                    '<p style="color: #ff6b6b; text-align: center;">Error loading data. Make sure you run this from a web server.</p>';
+            }
+        }
+
+        generatePreview();
+    </script>
+</body>
+</html>
+

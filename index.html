@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive traffic analytics dashboard for GitHub repository - Open Source Support">
+    <meta name="author" content="Traffic Data Analytics">
+    <title>Open Source Support - Traffic Analytics</title>
+    
+    <!-- D3.js Library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">☀️</span>
+                <span>Theme</span>
+            </button>
+            <h1>📊 Open Source Support</h1>
+            <p class="subtitle">Traffic Analytics Dashboard</p>
+            <p class="last-updated" id="lastUpdated">Loading data...</p>
+        </header>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-label">Total Views</div>
+                <div class="stat-value" id="totalViews">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Unique Views</div>
+                <div class="stat-value" id="uniqueViews">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Daily Views</div>
+                <div class="stat-value" id="avgViews">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Peak Day Views</div>
+                <div class="stat-value" id="peakViews">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Clones</div>
+                <div class="stat-value" id="totalClones">-</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title-section">
+                    <h2 class="chart-title">Repository <span id="chartTypeLabel">Views</span> Over Time</h2>
+                    <div class="chart-toggle">
+                        <button class="toggle-btn active" data-type="views">Views</button>
+                        <button class="toggle-btn" data-type="clones">Clones</button>
+                    </div>
+                </div>
+                <div class="time-selector">
+                    <button class="time-btn" data-days="30">30 Days</button>
+                    <button class="time-btn" data-days="90">90 Days</button>
+                    <button class="time-btn" data-days="365">1 Year</button>
+                    <button class="time-btn active" data-days="all">All Time</button>
+                </div>
+            </div>
+            <div id="mainChart"></div>
+            <div class="legend">
+                <div class="legend-item" data-series="total">
+                    <div class="legend-color" style="background: #2563eb;"></div>
+                    <span>Total <span id="legendTypeLabel">Views</span></span>
+                </div>
+                <div class="legend-item" data-series="unique">
+                    <div class="legend-color" style="background: #10b981;"></div>
+                    <span>Unique <span id="legendTypeLabel2">Views</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-date"></div>
+        <div class="tooltip-content"></div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
