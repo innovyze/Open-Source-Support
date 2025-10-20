@@ -7,6 +7,7 @@ let viewsData = [];
 let clonesData = [];
 let currentRange = 'all';
 let currentChartType = 'views';
+let visibleSeries = { total: true, unique: true }; // Track which series are visible
 
 function updateStats() {
     const stats = calculateStats(viewsData, clonesData);
@@ -20,7 +21,7 @@ function updateStats() {
 
 function updateChart() {
     const data = currentChartType === 'views' ? viewsData : clonesData;
-    drawChart('mainChart', data, currentChartType, currentRange);
+    drawChart('mainChart', data, currentChartType, currentRange, visibleSeries);
 }
 
 function setupEventListeners() {
@@ -47,6 +48,24 @@ function setupEventListeners() {
             document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             currentRange = this.dataset.days;
+            updateChart();
+        });
+    });
+
+    // Legend click to toggle series visibility
+    document.querySelectorAll('.legend-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const series = this.dataset.series;
+            visibleSeries[series] = !visibleSeries[series];
+            
+            // Update visual state
+            if (visibleSeries[series]) {
+                this.classList.remove('disabled');
+            } else {
+                this.classList.add('disabled');
+            }
+            
+            // Redraw chart
             updateChart();
         });
     });

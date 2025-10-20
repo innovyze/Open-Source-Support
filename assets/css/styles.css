@@ -56,10 +56,10 @@ body {
 
 header {
     text-align: center;
-    padding: 20px 20px;
+    padding: 12px 20px;
     background: var(--bg-card);
     border-radius: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     box-shadow: 0 2px 8px var(--shadow);
     border: 1px solid var(--border-color);
     position: relative;
@@ -67,21 +67,21 @@ header {
 }
 
 h1 {
-    font-size: 1.8em;
-    margin-bottom: 5px;
+    font-size: 1.5em;
+    margin-bottom: 3px;
     color: var(--text-primary);
     font-weight: 700;
 }
 
 .subtitle {
     color: var(--text-secondary);
-    font-size: 0.95em;
+    font-size: 0.85em;
     font-weight: 500;
 }
 
 .last-updated {
-    margin-top: 8px;
-    font-size: 0.8em;
+    margin-top: 4px;
+    font-size: 0.75em;
     color: var(--text-muted);
 }
 
@@ -115,17 +115,20 @@ h1 {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 15px;
 }
 
 .stat-card {
     background: var(--bg-card);
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-radius: 10px;
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 8px var(--shadow);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .stat-card:hover {
@@ -134,16 +137,17 @@ h1 {
 }
 
 .stat-label {
-    font-size: 0.75em;
+    font-size: 0.7em;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    margin-bottom: 0;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .stat-value {
-    font-size: 1.8em;
+    font-size: 1.5em;
     font-weight: 700;
     color: var(--chart-blue);
 }
@@ -341,12 +345,21 @@ h1 {
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 5px;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, opacity 0.3s ease;
     font-size: 0.9em;
 }
 
 .legend-item:hover {
     background: var(--button-bg);
+}
+
+.legend-item.disabled {
+    opacity: 0.3;
+    text-decoration: line-through;
+}
+
+.legend-item.disabled:hover {
+    opacity: 0.5;
 }
 
 .legend-color {

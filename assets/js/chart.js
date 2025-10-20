@@ -2,7 +2,7 @@
 import { CONFIG } from './config.js';
 import { formatNumber, formatDate, filterDataByDays } from './utils.js';
 
-export function drawChart(containerId, data, type, range) {
+export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
@@ -30,7 +30,13 @@ export function drawChart(containerId, data, type, range) {
         .domain(d3.extent(filteredData, d => d.date))
         .range([0, width]);
 
-    const maxY = d3.max(filteredData, d => Math.max(d.total, d.unique));
+    // Calculate max Y based on visible series only
+    const maxY = d3.max(filteredData, d => {
+        const values = [];
+        if (visibleSeries.total) values.push(d.total);
+        if (visibleSeries.unique) values.push(d.unique);
+        return values.length > 0 ? Math.max(...values) : 0;
+    });
     const y = d3.scaleLinear()
         .domain([0, maxY * 1.1])
         .range([height, 0]);
@@ -74,33 +80,38 @@ export function drawChart(containerId, data, type, range) {
         .y(d => y(d.unique))
         .curve(d3.curveMonotoneX);
 
-    // Draw lines with animation
-    const totalPath = svg.append('path')
-        .datum(filteredData)
-        .attr('class', 'line line-total')
-        .attr('d', lineTotal);
+    // Draw lines with animation (only if visible)
+    let totalPath, uniquePath, totalLength, uniqueLength;
 
-    const uniquePath = svg.append('path')
-        .datum(filteredData)
-        .attr('class', 'line line-unique')
-        .attr('d', lineUnique);
+    if (visibleSeries.total) {
+        totalPath = svg.append('path')
+            .datum(filteredData)
+            .attr('class', 'line line-total')
+            .attr('d', lineTotal);
 
-    // Animate lines
-    const totalLength = totalPath.node().getTotalLength();
-    const uniqueLength = uniquePath.node().getTotalLength();
+        // Animate line
+        totalLength = totalPath.node().getTotalLength();
+        totalPath
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(CONFIG.animationDuration)
+            .ease(d3.easeLinear)
+            .attr('stroke-dashoffset', 0);
+    }
 
-    totalPath
-        .attr('stroke-dasharray', totalLength + ' ' + totalLength)
-        .attr('stroke-dashoffset', totalLength)
-        .transition()
-        .duration(CONFIG.animationDuration)
-        .ease(d3.easeLinear)
-        .attr('stroke-dashoffset', 0);
+    if (visibleSeries.unique) {
+        uniquePath = svg.append('path')
+            .datum(filteredData)
+            .attr('class', 'line line-unique')
+            .attr('d', lineUnique);
 
-    uniquePath
-        .attr('stroke-dasharray', uniqueLength + ' ' + uniqueLength)
-        .attr('stroke-dashoffset', uniqueLength)
-        .transition()
+        // Animate line
+        uniqueLength = uniquePath.node().getTotalLength();
+        uniquePath
+            .attr('stroke-dasharray', uniqueLength + ' ' + uniqueLength)
+            .attr('stroke-dashoffset', uniqueLength)
+            .transition()
         .duration(CONFIG.animationDuration)
         .ease(d3.easeLinear)
         .attr('stroke-dashoffset', 0);
@@ -110,18 +121,24 @@ export function drawChart(containerId, data, type, range) {
     const totalColor = computedStyle.getPropertyValue('--chart-blue').trim();
     const uniqueColor = computedStyle.getPropertyValue('--chart-green').trim();
 
-    // Interactive dots
-    const dotTotal = svg.append('circle')
-        .attr('class', 'dot')
-        .attr('r', 5)
-        .attr('stroke', totalColor)
-        .attr('fill', totalColor);
+    // Interactive dots (only if series visible)
+    let dotTotal, dotUnique;
+    
+    if (visibleSeries.total) {
+        dotTotal = svg.append('circle')
+            .attr('class', 'dot')
+            .attr('r', 5)
+            .attr('stroke', totalColor)
+            .attr('fill', totalColor);
+    }
 
-    const dotUnique = svg.append('circle')
-        .attr('class', 'dot')
-        .attr('r', 5)
-        .attr('stroke', uniqueColor)
-        .attr('fill', uniqueColor);
+    if (visibleSeries.unique) {
+        dotUnique = svg.append('circle')
+            .attr('class', 'dot')
+            .attr('r', 5)
+            .attr('stroke', uniqueColor)
+            .attr('fill', uniqueColor);
+    }
 
     // Invisible overlay for mouse tracking
     const bisect = d3.bisector(d => d.date).left;
@@ -142,16 +159,20 @@ export function drawChart(containerId, data, type, range) {
             
             const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
             
-            // Update dots
-            dotTotal
-                .classed('visible', true)
-                .attr('cx', x(d.date))
-                .attr('cy', y(d.total));
+            // Update dots (only if they exist)
+            if (dotTotal) {
+                dotTotal
+                    .classed('visible', true)
+                    .attr('cx', x(d.date))
+                    .attr('cy', y(d.total));
+            }
             
-            dotUnique
-                .classed('visible', true)
-                .attr('cx', x(d.date))
-                .attr('cy', y(d.unique));
+            if (dotUnique) {
+                dotUnique
+                    .classed('visible', true)
+                    .attr('cx', x(d.date))
+                    .attr('cy', y(d.unique));
+            }
             
             // Update tooltip
             const tooltip = document.getElementById('tooltip');
@@ -159,16 +180,27 @@ export function drawChart(containerId, data, type, range) {
             tooltip.querySelector('.tooltip-date').textContent = formatDate(d.date);
             
             const label = type === 'views' ? 'Views' : 'Clones';
-            tooltip.querySelector('.tooltip-content').innerHTML = `
-                <div class="tooltip-line">
-                    <div class="tooltip-color" style="background: ${totalColor};"></div>
-                    <span>Total ${label}: ${formatNumber(d.total)}</span>
-                </div>
-                <div class="tooltip-line">
-                    <div class="tooltip-color" style="background: ${uniqueColor};"></div>
-                    <span>Unique ${label}: ${formatNumber(d.unique)}</span>
-                </div>
-            `;
+            let tooltipContent = '';
+            
+            if (visibleSeries.total) {
+                tooltipContent += `
+                    <div class="tooltip-line">
+                        <div class="tooltip-color" style="background: ${totalColor};"></div>
+                        <span>Total ${label}: ${formatNumber(d.total)}</span>
+                    </div>
+                `;
+            }
+            
+            if (visibleSeries.unique) {
+                tooltipContent += `
+                    <div class="tooltip-line">
+                        <div class="tooltip-color" style="background: ${uniqueColor};"></div>
+                        <span>Unique ${label}: ${formatNumber(d.unique)}</span>
+                    </div>
+                `;
+            }
+            
+            tooltip.querySelector('.tooltip-content').innerHTML = tooltipContent;
             
             const tooltipWidth = tooltip.offsetWidth;
             const tooltipHeight = tooltip.offsetHeight;
@@ -177,8 +209,8 @@ export function drawChart(containerId, data, type, range) {
             tooltip.style.top = (event.pageY - tooltipHeight / 2) + 'px';
         })
         .on('mouseleave', function() {
-            dotTotal.classed('visible', false);
-            dotUnique.classed('visible', false);
+            if (dotTotal) dotTotal.classed('visible', false);
+            if (dotUnique) dotUnique.classed('visible', false);
             document.getElementById('tooltip').classList.remove('visible');
         });
 }
