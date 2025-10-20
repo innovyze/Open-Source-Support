@@ -49,7 +49,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    max-height: calc(100vh - 30px);
+    height: calc(100vh - 30px);
     display: flex;
     flex-direction: column;
 }
@@ -250,6 +250,12 @@ h1 {
     font-weight: 600;
 }
 
+#mainChart {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
 .chart-svg {
     width: 100%;
     overflow: visible;
@@ -411,6 +417,10 @@ h1 {
 @media (max-width: 768px) {
     body {
         padding: 10px;
+    }
+
+    .container {
+        height: calc(100vh - 20px);
     }
 
     h1 {

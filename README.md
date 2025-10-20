@@ -6,8 +6,6 @@ An interactive, real-time analytics dashboard for tracking GitHub repository tra
 
 **[View Live Dashboard →](https://ubiquitous-telegram-9qkrqrg.pages.github.io/)**
 
-![Traffic Analytics Preview](./docs/preview-placeholder.png)
-
 *Interactive charts showing repository views and clone trends over time*
 
 ## ✨ Features

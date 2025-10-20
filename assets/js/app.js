@@ -109,8 +109,14 @@ async function init() {
         clonesData = data.clonesData;
 
         updateStats();
-        updateChart();
         setupEventListeners();
+        
+        // Wait for layout to complete before drawing chart
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                updateChart();
+            });
+        });
 
         // Update last updated date
         const lastDate = viewsData[viewsData.length - 1].date;

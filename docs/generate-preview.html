@@ -109,7 +109,7 @@
     <script>
         async function generatePreview() {
             try {
-                const views = await d3.csv('../traffic/views.csv');
+                const views = await d3.csv('../data/views.csv');
                 
                 let data = views.map(d => ({
                     date: new Date(d._date),

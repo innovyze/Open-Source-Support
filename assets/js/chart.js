@@ -14,14 +14,19 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
     }
 
     const containerWidth = container.clientWidth;
-    const height = CONFIG.chartHeight;
+    const containerHeight = container.clientHeight;
+    
+    // Use the full container height for the SVG
+    // The drawing area (height) is the container height minus margins
+    const svgHeight = Math.max(300, containerHeight);
+    const height = svgHeight - CONFIG.margin.top - CONFIG.margin.bottom;
     const width = containerWidth - CONFIG.margin.left - CONFIG.margin.right;
 
     const svg = d3.select(`#${containerId}`)
         .append('svg')
         .attr('class', 'chart-svg')
         .attr('width', containerWidth)
-        .attr('height', height + CONFIG.margin.top + CONFIG.margin.bottom)
+        .attr('height', svgHeight)
         .append('g')
         .attr('transform', `translate(${CONFIG.margin.left},${CONFIG.margin.top})`);
 
