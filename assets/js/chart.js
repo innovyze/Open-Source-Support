@@ -112,9 +112,10 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             .attr('stroke-dasharray', uniqueLength + ' ' + uniqueLength)
             .attr('stroke-dashoffset', uniqueLength)
             .transition()
-        .duration(CONFIG.animationDuration)
-        .ease(d3.easeLinear)
-        .attr('stroke-dashoffset', 0);
+            .duration(CONFIG.animationDuration)
+            .ease(d3.easeLinear)
+            .attr('stroke-dashoffset', 0);
+    }
 
     // Get current theme colors from CSS variables
     const computedStyle = getComputedStyle(document.documentElement);
