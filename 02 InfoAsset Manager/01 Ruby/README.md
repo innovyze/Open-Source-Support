@@ -23,13 +23,11 @@ e.g.
 `"C:\Program Files\Autodesk\InfoAsset Manager 2026\iexchange.exe" ./AssetExportNetworkXChg.rb /ADSKASSET`  
 The command line can be written into a `.bat` file using a text editor, to allow quick running of the referenced script.  
 
-## IExchange in the InfoAsset Manager Help
-More information can be found in the online InfoAsset Manager Help [https://help.autodesk.com/view/INFOAMAN/2026/ENU/](https://help.autodesk.com/view/INFOAMAN/2026/ENU/?guid=GUID-07343E64-0B0E-4307-A2C0-1AB967D516C0).  
-
-
 ### UIIE scripts
-Some scripts in this repository might have `UIIE` at the start of the filename, these scritps will have syntax to identify if it is being run from the UI, if so will use current network, otherwise will run on the defined network/object.
+Some scripts in this repository might have `UIIE` at the start of the filename, these scritps will have syntax to identify if it is being run from the UI, if so will use current network, otherwise will run on the defined network/object.  
 
+### IExchange in the InfoAsset Manager Help
+More information can be found in the online InfoAsset Manager Help [https://help.autodesk.com/view/INFOAMAN/2026/ENU/](https://help.autodesk.com/view/INFOAMAN/2026/ENU/?guid=GUID-07343E64-0B0E-4307-A2C0-1AB967D516C0).  
 
 ## Note
 See the README in the top-level of the [Innovyze/Open-Source-Support repository](https://github.com/innovyze/Open-Source-Support/tree/main) for more information.  
