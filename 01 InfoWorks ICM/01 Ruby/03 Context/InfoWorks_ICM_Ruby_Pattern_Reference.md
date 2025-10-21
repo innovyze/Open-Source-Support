@@ -640,11 +640,8 @@ network_id = ENV.fetch('ICM_NETWORK_ID', '1')
 | `hw_conduit` | Pipes/Conduits | `us_node_id`, `ds_node_id` |
 | `hw_subcatchment` | Subcatchments | `subcatchment_id` |
 | `hw_river_reach` | River Reaches | `us_node_id` |
-| `hw_1d_results_point` | 1D Results | varies |
-| `hw_2d_point` | 2D Mesh Points | varies |
 | `hw_runoff_surface` | Runoff Surfaces | `runoff_surface_id` |
 | `hw_land_use` | Land Uses | `land_use_id` |
-| `hw_ground_infiltration` | Infiltration | varies |
 | `hw_rtc` | RTC Objects | `rtc_id` |
 
 ---
