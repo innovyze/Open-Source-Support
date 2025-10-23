@@ -22,7 +22,7 @@ This context file is being **organically evolved and trialed** to improve the ef
 ### **When to Use Which Guide**
 - **Use Tutorial Context (this file)**: Learning Ruby scripting, understanding concepts, generating complete scripts
 - **Use Pattern Reference**: Quick pattern lookup, specific pattern IDs, composing complex scripts from patterns
-- **Use Database Reference**: Looking up database table names (`hw_*`, `sw_*`) for row_objects() calls
+- **Use Database Reference**: Looking up database table names (`hw_*`, `sw_*`) for row_objects() calls AND Model Object Type names for model_object_from_type_and_id() calls
 
 ### **Contributing Updates**
 If you have suggestions for improvements or additional patterns, please provide:
@@ -31,7 +31,7 @@ If you have suggestions for improvements or additional patterns, please provide:
 3. **Validation** that the pattern works in InfoWorks ICM environments
 
 ## See Also
-- **Database Reference**: `InfoWorks_ICM_Ruby_Database_Reference.md` - Complete table name lookup for row_objects() calls
+- **Database Reference**: `InfoWorks_ICM_Ruby_Database_Reference.md` - Complete table name lookup for row_objects() calls and Model Object Type reference
 - **Pattern Reference**: `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Concise pattern catalog with IDs and metadata
 
 ---
@@ -52,7 +52,7 @@ InfoWorks ICM provides two main Ruby scripting environments:
 2. **Object Selection**: Check if objects are selected first, fall back to all objects if none selected
 3. **Network Tracing**: Use `_seen` flags to prevent infinite loops, clean up afterwards
 4. **Error Handling**: Wrap operations in begin/rescue blocks
-5. **Results Access**: Use background network (`WSApplication.background_network`) for simulation results
+5. **Results Access**: Access results from `current_network`; use `background_network` only for comparing two simulations
 
 ### Most Common Script Patterns
 1. **Bulk Property Updates**: Modify multiple objects with transaction handling
@@ -92,10 +92,22 @@ end
 # Get model object from network (UI)
 mo = net.model_object
 
-# Access model groups and networks
+# Access model objects by path (uses ShortCode~Description format)
 group = db.model_object('>MODG~Model group')
 network = db.model_object('>MODG~Model group>NNET~Model network')
+
+# Access model objects by Type and ID
+group = db.model_object_from_type_and_id('Model Group', group_id)
+network = db.model_object_from_type_and_id('Model Network', network_id)
+rainfall = db.model_object_from_type_and_id('Rainfall Event', event_id)
+
+# Navigate parent/child relationships
+parent_type = mo.parent_type
+parent_id = mo.parent_id
+parent = db.model_object_from_type_and_id(parent_type, parent_id)
 ```
+
+**Note:** For complete Model Object Type names and ShortCodes, see `InfoWorks_ICM_Ruby_Database_Reference.md`.
 
 ## Data Access Patterns
 
@@ -398,31 +410,58 @@ end
 
 ## Results Handling
 
-### Background Network Access
+### Results Access Pattern
 ```ruby
-# Access simulation results through background network
-bn = WSApplication.background_network
-net = WSApplication.current_network  # Current network for structure
+# Standard results access from current network
+net = WSApplication.current_network
+
+# Background network is used ONLY for comparing two different simulations
+cn = WSApplication.current_network   # Current network
+bn = WSApplication.background_network # Background network (for comparison only)
 ```
 
 ### Timesteps and Results
 ```ruby
+# Access current network for results
+net = WSApplication.current_network
+
 # Get simulation timesteps
 timesteps = net.list_timesteps
 timestep_count = net.timestep_count
 
-# Get results from objects
-results_points = net.row_objects('hw_1d_results_point')
-results_points.each do |point|
-  results = point.results('qfull')  # Get specific result type
-  puts point.id, results.max       # Maximum value
-  puts results.min, results.mean   # Other statistics
+# Get results from nodes (InfoWorks)
+net.row_objects('hw_node').each do |node|
+  results = node.results('depnod')  # Get depth at node
+  puts node.id, results.max         # Maximum value
+  puts results.min, results.mean    # Other statistics
+end
+
+# Get results from links (InfoWorks)
+net.row_objects('hw_conduit').each do |link|
+  us_flow = link.results('us_flow')
+  ds_flow = link.results('ds_flow')
+  puts "#{link.id}: Max US Flow = #{us_flow.max}, Max DS Flow = #{ds_flow.max}"
 end
 
 # Export results to arrays for further processing
 results_array = Array.new
-results_points.each do |point|
-  results_array << point.results('qfull')
+net.row_objects('_links').each do |link|
+  results_array << link.results('us_flow')
+end
+
+# Iterate through timesteps with results
+timesteps.each_with_index do |ts, i|
+  net.row_objects('hw_node').each do |node|
+    depth_value = node.results('depnod')[i]
+    puts "Node #{node.id} at timestep #{i}: #{depth_value}"
+  end
+end
+
+# SWMM network results
+net.row_objects('sw_node').each do |node|
+  depth = node.results('DEPTH')
+  flooding = node.results('FLOODING')
+  puts "#{node.node_id}: Max Depth=#{depth.max}, Max Flooding=#{flooding.max}"
 end
 ```
 
@@ -430,25 +469,49 @@ end
 ```ruby
 require 'set'
 
-# Discover available results fields
+# Discover available results fields for a table
+net = WSApplication.current_network
 results_set = Set.new
-net.row_object_collection('hw_1d_results_point').each do |point|
-  next unless point.table_info.results_fields
+
+net.row_object_collection('hw_node').each do |node|
+  next unless node.table_info.results_fields
   
-  point.table_info.fields.each do |field|
+  node.table_info.fields.each do |field|
     results_set << field.name
   end
 end
 
 puts "Available results fields: #{results_set.to_a}"
+
+# Compare results between current and background networks
+cn = WSApplication.current_network
+bn = WSApplication.background_network
+
+cn.row_objects('hw_node').each do |cn_node|
+  bn_node = bn.row_object('hw_node', cn_node.id)
+  next if bn_node.nil?
+  
+  cn_result = cn_node.results('depnod').max
+  bn_result = bn_node.results('depnod').max
+  
+  puts "Node #{cn_node.id}: Current=#{cn_result}, Background=#{bn_result}"
+end
 ```
 
 ### Common Result Field Names
-- Flow: `qfull`, `qpipe`, `qlink`, `mcpl1dis`
-- Depth: `dpfull`, `dp`, `mcpl1dep`
-- Velocity: `vfull`, `vpipe`, `mcpl1vel`
-- Volume: `volfull`
-- Flooding: `qflood`, `vflood`
+
+**InfoWorks (hw_) Networks:**
+- **Links/Conduits**: `us_flow`, `ds_flow`, `us_depth`, `ds_depth`, `us_vel`, `ds_vel`, `us_froude`, `ds_froude`, `us_totalhead`, `ds_totalhead`, `volume`, `qlink`, `HYDGRAD` (hydraulic gradient)
+- **Nodes**: `depnod` (depth at node), `qnode` (flow at node), `qinfnod` (inflow), `qrain` (rainfall inflow), `flooddepth`, `floodvolume`, `dmaxd` (maximum depth)
+- **2D Results**: `twoddepnod`, `twodflow`, `twodfloodflow`
+- **Surcharging**: `Surcharge`, `maxsurchargestate`
+
+**SWMM (sw_) Networks:**
+- **Links**: `FLOW`, `VELOCITY`, `DEPTH`, `VOLUME`, `CAPACITY` (fraction full)
+- **Nodes**: `DEPTH`, `HEAD`, `VOLUME`, `LATERAL_INFLOW`, `TOTAL_INFLOW`, `FLOODING`, `PRESSURE`
+- **Subcatchments**: `RAINFALL`, `RAINDPTH`, `RUNOFF`, `EVAP`, `INFIL`
+
+**Note:** Use field discovery methods (see "Results Field Discovery" section) to identify available fields for your specific network and simulation type.
 
 ## Simulation Management (Exchange Scripts Only)
 

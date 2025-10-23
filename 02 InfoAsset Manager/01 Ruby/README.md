@@ -14,20 +14,21 @@ Scripts with `UI` at the start of the filename are run from within the InfoAsset
 Scripts with `IE` at the start of the filename are designed to be run using InfoAsset Exchange.  
 The Exchange applications are run by running the IExchange program from the command line with suitable arguments. The two required arguments are the script name and the application code.  
 Relative paths are permitted for the script names but if you are running a script from the current working directory then this follows the convention (inherited from the 'normal' Ruby program) of requiring the script name to be preceded by "./".  
-The application code for InfoAsset Exchange is: `IA` (or `IN`).  
-
+The application code for InfoAsset Exchange is: `IA` (or `IN`) when using an Innovyze license, with the Autodesk license use `/ADSKASSET` (for logged in users) or `/ADSKASSET-L` (for users not logged in).  
 
 e.g.  
-`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "c:\temp\script.rb" IA`  
-`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "./script.rb" IA`  
-`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "\\server\dir\script.rb" IA`  
+`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "c:\temp\script.rb" /IA`  
+`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "./script.rb" /IA`  
+`"C:\Program Files\Innovyze Workgroup Client 2021.1\IExchange.exe" "\\server\dir\script.rb" /IA`  
+`"C:\Program Files\Autodesk\InfoAsset Manager 2026\iexchange.exe" ./AssetExportNetworkXChg.rb /ADSKASSET`  
 The command line can be written into a `.bat` file using a text editor, to allow quick running of the referenced script.  
 
-
 ### UIIE scripts
-Some scripts in this repository might have `UIIE` at the start of the filename, these scritps will have syntax to identify if it is being run from the UI, if so will use current network, otherwise will run on the defined network/object.
+Some scripts in this repository might have `UIIE` at the start of the filename, these scritps will have syntax to identify if it is being run from the UI, if so will use current network, otherwise will run on the defined network/object.  
 
+### IExchange in the InfoAsset Manager Help
+More information can be found in the online InfoAsset Manager Help [https://help.autodesk.com/view/INFOAMAN/2026/ENU/](https://help.autodesk.com/view/INFOAMAN/2026/ENU/?guid=GUID-07343E64-0B0E-4307-A2C0-1AB967D516C0).  
 
 ## Note
-See the README in the top-level of the Innovyze/Open-Source-Support repository for more information.  
+See the README in the top-level of the [Innovyze/Open-Source-Support repository](https://github.com/innovyze/Open-Source-Support/tree/main) for more information.  
 † Third-party application, this is not an endorsement.  
