@@ -1,6 +1,6 @@
 ## The pacp_import_cctv_surveys method is available in InfoAsset Manager (+Exchange) V2022.1 & later
 
-## pacp_import_cctv_surveys(filename,flag,images,generateIDsFrom,duplicateIDs,importPACP,importLACP,logFile,[markImportedSurveysAsCompleted]
+## pacp_import_cctv_surveys(filename,flag,images,generateIDsFrom,duplicateIDs,importPACP,importLACP,logFile,[markImportedSurveysAsCompleted])
 ## Filename – String - filename to import from
 ## Flag – String - flag for imported data
 ## Images – Boolean – true to import images
