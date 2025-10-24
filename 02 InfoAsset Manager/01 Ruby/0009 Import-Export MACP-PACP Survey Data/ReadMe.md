@@ -14,7 +14,7 @@ on.pacp_import_cctv_surveys(filename,flag,images,generateIDsFrom,duplicateIDs,im
 | ImportPACP | Boolean | true to import PACP data |
 | ImportLACP | Boolean | true to import LACP data |
 | LogFile | String | Log file path |
-| MarkImportedSurveysAsCompleted | Boolean | true to mark imported surveys as completed   |
+| MarkImportedSurveysAsCompleted | Boolean | true to mark imported surveys as completed   |  
 It is necessary to run the method within a transaction.  
 
 
