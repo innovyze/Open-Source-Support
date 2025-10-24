@@ -4,19 +4,17 @@ The methods must be run on an open network.
 
 # [PACP_import_cctv_surveys](./UIIE-PACP_import_cctv_surveys.rb)
 on.pacp_import_cctv_surveys(filename,flag,images,generateIDsFrom,duplicateIDs,importPACP,importLACP,logFile,markImportedSurveysAsCompleted)  
-    Filename – String - Filename to import from  
-    Flag – String - Flag for imported data  
-    Images – Boolean – true to import images  
-    GenarateIDsfrom – Integer – the following values are allowed:  
-        1 – Upstream Direction + Date + Time  
-        2 – Upstream Direction + Index  
-        3 – Inspection ID  
-        4 – 13 – Custom (4 = custom field 1, 5 = custom field 2, etc.)  
-    DuplicateIds – String – ignore / update / overwrite  
-    ImportPACP – Boolean – true to import PACP data  
-    ImportLACP – Boolean – true to import LACP data  
-    LogFile – String – Log file path  
-    MarkImportedSurveysAsCompleted – Boolean – true to mark imported surveys as completed  
+| Parameter | Format   | Notes        |
+|-----------|----------|--------------|
+| Filename | String | Filename to import from |
+| Flag | String | Flag for imported data |
+| Images | Boolean | true to import images |
+| GenarateIDsfrom | Integer | The following values are allowed:<br/>1 – Upstream Direction + Date + Time<br/>2 – Upstream Direction + Index<br/>3 – Inspection ID<br/>4 – 13 – Custom (4 = custom field 1, 5 = custom field 2, etc.)   |
+| DuplicateIds | String | ignore / update / overwrite |
+| ImportPACP | Boolean | true to import PACP data |
+| ImportLACP | Boolean | true to import LACP data |
+| LogFile | String | Log file path |
+| MarkImportedSurveysAsCompleted | Boolean | true to mark imported surveys as completed   |
 It is necessary to run the method within a transaction.  
 
 
