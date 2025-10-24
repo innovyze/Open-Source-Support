@@ -17,17 +17,21 @@ Results are displayed in the output window and optionally exported to a timestam
 
 For each selected pipe:
 
-1. Retrieves pipe length and upstream/downstream invert levels
+1. Retrieves pipe length, diameter, and upstream/downstream invert levels
 2. Gets ground levels from connected nodes
 3. Calculates burial depth at each end: `depth = ground_level - invert_level`
 4. Computes average depth: `avg_depth = (us_depth + ds_depth) / 2`
-5. Calculates trench volume: `volume = length × width × avg_depth`
-6. Applies cost per cubic meter to determine total cost
+5. Calculates trench width: `trench_width = pipe_diameter + additional_width`
+6. Calculates trench volume: `volume = length × trench_width × avg_depth`
+7. Applies cost per cubic meter to determine total cost
 
 **Formula:**
 ```
+Trench Width = Pipe Diameter + Additional Width
 Trench Volume = Pipe Length × Trench Width × Average Burial Depth
 ```
+
+**Note:** Pipe diameter is automatically retrieved from the `conduit_width` field (stored in mm, converted to m). The trench width is calculated individually for each pipe based on its diameter.
 
 ### Storage Node/Pond Excavation Calculation
 
@@ -74,9 +78,9 @@ The script handles cases where storage arrays extend above ground level by inter
 
 The script prompts for three parameters:
 
-1. **Standard Trench Width (m)**: Default 1.5m - used for pipe trench calculations
+1. **Trench Additional Width (m)**: Default 1.0m - added to pipe diameter to calculate total trench width for each pipe
 2. **Cost per Cubic Meter ($/m³)**: Default $50/m³ - applied to all excavation volumes
-3. **Export Results to CSV**: Default true - creates timestamped CSV file with detailed results
+3. **Export Results to CSV**: Default false - creates timestamped CSV file with detailed results
 
 ## Output
 
@@ -88,9 +92,10 @@ The script provides detailed output for each object:
 ```
 Pipe: PIPE_001
   Length: 125.50 m
+  Diameter: 0.300 m | Trench Width: 1.300 m
   US Depth: 2.30 m | DS Depth: 2.80 m | Avg: 2.55 m
-  Volume: 479.57 m³
-  Cost: $23,978.50
+  Volume: 416.39 m³
+  Cost: $20,819.50
 ```
 
 **Storage Node Example:**
@@ -120,8 +125,9 @@ The CSV file contains three sections:
 
 1. **PIPES**: Detailed data for each pipe including:
    - Pipe ID, US/DS Node IDs
-   - Length, depths (US/DS/Average)
-   - Trench width, volume, cost
+   - Length, diameter, trench width (calculated)
+   - Depths (US/DS/Average)
+   - Volume, cost
 
 2. **STORAGE NODES AND PONDS**: Detailed data including:
    - Type (Storage/Pond), Node ID
@@ -144,7 +150,7 @@ The CSV file contains three sections:
    - You can select any combination of these objects
 3. Run the script from the Ruby script menu
 4. Enter your parameters in the prompt:
-   - Trench width (for pipes)
+   - Trench additional width (added to each pipe's diameter)
    - Cost per cubic meter
    - Choose whether to export CSV
 5. Review results in the output window
@@ -171,6 +177,7 @@ All errors and warnings are reported in both the console output and included in 
 
 ### For Pipes:
 - `conduit_length`: Pipe length (m)
+- `conduit_width`: Pipe diameter (mm) - automatically converted to meters
 - `us_invert`, `ds_invert`: Invert elevations (m)
 - Connected nodes must have `ground_level` defined
 
@@ -185,12 +192,13 @@ All errors and warnings are reported in both the console output and included in 
 
 1. **Pipe Trenches:**
    - Assumes rectangular trench cross-section
+   - Trench width is calculated as pipe diameter plus user-specified additional width
    - Uses constant trench width along entire pipe length
    - Does not account for:
-     - Pipe diameter
-     - Bedding material
-     - Trench side slopes
+     - Bedding material thickness
+     - Trench side slopes (batter)
      - Over-excavation requirements
+     - Minimum trench width constraints
 
 2. **Storage Structures:**
    - Assumes storage array accurately represents excavation geometry
@@ -253,10 +261,15 @@ This script uses InfoWorks ICM naming conventions:
 
 ## Version History
 
+- **v1.1**: Updated trench width calculation
+  - Trench width now calculated as pipe diameter + additional width
+  - Pipe diameter automatically retrieved and converted from mm to m
+  - Added diameter and trench width to detailed output and CSV export
+  
 - **v1.0**: Initial release with pipe and storage node support
-- Includes trapezoidal volume calculation for storage arrays
-- CSV export with separate sections for pipes and storage
-- Comprehensive error handling and validation
+  - Includes trapezoidal volume calculation for storage arrays
+  - CSV export with separate sections for pipes and storage
+  - Comprehensive error handling and validation
 
 ## Support and Contributions
 

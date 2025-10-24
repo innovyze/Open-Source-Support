@@ -51,11 +51,11 @@ end
 puts "Found #{pipe_count} selected pipes"
 puts "Found #{storage_count} selected storage nodes/ponds"
 
-# Prompt user for trench width and cost per cubic meter
+# Prompt user for additional trench width and cost per cubic meter
 prompt_layout = [
-  ['Standard Trench Width (m)', 'NUMBER', 1.5],
-  ['Cost per Cubic Meter ($/m³)', 'NUMBER', 50.0],
-  ['Export Results to CSV', 'BOOLEAN', true]
+  ['Trench Additional Width (m)', 'NUMBER', 1],
+  ['Cost per Cubic Meter ($/m^3)', 'NUMBER', 50.0],
+  ['Export Results to CSV', 'BOOLEAN', false]
 ]
 
 begin
@@ -70,13 +70,13 @@ unless user_input
   exit
 end
 
-trench_width = user_input[0]
+additional_width = user_input[0]
 cost_per_m3 = user_input[1]
 export_csv = user_input[2]
 
 # Validate inputs
-if trench_width.nil? || trench_width <= 0
-  WSApplication.message_box('Invalid trench width. Must be greater than 0.', 'OK', 'Stop', false)
+if additional_width.nil? || additional_width < 0
+  WSApplication.message_box('Invalid additional trench width. Must be greater than or equal to 0.', 'OK', 'Stop', false)
   exit
 end
 
@@ -85,8 +85,8 @@ if cost_per_m3.nil? || cost_per_m3 <= 0
   exit
 end
 
-puts "Trench width: #{trench_width} m"
-puts "Cost per m³: $#{cost_per_m3}"
+puts "Trench additional width: #{additional_width} m"
+puts "Cost per m^3: $#{cost_per_m3}"
 puts ""
 puts "Calculating earthworks volumes and costs..."
 puts "=" * 80
@@ -166,6 +166,7 @@ if !selected_pipes.nil?
     pipe_length = pipe.conduit_length
     us_invert = pipe.us_invert
     ds_invert = pipe.ds_invert
+    pipe_diameter_mm = pipe.conduit_width  # Get pipe diameter in mm
     
     # Validate pipe data
     if pipe_length.nil? || pipe_length <= 0
@@ -177,6 +178,14 @@ if !selected_pipes.nil?
       errors << "#{pipe_id}: Missing invert levels"
       next
     end
+    
+    if pipe_diameter_mm.nil? || pipe_diameter_mm <= 0
+      errors << "#{pipe_id}: Invalid or missing pipe diameter"
+      next
+    end
+    
+    # Convert pipe diameter from mm to m
+    pipe_diameter = pipe_diameter_mm / 1000.0
     
     # Get upstream and downstream nodes
     us_node = net.row_object('hw_node', us_node_id)
@@ -224,6 +233,9 @@ if !selected_pipes.nil?
     # Calculate average depth
     avg_depth = (us_depth + ds_depth) / 2.0
     
+    # Calculate trench width (pipe diameter + additional width)
+    trench_width = pipe_diameter + additional_width
+    
     # Calculate trench volume (length × width × average depth)
     volume = pipe_length * trench_width * avg_depth
     
@@ -241,6 +253,8 @@ if !selected_pipes.nil?
       us_node_id: us_node_id,
       ds_node_id: ds_node_id,
       length: pipe_length,
+      diameter: pipe_diameter,
+      trench_width: trench_width,
       us_depth: us_depth,
       ds_depth: ds_depth,
       avg_depth: avg_depth,
@@ -251,8 +265,9 @@ if !selected_pipes.nil?
     # Output individual pipe results
     puts "Pipe: #{pipe_id}"
     puts "  Length: #{pipe_length.round(2)} m"
+    puts "  Diameter: #{pipe_diameter.round(3)} m | Trench Width: #{trench_width.round(3)} m"
     puts "  US Depth: #{us_depth.round(2)} m | DS Depth: #{ds_depth.round(2)} m | Avg: #{avg_depth.round(2)} m"
-    puts "  Volume: #{volume.round(2)} m³"
+    puts "  Volume: #{volume.round(2)} m^3"
     puts "  Cost: $#{cost.round(2)}"
     puts ""
     
@@ -329,7 +344,7 @@ if !selected_nodes.nil?
       puts "#{node_type}: #{node_id}"
       puts "  Ground Level: #{ground_level.round(2)} m"
       puts "  Storage Array: #{array_length} points (#{min_level.round(2)} to #{max_level.round(2)} m)"
-      puts "  Excavation Volume: #{volume.round(2)} m³"
+      puts "  Excavation Volume: #{volume.round(2)} m^3"
       puts "  Cost: $#{cost.round(2)}"
       puts ""
       
@@ -346,7 +361,7 @@ puts "=" * 80
 puts "Pipes processed: #{pipe_results.count}"
 puts "Storage nodes/ponds processed: #{storage_results.count}"
 puts "Total objects processed: #{pipe_results.count + storage_results.count}"
-puts "Total excavation volume: #{total_volume.round(2)} m³"
+puts "Total excavation volume: #{total_volume.round(2)} m^3"
 puts "Total estimated cost: $#{total_cost.round(2)}"
 puts ""
 
@@ -370,10 +385,10 @@ if export_csv && (pipe_results.count > 0 || storage_results.count > 0)
       # Write pipes section
       if pipe_results.count > 0
         file.puts "PIPES"
-        file.puts "Pipe ID,US Node,DS Node,Length (m),US Depth (m),DS Depth (m),Avg Depth (m),Trench Width (m),Volume (m³),Cost per m³ ($),Cost ($)"
+        file.puts "Pipe ID,US Node,DS Node,Length (m),Diameter (m),Trench Width (m),US Depth (m),DS Depth (m),Avg Depth (m),Volume (m^3),Cost per m^3 ($),Cost ($)"
         
         pipe_results.each do |result|
-          file.puts "#{result[:id]},#{result[:us_node_id]},#{result[:ds_node_id]},#{result[:length].round(2)},#{result[:us_depth].round(2)},#{result[:ds_depth].round(2)},#{result[:avg_depth].round(2)},#{trench_width},#{result[:volume].round(2)},#{cost_per_m3},#{result[:cost].round(2)}"
+          file.puts "#{result[:id]},#{result[:us_node_id]},#{result[:ds_node_id]},#{result[:length].round(2)},#{result[:diameter].round(3)},#{result[:trench_width].round(3)},#{result[:us_depth].round(2)},#{result[:ds_depth].round(2)},#{result[:avg_depth].round(2)},#{result[:volume].round(2)},#{cost_per_m3},#{result[:cost].round(2)}"
         end
         file.puts ""
       end
@@ -381,7 +396,7 @@ if export_csv && (pipe_results.count > 0 || storage_results.count > 0)
       # Write storage nodes/ponds section
       if storage_results.count > 0
         file.puts "STORAGE NODES AND PONDS"
-        file.puts "Type,Node ID,Ground Level (m),Array Points,Min Level (m),Max Level (m),Volume (m³),Cost per m³ ($),Cost ($)"
+        file.puts "Type,Node ID,Ground Level (m),Array Points,Min Level (m),Max Level (m),Volume (m^3),Cost per m^3 ($),Cost ($)"
         
         storage_results.each do |result|
           file.puts "#{result[:type]},#{result[:id]},#{result[:ground_level].round(2)},#{result[:array_points]},#{result[:min_level].round(2)},#{result[:max_level].round(2)},#{result[:volume].round(2)},#{cost_per_m3},#{result[:cost].round(2)}"
@@ -395,21 +410,21 @@ if export_csv && (pipe_results.count > 0 || storage_results.count > 0)
       file.puts "Pipes Processed,#{pipe_results.count}"
       file.puts "Storage Nodes/Ponds Processed,#{storage_results.count}"
       file.puts "Total Objects,#{pipe_results.count + storage_results.count}"
-      file.puts "Total Volume (m³),#{total_volume.round(2)}"
+      file.puts "Total Volume (m^3),#{total_volume.round(2)}"
       file.puts "Total Cost ($),#{total_cost.round(2)}"
-      file.puts "Cost per m³ ($),#{cost_per_m3}"
-      file.puts "Trench Width (m),#{trench_width}"
+      file.puts "Cost per m^3 ($),#{cost_per_m3}"
+      file.puts "Trench Additional Width (m),#{additional_width}"
     end
     
     puts "Results exported to: #{csv_file}"
-    WSApplication.message_box("Earthworks cost estimation complete!\n\nPipes: #{pipe_results.count}\nStorage/Ponds: #{storage_results.count}\n\nTotal Volume: #{total_volume.round(2)} m³\nTotal Cost: $#{total_cost.round(2)}\n\nResults exported to:\n#{csv_file}", 'OK', 'Information', false)
+    WSApplication.message_box("Earthworks cost estimation complete!\n\nPipes: #{pipe_results.count}\nStorage/Ponds: #{storage_results.count}\n\nTotal Volume: #{total_volume.round(2)} m^3\nTotal Cost: $#{total_cost.round(2)}\n\nResults exported to:\n#{csv_file}", 'OK', 'Information', false)
     
   rescue StandardError => e
     puts "Error exporting CSV: #{e.message}"
-    WSApplication.message_box("Calculation complete but CSV export failed.\n\nTotal Volume: #{total_volume.round(2)} m³\nTotal Cost: $#{total_cost.round(2)}\n\nSee output window for details.", 'OK', '!', false)
+    WSApplication.message_box("Calculation complete but CSV export failed.\n\nTotal Volume: #{total_volume.round(2)} m^3\nTotal Cost: $#{total_cost.round(2)}\n\nSee output window for details.", 'OK', '!', false)
   end
 else
-  WSApplication.message_box("Earthworks cost estimation complete!\n\nPipes: #{pipe_results.count}\nStorage/Ponds: #{storage_results.count}\n\nTotal Volume: #{total_volume.round(2)} m³\nTotal Cost: $#{total_cost.round(2)}\n\nSee output window for detailed results.", 'OK', 'Information', false)
+  WSApplication.message_box("Earthworks cost estimation complete!\n\nPipes: #{pipe_results.count}\nStorage/Ponds: #{storage_results.count}\n\nTotal Volume: #{total_volume.round(2)} m^3\nTotal Cost: $#{total_cost.round(2)}\n\nSee output window for detailed results.", 'OK', 'Information', false)
 end
 
 puts "Script completed successfully"
