@@ -331,6 +331,7 @@ if surveyResults.length > 0
         begin
             # Get both InspectionID and the specified Custom_Field together
             mapping_sql = "SELECT InspectionID, #{custom_field_name} FROM PACP_Custom_Fields WHERE #{custom_field_name} IS NOT NULL"
+            puts "Executing SQL: #{mapping_sql}"
             mapping_result = conn.Execute(mapping_sql)
             survey_id_to_inspection_id = {}
             
@@ -339,20 +340,56 @@ if surveyResults.length > 0
                 custom_field_value = mapping_result.Fields(1).Value
                 if !inspection_id.nil? && !custom_field_value.nil?
                     survey_id_to_inspection_id[custom_field_value.to_s] = inspection_id
+                    puts "  Mapped: '#{custom_field_value}' -> InspectionID: #{inspection_id}"
                 end
                 mapping_result.MoveNext
             end
             
             puts "Found #{survey_id_to_inspection_id.length} custom field mappings"
             
+            # Show some sample mappings for debugging
+            if survey_id_to_inspection_id.length > 0
+                puts "Sample mappings (first 3):"
+                count = 0
+                survey_id_to_inspection_id.each do |survey_id, insp_id|
+                    puts "  '#{survey_id}' -> #{insp_id}"
+                    count += 1
+                    break if count >= 3
+                end
+            else
+                puts "WARNING: No mappings found! Check that Custom_Field values match survey IDs."
+            end
+            
         rescue => e
-            puts "Warning: Could not read PACP_Custom_Fields table: #{e.message}"
+            puts "ERROR: Could not read PACP_Custom_Fields table: #{e.message}"
+            puts "Error details: #{e.backtrace.join("\n")}"
             survey_id_to_inspection_id = {}
         end
         
         # Insert data into existing PACP_Ratings table
         # Note: RatingID is AutoNumber, so we don't include it in the INSERT statement
-        puts "Inserting #{surveyResults.length} records..."
+        puts "\n=== Preparing to Insert Records ==="
+        puts "Total survey results to process: #{surveyResults.length}"
+        puts "Survey IDs found:"
+        surveyResults.each_with_index do |result, idx|
+            puts "  #{idx + 1}. '#{result['survey_id']}'"
+        end
+        puts "\nInspectionID mappings available: #{survey_id_to_inspection_id.length}"
+        
+        # Check for matching survey IDs
+        matching_count = 0
+        surveyResults.each do |result|
+            if survey_id_to_inspection_id.key?(result['survey_id'].to_s)
+                matching_count += 1
+            end
+        end
+        puts "Surveys with matching InspectionID: #{matching_count}/#{surveyResults.length}"
+        
+        puts "\nInserting records..."
+        
+        records_inserted = 0
+        records_skipped = 0
+        zero_value_records = 0
         
         surveyResults.each_with_index do |result, index|
             begin
@@ -361,15 +398,29 @@ if surveyResults.length > 0
                 
                 if inspection_id.nil?
                     puts "Warning: No InspectionID found for survey_id '#{result['survey_id']}' - skipping record"
+                    records_skipped += 1
                     next
                 end
                 
+                # Check if this is a zero-value record (no grade scores)
+                is_zero_value = (result['STPipeRating'] == 0 && result['OMPipeRating'] == 0 && result['OverallPipeRating'] == 0)
+                if is_zero_value
+                    zero_value_records += 1
+                end
+                
+                # Always insert records, even if all grade values are zero
+                # This ensures surveys without grade values still get PACP rating entries
+                
                 # Debug: Show the values we're trying to insert
-                puts "Debug - Record #{index + 1} values:"
+                record_type = is_zero_value ? " (zero values)" : ""
+                puts "Debug - Record #{index + 1}#{record_type}:"
                 puts "  Survey ID: '#{result['survey_id']}' -> InspectionID: #{inspection_id}"
-                puts "  STQuickRating: #{result['STQuickRating']} (#{result['STQuickRating'].class})"
-                puts "  OMQuickRating: #{result['OMQuickRating']} (#{result['OMQuickRating'].class})"
-                puts "  PACPQuickRating: #{result['PACPQuickRating']} (#{result['PACPQuickRating'].class})"
+                puts "  STPipeRating: #{result['STPipeRating']}, OMPipeRating: #{result['OMPipeRating']}, OverallPipeRating: #{result['OverallPipeRating']}"
+                if !is_zero_value
+                    puts "  STQuickRating: #{result['STQuickRating']} (#{result['STQuickRating'].class})"
+                    puts "  OMQuickRating: #{result['OMQuickRating']} (#{result['OMQuickRating'].class})"
+                    puts "  PACPQuickRating: #{result['PACPQuickRating']} (#{result['PACPQuickRating'].class})"
+                end
                 
                 # Fix: InspectionID is Number field, STQuickRating/OMQuickRating/PACPQuickRating are Short Text fields
                 insertSQL = <<-SQL
@@ -405,8 +456,16 @@ if surveyResults.length > 0
                     )
                 SQL
                 
+                # Execute the insert - InspectionID is required so make sure it's valid
+                if inspection_id.nil? || inspection_id == 0
+                    puts "ERROR: Invalid InspectionID (#{inspection_id}) for record #{index + 1} - skipping"
+                    records_skipped += 1
+                    next
+                end
+                
                 insert_result = conn.Execute(insertSQL)
-                puts "Record #{index + 1}/#{surveyResults.length} inserted successfully"
+                records_inserted += 1
+                puts "Record #{index + 1}/#{surveyResults.length} inserted successfully#{record_type} (InspectionID: #{inspection_id})"
                 
                 # Check if the insert actually worked by counting records
                 if (index + 1) % 5 == 0  # Check every 5 records
@@ -418,7 +477,12 @@ if surveyResults.length > 0
             rescue => e
                 puts "ERROR inserting record #{index + 1}: #{e.message}"
                 puts "SQL: #{insertSQL}"
-                break
+                puts "Error type: #{e.class}"
+                puts "Full error: #{e.inspect}"
+                puts "Continuing with next record..."
+                # Don't break - continue with next record
+                records_skipped += 1
+                next
             end
         end
         
@@ -446,8 +510,13 @@ if surveyResults.length > 0
         conn.Close
         puts "Database connection closed"
         
+        puts "\n=== Export Summary ==="
+        puts "Total survey records processed: #{surveyResults.length}"
+        puts "Records successfully inserted: #{records_inserted}"
+        puts "Records with zero grade values: #{zero_value_records}"
+        puts "Records skipped (no InspectionID match): #{records_skipped}"
         puts "Data export completed to: #{mdb_filename}"
-        puts "Exported #{surveyResults.length} survey records to PACP_Ratings table"
+        puts "Exported #{records_inserted} survey records to PACP_Ratings table"
         
         # Display results in console
         puts "\nResults (weighted values - count × score + PACP ratings):"
