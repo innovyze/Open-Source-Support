@@ -42,7 +42,7 @@ expOptions["Imperial"]=exportImperial						## Boolean, true for imperial values 
 expOptions["InfoAsset"]=exportID						## nil or an Integer, if an integer must be between 1 and 10 – corresponds to the dialog setting | Default=nil
 expOptions["Format"]="7"						## String, PACP db version format (must be "6" or "7") | Default=7
 expOptions["LogFile"]=exportLog				## String, path of a log file, if nil or blank then nothing is logged to the file | Default=nil
-puts expOptions
+#puts expOptions
 net.PACP_export(exportFile,expOptions)
 
 
@@ -66,11 +66,11 @@ net.table('cams_cctv_survey').fields.each do |f|
     end
 end
 
-puts "Found #{fields.length} fields in details blob:"
+#puts "Found #{fields.length} fields in details blob:"
 fields.each_with_index do |field, index|
-    puts "  #{index}: #{field}"
+    #puts "  #{index}: #{field}"
 end
-puts "\n"
+#puts "\n"
 
 # Check if required fields exist
 missingFields = []
@@ -82,13 +82,13 @@ if !fieldsHash.key?('structural_score')
 end
 
 if missingFields.length > 0
-    puts "ERROR: Required fields not found in details blob: #{missingFields.join(', ')}"
-    puts "Available fields: #{fields.join(', ')}"
+    #puts "ERROR: Required fields not found in details blob: #{missingFields.join(', ')}"
+    #puts "Available fields: #{fields.join(', ')}"
     exit
 end
 
-puts "service_score field found at index #{fieldsHash['service_score']}"
-puts "structural_score field found at index #{fieldsHash['structural_score']}"
+#puts "service_score field found at index #{fieldsHash['service_score']}"
+#puts "structural_score field found at index #{fieldsHash['structural_score']}"
 
 # Check for PACP fields (optional - won't fail if missing)
 pacpFields = ['pacp_struct_quick_rating', 'pacp_oandm_quick_rating', 'pacp_overall_quick_rating', 
@@ -97,12 +97,12 @@ availablePacpFields = []
 pacpFields.each do |field|
     if fieldsHash.key?(field)
         availablePacpFields << field
-        puts "#{field} field found at index #{fieldsHash[field]}"
+        #puts "#{field} field found at index #{fieldsHash[field]}"
     else
-        puts "WARNING: #{field} field not found - will be set to null"
+        #puts "WARNING: #{field} field not found - will be set to null"
     end
 end
-puts "\n"
+#puts "\n"
 
 # Array to store survey results
 surveyResults = Array.new
