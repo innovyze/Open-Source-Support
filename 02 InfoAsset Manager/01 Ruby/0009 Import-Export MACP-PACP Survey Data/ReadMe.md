@@ -31,7 +31,8 @@ on.pacp_export(filename,optionsHash)
 | Imperial | Boolean | false | true for imperial values (the WSApplication setting for units is ignored) |
 | InfoAsset | Integer | nil | If an integer must be between 1 and 10 – corresponds to the dialog setting<sup>1</sup> |
 | Format | String | 7 | PACP db version format (must be "6" or "7") |
-| LogFile | String | nil | Path of a log file, if nil or blank then nothing is logged to the file |
+| LogFile | String | nil | Path of a log file, if nil or blank then nothing is logged to the file |  
+
 <sup>1</sup> Exports the InfoAsset Manager Survey ID field value to the Custom_Field_One / *_Two etc. field in the PACP_Custom_Fields table of the mdb. The User_Text_1 / *_2 - *_10 field values will be exported to the PACP_Custom_Fields.  
 
 
