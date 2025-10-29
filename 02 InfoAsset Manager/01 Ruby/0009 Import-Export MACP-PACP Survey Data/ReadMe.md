@@ -36,6 +36,12 @@ on.pacp_export(filename,optionsHash)
 <sup>1</sup> Exports the InfoAsset Manager Survey ID field value to the Custom_Field_One / *_Two etc. field in the PACP_Custom_Fields table of the mdb. The User_Text_1 / *_2 - *_10 field values will be exported to the PACP_Custom_Fields.  
 
 
+## [UI-PACP_export-PACP_Ratings](./UI-PACP_export-PACP_Ratings.rb)
+Export CCTV Surveys to PACP7 format and populate the PACP_Ratings table.  
+A prompt dialog is used to populate the export filename and other options, like the UI dialog.  
+The process does require having the InfoAsset Survey ID value exported to one of the PACP_Custom_Field fields, as this is needed to find the correct InspectionID to create the relationship between the tables within the mdb. The prompt will default to use field one.  
+
+
 # [MACP_import](./UIIE-MACP_import.rb)
 on.macp_import(filename,optionsHash)  
     filename – String - filename to import from  
