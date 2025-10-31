@@ -40,7 +40,15 @@ begin
   # Pipes
   net.row_objects('hw_conduit').each do |pipe|
     peak_flow = pipe.result('flow') rescue nil
-    capacity = pipe.capacity rescue nil
+    # Calculate capacity from geometry: Q = A × V
+    width = pipe['conduit_width'] rescue nil
+    height = pipe['conduit_height'] rescue width rescue nil
+    if width && height && width > 0 && height > 0
+      area = (width / 1000.0) * (height / 1000.0)  # Convert mm to m
+      capacity = area * 5.0  # Typical max velocity 5 m/s
+    else
+      capacity = nil
+    end
     
     if peak_flow && capacity && capacity > 0
       util = (peak_flow.abs / capacity * 100).round
@@ -67,7 +75,11 @@ begin
   # Pumps
   net.row_objects('hw_pump').each do |pump|
     peak_flow = pump.result('flow') rescue nil
-    capacity = pump.capacity rescue nil
+    # Try rated flow field, or use peak flow as proxy
+    capacity = pump['rated_flow'] rescue pump['max_flow'] rescue nil
+    if capacity.nil? && peak_flow
+      capacity = peak_flow.abs * 1.2  # Use peak flow × 1.2 as capacity estimate
+    end
     
     if peak_flow && capacity && capacity > 0
       util = (peak_flow.abs / capacity * 100).round
@@ -94,7 +106,8 @@ begin
   # Tanks/Storage
   net.row_objects('hw_storage').each do |tank|
     max_volume = tank.result('volume') rescue nil
-    capacity = tank.capacity rescue nil
+    # Use storage volume field as capacity
+    capacity = tank['storage_volume'] rescue tank['max_volume'] rescue tank['volume'] rescue nil
     
     if max_volume && capacity && capacity > 0
       util = (max_volume / capacity * 100).round

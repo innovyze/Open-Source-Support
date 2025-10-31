@@ -39,7 +39,17 @@ begin
   
   net.row_objects('hw_conduit').each do |pipe|
     peak_flow = pipe.result('flow') rescue nil
-    capacity = pipe.capacity rescue nil
+    # Calculate capacity from geometry: Q = A × V
+    # Area = width × height (convert mm to m), V = typical max velocity (5 m/s)
+    width = pipe['conduit_width'] rescue nil
+    height = pipe['conduit_height'] rescue width rescue nil
+    if width && height && width > 0 && height > 0
+      area = (width / 1000.0) * (height / 1000.0)  # Convert mm to m
+      max_velocity = 5.0  # Typical max velocity for sewer systems (m/s)
+      capacity = area * max_velocity
+    else
+      capacity = nil
+    end
     
     if peak_flow && capacity && capacity > 0
       peak_flow = peak_flow.abs

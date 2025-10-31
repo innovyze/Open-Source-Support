@@ -50,7 +50,8 @@ begin
       # Estimate storage size (simplified)
       storage_volume = 0.0
       net.row_objects('hw_storage').each do |tank|
-        vol = tank.capacity rescue nil
+        # Use storage volume field as capacity
+        vol = tank['storage_volume'] rescue tank['max_volume'] rescue tank['volume'] rescue nil
         storage_volume += vol if vol && vol > 0
       end
       storage_volume = storage_volume.round(0)
@@ -60,7 +61,15 @@ begin
       total_pipes = 0
       net.row_objects('hw_conduit').each do |pipe|
         flow = pipe.result('flow') rescue nil
-        capacity = pipe.capacity rescue nil
+        # Calculate capacity from geometry: Q = A × V
+        width = pipe['conduit_width'] rescue nil
+        height = pipe['conduit_height'] rescue width rescue nil
+        if width && height && width > 0 && height > 0
+          area = (width / 1000.0) * (height / 1000.0)  # Convert mm to m
+          capacity = area * 5.0  # Typical max velocity 5 m/s
+        else
+          capacity = nil
+        end
         if flow && capacity && capacity > 0
           total_pipes += 1
           efficient_pipes += 1 if (flow.abs / capacity) < 0.85
