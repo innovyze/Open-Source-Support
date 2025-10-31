@@ -2,16 +2,107 @@
 # Context: Exchange
 # Purpose: Flow profile longitudinal section plotter
 # Outputs: HTML profile chart
-# Test Data: Sample profile data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name] [start_node] [end_node]
+#        Creates longitudinal profile along path from start_node to end_node
 
 begin
   puts "Flow Profile Plotter - Starting..."
   $stdout.flush
   
-  profile = (0..10).map do |i|
-    {chainage: i * 100, invert: 95 - i * 0.5, wse: 96 - i * 0.4, ground: 98 - i * 0.3}
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name] [start_node] [end_node]"
+    exit 1
   end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract profile data
+  net = sim_mo.open
+  
+  # Get final timestep for profile
+  timesteps = sim_mo.list_timesteps rescue []
+  if timesteps && timesteps.length > 0
+    net.current_timestep = timesteps.last
+  end
+  
+  # Build profile along conduits (simplified - traces path)
+  profile = []
+  chainage = 0.0
+  
+  # Get start and end nodes if provided
+  start_node_id = ARGV[2]
+  end_node_id = ARGV[3]
+  
+  if start_node_id && end_node_id
+    # Trace path from start to end (simplified - would need pathfinding)
+    # For now, just collect all nodes along conduits
+    net.row_objects('hw_conduit').each do |conduit|
+      us_node = net.row_object('hw_node', conduit.us_node_id) rescue nil
+      ds_node = net.row_object('hw_node', conduit.ds_node_id) rescue nil
+      
+      if us_node && ds_node
+        # Add upstream node
+        profile << {
+          chainage: chainage,
+          invert: us_node['invert_level'] rescue 0.0,
+          wse: (us_node['invert_level'] rescue 0.0) + (us_node.results('depth') rescue 0.0),
+          ground: us_node['ground_level'] rescue 0.0
+        }
+        
+        chainage += conduit.length rescue 100.0
+        
+        # Add downstream node
+        profile << {
+          chainage: chainage,
+          invert: ds_node['invert_level'] rescue 0.0,
+          wse: (ds_node['invert_level'] rescue 0.0) + (ds_node.results('depth') rescue 0.0),
+          ground: ds_node['ground_level'] rescue 0.0
+        }
+      end
+    end
+  else
+    # Default: sample first 10 nodes
+    count = 0
+    net.row_objects('hw_node').each do |node|
+      break if count >= 10
+      
+      profile << {
+        chainage: count * 100.0,
+        invert: node['invert_level'] rescue 0.0,
+        wse: (node['invert_level'] rescue 0.0) + (node.results('depth') rescue 0.0),
+        ground: node['ground_level'] rescue 0.0
+      }
+      count += 1
+    end
+  end
+  
+  net.close
+  
+  if profile.empty?
+    puts "No profile data found"
+    exit 0
+  end
+  
+  # Sort by chainage
+  profile.sort_by! { |p| p[:chainage] }
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

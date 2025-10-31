@@ -2,17 +2,31 @@
 # Context: Exchange
 # Purpose: Depth-duration-frequency curves (multiple return periods)
 # Outputs: HTML with curves
-# Test Data: Sample DDF data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path]
+#        Note: DDF curves typically come from rainfall data, not simulation results
+#        This script provides a placeholder structure
 
 begin
   puts "Depth-Duration-Frequency Curves - Starting..."
   $stdout.flush
   
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # DDF curves are typically from rainfall data, not simulation results
+  # This is a placeholder that would need actual rainfall data
   durations = [5, 10, 15, 30, 60, 120, 180]  # minutes
-  return_periods = {'2yr' => [15, 22, 28, 38, 52, 68, 78],
-                    '5yr' => [22, 32, 41, 55, 75, 98, 112],
-                    '10yr' => [28, 42, 53, 71, 98, 128, 146]}
+  
+  # Placeholder data - would need actual rainfall analysis
+  return_periods = {
+    '2yr' => durations.map { |d| (d * 0.3 + rand(5..15)).round },
+    '5yr' => durations.map { |d| (d * 0.4 + rand(10..25)).round },
+    '10yr' => durations.map { |d| (d * 0.5 + rand(15..35)).round }
+  }
+  
+  puts "Note: This script uses placeholder DDF data."
+  puts "For real DDF curves, integrate with rainfall data analysis."
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

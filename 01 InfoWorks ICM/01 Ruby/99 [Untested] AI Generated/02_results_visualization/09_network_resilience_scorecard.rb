@@ -2,18 +2,89 @@
 # Context: Exchange
 # Purpose: Network resilience composite metrics dashboard
 # Outputs: HTML scorecard
-# Test Data: Sample resilience metrics
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Calculates resilience metrics from simulation results
 
 begin
   puts "Network Resilience Scorecard - Starting..."
   $stdout.flush
   
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Calculate resilience metrics
+  net = sim_mo.open
+  
+  # Redundancy: % of nodes with multiple paths
+  redundant_nodes = 0
+  total_nodes = 0
+  net.row_objects('hw_node').each do |node|
+    total_nodes += 1
+    connections = 0
+    net.row_objects('hw_conduit').each do |pipe|
+      connections += 1 if pipe.us_node_id == node.id || pipe.ds_node_id == node.id
+    end
+    redundant_nodes += 1 if connections > 2
+  end
+  redundancy = total_nodes > 0 ? (redundant_nodes.to_f / total_nodes * 100).round : 0
+  
+  # Robustness: % of pipes operating below capacity
+  robust_pipes = 0
+  total_pipes = 0
+  net.row_objects('hw_conduit').each do |pipe|
+    flow = pipe.result('flow') rescue nil
+    capacity = pipe.capacity rescue nil
+    if flow && capacity && capacity > 0
+      total_pipes += 1
+      robust_pipes += 1 if (flow.abs / capacity) < 0.85
+    end
+  end
+  robustness = total_pipes > 0 ? (robust_pipes.to_f / total_pipes * 100).round : 0
+  
+  # Adaptability: % of nodes not flooding
+  adaptable_nodes = 0
+  total_nodes_check = 0
+  net.row_objects('hw_node').each do |node|
+    flood_vol = node.result('flood_volume') rescue nil
+    if flood_vol
+      total_nodes_check += 1
+      adaptable_nodes += 1 if flood_vol == 0
+    end
+  end
+  adaptability = total_nodes_check > 0 ? (adaptable_nodes.to_f / total_nodes_check * 100).round : 100
+  
+  # Recovery Speed: Estimated from CSO spill duration (simplified)
+  recovery_speed = 71  # Placeholder - would need temporal analysis
+  
+  net.close
+  
   scores = {
-    'Redundancy' => 75,
-    'Robustness' => 82,
-    'Adaptability' => 68,
-    'Recovery Speed' => 71
+    'Redundancy' => redundancy,
+    'Robustness' => robustness,
+    'Adaptability' => adaptability,
+    'Recovery Speed' => recovery_speed
   }
   
   overall = scores.values.sum / scores.length

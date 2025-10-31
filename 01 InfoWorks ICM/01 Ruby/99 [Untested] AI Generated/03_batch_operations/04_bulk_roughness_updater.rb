@@ -2,14 +2,65 @@
 # Context: Exchange
 # Purpose: Bulk roughness coefficient updater with audit trail
 # Outputs: CSV audit log
-# Test Data: Simulates bulk update
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [network_name] [new_roughness_value]
+#        Updates roughness for all conduits in network (or pipes matching criteria)
 
 begin
   puts "Bulk Roughness Updater - Starting..."
   $stdout.flush
   
-  pipes = 20.times.map { |i| {id: "P#{100+i}", old_n: 0.013, new_n: 0.015, material: 'Concrete'} }
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get network
+  network_name = ARGV[1]
+  unless network_name
+    nets = db.model_object_collection('Model Network')
+    if nets.empty?
+      puts "ERROR: No networks found in database"
+      exit 1
+    end
+    puts "Available networks:"
+    nets.each_with_index { |net, i| puts "  #{i+1}. #{net.name}" }
+    puts "\nUsage: script.rb [database_path] [network_name] [new_roughness_value]"
+    exit 1
+  end
+  
+  new_roughness = ARGV[2] ? ARGV[2].to_f : nil
+  unless new_roughness && new_roughness > 0
+    puts "ERROR: Please provide a valid new roughness value (e.g., 0.015)"
+    puts "Usage: script.rb [database_path] [network_name] [new_roughness_value]"
+    exit 1
+  end
+  
+  net_mo = db.model_object(network_name)
+  net = net_mo.open
+  
+  pipes = []
+  
+  net.row_objects('hw_conduit').each do |pipe|
+    old_n = pipe.roughness rescue 0.013
+    material = pipe.material rescue 'Unknown'
+    
+    pipes << {
+      id: pipe.id,
+      old_n: old_n.round(3),
+      new_n: new_roughness.round(3),
+      material: material
+    }
+    
+    # Update roughness (uncomment to actually modify database)
+    # pipe.roughness = new_roughness
+    # pipe.write
+  end
+  
+  net.close
+  
+  if pipes.empty?
+    puts "No pipes found in network"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
@@ -23,9 +74,11 @@ begin
     end
   end
   
-  puts "✓ Bulk update complete: #{audit_file}"
-  puts "  - Pipes updated: #{pipes.length}"
-  puts "  - Average change: #{((0.015 - 0.013) / 0.013 * 100).round(1)}%"
+  avg_change = pipes.length > 0 ? ((pipes.map { |p| ((p[:new_n] - p[:old_n]) / p[:old_n] * 100) }.sum) / pipes.length).round(1) : 0
+  
+  puts "✓ Bulk update audit complete: #{audit_file}"
+  puts "  - Pipes analyzed: #{pipes.length}"
+  puts "  - Average change: #{avg_change}%"
   $stdout.flush
 rescue => e
   puts "✗ Error: #{e.message}"

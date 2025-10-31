@@ -2,26 +2,109 @@
 # Context: Exchange
 # Purpose: Identify nodes with oscillating results (instability hotspots) with heatmap
 # Outputs: HTML with heatmap table
-# Test Data: Sample node oscillation data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Detects oscillations by analyzing depth variations across timesteps
 
 begin
   puts "Instability Hotspot Finder - Starting..."
   $stdout.flush
   
-  # Sample node instability data (node_id, oscillation_count, max_variance, severity)
-  nodes = [
-    {id: 'N101', osc_count: 25, max_var: 2.5, severity: 'Critical'},
-    {id: 'N102', osc_count: 5, max_var: 0.3, severity: 'Low'},
-    {id: 'N103', osc_count: 15, max_var: 1.2, severity: 'High'},
-    {id: 'N104', osc_count: 2, max_var: 0.1, severity: 'Low'},
-    {id: 'N105', osc_count: 18, max_var: 1.8, severity: 'High'},
-    {id: 'N106', osc_count: 30, max_var: 3.1, severity: 'Critical'},
-    {id: 'N107', osc_count: 8, max_var: 0.6, severity: 'Medium'},
-    {id: 'N108', osc_count: 12, max_var: 0.9, severity: 'Medium'},
-    {id: 'N109', osc_count: 20, max_var: 2.0, severity: 'High'},
-    {id: 'N110', osc_count: 3, max_var: 0.2, severity: 'Low'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Detect instability by analyzing oscillations
+  net = sim_mo.open
+  timesteps = sim_mo.list_timesteps rescue []
+  
+  nodes = []
+  
+  if timesteps && timesteps.length > 10
+    # Sample timesteps for performance
+    sample_timesteps = timesteps.select.with_index { |_, i| i % 5 == 0 }
+    
+    net.row_objects('hw_node').each do |node|
+      node_id = node.id
+      depth_history = []
+      
+      # Collect depth values over time
+      sample_timesteps.each do |ts|
+        net.current_timestep = ts
+        depth = node.results('depth') rescue nil
+        depth_history << depth if depth
+      end
+      
+      if depth_history.length > 5
+        # Detect oscillations (changes in direction)
+        oscillation_count = 0
+        max_variance = 0.0
+        
+        (1...(depth_history.length - 1)).each do |i|
+          prev = depth_history[i-1]
+          curr = depth_history[i]
+          next_val = depth_history[i+1]
+          
+          if prev && curr && next_val
+            # Check for direction change
+            if (prev < curr && curr > next_val) || (prev > curr && curr < next_val)
+              oscillation_count += 1
+            end
+            
+            # Track variance
+            variance = (curr - prev).abs
+            max_variance = variance if variance > max_variance
+          end
+        end
+        
+        if oscillation_count > 0
+          severity = if oscillation_count > 20
+            'Critical'
+          elsif oscillation_count > 10
+            'High'
+          elsif oscillation_count > 5
+            'Medium'
+          else
+            'Low'
+          end
+          
+          nodes << {
+            id: node_id,
+            osc_count: oscillation_count,
+            max_var: max_variance.round(2),
+            severity: severity
+          }
+        end
+      end
+    end
+  end
+  
+  net.close
+  
+  if nodes.empty?
+    puts "No instability hotspots detected"
+    exit 0
+  end
   
   # Sort by severity
   severity_order = {'Critical' => 0, 'High' => 1, 'Medium' => 2, 'Low' => 3}

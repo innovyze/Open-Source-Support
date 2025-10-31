@@ -2,20 +2,108 @@
 # Context: Exchange
 # Purpose: Sensitivity tornado chart (variable impact ranking)
 # Outputs: HTML tornado chart
-# Test Data: Sample sensitivity data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [base_simulation] [simulation1] [simulation2] ...
+#        Compares base simulation with variations to show sensitivity
 
 begin
   puts "Sensitivity Tornado Chart - Starting..."
   $stdout.flush
   
-  variables = [
-    {name: 'Rainfall Intensity', low: -15.5, high: 22.3},
-    {name: 'Pipe Roughness', low: -8.2, high: 12.1},
-    {name: 'Infiltration Rate', low: -12.8, high: 18.5},
-    {name: 'Pump Capacity', low: -6.5, high: 9.2},
-    {name: 'Storage Volume', low: -10.1, high: 14.8}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulations
+  if ARGV.length > 2
+    base_sim = ARGV[1]
+    variant_sims = ARGV[2..-1]
+  else
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [base_simulation] [simulation1] [simulation2] ..."
+    exit 1
+  end
+  
+  # Get base performance
+  base_performance = 0.0
+  begin
+    base_mo = db.model_object(base_sim)
+    if base_mo.status == 'Success'
+      net = base_mo.open
+      efficient_pipes = 0
+      total_pipes = 0
+      net.row_objects('hw_conduit').each do |pipe|
+        flow = pipe.result('flow') rescue nil
+        capacity = pipe.capacity rescue nil
+        if flow && capacity && capacity > 0
+          total_pipes += 1
+          efficient_pipes += 1 if (flow.abs / capacity) < 0.85
+        end
+      end
+      base_performance = total_pipes > 0 ? (efficient_pipes.to_f / total_pipes * 100) : 0.0
+      net.close
+    end
+  rescue => e
+    puts "  Warning: Could not process base simulation: #{e.message}"
+  end
+  
+  # Compare variants
+  variables = []
+  
+  variant_sims.each do |sim_name|
+    begin
+      sim_mo = db.model_object(sim_name)
+      
+      if sim_mo.status != 'Success'
+        puts "  ⚠ Skipping #{sim_name}: status is #{sim_mo.status}"
+        next
+      end
+      
+      net = sim_mo.open
+      
+      # Calculate performance
+      efficient_pipes = 0
+      total_pipes = 0
+      net.row_objects('hw_conduit').each do |pipe|
+        flow = pipe.result('flow') rescue nil
+        capacity = pipe.capacity rescue nil
+        if flow && capacity && capacity > 0
+          total_pipes += 1
+          efficient_pipes += 1 if (flow.abs / capacity) < 0.85
+        end
+      end
+      performance = total_pipes > 0 ? (efficient_pipes.to_f / total_pipes * 100) : 0.0
+      
+      net.close
+      
+      # Determine variable name from simulation name (simplified)
+      var_name = sim_name.gsub(/^.*_/, '').gsub(/[0-9]/, '') || sim_name
+      
+      # Calculate impact
+      impact = performance - base_performance
+      
+      # Determine if this is high or low variation (simplified)
+      # Would need to know parameter values - for now assume +/- variation
+      if impact > 0
+        variables << {name: var_name, low: 0, high: impact.round(1)}
+      else
+        variables << {name: var_name, low: impact.round(1), high: 0}
+      end
+      
+    rescue => e
+      puts "  ✗ Error processing #{sim_name}: #{e.message}"
+    end
+  end
+  
+  if variables.empty?
+    puts "No variable comparisons processed"
+    exit 0
+  end
   
   # Sort by total range (impact)
   variables.each { |v| v[:range] = (v[:high] - v[:low]).abs }

@@ -2,19 +2,93 @@
 # Context: Exchange
 # Purpose: Multi-run ensemble statistics (min/max/mean/percentiles box plots)
 # Outputs: HTML + CSV
-# Test Data: Sample ensemble data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name1] [simulation_name2] ...
+#        Compares multiple simulations for ensemble statistics
 
 begin
   puts "Ensemble Statistics - Starting..."
   $stdout.flush
   
-  # 5 simulation runs, 10 locations
-  locations = ['N1', 'N2', 'N3', 'N4', 'N5']
-  ensemble_data = locations.map do |loc|
-    runs = 5.times.map { rand(1.0..5.0).round(2) }
-    {location: loc, min: runs.min, max: runs.max, mean: (runs.sum / runs.length).round(2), 
-     p25: runs.sort[1], p75: runs.sort[3]}
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulations to compare
+  if ARGV.length > 1
+    sim_names = ARGV[1..-1]
+  else
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name1] [simulation_name2] ..."
+    exit 1
+  end
+  
+  # Sample nodes from first simulation
+  sample_nodes = []
+  begin
+    sim_mo = db.model_object(sim_names.first)
+    if sim_mo.status == 'Success'
+      net = sim_mo.open
+      count = 0
+      net.row_objects('hw_node').each do |node|
+        break if count >= 5
+        sample_nodes << node.id
+        count += 1
+      end
+      net.close
+    end
+  rescue => e
+    puts "  Warning: Could not sample nodes: #{e.message}"
+  end
+  
+  if sample_nodes.empty?
+    sample_nodes = ['N1', 'N2', 'N3', 'N4', 'N5']  # Fallback
+  end
+  
+  # Collect data for each location across simulations
+  ensemble_data = []
+  
+  sample_nodes.each do |loc|
+    values = []
+    
+    sim_names.each do |sim_name|
+      begin
+        sim_mo = db.model_object(sim_name)
+        if sim_mo.status == 'Success'
+          net = sim_mo.open
+          node = net.row_object('hw_node', loc) rescue nil
+          if node
+            depth = node.result('depth') rescue nil
+            values << depth if depth && depth > 0
+          end
+          net.close
+        end
+      rescue => e
+        puts "  Warning: Could not process #{sim_name} for #{loc}: #{e.message}"
+      end
+    end
+    
+    if values.length > 0
+      sorted = values.sort
+      ensemble_data << {
+        location: loc,
+        min: sorted.first.round(2),
+        max: sorted.last.round(2),
+        mean: (values.sum / values.length.to_f).round(2),
+        p25: sorted[sorted.length / 4].round(2),
+        p75: sorted[(sorted.length * 3) / 4].round(2)
+      }
+    end
+  end
+  
+  if ensemble_data.empty?
+    puts "No ensemble data collected"
+    exit 0
   end
   
   output_dir = File.expand_path('../../outputs', __FILE__)

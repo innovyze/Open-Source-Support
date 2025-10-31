@@ -2,30 +2,91 @@
 # Context: Exchange  
 # Purpose: Log timestep reduction events and visualize on timeline
 # Outputs: HTML with timeline visualization
-# Test Data: Sample timestep reduction events
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Extracts timestep reduction events from log file
 
 begin
   puts "Timestep Reduction Logger - Starting..."
   $stdout.flush
   
-  # Sample timestep reduction events
-  events = [
-    {time: 125.5, from_dt: 1.0, to_dt: 0.5, reason: 'Convergence'},
-    {time: 234.2, from_dt: 0.5, to_dt: 0.25, reason: 'Mass balance'},
-    {time: 450.8, from_dt: 0.25, to_dt: 0.1, reason: 'Instability'},
-    {time: 678.3, from_dt: 0.1, to_dt: 0.5, reason: 'Recovery'},
-    {time: 892.1, from_dt: 0.5, to_dt: 0.25, reason: 'Convergence'},
-    {time: 1205.4, from_dt: 0.25, to_dt: 1.0, reason: 'Recovery'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
   
-  output_dir = File.expand_path('../../outputs', __FILE__)
-  Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
-  output_file = File.join(output_dir, 'timestep_reductions.html')
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  # Parse log file for timestep reduction events
+  events = []
+  results_path = sim_mo.results_path rescue nil
+  
+  if results_path && Dir.exist?(results_path)
+    log_file = File.join(results_path, "#{sim_mo.name}.log")
+    if File.exist?(log_file)
+      puts "Parsing log file for timestep reduction events..."
+      
+      File.readlines(log_file).each_with_index do |line, idx|
+        # Look for timestep reduction patterns
+        if line.match?(/timestep.*reduc|reduc.*timestep|dt.*chang/i)
+          # Try to extract timestep values and time
+          time_match = line.match(/(\d+\.?\d*)\s*(?:s|seconds?)/i)
+          dt_match = line.match(/(\d+\.?\d*)\s*(?:s|seconds?)\s*(?:to|->|→)\s*(\d+\.?\d*)\s*(?:s|seconds?)/i)
+          
+          time = time_match ? time_match[1].to_f : (idx * 0.1)
+          
+          if dt_match
+            from_dt = dt_match[1].to_f
+            to_dt = dt_match[2].to_f
+          else
+            # Default values if not found
+            from_dt = 1.0
+            to_dt = 0.5
+          end
+          
+          # Determine reason
+          reason = 'General'
+          reason = 'Convergence' if line.match?(/convergence/i)
+          reason = 'Mass balance' if line.match?(/mass.*balance|massbalance/i)
+          reason = 'Instability' if line.match?(/instability|unstable/i)
+          reason = 'Recovery' if to_dt > from_dt
+          
+          events << {
+            time: time.round(1),
+            from_dt: from_dt.round(2),
+            to_dt: to_dt.round(2),
+            reason: reason
+          }
+        end
+      end
+    end
+  end
+  
+  if events.empty?
+    puts "No timestep reduction events found in log file"
+    puts "Note: Timestep reductions may not be explicitly logged"
+    exit 0
+  end
   
   # Count reductions vs recoveries
   reductions = events.count { |e| e[:to_dt] < e[:from_dt] }
   recoveries = events.count { |e| e[:to_dt] > e[:from_dt] }
+  
+  output_dir = File.expand_path('../../outputs', __FILE__)
+  Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
+  output_file = File.join(output_dir, 'timestep_reductions.html')
   
   html = <<-HTML
 <!DOCTYPE html>
@@ -122,17 +183,7 @@ begin
   
 rescue => e
   puts "✗ Error: #{e.message}"
+  puts e.backtrace.join("\n")
   $stdout.flush
   exit 1
 end
-
-
-
-
-
-
-
-
-
-
-

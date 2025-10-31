@@ -2,15 +2,63 @@
 # Context: Exchange
 # Purpose: Plot exceedance frequency curves with regression lines
 # Outputs: HTML with scatterplot and regression
-# Test Data: Sample flow exceedance data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name] [object_type] [field_name]
+#        object_type defaults to 'hw_node', field_name defaults to 'flow'
 
 begin
   puts "Exceedance Frequency Plotter - Starting..."
   $stdout.flush
   
-  # Sample exceedance data (sorted flows)
-  flows = [1.5, 2.1, 2.8, 3.2, 4.1, 4.8, 5.5, 6.2, 7.1, 8.5, 9.8, 11.2, 13.5, 16.2, 20.5]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name] [object_type] [field_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  object_type = ARGV[2] || 'hw_node'
+  field_name = ARGV[3] || 'flow'
+  
+  puts "Extracting #{field_name} values from #{object_type}..."
+  
+  # Extract maximum values from all objects
+  net = sim_mo.open
+  flows = []
+  
+  net.row_objects(object_type).each do |obj|
+    max_val = obj.result(field_name) rescue nil
+    if max_val && max_val > 0
+      flows << max_val
+    end
+  end
+  
+  net.close
+  
+  if flows.empty?
+    puts "No #{field_name} data found for #{object_type}"
+    exit 0
+  end
+  
+  # Sort flows descending and calculate exceedance percentages
+  flows.sort!.reverse!
   exceedance_pct = flows.each_with_index.map { |f, i| {flow: f, exceedance: (i + 1).to_f / flows.length * 100} }
   
   output_dir = File.expand_path('../../outputs', __FILE__)
@@ -78,6 +126,8 @@ begin
   File.write(html_file, html)
   puts "✓ Exceedance plot generated: #{html_file}"
   puts "  - Data points: #{flows.length}"
+  puts "  - Max #{field_name}: #{flows.max.round(3)}"
+  puts "  - Min #{field_name}: #{flows.min.round(3)}"
   $stdout.flush
   
 rescue => e

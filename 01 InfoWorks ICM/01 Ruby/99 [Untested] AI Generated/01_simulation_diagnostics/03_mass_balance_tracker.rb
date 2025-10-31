@@ -2,21 +2,111 @@
 # Context: Exchange
 # Purpose: Track mass balance errors by timestep and visualize with line chart
 # Outputs: CSV + HTML with line chart
-# Test Data: Sample mass balance error data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Extracts mass balance info from log file (if available) or estimates from node results
 
 begin
   puts "Mass Balance Error Tracker - Starting..."
   $stdout.flush
   
-  # Sample mass balance data (timestep, error_percentage)
-  mb_data = (0..100).map do |i|
-    time = i * 0.1
-    # Simulate increasing error with random spikes
-    base_error = time * 0.01
-    spike = (i % 15 == 0) ? rand(0.5..1.5) : 0
-    error = base_error + spike + rand(-0.1..0.1)
-    {timestep: i, time: time.round(2), error_pct: error.round(4)}
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Try to extract mass balance from log file
+  mb_data = []
+  results_path = sim_mo.results_path rescue nil
+  
+  if results_path && Dir.exist?(results_path)
+    log_file = File.join(results_path, "#{sim_mo.name}.log")
+    if File.exist?(log_file)
+      puts "Parsing log file for mass balance data..."
+      timestep = 0
+      File.readlines(log_file).each do |line|
+        # Look for mass balance patterns in log
+        if line.match?(/mass.*balance|massbalance/i)
+          # Try to extract error percentage if available
+          error_match = line.match(/(\d+\.?\d*)%|error[:\s]+([\d\.]+)/i)
+          if error_match
+            error_pct = (error_match[1] || error_match[2]).to_f
+            time_match = line.match(/(\d+\.?\d+)\s*s|time[:\s]+(\d+\.?\d+)/i)
+            time = time_match ? (time_match[1] || time_match[2]).to_f : timestep * 0.1
+            mb_data << {timestep: timestep, time: time.round(2), error_pct: error_pct.round(4)}
+            timestep += 1
+          end
+        end
+      end
+    end
+  end
+  
+  # If no mass balance data found in log, estimate from node results
+  if mb_data.empty?
+    puts "Mass balance data not found in log. Estimating from node results..."
+    net = sim_mo.open
+    timesteps = sim_mo.list_timesteps rescue []
+    
+    if timesteps && timesteps.length > 0
+      # Sample every 10th timestep for performance
+      sample_timesteps = timesteps.select.with_index { |_, i| i % 10 == 0 }
+      sample_timesteps = timesteps[0..100] if sample_timesteps.length > 100  # Limit to 100 points
+      
+      sample_timesteps.each_with_index do |ts, idx|
+        net.current_timestep = ts
+        
+        # Calculate total inflow vs outflow imbalance
+        total_inflow = 0.0
+        total_outflow = 0.0
+        
+        net.row_objects('hw_node').each do |node|
+          flow = node.results('flow') rescue 0.0
+          if flow && flow > 0
+            total_inflow += flow
+          elsif flow && flow < 0
+            total_outflow += flow.abs
+          end
+        end
+        
+        # Estimate mass balance error (simplified)
+        total_flow = total_inflow + total_outflow
+        error_pct = total_flow > 0 ? ((total_inflow - total_outflow).abs / total_flow * 100) : 0.0
+        
+        # Get time from timestep index
+        time = ts.to_f rescue (idx * 0.1)
+        
+        mb_data << {timestep: idx, time: time.round(2), error_pct: error_pct.round(4)}
+      end
+      
+      net.close
+    else
+      puts "Warning: No timesteps available. Using placeholder data."
+      mb_data = (0..50).map { |i| {timestep: i, time: i * 0.1, error_pct: 0.0} }
+    end
+  end
+  
+  if mb_data.empty?
+    puts "ERROR: Could not extract mass balance data"
+    exit 1
   end
   
   output_dir = File.expand_path('../../outputs', __FILE__)

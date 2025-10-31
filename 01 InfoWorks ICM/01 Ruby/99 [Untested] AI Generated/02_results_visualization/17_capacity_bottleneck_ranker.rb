@@ -2,18 +2,68 @@
 # Context: Exchange
 # Purpose: Network capacity bottleneck ranker (top 20 critical assets)
 # Outputs: HTML ranked list + CSV
-# Test Data: Sample bottleneck data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
 
 begin
   puts "Capacity Bottleneck Ranker - Starting..."
   $stdout.flush
   
-  bottlenecks = 20.times.map do |i|
-    {rank: i + 1, asset: "P#{100 + i}", util_pct: (95 + rand(0..25)).clamp(0, 150), 
-     capacity: rand(0.5..2.0).round(2), peak_flow: rand(0.6..2.5).round(2)}
-  end.sort_by { |b| -b[:util_pct] }
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
   
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract bottleneck data
+  net = sim_mo.open
+  bottlenecks = []
+  
+  net.row_objects('hw_conduit').each do |pipe|
+    peak_flow = pipe.result('flow') rescue nil
+    capacity = pipe.capacity rescue nil
+    
+    if peak_flow && capacity && capacity > 0
+      peak_flow = peak_flow.abs
+      util_pct = (peak_flow / capacity * 100).round(1)
+      
+      bottlenecks << {
+        asset: pipe.id,
+        util_pct: util_pct,
+        capacity: capacity.round(3),
+        peak_flow: peak_flow.round(3)
+      }
+    end
+  end
+  
+  net.close
+  
+  if bottlenecks.empty?
+    puts "No bottleneck data found"
+    exit 0
+  end
+  
+  # Sort by utilization and take top 20
+  bottlenecks.sort_by! { |b| -b[:util_pct] }
+  bottlenecks = bottlenecks[0..19]
   bottlenecks.each_with_index { |b, i| b[:rank] = i + 1 }
   
   output_dir = File.expand_path('../../outputs', __FILE__)
@@ -38,8 +88,8 @@ begin
   html += "</table><p><strong>CSV:</strong> bottlenecks.csv</p></div></body></html>"
   File.write(html_file, html)
   puts "✓ Bottleneck ranking: #{html_file}"
+  puts "  - Pipes analyzed: #{bottlenecks.length}"
   puts "  - Top bottleneck: #{bottlenecks[0][:asset]} (#{bottlenecks[0][:util_pct]}%)"
-  $stdout.flush
 rescue => e
   puts "✗ Error: #{e.message}"
   $stdout.flush

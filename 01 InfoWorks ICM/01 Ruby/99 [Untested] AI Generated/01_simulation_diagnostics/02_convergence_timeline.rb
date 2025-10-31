@@ -2,21 +2,79 @@
 # Context: Exchange
 # Purpose: Visualize convergence failures on a timeline using mermaid Gantt chart
 # Outputs: HTML with embedded mermaid Gantt chart
-# Test Data: Sample convergence failure events
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Extracts convergence failures from log file
 
 begin
   puts "Convergence Timeline Visualizer - Starting..."
   $stdout.flush
   
-  # Sample convergence failure events
-  failures = [
-    {node: 'N101', start_time: 0.5, duration: 0.1, severity: 'High'},
-    {node: 'N205', start_time: 1.2, duration: 0.15, severity: 'Medium'},
-    {node: 'N101', start_time: 2.3, duration: 0.2, severity: 'Critical'},
-    {node: 'N308', start_time: 3.0, duration: 0.05, severity: 'Low'},
-    {node: 'N205', start_time: 4.5, duration: 0.3, severity: 'High'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  # Parse log file for convergence failures
+  failures = []
+  results_path = sim_mo.results_path rescue nil
+  
+  if results_path && Dir.exist?(results_path)
+    log_file = File.join(results_path, "#{sim_mo.name}.log")
+    if File.exist?(log_file)
+      puts "Parsing log file for convergence failures..."
+      
+      File.readlines(log_file).each_with_index do |line, idx|
+        # Look for convergence failure patterns
+        if line.match?(/convergence.*fail|failed.*converge|converge.*fail/i)
+          # Try to extract node ID and time
+          node_match = line.match(/(?:node|at)\s+([A-Z0-9_]+)/i)
+          time_match = line.match(/(\d+\.?\d*)\s*(?:s|seconds?|minutes?)/i)
+          
+          node_id = node_match ? node_match[1] : "Unknown_#{idx}"
+          start_time = time_match ? time_match[1].to_f : (idx * 0.1)
+          
+          # Determine severity based on context
+          severity = if line.match?(/critical|fatal|severe/i)
+            'Critical'
+          elsif line.match?(/high|major/i)
+            'High'
+          elsif line.match?(/minor|low/i)
+            'Low'
+          else
+            'Medium'
+          end
+          
+          failures << {
+            node: node_id,
+            start_time: start_time.round(2),
+            duration: 0.1,  # Default duration
+            severity: severity
+          }
+        end
+      end
+    end
+  end
+  
+  if failures.empty?
+    puts "No convergence failures found in log file"
+    puts "Note: Convergence failures may not be explicitly logged"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

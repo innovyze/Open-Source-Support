@@ -2,21 +2,114 @@
 # Context: Exchange
 # Purpose: Time series animation (mermaid timeline of flood progression)
 # Outputs: HTML with mermaid timeline
-# Test Data: Sample flood events
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Creates timeline of flood events from simulation results
 
 begin
   puts "Flood Timeline Animator - Starting..."
   $stdout.flush
   
-  events = [
-    {time: '12:00', node: 'N001', event: 'Initial ponding'},
-    {time: '12:15', node: 'N005', event: 'Flooding begins'},
-    {time: '12:30', node: 'N008', event: 'Critical depth reached'},
-    {time: '12:45', node: 'N012', event: 'Peak flood level'},
-    {time: '13:00', node: 'N008', event: 'Water receding'},
-    {time: '13:30', node: 'N005', event: 'Flooding cleared'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract flood timeline
+  net = sim_mo.open
+  timesteps = sim_mo.list_timesteps rescue []
+  
+  events = []
+  
+  if timesteps && timesteps.length > 0
+    # Sample timesteps to track flood progression
+    sample_timesteps = timesteps.select.with_index { |_, i| i % (timesteps.length / 6) == 0 }
+    
+    prev_flooding_nodes = []
+    
+    sample_timesteps.each_with_index do |ts, idx|
+      net.current_timestep = ts
+      
+      # Find nodes with flooding
+      flooding_nodes = []
+      net.row_objects('hw_node').each do |node|
+        flood_vol = node.results('flood_volume') rescue nil
+        if flood_vol && flood_vol > 0
+          flooding_nodes << node.id
+        end
+      end
+      
+      # Detect flood events
+      if idx == 0 && flooding_nodes.length > 0
+        events << {
+          time: Time.at(ts).strftime('%H:%M') rescue "#{ts.round(0)}s",
+          node: flooding_nodes.first,
+          event: 'Initial ponding'
+        }
+      elsif flooding_nodes.length > prev_flooding_nodes.length
+        events << {
+          time: Time.at(ts).strftime('%H:%M') rescue "#{ts.round(0)}s",
+          node: flooding_nodes.first,
+          event: 'Flooding begins'
+        }
+      elsif flooding_nodes.length > prev_flooding_nodes.length * 1.5
+        events << {
+          time: Time.at(ts).strftime('%H:%M') rescue "#{ts.round(0)}s",
+          node: flooding_nodes.first,
+          event: 'Critical depth reached'
+        }
+      elsif flooding_nodes.length == prev_flooding_nodes.length && flooding_nodes.length > 0
+        events << {
+          time: Time.at(ts).strftime('%H:%M') rescue "#{ts.round(0)}s",
+          node: flooding_nodes.first,
+          event: 'Peak flood level'
+        }
+      elsif flooding_nodes.length < prev_flooding_nodes.length && prev_flooding_nodes.length > 0
+        events << {
+          time: Time.at(ts).strftime('%H:%M') rescue "#{ts.round(0)}s",
+          node: prev_flooding_nodes.first,
+          event: 'Water receding'
+        }
+      end
+      
+      prev_flooding_nodes = flooding_nodes
+    end
+    
+    # Check if flooding cleared
+    if prev_flooding_nodes.length == 0 && events.length > 0
+      events << {
+        time: Time.at(timesteps.last).strftime('%H:%M') rescue "#{timesteps.last.round(0)}s",
+        node: events.last[:node],
+        event: 'Flooding cleared'
+      }
+    end
+  end
+  
+  net.close
+  
+  if events.empty?
+    puts "No flood events detected"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

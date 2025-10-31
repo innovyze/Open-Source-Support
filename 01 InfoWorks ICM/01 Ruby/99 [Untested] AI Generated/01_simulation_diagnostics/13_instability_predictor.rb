@@ -2,23 +2,84 @@
 # Context: Exchange
 # Purpose: Pre-run risk assessment for numerical instability
 # Outputs: HTML risk scorecard
-# Test Data: Sample network metrics
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [network_name]
+#        Analyzes network characteristics to predict instability risk
 
 begin
   puts "Numerical Instability Predictor - Starting..."
   $stdout.flush
   
-  # Sample network risk factors
-  risk_factors = [
-    {factor: 'Network complexity', score: 7, max: 10, status: 'Medium'},
-    {factor: 'Steep slopes present', score: 8, max: 10, status: 'High'},
-    {factor: 'Pumps with fast cycling', score: 9, max: 10, status: 'High'},
-    {factor: 'Small pipe diameters', score: 5, max: 10, status: 'Medium'},
-    {factor: 'Rapid inflow changes', score: 6, max: 10, status: 'Medium'},
-    {factor: 'Looped network topology', score: 4, max: 10, status: 'Low'},
-    {factor: 'Supercritical flow potential', score: 7, max: 10, status: 'Medium'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get network
+  network_name = ARGV[1]
+  unless network_name
+    nets = db.model_object_collection('Model Network')
+    if nets.empty?
+      puts "ERROR: No networks found in database"
+      exit 1
+    end
+    puts "Available networks:"
+    nets.each_with_index { |net, i| puts "  #{i+1}. #{net.name}" }
+    puts "\nUsage: script.rb [database_path] [network_name]"
+    exit 1
+  end
+  
+  net_mo = db.model_object(network_name)
+  net = net_mo.open
+  
+  # Analyze network characteristics
+  risk_factors = []
+  
+  # Network complexity
+  node_count = 0
+  link_count = 0
+  net.row_objects('hw_node').each { |_| node_count += 1 }
+  net.row_objects('hw_conduit').each { |_| link_count += 1 }
+  complexity_score = (node_count > 500 ? 8 : (node_count > 200 ? 6 : 4))
+  risk_factors << {factor: 'Network complexity', score: complexity_score, max: 10, status: complexity_score > 7 ? 'High' : (complexity_score > 5 ? 'Medium' : 'Low')}
+  
+  # Steep slopes
+  steep_slopes = 0
+  net.row_objects('hw_conduit').each do |pipe|
+    slope = pipe.slope rescue nil
+    steep_slopes += 1 if slope && slope.abs > 0.05
+  end
+  slope_score = (steep_slopes > 10 ? 8 : (steep_slopes > 5 ? 6 : 3))
+  risk_factors << {factor: 'Steep slopes present', score: slope_score, max: 10, status: slope_score > 7 ? 'High' : (slope_score > 5 ? 'Medium' : 'Low')}
+  
+  # Pumps
+  pump_count = 0
+  net.row_objects('hw_pump').each { |_| pump_count += 1 }
+  pump_score = (pump_count > 5 ? 9 : (pump_count > 2 ? 6 : 3))
+  risk_factors << {factor: 'Pumps with fast cycling', score: pump_score, max: 10, status: pump_score > 7 ? 'High' : (pump_score > 5 ? 'Medium' : 'Low')}
+  
+  # Small pipe diameters
+  small_pipes = 0
+  net.row_objects('hw_conduit').each do |pipe|
+    diameter = pipe.diameter rescue nil
+    small_pipes += 1 if diameter && diameter < 0.3
+  end
+  diameter_score = (small_pipes > 20 ? 7 : (small_pipes > 10 ? 5 : 3))
+  risk_factors << {factor: 'Small pipe diameters', score: diameter_score, max: 10, status: diameter_score > 6 ? 'High' : (diameter_score > 4 ? 'Medium' : 'Low')}
+  
+  # Rapid inflow changes (estimated from subcatchments)
+  subcatch_count = 0
+  net.row_objects('hw_subcatchment').each { |_| subcatch_count += 1 }
+  inflow_score = (subcatch_count > 50 ? 6 : (subcatch_count > 20 ? 4 : 2))
+  risk_factors << {factor: 'Rapid inflow changes', score: inflow_score, max: 10, status: inflow_score > 5 ? 'Medium' : 'Low'}
+  
+  # Looped network topology
+  loop_score = 4  # Simplified - would need graph analysis
+  risk_factors << {factor: 'Looped network topology', score: loop_score, max: 10, status: loop_score > 6 ? 'Medium' : 'Low'}
+  
+  # Supercritical flow potential
+  supercritical_score = (steep_slopes > 10 ? 7 : 4)
+  risk_factors << {factor: 'Supercritical flow potential', score: supercritical_score, max: 10, status: supercritical_score > 6 ? 'Medium' : 'Low'}
+  
+  net.close
   
   total_score = risk_factors.map { |r| r[:score] }.sum
   max_score = risk_factors.map { |r| r[:max] }.sum

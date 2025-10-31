@@ -2,15 +2,57 @@
 # Context: Exchange
 # Purpose: Velocity distribution histogram by pipe material/diameter
 # Outputs: HTML histogram
-# Test Data: Sample velocity data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
 
 begin
   puts "Velocity Distribution Histogram - Starting..."
   $stdout.flush
   
-  velocities = (1..50).map { rand(0.5..4.0).round(2) }
-  bins = [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract velocities from simulation results
+  net = sim_mo.open
+  velocities = []
+  
+  net.row_objects('hw_conduit').each do |pipe|
+    max_velocity = pipe.result('velocity') rescue nil
+    if max_velocity && max_velocity > 0
+      velocities << max_velocity.abs.round(2)
+    end
+  end
+  
+  net.close
+  
+  if velocities.empty?
+    puts "No velocity data found"
+    exit 0
+  end
+  
+  # Create bins
+  bins = [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0]
   counts = bins[0..-2].map.with_index { |b, i| velocities.count { |v| v >= b && v < bins[i+1] } }
   
   output_dir = File.expand_path('../../outputs', __FILE__)
@@ -29,7 +71,9 @@ begin
   
   File.write(html_file, html)
   puts "✓ Velocity histogram: #{html_file}"
-  $stdout.flush
+  puts "  - Pipes analyzed: #{velocities.length}"
+  puts "  - Max velocity: #{velocities.max.round(2)} m/s"
+  puts "  - Min velocity: #{velocities.min.round(2)} m/s"
 rescue => e
   puts "✗ Error: #{e.message}"
   $stdout.flush

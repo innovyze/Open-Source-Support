@@ -2,18 +2,85 @@
 # Context: Exchange
 # Purpose: Compare logs from multiple simulation runs (diff viewer)
 # Outputs: HTML with side-by-side comparison
-# Test Data: Sample log statistics
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name1] [simulation_name2]
+#        If no args, uses most recent database and lists available simulations
 
 begin
   puts "Log File Comparator - Starting..."
   $stdout.flush
   
-  # Sample log comparison data
-  runs = [
-    {name: 'Baseline', errors: 5, warnings: 23, runtime: 245, status: 'Success'},
-    {name: 'Modified', errors: 2, warnings: 15, runtime: 238, status: 'Success'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulations to compare
+  if ARGV.length > 1
+    sim_names = ARGV[1..2]  # Compare first two provided
+  else
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name1] [simulation_name2]"
+    exit 1
+  end
+  
+  if sim_names.length < 2
+    puts "ERROR: Need at least 2 simulations to compare"
+    exit 1
+  end
+  
+  runs = []
+  
+  sim_names.each do |sim_name|
+    begin
+      sim_mo = db.model_object(sim_name)
+      
+      errors = 0
+      warnings = 0
+      runtime = 0
+      
+      # Parse log file
+      results_path = sim_mo.results_path rescue nil
+      if results_path && Dir.exist?(results_path)
+        log_file = File.join(results_path, "#{sim_mo.name}.log")
+        if File.exist?(log_file)
+          File.readlines(log_file).each do |line|
+            errors += 1 if line.match?(/ERROR|FATAL/i)
+            warnings += 1 if line.match?(/WARNING|WARN/i)
+            
+            # Try to extract runtime
+            runtime_match = line.match(/(\d+\.?\d*)\s*(?:seconds?|s)\s*(?:elapsed|runtime)/i)
+            if runtime_match
+              runtime = runtime_match[1].to_f
+            end
+          end
+        end
+      end
+      
+      # Get runtime from simulation object if available
+      runtime = sim_mo.runtime rescue runtime if runtime == 0
+      
+      runs << {
+        name: sim_name,
+        errors: errors,
+        warnings: warnings,
+        runtime: runtime.round(0),
+        status: sim_mo.status rescue 'Unknown'
+      }
+      
+    rescue => e
+      puts "  ✗ Error processing #{sim_name}: #{e.message}"
+    end
+  end
+  
+  if runs.length < 2
+    puts "ERROR: Could not process both simulations"
+    exit 1
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

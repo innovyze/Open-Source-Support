@@ -2,20 +2,108 @@
 # Context: Exchange
 # Purpose: Find hydraulic grade line discontinuities at nodes
 # Outputs: CSV + HTML report
-# Test Data: Sample HGL data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Detects HGL discontinuities at nodes by comparing upstream/downstream HGL
 
 begin
   puts "HGL Discontinuity Finder - Starting..."
   $stdout.flush
   
-  # Sample HGL discontinuity data
-  discontinuities = [
-    {node: 'N205', upstream_hgl: 125.5, downstream_hgl: 123.2, diff: 2.3, type: 'Drop'},
-    {node: 'N308', upstream_hgl: 110.2, downstream_hgl: 112.5, diff: 2.3, type: 'Jump'},
-    {node: 'N412', upstream_hgl: 98.5, downstream_hgl: 97.8, diff: 0.7, type: 'Drop'},
-    {node: 'N501', upstream_hgl: 88.2, downstream_hgl: 90.5, diff: 2.3, type: 'Jump'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Detect HGL discontinuities
+  net = sim_mo.open
+  
+  # Get final timestep for analysis
+  timesteps = sim_mo.list_timesteps rescue []
+  if timesteps && timesteps.length > 0
+    net.current_timestep = timesteps.last
+  end
+  
+  discontinuities = []
+  
+  net.row_objects('hw_node').each do |node|
+    node_id = node.id
+    node_hgl = node['invert_level'] rescue nil
+    node_hgl = (node_hgl.to_f + (node.results('depth') rescue 0.0)) if node_hgl
+    
+    # Check upstream and downstream HGL from connected conduits
+    upstream_hgl = nil
+    downstream_hgl = nil
+    
+    # Find upstream connections
+    net.row_objects('hw_conduit').each do |conduit|
+      if conduit.ds_node_id == node_id
+        us_node = net.row_object('hw_node', conduit.us_node_id) rescue nil
+        if us_node
+          us_invert = us_node['invert_level'] rescue nil
+          us_depth = us_node.results('depth') rescue nil
+          if us_invert && us_depth
+            upstream_hgl = us_invert.to_f + us_depth
+          end
+        end
+      end
+    end
+    
+    # Find downstream connections
+    net.row_objects('hw_conduit').each do |conduit|
+      if conduit.us_node_id == node_id
+        ds_node = net.row_object('hw_node', conduit.ds_node_id) rescue nil
+        if ds_node
+          ds_invert = ds_node['invert_level'] rescue nil
+          ds_depth = ds_node.results('depth') rescue nil
+          if ds_invert && ds_depth
+            downstream_hgl = ds_invert.to_f + ds_depth
+          end
+        end
+      end
+    end
+    
+    if upstream_hgl && downstream_hgl && node_hgl
+      diff = (upstream_hgl - downstream_hgl).abs
+      
+      if diff > 0.5  # Threshold for discontinuity
+        type = upstream_hgl > downstream_hgl ? 'Drop' : 'Jump'
+        discontinuities << {
+          node: node_id,
+          upstream_hgl: upstream_hgl.round(2),
+          downstream_hgl: downstream_hgl.round(2),
+          diff: diff.round(2),
+          type: type
+        }
+      end
+    end
+  end
+  
+  net.close
+  
+  if discontinuities.empty?
+    puts "No significant HGL discontinuities detected"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

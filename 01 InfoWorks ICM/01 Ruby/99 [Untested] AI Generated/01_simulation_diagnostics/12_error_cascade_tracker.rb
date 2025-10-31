@@ -2,21 +2,78 @@
 # Context: Exchange
 # Purpose: Trace error propagation through network (error cascade analysis)
 # Outputs: HTML with mermaid flow diagram
-# Test Data: Sample error propagation
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Detects error cascades from log file and network topology
 
 begin
   puts "Error Cascade Tracker - Starting..."
   $stdout.flush
   
-  # Sample error cascade (node, time, error_type, triggered_by)
-  cascade = [
-    {node: 'N100', time: 10.5, error: 'Convergence failure', triggered_by: nil},
-    {node: 'N101', time: 10.6, error: 'HGL discontinuity', triggered_by: 'N100'},
-    {node: 'N102', time: 10.8, error: 'Flow reversal', triggered_by: 'N101'},
-    {node: 'N105', time: 11.2, error: 'Mass balance error', triggered_by: 'N102'},
-    {node: 'N106', time: 11.5, error: 'Convergence failure', triggered_by: 'N105'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  # Parse log file for errors and build cascade
+  cascade = []
+  results_path = sim_mo.results_path rescue nil
+  
+  if results_path && Dir.exist?(results_path)
+    log_file = File.join(results_path, "#{sim_mo.name}.log")
+    if File.exist?(log_file)
+      puts "Parsing log file for error cascade..."
+      
+      time_counter = 0.0
+      prev_node = nil
+      
+      File.readlines(log_file).each_with_index do |line, idx|
+        # Look for errors with node references
+        if line.match?(/ERROR|FATAL|convergence.*fail/i)
+          time_counter += 0.1
+          
+          # Try to extract node ID
+          node_match = line.match(/(?:node|at)\s+([A-Z0-9_]+)/i)
+          node_id = node_match ? node_match[1] : "Unknown_#{idx}"
+          
+          # Determine error type
+          error_type = 'General Error'
+          error_type = 'Convergence failure' if line.match?(/convergence.*fail/i)
+          error_type = 'HGL discontinuity' if line.match?(/hgl|hydraulic.*grade/i)
+          error_type = 'Flow reversal' if line.match?(/flow.*reversal/i)
+          error_type = 'Mass balance error' if line.match?(/mass.*balance/i)
+          
+          cascade << {
+            node: node_id,
+            time: time_counter.round(1),
+            error: error_type,
+            triggered_by: prev_node
+          }
+          
+          prev_node = node_id
+        end
+      end
+    end
+  end
+  
+  if cascade.empty?
+    puts "No error cascade detected in log file"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

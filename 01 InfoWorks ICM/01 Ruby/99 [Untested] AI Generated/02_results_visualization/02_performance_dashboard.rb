@@ -2,18 +2,90 @@
 # Context: Exchange
 # Purpose: Generate HTML multi-metric performance dashboard with gauges
 # Outputs: HTML dashboard
-# Test Data: Sample performance metrics
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Calculates metrics from simulation results
 
 begin
   puts "Performance Dashboard Generator - Starting..."
   $stdout.flush
   
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Calculate metrics from simulation results
+  net = sim_mo.open
+  
+  # Network Efficiency: % of pipes operating below capacity
+  total_pipes = 0
+  efficient_pipes = 0
+  net.row_objects('hw_conduit').each do |pipe|
+    max_flow = pipe.result('flow') rescue nil
+    capacity = pipe.capacity rescue nil
+    if max_flow && capacity && capacity > 0
+      total_pipes += 1
+      efficient_pipes += 1 if (max_flow.abs / capacity) < 0.85
+    end
+  end
+  efficiency = total_pipes > 0 ? (efficient_pipes.to_f / total_pipes * 100).round : 0
+  
+  # Asset Utilization: average % of capacity used
+  total_utilization = 0.0
+  util_count = 0
+  net.row_objects('hw_conduit').each do |pipe|
+    max_flow = pipe.result('flow') rescue nil
+    capacity = pipe.capacity rescue nil
+    if max_flow && capacity && capacity > 0
+      utilization = (max_flow.abs / capacity * 100)
+      total_utilization += utilization
+      util_count += 1
+    end
+  end
+  asset_util = util_count > 0 ? (total_utilization / util_count).round : 0
+  
+  # CSO Compliance: % of CSOs not spilling
+  total_csos = 0
+  compliant_csos = 0
+  net.row_objects('hw_node').each do |node|
+    flood_vol = node.result('flood_volume') rescue nil
+    if flood_vol
+      total_csos += 1
+      compliant_csos += 1 if flood_vol == 0
+    end
+  end
+  cso_compliance = total_csos > 0 ? (compliant_csos.to_f / total_csos * 100).round : 100
+  
+  # Energy Efficiency: estimated from pump efficiency (simplified)
+  energy_efficiency = 75  # Placeholder - would need pump data
+  
+  net.close
+  
   metrics = {
-    'Network Efficiency' => {value: 78, target: 85, unit: '%', status: 'warning'},
-    'Asset Utilization' => {value: 65, target: 70, unit: '%', status: 'good'},
-    'CSO Compliance' => {value: 92, target: 90, unit: '%', status: 'excellent'},
-    'Energy Efficiency' => {value: 71, target: 75, unit: '%', status: 'good'}
+    'Network Efficiency' => {value: efficiency, target: 85, unit: '%', status: efficiency >= 80 ? 'excellent' : (efficiency >= 70 ? 'good' : 'warning')},
+    'Asset Utilization' => {value: asset_util, target: 70, unit: '%', status: asset_util >= 65 ? 'good' : 'warning'},
+    'CSO Compliance' => {value: cso_compliance, target: 90, unit: '%', status: cso_compliance >= 90 ? 'excellent' : (cso_compliance >= 80 ? 'good' : 'warning')},
+    'Energy Efficiency' => {value: energy_efficiency, target: 75, unit: '%', status: 'good'}
   }
   
   output_dir = File.expand_path('../../outputs', __FILE__)

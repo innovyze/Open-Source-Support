@@ -2,19 +2,78 @@
 # Context: Exchange
 # Purpose: Compare peak flows vs pipe capacity with color-coded severity
 # Outputs: HTML + CSV
-# Test Data: Sample pipe flow data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
 
 begin
   puts "Flow vs Capacity Comparison - Starting..."
   $stdout.flush
   
-  pipes = [
-    {id: 'P101', peak_flow: 0.45, capacity: 0.5, util_pct: 90, severity: 'High'},
-    {id: 'P102', peak_flow: 0.28, capacity: 0.6, util_pct: 47, severity: 'Low'},
-    {id: 'P103', peak_flow: 1.2, capacity: 1.0, util_pct: 120, severity: 'Critical'},
-    {id: 'P104', peak_flow: 0.65, capacity: 0.8, util_pct: 81, severity: 'Medium'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract flow vs capacity data
+  net = sim_mo.open
+  pipes = []
+  
+  net.row_objects('hw_conduit').each do |pipe|
+    peak_flow = pipe.result('flow') rescue nil
+    capacity = pipe.capacity rescue nil
+    
+    if peak_flow && capacity && capacity > 0
+      peak_flow = peak_flow.abs
+      util_pct = (peak_flow / capacity * 100).round(1)
+      
+      severity = if util_pct > 100
+        'Critical'
+      elsif util_pct > 85
+        'High'
+      elsif util_pct > 70
+        'Medium'
+      else
+        'Low'
+      end
+      
+      pipes << {
+        id: pipe.id,
+        peak_flow: peak_flow.round(3),
+        capacity: capacity.round(3),
+        util_pct: util_pct,
+        severity: severity
+      }
+    end
+  end
+  
+  net.close
+  
+  if pipes.empty?
+    puts "No pipe flow/capacity data found"
+    exit 0
+  end
+  
+  # Sort by utilization
+  pipes.sort_by! { |p| -p[:util_pct] }
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
@@ -39,7 +98,9 @@ begin
   
   File.write(html_file, html)
   puts "✓ Analysis complete: #{html_file}"
-  $stdout.flush
+  puts "  - Pipes analyzed: #{pipes.length}"
+  puts "  - Critical pipes: #{pipes.count { |p| p[:severity] == 'Critical' }}"
+  puts "  - High utilization: #{pipes.count { |p| p[:severity] == 'High' }}"
 rescue => e
   puts "✗ Error: #{e.message}"
   $stdout.flush

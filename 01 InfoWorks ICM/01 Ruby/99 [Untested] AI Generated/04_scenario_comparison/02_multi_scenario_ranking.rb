@@ -2,18 +2,100 @@
 # Context: Exchange
 # Purpose: Multi-scenario performance ranking with radar charts
 # Outputs: HTML with ranking table + radar chart
-# Test Data: Sample scenario metrics
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name1] [simulation_name2] ...
+#        If no args, uses most recent database and lists available simulations
 
 begin
   puts "Multi-Scenario Ranking - Starting..."
   $stdout.flush
   
-  scenarios = [
-    {name: 'Base', cost: 100, performance: 70, reliability: 65, sustainability: 60, overall: 73.75},
-    {name: 'Option_A', cost: 75, performance: 82, reliability: 78, sustainability: 72, overall: 76.75},
-    {name: 'Option_B', cost: 50, performance: 91, reliability: 85, sustainability: 88, overall: 78.5}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulations to compare
+  if ARGV.length > 1
+    sim_names = ARGV[1..-1]
+  else
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name1] [simulation_name2] ..."
+    exit 1
+  end
+  
+  scenarios = []
+  
+  sim_names.each do |sim_name|
+    begin
+      sim_mo = db.model_object(sim_name)
+      
+      if sim_mo.status != 'Success'
+        puts "  ⚠ Skipping #{sim_name}: status is #{sim_mo.status}"
+        next
+      end
+      
+      net = sim_mo.open
+      
+      # Calculate performance metrics
+      # Performance: % of pipes operating efficiently (<85% capacity)
+      efficient_pipes = 0
+      total_pipes = 0
+      net.row_objects('hw_conduit').each do |pipe|
+        flow = pipe.result('flow') rescue nil
+        capacity = pipe.capacity rescue nil
+        if flow && capacity && capacity > 0
+          total_pipes += 1
+          efficient_pipes += 1 if (flow.abs / capacity) < 0.85
+        end
+      end
+      performance = total_pipes > 0 ? (efficient_pipes.to_f / total_pipes * 100).round : 0
+      
+      # Reliability: % of nodes not flooding
+      reliable_nodes = 0
+      total_nodes = 0
+      net.row_objects('hw_node').each do |node|
+        flood_vol = node.result('flood_volume') rescue nil
+        if flood_vol
+          total_nodes += 1
+          reliable_nodes += 1 if flood_vol == 0
+        end
+      end
+      reliability = total_nodes > 0 ? (reliable_nodes.to_f / total_nodes * 100).round : 100
+      
+      # Sustainability: % of assets operating in optimal range (simplified)
+      sustainability = 75  # Placeholder - would need more complex calculation
+      
+      # Cost: Estimated from network size (simplified)
+      cost_score = 100 - (total_pipes * 0.5).clamp(0, 100).round
+      
+      # Overall score (weighted average)
+      overall = ((performance * 0.4) + (reliability * 0.3) + (sustainability * 0.2) + (cost_score * 0.1)).round(2)
+      
+      net.close
+      
+      scenarios << {
+        name: sim_name,
+        cost: cost_score,
+        performance: performance,
+        reliability: reliability,
+        sustainability: sustainability,
+        overall: overall
+      }
+      
+    rescue => e
+      puts "  ✗ Error processing #{sim_name}: #{e.message}"
+    end
+  end
+  
+  if scenarios.empty?
+    puts "No scenarios processed"
+    exit 0
+  end
   
   scenarios.sort_by! { |s| -s[:overall] }
   scenarios.each_with_index { |s, i| s[:rank] = i + 1 }

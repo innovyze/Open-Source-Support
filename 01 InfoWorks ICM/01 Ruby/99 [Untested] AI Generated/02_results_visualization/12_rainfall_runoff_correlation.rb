@@ -2,17 +2,79 @@
 # Context: Exchange
 # Purpose: Rainfall-runoff correlation analyzer with R² calculation
 # Outputs: HTML scatterplot + CSV
-# Test Data: Sample correlation data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Correlates rainfall input with runoff output from simulation
 
 begin
   puts "Rainfall-Runoff Correlation - Starting..."
   $stdout.flush
   
-  data_points = 20.times.map do |i|
-    rainfall = rand(10..80)
-    runoff = (rainfall * 0.65 + rand(-10..10)).round(1)
-    {rainfall: rainfall, runoff: runoff}
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract rainfall and runoff data
+  net = sim_mo.open
+  timesteps = sim_mo.list_timesteps rescue []
+  
+  data_points = []
+  
+  if timesteps && timesteps.length > 0
+    # Sample timesteps for performance
+    sample_timesteps = timesteps.select.with_index { |_, i| i % 20 == 0 }
+    
+    sample_timesteps.each do |ts|
+      net.current_timestep = ts
+      
+      # Get rainfall (from subcatchments)
+      rainfall_total = 0.0
+      net.row_objects('hw_subcatchment').each do |sub|
+        rainfall = sub.results('rainfall') rescue nil
+        rainfall_total += rainfall if rainfall && rainfall > 0
+      end
+      
+      # Get runoff (from subcatchments)
+      runoff_total = 0.0
+      net.row_objects('hw_subcatchment').each do |sub|
+        runoff = sub.results('runoff') rescue nil
+        runoff_total += runoff if runoff && runoff > 0
+      end
+      
+      if rainfall_total > 0 && runoff_total > 0
+        data_points << {
+          rainfall: rainfall_total.round(1),
+          runoff: runoff_total.round(1)
+        }
+      end
+    end
+  end
+  
+  net.close
+  
+  if data_points.empty?
+    puts "No rainfall-runoff data found"
+    exit 0
   end
   
   # Calculate R²

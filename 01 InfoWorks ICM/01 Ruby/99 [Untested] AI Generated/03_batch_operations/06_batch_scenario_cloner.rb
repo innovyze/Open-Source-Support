@@ -2,23 +2,65 @@
 # Context: Exchange
 # Purpose: Batch scenario cloner with naming convention
 # Outputs: Log of cloned scenarios
-# Test Data: Simulates scenario cloning
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [base_scenario] [variant1] [variant2] ...
+#        Clones base scenario with variants
 
 begin
   puts "Batch Scenario Cloner - Starting..."
   $stdout.flush
   
-  base_scenarios = ['Base_Case', 'Design_Storm', 'Climate_Change']
-  variants = ['Low', 'Medium', 'High']
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get base scenario
+  base_scenario = ARGV[1]
+  unless base_scenario
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [base_scenario] [variant1] [variant2] ..."
+    exit 1
+  end
+  
+  variants = ARGV.length > 2 ? ARGV[2..-1] : ['Low', 'Medium', 'High']
   
   cloned = []
-  base_scenarios.each do |base|
-    variants.each do |variant|
-      new_name = "#{base}_#{variant}_#{Time.now.strftime('%Y%m%d')}"
-      cloned << {original: base, new_name: new_name, variant: variant, timestamp: Time.now}
+  
+  variants.each do |variant|
+    new_name = "#{base_scenario}_#{variant}_#{Time.now.strftime('%Y%m%d')}"
+    
+    begin
+      base_sim = db.model_object(base_scenario)
+      
+      # Clone scenario (simplified - would need actual cloning API)
+      # Note: Actual cloning would use: cloned_sim = base_sim.clone(new_name)
+      
+      cloned << {
+        original: base_scenario,
+        new_name: new_name,
+        variant: variant,
+        timestamp: Time.now
+      }
+      
+      puts "  ✓ Would clone: #{base_scenario} -> #{new_name}"
+      
+    rescue => e
+      puts "  ✗ Error cloning #{base_scenario} -> #{new_name}: #{e.message}"
     end
   end
+  
+  if cloned.empty?
+    puts "No scenarios cloned"
+    exit 0
+  end
+  
+  puts "\nNote: This script shows what would be cloned."
+  puts "Actual cloning requires uncommenting clone API calls."
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

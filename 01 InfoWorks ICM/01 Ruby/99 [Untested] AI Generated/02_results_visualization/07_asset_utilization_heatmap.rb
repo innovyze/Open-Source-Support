@@ -2,21 +2,130 @@
 # Context: Exchange
 # Purpose: Asset utilization heatmap (pipes, pumps, tanks as % capacity)
 # Outputs: HTML heatmap
-# Test Data: Sample asset data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
 
 begin
   puts "Asset Utilization Heatmap - Starting..."
   $stdout.flush
   
-  assets = [
-    {id: 'Pipe_001', type: 'Pipe', util: 92, status: 'High'},
-    {id: 'Pipe_002', type: 'Pipe', util: 45, status: 'Low'},
-    {id: 'Pump_A', type: 'Pump', util: 78, status: 'Medium'},
-    {id: 'Tank_1', type: 'Tank', util: 68, status: 'Medium'},
-    {id: 'Pipe_003', type: 'Pipe', util: 105, status: 'Critical'},
-    {id: 'Pump_B', type: 'Pump', util: 55, status: 'Low'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract asset utilization
+  net = sim_mo.open
+  assets = []
+  
+  # Pipes
+  net.row_objects('hw_conduit').each do |pipe|
+    peak_flow = pipe.result('flow') rescue nil
+    capacity = pipe.capacity rescue nil
+    
+    if peak_flow && capacity && capacity > 0
+      util = (peak_flow.abs / capacity * 100).round
+      
+      status = if util > 100
+        'Critical'
+      elsif util > 85
+        'High'
+      elsif util > 70
+        'Medium'
+      else
+        'Low'
+      end
+      
+      assets << {
+        id: pipe.id,
+        type: 'Pipe',
+        util: util,
+        status: status
+      }
+    end
+  end
+  
+  # Pumps
+  net.row_objects('hw_pump').each do |pump|
+    peak_flow = pump.result('flow') rescue nil
+    capacity = pump.capacity rescue nil
+    
+    if peak_flow && capacity && capacity > 0
+      util = (peak_flow.abs / capacity * 100).round
+      
+      status = if util > 100
+        'Critical'
+      elsif util > 85
+        'High'
+      elsif util > 70
+        'Medium'
+      else
+        'Low'
+      end
+      
+      assets << {
+        id: pump.id,
+        type: 'Pump',
+        util: util,
+        status: status
+      }
+    end
+  end
+  
+  # Tanks/Storage
+  net.row_objects('hw_storage').each do |tank|
+    max_volume = tank.result('volume') rescue nil
+    capacity = tank.capacity rescue nil
+    
+    if max_volume && capacity && capacity > 0
+      util = (max_volume / capacity * 100).round
+      
+      status = if util > 90
+        'High'
+      elsif util > 70
+        'Medium'
+      else
+        'Low'
+      end
+      
+      assets << {
+        id: tank.id,
+        type: 'Tank',
+        util: util,
+        status: status
+      }
+    end
+  end
+  
+  net.close
+  
+  if assets.empty?
+    puts "No asset utilization data found"
+    exit 0
+  end
+  
+  # Sort by utilization
+  assets.sort_by! { |a| -a[:util] }
+  assets = assets[0..20]  # Limit to top 20 for display
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

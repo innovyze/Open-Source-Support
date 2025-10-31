@@ -2,22 +2,110 @@
 # Context: Exchange
 # Purpose: Detect and map flow reversals (link instability indicator)
 # Outputs: HTML with network map showing reversals
-# Test Data: Sample flow reversal data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Detects flow reversals by analyzing flow direction changes
 
 begin
   puts "Flow Reversal Detector - Starting..."
   $stdout.flush
   
-  # Sample flow reversal data (link_id, reversal_count, peak_velocity)
-  reversals = [
-    {link: 'L101', count: 15, peak_vel: 2.5, severity: 'High'},
-    {link: 'L102', count: 3, peak_vel: 0.8, severity: 'Low'},
-    {link: 'L103', count: 8, peak_vel: 1.5, severity: 'Medium'},
-    {link: 'L104', count: 22, peak_vel: 3.2, severity: 'Critical'},
-    {link: 'L105', count: 5, peak_vel: 1.0, severity: 'Low'},
-    {link: 'L106', count: 18, peak_vel: 2.8, severity: 'High'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Detect flow reversals
+  net = sim_mo.open
+  timesteps = sim_mo.list_timesteps rescue []
+  
+  reversals = []
+  
+  if timesteps && timesteps.length > 10
+    # Sample timesteps for performance
+    sample_timesteps = timesteps.select.with_index { |_, i| i % 5 == 0 }
+    
+    net.row_objects('hw_conduit').each do |link|
+      link_id = link.id
+      flow_history = []
+      
+      # Collect flow values over time
+      sample_timesteps.each do |ts|
+        net.current_timestep = ts
+        flow = link.results('flow') rescue nil
+        flow_history << flow if flow
+      end
+      
+      if flow_history.length > 5
+        # Count reversals (sign changes)
+        reversal_count = 0
+        peak_velocity = 0.0
+        
+        (1...flow_history.length).each do |i|
+          prev = flow_history[i-1]
+          curr = flow_history[i]
+          
+          if prev && curr
+            # Check for sign change (reversal)
+            if (prev > 0 && curr < 0) || (prev < 0 && curr > 0)
+              reversal_count += 1
+            end
+            
+            # Track peak velocity
+            velocity = link.results('velocity') rescue nil
+            if velocity && velocity.abs > peak_velocity
+              peak_velocity = velocity.abs
+            end
+          end
+        end
+        
+        if reversal_count > 0
+          severity = if reversal_count > 20
+            'Critical'
+          elsif reversal_count > 10
+            'High'
+          elsif reversal_count > 5
+            'Medium'
+          else
+            'Low'
+          end
+          
+          reversals << {
+            link: link_id,
+            count: reversal_count,
+            peak_vel: peak_velocity.round(2),
+            severity: severity
+          }
+        end
+      end
+    end
+  end
+  
+  net.close
+  
+  if reversals.empty?
+    puts "No flow reversals detected"
+    exit 0
+  end
   
   critical = reversals.count { |r| r[:severity] == 'Critical' }
   high = reversals.count { |r| r[:severity] == 'High' }

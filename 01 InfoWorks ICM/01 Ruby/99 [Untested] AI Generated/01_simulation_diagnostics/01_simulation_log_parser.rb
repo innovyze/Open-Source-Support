@@ -2,22 +2,82 @@
 # Context: Exchange
 # Purpose: Parse simulation log files and categorize errors/warnings into an HTML report
 # Outputs: HTML with categorized error summary
-# Test Data: Simulates log parsing with sample data
-# Cleanup: N/A (no database objects created)
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        If no args, uses most recent database and lists available simulations
 
 begin
   puts "Simulation Log Parser - Starting..."
   $stdout.flush
   
-  # Sample log data structure (in real use, would parse from file)
-  log_entries = [
-    {type: 'ERROR', time: '00:15:30', message: 'Convergence failure at node N123', category: 'Convergence'},
-    {type: 'WARNING', time: '00:15:35', message: 'Flow reversal detected in link L456', category: 'Flow'},
-    {type: 'ERROR', time: '00:20:10', message: 'Mass balance error exceeds threshold', category: 'Mass Balance'},
-    {type: 'WARNING', time: '00:25:00', message: 'Timestep reduced to 0.1s', category: 'Timestep'},
-    {type: 'ERROR', time: '00:30:15', message: 'HGL discontinuity at node N789', category: 'Hydraulics'},
-    {type: 'INFO', time: '00:35:00', message: 'Simulation completed with warnings', category: 'Status'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  # Get log file path
+  results_path = sim_mo.results_path rescue nil
+  unless results_path && Dir.exist?(results_path)
+    puts "ERROR: Simulation results path not found for '#{sim_name}'"
+    exit 1
+  end
+  
+  log_file = File.join(results_path, "#{sim_mo.name}.log")
+  unless File.exist?(log_file)
+    puts "ERROR: Log file not found: #{log_file}"
+    exit 1
+  end
+  
+  puts "Parsing log file: #{log_file}"
+  
+  # Parse log file
+  log_entries = []
+  File.readlines(log_file).each do |line|
+    line = line.strip
+    next if line.empty?
+    
+    # Extract timestamp pattern (HH:MM:SS)
+    time_match = line.match(/(\d{2}:\d{2}:\d{2})/)
+    time_str = time_match ? time_match[1] : 'Unknown'
+    
+    # Categorize by content
+    type = 'INFO'
+    category = 'General'
+    
+    if line.match?(/ERROR|FATAL/i)
+      type = 'ERROR'
+      category = 'Error'
+      category = 'Convergence' if line.match?(/convergence|failed to converge/i)
+      category = 'Mass Balance' if line.match?(/mass balance|massbalance/i)
+      category = 'Hydraulics' if line.match?(/HGL|hydraulic grade|pressure/i)
+    elsif line.match?(/WARNING|WARN/i)
+      type = 'WARNING'
+      category = 'Warning'
+      category = 'Flow' if line.match?(/flow|reversal|velocity/i)
+      category = 'Timestep' if line.match?(/timestep|time step/i)
+    end
+    
+    log_entries << {
+      type: type,
+      time: time_str,
+      message: line[0..100],  # Truncate long lines
+      category: category
+    }
+  end
   
   # Categorize entries
   errors = log_entries.select { |e| e[:type] == 'ERROR' }

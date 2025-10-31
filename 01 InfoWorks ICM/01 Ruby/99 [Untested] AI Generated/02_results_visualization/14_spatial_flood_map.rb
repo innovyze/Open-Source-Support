@@ -2,23 +2,92 @@
 # Context: Exchange
 # Purpose: Spatial flood map (node depths with color gradients)
 # Outputs: HTML map
-# Test Data: Sample node depths
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Creates spatial map of flood depths at nodes
 
 begin
   puts "Spatial Flood Map - Starting..."
   $stdout.flush
   
-  nodes = [
-    {id: 'N001', depth: 0.2, status: 'Minor'},
-    {id: 'N002', depth: 0.8, status: 'Moderate'},
-    {id: 'N003', depth: 1.5, status: 'Major'},
-    {id: 'N004', depth: 0.1, status: 'Minor'},
-    {id: 'N005', depth: 2.2, status: 'Severe'},
-    {id: 'N006', depth: 0.5, status: 'Minor'},
-    {id: 'N007', depth: 1.2, status: 'Moderate'},
-    {id: 'N008', depth: 1.8, status: 'Major'}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  if sim_mo.status != 'Success'
+    puts "ERROR: Simulation '#{sim_name}' status is #{sim_mo.status}"
+    exit 1
+  end
+  
+  # Extract flood depths
+  net = sim_mo.open
+  
+  # Get timestep with maximum flooding
+  timesteps = sim_mo.list_timesteps rescue []
+  max_flood_timestep = timesteps.last
+  max_flood_depth = 0.0
+  
+  timesteps.each do |ts|
+    net.current_timestep = ts
+    net.row_objects('hw_node').each do |node|
+      depth = node.results('depth') rescue nil
+      if depth && depth > max_flood_depth
+        max_flood_depth = depth
+        max_flood_timestep = ts
+      end
+    end
+  end
+  
+  net.current_timestep = max_flood_timestep
+  
+  nodes = []
+  count = 0
+  
+  net.row_objects('hw_node').each do |node|
+    break if count >= 20  # Limit display
+    
+    depth = node.results('depth') rescue nil
+    if depth && depth > 0.05
+      status = if depth > 2.0
+        'Severe'
+      elsif depth > 1.0
+        'Major'
+      elsif depth > 0.5
+        'Moderate'
+      else
+        'Minor'
+      end
+      
+      nodes << {
+        id: node.id,
+        depth: depth.round(2),
+        status: status
+      }
+      count += 1
+    end
+  end
+  
+  net.close
+  
+  if nodes.empty?
+    puts "No significant flooding detected"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

@@ -2,22 +2,76 @@
 # Context: Exchange
 # Purpose: Suggest solver parameter adjustments based on log patterns
 # Outputs: HTML with tuning recommendations
-# Test Data: Sample log analysis
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Analyzes log file to suggest solver parameter improvements
 
 begin
   puts "Solver Parameter Tuning Advisor - Starting..."
   $stdout.flush
   
-  # Sample log analysis results
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  # Analyze log file
   log_analysis = {
-    avg_iterations: 12.5,
-    max_iterations: 45,
-    convergence_failures: 18,
-    timestep_reductions: 25,
-    mass_balance_errors: 8,
-    runtime_minutes: 35.5
+    avg_iterations: 0,
+    max_iterations: 0,
+    convergence_failures: 0,
+    timestep_reductions: 0,
+    mass_balance_errors: 0,
+    runtime_minutes: 0
   }
+  
+  results_path = sim_mo.results_path rescue nil
+  
+  if results_path && Dir.exist?(results_path)
+    log_file = File.join(results_path, "#{sim_mo.name}.log")
+    if File.exist?(log_file)
+      puts "Analyzing log file..."
+      
+      iter_counts = []
+      timestep_count = 0
+      
+      File.readlines(log_file).each do |line|
+        # Extract iteration counts
+        iter_match = line.match(/(\d+)\s*(?:iteration|iter)/i)
+        if iter_match
+          iter_counts << iter_match[1].to_i
+        end
+        
+        # Count convergence failures
+        log_analysis[:convergence_failures] += 1 if line.match?(/convergence.*fail|failed.*converge/i)
+        
+        # Count timestep reductions
+        timestep_count += 1 if line.match?(/timestep.*reduc|reduc.*timestep/i)
+        
+        # Count mass balance errors
+        log_analysis[:mass_balance_errors] += 1 if line.match?(/mass.*balance.*error/i)
+      end
+      
+      log_analysis[:avg_iterations] = iter_counts.length > 0 ? (iter_counts.sum.to_f / iter_counts.length).round(1) : 0
+      log_analysis[:max_iterations] = iter_counts.max || 0
+      log_analysis[:timestep_reductions] = timestep_count
+      log_analysis[:runtime_minutes] = sim_mo.runtime ? (sim_mo.runtime / 60.0).round(1) : 0
+    end
+  end
   
   # Generate recommendations based on patterns
   recommendations = []
@@ -60,6 +114,11 @@ begin
       parameter: 'Solver mode: Fixed → Adaptive',
       impact: 'Better handling of transient conditions'
     }
+  end
+  
+  if recommendations.empty?
+    puts "No tuning recommendations needed - simulation appears healthy"
+    exit 0
   end
   
   output_dir = File.expand_path('../../outputs', __FILE__)

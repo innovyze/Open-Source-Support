@@ -2,22 +2,66 @@
 # Context: Exchange
 # Purpose: Profile simulation performance (runtime vs network size)
 # Outputs: HTML with scatterplot
-# Test Data: Sample performance data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name1] [simulation_name2] ...
+#        If no args, analyzes all simulations in database
 
 begin
   puts "Simulation Performance Profiler - Starting..."
   $stdout.flush
   
-  # Sample performance data (network_size, runtime_minutes)
-  perf_data = [
-    {name: 'Network_A', nodes: 50, links: 75, runtime: 2.5},
-    {name: 'Network_B', nodes: 150, links: 220, runtime: 8.2},
-    {name: 'Network_C', nodes: 300, links: 450, runtime: 18.5},
-    {name: 'Network_D', nodes: 500, links: 750, runtime: 35.2},
-    {name: 'Network_E', nodes: 800, links: 1200, runtime: 62.8},
-    {name: 'Network_F', nodes: 1200, links: 1800, runtime: 105.3}
-  ]
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulations to analyze
+  if ARGV.length > 1
+    sim_names = ARGV[1..-1]
+  else
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    sim_names = sims.map(&:name)
+    puts "Analyzing all #{sim_names.length} simulations in database..."
+  end
+  
+  perf_data = []
+  
+  sim_names.each do |sim_name|
+    begin
+      sim_mo = db.model_object(sim_name)
+      
+      # Get network size
+      net = sim_mo.open
+      node_count = 0
+      link_count = 0
+      
+      net.row_objects('hw_node').each { |_| node_count += 1 }
+      net.row_objects('hw_conduit').each { |_| link_count += 1 }
+      
+      net.close
+      
+      # Get runtime (in minutes)
+      runtime = sim_mo.runtime rescue nil
+      runtime_min = runtime ? (runtime / 60.0).round(1) : 0.0
+      
+      perf_data << {
+        name: sim_name,
+        nodes: node_count,
+        links: link_count,
+        runtime: runtime_min
+      }
+      
+    rescue => e
+      puts "  ✗ Error processing #{sim_name}: #{e.message}"
+    end
+  end
+  
+  if perf_data.empty?
+    puts "No performance data collected"
+    exit 0
+  end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
   Dir.mkdir(output_dir) unless Dir.exist?(output_dir)

@@ -2,23 +2,65 @@
 # Context: Exchange
 # Purpose: Count and categorize warning messages with bar chart visualization
 # Outputs: HTML with bar chart
-# Test Data: Sample warning messages
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path] [simulation_name]
+#        Parses log file for warning messages
 
 begin
   puts "Warning Frequency Counter - Starting..."
   $stdout.flush
   
-  # Sample warning data
-  warnings = {
-    'Flow reversal detected' => 45,
-    'Supercritical flow' => 23,
-    'Pump operating beyond curve' => 12,
-    'Weir overtopped' => 67,
-    'Negative depth encountered' => 8,
-    'Timestep reduced' => 34,
-    'Convergence slow' => 19
-  }
+  # Open database
+  db_path = ARGV[0] || nil
+  db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+  
+  # Get simulation
+  sim_name = ARGV[1]
+  unless sim_name
+    sims = db.model_object_collection('Sim')
+    if sims.empty?
+      puts "ERROR: No simulations found in database"
+      exit 1
+    end
+    puts "Available simulations:"
+    sims.each_with_index { |sim, i| puts "  #{i+1}. #{sim.name}" }
+    puts "\nUsage: script.rb [database_path] [simulation_name]"
+    exit 1
+  end
+  
+  sim_mo = db.model_object(sim_name)
+  
+  # Parse log file for warnings
+  warnings = Hash.new(0)
+  results_path = sim_mo.results_path rescue nil
+  
+  if results_path && Dir.exist?(results_path)
+    log_file = File.join(results_path, "#{sim_mo.name}.log")
+    if File.exist?(log_file)
+      puts "Parsing log file for warnings..."
+      
+      File.readlines(log_file).each do |line|
+        if line.match?(/WARNING|WARN/i)
+          # Categorize warning by content
+          warning_type = 'General Warning'
+          
+          warning_type = 'Flow reversal detected' if line.match?(/flow.*reversal|reversal.*flow/i)
+          warning_type = 'Supercritical flow' if line.match?(/supercritical/i)
+          warning_type = 'Pump operating beyond curve' if line.match?(/pump.*curve|beyond.*curve/i)
+          warning_type = 'Weir overtopped' if line.match?(/weir.*over|overtopped/i)
+          warning_type = 'Negative depth encountered' if line.match?(/negative.*depth/i)
+          warning_type = 'Timestep reduced' if line.match?(/timestep.*reduc|reduc.*timestep/i)
+          warning_type = 'Convergence slow' if line.match?(/convergence.*slow|slow.*convergence/i)
+          
+          warnings[warning_type] += 1
+        end
+      end
+    end
+  end
+  
+  if warnings.empty?
+    puts "No warnings found in log file"
+    exit 0
+  end
   
   total = warnings.values.sum
   sorted_warnings = warnings.sort_by { |k, v| -v }

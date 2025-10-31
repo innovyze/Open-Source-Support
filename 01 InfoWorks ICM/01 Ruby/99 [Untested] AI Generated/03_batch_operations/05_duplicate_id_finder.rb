@@ -2,18 +2,55 @@
 # Context: Exchange
 # Purpose: Cross-database duplicate ID finder and reporter
 # Outputs: HTML report with duplicates
-# Test Data: Sample ID data
-# Cleanup: N/A
+# Usage: ruby script.rb [database_path1] [database_path2] [database_path3] ...
+#        If no args, searches current database for duplicates
 
 begin
   puts "Duplicate ID Finder - Starting..."
   $stdout.flush
   
-  databases = {
-    'DB_A' => ['N001', 'N002', 'N003', 'P101', 'P102'],
-    'DB_B' => ['N001', 'N004', 'N005', 'P101', 'P103'],
-    'DB_C' => ['N002', 'N006', 'N007', 'P102', 'P104']
-  }
+  # Get databases to check
+  if ARGV.length > 0
+    db_paths = ARGV
+  else
+    # Use current database
+    db = WSApplication.open()
+    db_paths = [nil]
+  end
+  
+  databases = {}
+  
+  db_paths.each do |db_path|
+    begin
+      db = db_path ? WSApplication.open(db_path) : WSApplication.open()
+      db_name = db_path || 'Current Database'
+      
+      ids = []
+      
+      # Collect IDs from networks
+      nets = db.model_object_collection('Model Network')
+      nets.each do |net_mo|
+        net = net_mo.open
+        
+        net.row_objects('hw_node').each { |node| ids << node.id }
+        net.row_objects('hw_conduit').each { |pipe| ids << pipe.id }
+        net.row_objects('hw_pump').each { |pump| ids << pump.id }
+        net.row_objects('hw_storage').each { |storage| ids << storage.id }
+        
+        net.close
+      end
+      
+      databases[db_name] = ids
+      
+    rescue => e
+      puts "  ✗ Error processing #{db_path}: #{e.message}"
+    end
+  end
+  
+  if databases.empty?
+    puts "No databases processed"
+    exit 0
+  end
   
   # Find duplicates
   all_ids = databases.values.flatten
@@ -22,6 +59,11 @@ begin
   duplicate_details = duplicates.map do |id|
     dbs = databases.select { |db, ids| ids.include?(id) }.keys
     {id: id, count: all_ids.count(id), databases: dbs.join(', ')}
+  end
+  
+  if duplicates.empty?
+    puts "No duplicate IDs found"
+    exit 0
   end
   
   output_dir = File.expand_path('../../outputs', __FILE__)
