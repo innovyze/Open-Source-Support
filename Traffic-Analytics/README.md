@@ -26,7 +26,7 @@ Open-Source-Support/
 ├── .github/
 │   └── workflows/
 │       └── workflow.yml    # GitHub Actions automation
-└── 07/                     # Traffic Analytics Dashboard
+└── Traffic-Analytics/      # Traffic Analytics Dashboard
     ├── index.html          # Main dashboard page
     ├── README.md           # This file
     ├── assets/
@@ -51,7 +51,7 @@ This repository uses GitHub Actions to automatically collect traffic data:
 
 - **Schedule**: Runs weekly (every Sunday at 23:55 UTC)
 - **Action**: Uses [repository-traffic-action](https://github.com/innovyze/repository-traffic-action)
-- **Updates**: Automatically commits new data to `07/data/views.csv` and `07/data/clones.csv`
+- **Updates**: Automatically commits new data to `Traffic-Analytics/data/views.csv` and `Traffic-Analytics/data/clones.csv`
 - **Dashboard**: Automatically displays updated data on page refresh
 
 ## 🛠️ Technology Stack
@@ -77,7 +77,7 @@ To run the dashboard locally:
 1. Clone the repository:
    ```bash
    git clone https://github.com/moreird/Open-Source-Support.git
-   cd Open-Source-Support/07
+   cd Open-Source-Support/Traffic-Analytics
    ```
 
 2. Start a local web server (required for loading CSV files):
