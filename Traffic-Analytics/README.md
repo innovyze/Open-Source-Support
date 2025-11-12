@@ -76,7 +76,7 @@ To run the dashboard locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/moreird/Open-Source-Support.git
+   git clone https://github.com/innovyze/Open-Source-Support.git
    cd Open-Source-Support/Traffic-Analytics
    ```
 
