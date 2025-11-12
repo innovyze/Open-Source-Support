@@ -1,6 +1,9 @@
 # Archived data files
 data/archive/
 
+# Temporary data directory (workflow creates this at root, then moves to 07/data/)
+/data/
+
 # Temporary Excel files
 ~$*.xlsx
 

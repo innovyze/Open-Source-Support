@@ -4,7 +4,7 @@ An interactive, real-time analytics dashboard for tracking GitHub repository tra
 
 ## 🚀 Live Dashboard
 
-**[View Live Dashboard →](https://ubiquitous-telegram-9qkrqrg.pages.github.io/)**
+View the dashboard by opening `index.html` in a web browser (requires local web server - see Local Development section below).
 
 ![Traffic Analytics Preview](./assets/images/preview.png)
 
@@ -22,27 +22,27 @@ An interactive, real-time analytics dashboard for tracking GitHub repository tra
 ## 📁 Project Structure
 
 ```
-Traffic-Data/
-├── index.html              # Main dashboard page
-├── README.md               # This file
-├── assets/
-│   ├── css/
-│   │   └── styles.css      # All styling
-│   └── js/
-│       ├── app.js          # Main application logic
-│       ├── chart.js        # Chart rendering module
-│       ├── config.js       # Configuration constants
-│       ├── dataLoader.js   # Data loading utilities
-│       └── utils.js        # Helper functions
-├── data/
-│   ├── views.csv           # Views data (auto-updated weekly)
-│   ├── clones.csv          # Clones data (auto-updated weekly)
-│   └── archive/            # Historical/archived data files
-├── docs/
-│   └── generate-preview.html  # Preview image generator
-└── .github/
-    └── workflows/
-        └── workflow.yml    # GitHub Actions automation
+Open-Source-Support/
+├── .github/
+│   └── workflows/
+│       └── workflow.yml    # GitHub Actions automation
+└── 07/                     # Traffic Analytics Dashboard
+    ├── index.html          # Main dashboard page
+    ├── README.md           # This file
+    ├── assets/
+    │   ├── css/
+    │   │   └── styles.css  # All styling
+    │   └── js/
+    │       ├── app.js          # Main application logic
+    │       ├── chart.js        # Chart rendering module
+    │       ├── config.js       # Configuration constants
+    │       ├── dataLoader.js   # Data loading utilities
+    │       └── utils.js        # Helper functions
+    ├── data/
+    │   ├── views.csv       # Views data (auto-updated weekly)
+    │   └── clones.csv      # Clones data (auto-updated weekly)
+    └── docs/
+        └── generate-preview.html  # Preview image generator
 ```
 
 ## 🔄 Automated Data Collection
@@ -51,7 +51,7 @@ This repository uses GitHub Actions to automatically collect traffic data:
 
 - **Schedule**: Runs weekly (every Sunday at 23:55 UTC)
 - **Action**: Uses [repository-traffic-action](https://github.com/innovyze/repository-traffic-action)
-- **Updates**: Automatically commits new data to `data/views.csv` and `data/clones.csv`
+- **Updates**: Automatically commits new data to `07/data/views.csv` and `07/data/clones.csv`
 - **Dashboard**: Automatically displays updated data on page refresh
 
 ## 🛠️ Technology Stack
@@ -76,8 +76,8 @@ To run the dashboard locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/moreird/Traffic-Data.git
-   cd Traffic-Data
+   git clone https://github.com/moreird/Open-Source-Support.git
+   cd Open-Source-Support/07
    ```
 
 2. Start a local web server (required for loading CSV files):

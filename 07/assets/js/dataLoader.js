@@ -21,7 +21,7 @@ export async function loadTrafficData() {
         return { viewsData, clonesData };
     } catch (error) {
         console.error('Error loading data:', error);
-        throw new Error('Failed to load traffic data. Please check that CSV files exist in the traffic/ directory.');
+        throw new Error('Failed to load traffic data. Please check that CSV files exist in the data/ directory.');
     }
 }
 
