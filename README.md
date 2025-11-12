@@ -11,12 +11,6 @@
 
 ---
 
-### 📊 [**View Live Traffic Analytics Dashboard →**](https://innovyze.github.io/Open-Source-Support/)
-
-*Track repository activity, views, and community engagement in real-time*
-
----
-
 </div>
 
 ## What's Inside
@@ -150,10 +144,8 @@ Open-Source-Support/
 │   └── 03 VBScript/
 ├── 05 InfoWater Pro/
 │   └── 01 Python/
-├── 06 XPSWMM/
-│   └── 01 Tutorials/
-└── Traffic-Analytics/
-    └── Analytics Dashboard (auto-updated weekly)
+└── 06 XPSWMM/
+    └── 01 Tutorials/
 ```
 
 ## Important Notes
@@ -180,12 +172,14 @@ Scripts are typically developed for specific customer use cases. While functiona
 
 ## Analytics
 
-Curious about repository activity? Check out our [**live analytics dashboard**](https://innovyze.github.io/Open-Source-Support/) to see:
+Curious about repository activity? The repository includes a traffic analytics dashboard on the [`traffic-analysis` branch](https://github.com/innovyze/Open-Source-Support/tree/traffic-analysis) that tracks:
 
 - Traffic trends and growth
-- Community engagement metrics
+- Community engagement metrics  
 - Historical data and patterns
 - Popular content insights
+
+Data is automatically collected weekly via GitHub Actions.
 
 ---
 
@@ -193,7 +187,7 @@ Curious about repository activity? Check out our [**live analytics dashboard**](
 
 **Made with 💙 by the Autodesk Water community**
 
-[View Dashboard](https://innovyze.github.io/Open-Source-Support/) • [Report Issue](https://github.com/innovyze/Open-Source-Support/issues) • [Exchange Docs](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html)
+[Traffic Analytics](https://github.com/innovyze/Open-Source-Support/tree/traffic-analysis) • [Report Issue](https://github.com/innovyze/Open-Source-Support/issues) • [Exchange Docs](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=Innovyze_Exchange_Introduction_ICM_introduction_html)
 
 **Star this repo if you find it helpful!** ⭐
 
