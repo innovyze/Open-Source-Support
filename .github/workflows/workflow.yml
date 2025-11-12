@@ -1,0 +1,43 @@
+name: Traffic Data Collection
+
+on:
+  schedule: 
+    # runs once a week on sunday
+    - cron: '55 23 * * 0'
+  workflow_dispatch:
+    
+jobs:
+  traffic:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    # Calculates traffic and clones and stores in CSV file
+    - name: GitHub traffic
+      uses: innovyze/repository-traffic-action@v0.1.8
+      env:
+        REPOSITORY_NAME: moreird/Open-Source-Support
+        TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
+    
+    # Move data files to Traffic-Analytics/data directory
+    - name: Move data files
+      run: |
+        if [ -f data/views.csv ]; then
+          mv data/views.csv Traffic-Analytics/data/views.csv
+        fi
+        if [ -f data/clones.csv ]; then
+          mv data/clones.csv Traffic-Analytics/data/clones.csv
+        fi
+        # Remove empty data directory if it exists
+        if [ -d data ] && [ -z "$(ls -A data)" ]; then
+          rmdir data
+        fi
+     
+    # Commits files to repository
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Update traffic data [automated]'
+        add: 'Traffic-Analytics/data/*.csv'
+        default_author: github_actions 

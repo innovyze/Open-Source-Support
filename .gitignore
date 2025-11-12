@@ -16,7 +16,11 @@
 06 XPSWMM/02 Resources/readme.docx
 06 XPSWMM/02 Resources/to_markdown.bat
 
-# Data directory (tracked on traffic-analysis branch, ignored on main)
+# Traffic Dashboard (Traffic-Analytics/) ignores
+# Archived data files
+data/archive/
+
+# Temporary data directory (workflow creates this at root, then moves to Traffic-Analytics/data/)
 /data/
 
 # Temporary Excel files
