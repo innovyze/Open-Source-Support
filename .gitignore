@@ -1,8 +1,11 @@
+# Main repository ignores
 ~$*
-01 InfoWorks ICM/02 SQL/01 InfoWorks/0037 - Update Channel XS manning n/Readme.docx
-01 InfoWorks ICM/02 SQL/01 InfoWorks/0037 - Update Channel XS manning n/to_markdown.bat
 *.pyc
 .vscode
+
+# Project-specific ignores
+01 InfoWorks ICM/02 SQL/01 InfoWorks/0037 - Update Channel XS manning n/Readme.docx
+01 InfoWorks ICM/02 SQL/01 InfoWorks/0037 - Update Channel XS manning n/to_markdown.bat
 01 InfoWorks ICM/04 Themes/Readme.docx
 01 InfoWorks ICM/04 Themes/to_markdown.bat
 01 InfoWorks ICM/03 Python/004 hechms time series/readme.docx
@@ -12,3 +15,27 @@
 01 InfoWorks ICM/04 Themes/HowTos/sql_expression/to_markdown.bat
 06 XPSWMM/02 Resources/readme.docx
 06 XPSWMM/02 Resources/to_markdown.bat
+
+# Traffic Dashboard (07/) ignores
+# Archived data files
+data/archive/
+
+# Temporary data directory (workflow creates this at root, then moves to 07/data/)
+/data/
+
+# Temporary Excel files
+~$*.xlsx
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
