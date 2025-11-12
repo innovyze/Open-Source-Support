@@ -179,7 +179,7 @@ Curious about repository activity? The repository includes a traffic analytics d
 - Historical data and patterns
 - Popular content insights
 
-Data is automatically collected weekly via GitHub Actions.
+Data is automatically collected weekly via GitHub Actions (workflow runs from `main` but updates the `traffic-analysis` branch).
 
 ---
 
