@@ -16,6 +16,9 @@
 06 XPSWMM/02 Resources/readme.docx
 06 XPSWMM/02 Resources/to_markdown.bat
 
+# Data directory (tracked on traffic-analysis branch, ignored on main)
+/data/
+
 # Temporary Excel files
 ~$*.xlsx
 
