@@ -19,38 +19,34 @@ jobs:
       with:
         ref: traffic-analysis
 
-    # Prepare existing CSV files for the action to read and append to
-    - name: Setup traffic directory with existing data
-      run: |
-        mkdir -p traffic
-        # Copy existing CSV files so action can append new data
-        if [ -f data/views.csv ]; then
-          cp data/views.csv traffic/views.csv
-        fi
-        if [ -f data/clones.csv ]; then
-          cp data/clones.csv traffic/clones.csv
-        fi
-
-    # Calculates traffic and clones and appends to CSV files
+    # Calculates traffic and clones (outputs to traffic/ directory)
     - name: GitHub traffic
       uses: innovyze/repository-traffic-action@v0.1.8
       env:
         REPOSITORY_NAME: innovyze/Open-Source-Support
         TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
 
-    # Move updated files back to data directory
-    - name: Move data files
+    # Merge new data into existing files with deduplication
+    - name: Merge and deduplicate data
       run: |
-        if [ -f traffic/views.csv ]; then
-          mv traffic/views.csv data/views.csv
-        fi
-        if [ -f traffic/clones.csv ]; then
-          mv traffic/clones.csv data/clones.csv
-        fi
-        # Remove empty traffic directory
-        if [ -d traffic ] && [ -z "$(ls -A traffic)" ]; then
-          rmdir traffic
-        fi
+        for file in views clones; do
+          if [ -f "traffic/${file}.csv" ]; then
+            if [ -f "data/${file}.csv" ]; then
+              # Merge: keep header, combine data, deduplicate by date (keep newer), sort
+              (
+                head -1 "data/${file}.csv"
+                tail -n +2 "data/${file}.csv"
+                tail -n +2 "traffic/${file}.csv"
+              ) | awk -F',' 'NR==1 {print; next} {lines[$1]=$0} END {for (date in lines) print lines[date]}' | \
+              sort -t',' -k1,1 > "data/${file}.csv.tmp"
+              mv "data/${file}.csv.tmp" "data/${file}.csv"
+            else
+              # No existing file, just move the new one
+              mv "traffic/${file}.csv" "data/${file}.csv"
+            fi
+          fi
+        done
+        rm -rf traffic
 
     # Commits files to traffic-analysis branch
     - name: Commit changes
