@@ -25,7 +25,7 @@ jobs:
     - name: GitHub traffic collection
       uses: innovyze/repository-traffic-action@v0.1.8
       env:
-        REPOSITORY_NAME: moreird/Open-Source-Support
+        REPOSITORY_NAME: innovyze/Open-Source-Support
         TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
     
     # Move data files to Traffic-Analytics/data directory
