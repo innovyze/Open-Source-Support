@@ -21,26 +21,37 @@ jobs:
         ref: traffic-analysis
         persist-credentials: true
     
-    # Collect traffic and clone data from GitHub API
+    # Prepare existing CSV files for the action to append to
+    - name: Setup traffic directory with existing data
+      run: |
+        mkdir -p traffic
+        # Copy existing CSV files if they exist (so action can append)
+        if [ -f Traffic-Analytics/data/views.csv ]; then
+          cp Traffic-Analytics/data/views.csv traffic/views.csv
+        fi
+        if [ -f Traffic-Analytics/data/clones.csv ]; then
+          cp Traffic-Analytics/data/clones.csv traffic/clones.csv
+        fi
+    
+    # Collect traffic and clone data from GitHub API (appends to existing CSVs)
     - name: GitHub traffic collection
       uses: innovyze/repository-traffic-action@v0.1.8
       env:
         REPOSITORY_NAME: innovyze/Open-Source-Support
         TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
     
-    # Move data files to Traffic-Analytics/data directory
-    - name: Move data files to Traffic-Analytics folder
+    # Move updated data files back to Traffic-Analytics/data directory
+    - name: Move updated data files to Traffic-Analytics folder
       run: |
-        if [ -f data/views.csv ]; then
-          mv data/views.csv Traffic-Analytics/data/views.csv
+        # Move the updated files from traffic/ to Traffic-Analytics/data/
+        if [ -f traffic/views.csv ]; then
+          mv traffic/views.csv Traffic-Analytics/data/views.csv
         fi
-        if [ -f data/clones.csv ]; then
-          mv data/clones.csv Traffic-Analytics/data/clones.csv
+        if [ -f traffic/clones.csv ]; then
+          mv traffic/clones.csv Traffic-Analytics/data/clones.csv
         fi
-        # Remove empty data directory if it exists
-        if [ -d data ] && [ -z "$(ls -A data)" ]; then
-          rmdir data
-        fi
+        # Clean up traffic directory
+        rm -rf traffic
      
     # Commit changes back to the traffic-analysis branch
     - name: Commit changes to traffic-analysis branch
