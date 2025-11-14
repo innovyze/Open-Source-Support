@@ -1,2 +1,0 @@
-$z,Six,Seven,Eight,Nine,Ten
-$q,1,3,5,7,9
