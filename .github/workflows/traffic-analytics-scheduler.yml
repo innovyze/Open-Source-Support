@@ -1,0 +1,53 @@
+name: Traffic Analytics Data Collection
+
+on:
+  schedule: 
+    # Runs once a week on Sunday at 23:55 UTC
+    - cron: '55 23 * * 0'
+  workflow_dispatch:
+    # Allows manual triggering from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-traffic-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the traffic-analysis branch (not main)
+    - uses: actions/checkout@v4
+      with:
+        ref: traffic-analysis
+        persist-credentials: true
+    
+    # Collect traffic and clone data from GitHub API
+    - name: GitHub traffic collection
+      uses: innovyze/repository-traffic-action@v0.1.8
+      env:
+        REPOSITORY_NAME: moreird/Open-Source-Support
+        TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
+    
+    # Move data files to Traffic-Analytics/data directory
+    - name: Move data files to Traffic-Analytics folder
+      run: |
+        if [ -f data/views.csv ]; then
+          mv data/views.csv Traffic-Analytics/data/views.csv
+        fi
+        if [ -f data/clones.csv ]; then
+          mv data/clones.csv Traffic-Analytics/data/clones.csv
+        fi
+        # Remove empty data directory if it exists
+        if [ -d data ] && [ -z "$(ls -A data)" ]; then
+          rmdir data
+        fi
+     
+    # Commit changes back to the traffic-analysis branch
+    - name: Commit changes to traffic-analysis branch
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add Traffic-Analytics/data/*.csv
+        git commit -m "auto: update traffic data [skip ci]" || echo "No changes to commit"
+        git push
+
