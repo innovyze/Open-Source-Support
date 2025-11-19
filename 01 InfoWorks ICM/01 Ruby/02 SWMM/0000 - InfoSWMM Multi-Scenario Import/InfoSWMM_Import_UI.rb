@@ -57,8 +57,10 @@
 
 require 'yaml'
 
-# Get the script directory
-script_dir = File.dirname(WSApplication.script_file)
+# Wrap main logic in a method to allow clean exits with 'return' instead of 'exit'
+def run_import_ui
+  # Get the script directory
+  script_dir = File.dirname(WSApplication.script_file)
 
 # ----------------------------------------------------------------------------
 # STEP 1: Get InfoSWMM model file using file dialog
@@ -79,24 +81,36 @@ WSApplication.message_box(
   false
 )
 
-file_path = WSApplication.file_dialog(
-  true,                          # open (not save)
-  'mxd',                         # extension
-  'InfoSWMM Model File',         # description
-  '',                            # default filename
-  false,                         # single file (not multiple)
-  nil                            # don't exit on cancel
-)
+# Wrap file dialog in exception handler for graceful cancellation
+begin
+  file_path = WSApplication.file_dialog(
+    true,                          # open (not save)
+    'mxd',                         # extension
+    'InfoSWMM Model File',         # description
+    '',                            # default filename
+    false,                         # single file (not multiple)
+    nil                            # don't exit on cancel
+  )
+rescue Interrupt
+  # User clicked Cancel button
+  WSApplication.message_box(
+    "Import cancelled - no file selected.",
+    "OK",
+    "Information",
+    false
+  )
+  return
+end
 
-# Check if user cancelled
+# Check if user cancelled (alternate path)
 if file_path.nil?
   WSApplication.message_box(
     "Import cancelled - no file selected.",
     "OK",
-    "!",
+    "Information",
     false
   )
-  exit
+  return
 end
 
 puts "\n" + "="*70
@@ -265,10 +279,10 @@ if scenario_names.any?
     WSApplication.message_box(
       "Import cancelled - no scenarios selected.",
       "OK",
-      "!",
+      "Information",
       false
     )
-    exit
+    return
   end
   
   # Check if "Select All" is checked
@@ -295,7 +309,6 @@ if scenario_names.any?
   
   # Check if any additional scenarios were selected (BASE is already included)
   if selected_scenarios.length == 1 && selected_scenarios.first&.upcase == 'BASE'
-    puts "Only BASE scenario selected"
     WSApplication.message_box(
       "Only BASE Scenario Selected\n\n" +
       "You haven't selected any additional scenarios.\n\n" +
@@ -308,7 +321,7 @@ if scenario_names.any?
     )
     # User chose No
     if WSApplication.message_box_return_value == "No"
-      exit
+      return
     end
   end
   
@@ -333,23 +346,22 @@ else
     WSApplication.message_box(
       "Import cancelled - no scenarios entered.",
       "OK",
-      "!",
+      "Information",
       false
     )
-    exit
+    return
   end
   
   scenario_input = result[1].strip
   
   if scenario_input.empty?
-    puts "No scenarios entered"
     WSApplication.message_box(
       "No scenarios entered. Import cancelled.",
       "OK",
-      "!",
+      "Information",
       false
     )
-    exit
+    return
   end
   
   scenario_count = scenario_input.split(',').length
@@ -376,8 +388,7 @@ unless scenarios_list.any? { |s| s.upcase == 'BASE' }
   )
   
   if result == "No"
-    puts "\nImport cancelled - BASE scenario required for merging"
-    exit
+    return
   end
 end
 
@@ -444,7 +455,7 @@ if icm_exchange.nil?
     "!",
     false
   )
-  exit
+  return
 end
 
 # Launch Exchange script (capture output for summary)
@@ -564,4 +575,7 @@ else
   )
 end
 
+end  # End of run_import_ui method
 
+# Run the import UI
+run_import_ui
