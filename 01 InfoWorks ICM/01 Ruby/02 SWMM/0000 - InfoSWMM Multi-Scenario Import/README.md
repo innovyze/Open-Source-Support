@@ -2,6 +2,8 @@
 
 **InfoSWMM multi-scenario import with partially automated SWMM run configuration**
 
+**⚠️ IMPORTANT: An InfoWorks ICM Ultimate license is required to run this script.**
+
 ---
 
 ## Quick Start
