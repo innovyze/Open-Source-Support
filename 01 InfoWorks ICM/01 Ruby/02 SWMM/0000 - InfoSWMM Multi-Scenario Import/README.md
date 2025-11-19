@@ -18,7 +18,7 @@
 8. **Follow the dialogs:**
    - Choose your `.mxd` file
    - Select scenarios to import
-10. **Manually verify and finalize run configuration** (see Results & Setup below)
+9. **Manually verify and finalize run configuration** (see Results & Setup below)
 
 ---
 
