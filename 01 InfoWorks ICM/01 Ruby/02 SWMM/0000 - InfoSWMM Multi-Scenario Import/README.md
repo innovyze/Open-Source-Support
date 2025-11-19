@@ -8,18 +8,17 @@
 
 ## Quick Start
 
-1. **Open InfoWorks ICM**
-2. **Create a new model group**
-3. **Create a new SWMM network**
-4. **Open the SWMM network**
-5. **Network → Run Ruby Script**
-6. **Select:** `InfoSWMM_Import_UI.rb`
-7. **Follow the dialogs:**
+1. **Download both scripts** (`InfoSWMM_Import_UI.rb` and `InfoSWMM_Import_Exchange.rb`) and save them to the same folder
+2. **Open InfoWorks ICM**
+3. **Create a new model group**
+4. **Create a new SWMM network**
+5. **Open the SWMM network**
+6. **Network → Run Ruby Script**
+7. **Select:** `InfoSWMM_Import_UI.rb`
+8. **Follow the dialogs:**
    - Choose your `.mxd` file
    - Select scenarios to import
-   - Configure options
-8. **Wait for completion**
-9. **Manually configure** (see Results & Setup below)
+10. **Manually verify and finalize run configuration** (see Results & Setup below)
 
 ---
 
