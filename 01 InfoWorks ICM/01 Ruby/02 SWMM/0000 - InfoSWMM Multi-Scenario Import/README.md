@@ -7,9 +7,9 @@
 ## Quick Start
 
 1. **Open InfoWorks ICM**
-2. Create a new model group
-3. Create a new SWMM network
-4. Open the SWMM network
+2. **Create a new model group**
+3. **Create a new SWMM network**
+4. **Open the SWMM network**
 5. **Network → Run Ruby Script**
 6. **Select:** `InfoSWMM_Import_UI.rb`
 7. **Follow the dialogs:**
