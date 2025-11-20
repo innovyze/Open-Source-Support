@@ -72,7 +72,7 @@ The script will:
 - If a file with the same name exists, it will append `_v2`, `_v3`, etc.
 - Extract the contents to a folder with the same name (without `.zip` extension)
 
-### Step 6: Apply updated rainfall data in InfoWorks ICM.
+### Step 6: Update the design rainfall in InfoWorks ICM.
 
   <img width="1697" height="922" alt="image" src="https://github.com/user-attachments/assets/68143282-f658-43c4-aa52-b2a6c28cf578" />
   
