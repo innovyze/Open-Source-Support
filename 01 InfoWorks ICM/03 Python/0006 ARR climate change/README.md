@@ -2,6 +2,8 @@
 
 The `ICM_ARRv4p2_CC.py` script applies climate change factors to Australian Rainfall and Runoff (ARR) version 4.2 rainfall data files. This tool adjusts rainfall intensities and loss parameters based on selected Shared Socioeconomic Pathway (SSP) scenarios and design years, enabling climate change impact assessments for InfoWorks ICM models.
 
+For detailed instruction please download and view [ICM_ARR_ClimateChange.mp4](https://github.com/trannguyen9911/Open-Source-Support/blob/main/01%20InfoWorks%20ICM/03%20Python/0006%20ARR%20climate%20change/ICM_ARR_ClimateChange.mp4)
+
 ## Overview
 
 This script processes ARR rainfall data ZIP files (`.arr.zip`) by:
@@ -11,13 +13,6 @@ This script processes ARR rainfall data ZIP files (`.arr.zip`) by:
 - Extracting temperature change information for the selected scenario
 - Creating a new adjusted ZIP file with original files preserved as backups
 
-## Features
-
-- **Interactive GUI**: User-friendly interface for selecting SSP scenarios and design years
-- **Automatic Versioning**: Prevents overwriting existing files by appending version numbers
-- **Backup Preservation**: Original files are saved as `old_BomIfds.csv` and `old_ArrDataHub.txt`
-- **Adjustment Documentation**: Creates an `adjustment_info.txt` file documenting all applied changes
-- **Automatic Extraction**: Extracts the adjusted ZIP file contents to a folder for easy access
 
 ## Requirements
 
@@ -34,18 +29,28 @@ pip install pandas
 
 ## Usage
 
-### Step 1: Run the Script
+### Step 1: Generate a design storm in InfoWorks ICM 
+
+An ARR design storm can be generated using ARR Storm Generator tool in InfoWorks ICM. Please take a look [here](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-4C08EAE3-4163-49C8-B91A-789CFF763457) for more details of how to create an ARR design storm.
+
+<img width="1925" height="955" alt="image" src="https://github.com/user-attachments/assets/99d1055d-719b-4253-945f-425a5d4e7fb3" />
+
+Navigate to the location of the ARR design storm data, these following files can be found in _.arr.zip_:
+   - BomIfds.csv file that contains IFD curves
+   - ArrDataHub.txt file that includes Climate Change Factors for different Shared Socioeconomic Pathway (SSP), Initial Loss and (IL), and Continuous Loss (CL)
+
+### Step 2: Run the Script
 
 Execute the script:
 ```bash
 python ICM_ARRv4p2_CC.py
 ```
 
-### Step 2: Select Input File
+### Step 3: Select Input File
 
 A file dialog will appear. Select your ARR rainfall data ZIP file (`.arr.zip` format).
 
-### Step 3: Choose Climate Change Scenario
+### Step 4: Choose Climate Change Scenario
 
 A dialog window will appear with two dropdown menus:
 
@@ -60,12 +65,21 @@ A dialog window will appear with two dropdown menus:
 
 Click "Submit" to proceed.
 
-### Step 4: Review Output
+### Step 5: Review Output
 
 The script will:
 - Create a new ZIP file named `[original_name]_[SSP]_[year].arr.zip`
 - If a file with the same name exists, it will append `_v2`, `_v3`, etc.
 - Extract the contents to a folder with the same name (without `.zip` extension)
+
+### Step 6: Apply updated rainfall data in InfoWorks ICM.
+
+  <img width="1697" height="922" alt="image" src="https://github.com/user-attachments/assets/68143282-f658-43c4-aa52-b2a6c28cf578" />
+  
+- In InfoWorks ICM, open the design rainfall and select _ARR Storm Generator_
+- Select the new .arr.zip folder (with climate change factors updated) and click _Edit_
+- Select _Add from file..._ to update _ARR Data Hub Text File_ and _BOM Design Raifall_
+- Select _OK_ to save the changes
 
 ## Output Files
 
@@ -83,38 +97,6 @@ The adjusted ZIP file contains:
   - Continuing loss factor
   - Temperature change (°C)
 
-## How It Works
-
-### Rainfall Adjustment
-
-The script applies duration-specific Climate Change Factors (CCFs) to rainfall depths in `BomIfds.csv`:
-
-- **10 CCF values** correspond to durations: ≤1h, 1.5h, 2h, 3h, 4.5h, 6h, 9h, 12h, 18h, ≥24h
-- For durations between these values, linear interpolation is used
-- All rainfall depth columns (except Duration columns) are multiplied by the appropriate factor
-
-### Loss Parameter Adjustment
-
-Initial and continuing loss values in the `[LOSSES]` section of `ArrDataHub.txt` are adjusted by:
-- **Initial Loss Factor**: Multiplies "Storm initial losses" values
-- **Continuing Loss Factor**: Multiplies "Storm continuing losses" values
-
-### Data Source
-
-The script reads climate change factors from the `ArrDataHub.txt` file within the ZIP, which contains:
-- `[SSP1-2.6]`, `[SSP2-4.5]`, `[SSP3-7.0]`, `[SSP5-8.5]` sections with rainfall CCFs
-- `[Climate_Change_INITIAL_LOSS]` table
-- `[Climate_Change_CONTINUING_LOSS]` table
-- `[TEMPERATURE_CHANGES]` table
-
-## Console Output
-
-The script provides console feedback including:
-- Confirmation of file copy location
-- Parsed factor counts and values
-- Updated loss parameter values
-- Temperature change information
-- Extraction folder location
 
 ## Error Handling
 
