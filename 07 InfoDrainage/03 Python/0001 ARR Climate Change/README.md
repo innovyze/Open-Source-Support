@@ -1,8 +1,8 @@
 # ARR Climate Change Adjustment Tool
 
-The `ICM_ARRv4p2_CC.py` script applies climate change factors to Australian Rainfall and Runoff (ARR) version 4.2 rainfall data files. This tool adjusts rainfall intensities and loss parameters based on selected Shared Socioeconomic Pathway (SSP) scenarios and design years, enabling climate change impact assessments for InfoWorks ICM models.
+The `INFD_ARRv4p2_CC.py` script applies climate change factors to Australian Rainfall and Runoff (ARR) version 4.2 rainfall data files. This tool adjusts rainfall intensities and loss parameters based on selected Shared Socioeconomic Pathway (SSP) scenarios and design years, enabling climate change impact assessments for InfoWorks ICM models.
 
-For detailed instruction please download and view [ICM_ARR_ClimateChange.mp4](https://github.com/trannguyen9911/Open-Source-Support/blob/main/01%20InfoWorks%20ICM/03%20Python/0006%20ARR%20climate%20change/ICM_ARR_ClimateChange.mp4)
+For detailed instruction please download and view [INFD_ARR_ClimateChange.mp4]
 
 ## Overview
 
@@ -29,13 +29,14 @@ pip install pandas
 
 ## Usage
 
-### Step 1: Generate a design storm in InfoWorks ICM 
+### Step 1: Generate a design storm in InfoDrainage
 
-An ARR design storm can be generated using ARR Storm Generator tool in InfoWorks ICM. Please take a look [here](https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-4C08EAE3-4163-49C8-B91A-789CFF763457) for more details of how to create an ARR design storm.
+An ARR design storm can be generated using ARR Storm Generator tool in InfoDrainage. Please take a look [here](https://help.autodesk.com/view/INFDS/ENU/?guid=GUID-2BC3BB13-3736-4FAF-A67F-80C2BB08B826) for more details of how to create an ARR design storm.
 
-<img width="1925" height="955" alt="image" src="https://github.com/user-attachments/assets/99d1055d-719b-4253-945f-425a5d4e7fb3" />
+<img width="1605" height="1075" alt="image" src="https://github.com/user-attachments/assets/03adf695-7a09-4eed-9844-9bab21a3e8bf" />
 
-Navigate to the location of the ARR design storm data, these following files can be found in _.arr.zip_:
+
+Design rainfall data downloaded includes:
    - BomIfds.csv file that contains IFD curves
    - ArrDataHub.txt file that includes Climate Change Factors for different Shared Socioeconomic Pathway (SSP), Initial Loss and (IL), and Continuous Loss (CL)
 
@@ -72,13 +73,12 @@ The script will:
 - If a file with the same name exists, it will append `_v2`, `_v3`, etc.
 - Extract the contents to a folder with the same name (without `.zip` extension)
 
-### Step 6: Apply updated rainfall data in InfoWorks ICM.
+### Step 6: Update the design rainfall in InfoDrainage.
 
-  <img width="1697" height="922" alt="image" src="https://github.com/user-attachments/assets/68143282-f658-43c4-aa52-b2a6c28cf578" />
-  
-- In InfoWorks ICM, open the design rainfall and select _ARR Storm Generator_
-- Select the new .arr.zip folder (with climate change factors updated) and click _Edit_
-- Select _Add from file..._ to update _ARR Data Hub Text File_ and _BOM Design Raifall_
+<img width="1653" height="1072" alt="image" src="https://github.com/user-attachments/assets/0adf62ae-6d27-419f-936b-d48387d5cbb6" />
+
+- In InfoDrainage, open _Rainfall Manager_ and select the ARR design rainfall
+- Select the icons under _Add from file_ to update _ARR Data Hub Text File_ and _BOM Design Raifall_
 - Select _OK_ to save the changes
 
 ## Output Files
