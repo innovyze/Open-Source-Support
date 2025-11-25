@@ -72,6 +72,9 @@ end
 
 # Function to extract node/link IDs from log messages
 def extract_ids(messages, type = 'node')
+  # Maximum length for valid IDs to avoid extracting long strings as IDs
+  max_id_length = 50
+  
   ids = []
   messages.each do |msg|
     # Common patterns for node/link IDs in log messages
@@ -91,7 +94,7 @@ def extract_ids(messages, type = 'node')
     match = msg.match(/['"]([^'"]+)['"]/)
     if match
       potential_id = match[1]
-      ids << potential_id if potential_id.length < 50
+      ids << potential_id if potential_id.length < max_id_length
     end
   end
   ids.uniq
