@@ -21,14 +21,17 @@ end
 
 # Function to create a unique selection list name
 def create_unique_name(group, base_name)
+  # Collect all existing child names
+  existing_names = group.children.map { |child| child.name }
+  
+  # Find a unique name
   list_name = base_name
   counter = 1
-  group.children.each do |child|
-    while child.name == list_name
-      list_name = "#{base_name}_#{counter}"
-      counter += 1
-    end
+  while existing_names.include?(list_name)
+    list_name = "#{base_name}_#{counter}"
+    counter += 1
   end
+  
   list_name
 end
 
@@ -73,18 +76,21 @@ def extract_ids(messages, type = 'node')
   messages.each do |msg|
     # Common patterns for node/link IDs in log messages
     # Pattern 1: "at node NODE_ID" or "at link LINK_ID"
-    if msg.match?(/at\s+#{type}\s+['"]?([^'"\s,]+)/i)
-      id = msg.match(/at\s+#{type}\s+['"]?([^'"\s,]+)/i)[1]
-      ids << id
+    match = msg.match(/at\s+#{type}\s+['"]?([^'"\s,]+)/i)
+    if match
+      ids << match[1]
     end
+    
     # Pattern 2: "Node NODE_ID" or "Link LINK_ID"
-    if msg.match?(/#{type}\s+['"]?([^'"\s,]+)/i)
-      id = msg.match(/#{type}\s+['"]?([^'"\s,]+)/i)[1]
-      ids << id
+    match = msg.match(/#{type}\s+['"]?([^'"\s,]+)/i)
+    if match
+      ids << match[1]
     end
+    
     # Pattern 3: ID in brackets or quotes
-    if msg.match?(/['"]([^'"]+)['"]/)
-      potential_id = msg.match(/['"]([^'"]+)['"]/)[1]
+    match = msg.match(/['"]([^'"]+)['"]/)
+    if match
+      potential_id = match[1]
       ids << potential_id if potential_id.length < 50
     end
   end
@@ -125,15 +131,10 @@ begin
   
   # If not found by ID, try to find by name
   if sim_object.nil?
-    db.list_read_write_run_fields.each do |field|
-      if field[0] == 'Sim'
-        all_sims = db.model_object_collection('Sim')
-        all_sims.each do |sim|
-          if sim.name == sim_identifier || sim.id.to_s == sim_identifier
-            sim_object = sim
-            break
-          end
-        end
+    all_sims = db.model_object_collection('Sim')
+    all_sims.each do |sim|
+      if sim.name == sim_identifier || sim.id.to_s == sim_identifier
+        sim_object = sim
         break
       end
     end

@@ -41,18 +41,21 @@ def extract_ids(messages, type = 'node')
   messages.each do |msg|
     # Common patterns for node/link IDs in log messages
     # Pattern 1: "at node NODE_ID" or "at link LINK_ID"
-    if msg.match?(/at\s+#{type}\s+['"]?([^'"\s,]+)/i)
-      id = msg.match(/at\s+#{type}\s+['"]?([^'"\s,]+)/i)[1]
-      ids << id
+    match = msg.match(/at\s+#{type}\s+['"]?([^'"\s,]+)/i)
+    if match
+      ids << match[1]
     end
+    
     # Pattern 2: "Node NODE_ID" or "Link LINK_ID"
-    if msg.match?(/#{type}\s+['"]?([^'"\s,]+)/i)
-      id = msg.match(/#{type}\s+['"]?([^'"\s,]+)/i)[1]
-      ids << id
+    match = msg.match(/#{type}\s+['"]?([^'"\s,]+)/i)
+    if match
+      ids << match[1]
     end
+    
     # Pattern 3: ID in brackets or quotes
-    if msg.match?(/['"]([^'"]+)['"]/)
-      potential_id = msg.match(/['"]([^'"]+)['"]/)[1]
+    match = msg.match(/['"]([^'"]+)['"]/)
+    if match
+      potential_id = match[1]
       ids << potential_id if potential_id.length < 50
     end
   end
