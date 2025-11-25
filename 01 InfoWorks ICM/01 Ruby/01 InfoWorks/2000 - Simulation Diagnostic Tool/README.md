@@ -63,6 +63,7 @@ The script creates selection lists with the following naming convention:
 - `Sim[ID]_Convergence`: Nodes/links with convergence issues
 - `Sim[ID]_MassBalance`: Nodes with mass balance errors
 - `Sim[ID]_Instability`: Nodes/links with instability issues
+- `Sim[ID]_AllErrors`: All nodes/links mentioned in any error message
 
 Selection lists are created in the same model group as the network.
 
@@ -88,10 +89,11 @@ Selected link: P_456
 Created selection list: Sim1234_Convergence
 
 === Processing Complete ===
-Created 3 selection list(s):
+Created 4 selection list(s):
   - Sim1234_Convergence
   - Sim1234_MassBalance
   - Sim1234_Instability
+  - Sim1234_AllErrors
 
 Refresh the database tree to view the new selection lists.
 ```

@@ -1,0 +1,24 @@
+10:15:23 INFO: Simulation started
+10:15:24 INFO: Timestep: 0.0 hours
+10:15:25 INFO: Initializing network model
+10:15:30 INFO: Processing subcatchments
+10:16:00 WARNING: Reducing timestep at 1.5 hours due to instability
+10:16:15 ERROR: Convergence failure at node MH_123
+10:16:16 WARNING: Flow reversal detected at link P_456
+10:17:00 ERROR: Mass balance error for node "MH_555"
+10:17:30 WARNING: Timestep reduction to 30 seconds
+10:18:00 ERROR: Node MH_789 exceeded maximum iterations
+10:18:15 WARNING: Instability detected at "P_999"
+10:19:00 ERROR: Failed to converge at node MH_222
+10:19:30 WARNING: High velocity at link P_101
+10:20:00 INFO: Timestep: 2.0 hours
+10:21:00 ERROR: Mass balance issues detected at node MH_333
+10:22:00 WARNING: Reducing timestep due to convergence issues
+10:23:00 ERROR: Unstable flow conditions at link P_777
+10:24:00 INFO: Timestep: 3.0 hours
+10:25:00 WARNING: Node MH_444 approaching capacity
+10:26:00 ERROR: Convergence failed - node "MH_666" pressure iteration limit
+10:27:00 INFO: Timestep: 4.0 hours
+10:30:00 INFO: Simulation completed
+10:30:01 INFO: Total errors: 8
+10:30:02 INFO: Total warnings: 7

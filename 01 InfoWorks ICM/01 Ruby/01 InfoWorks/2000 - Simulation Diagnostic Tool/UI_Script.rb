@@ -78,7 +78,7 @@ def extract_ids(messages, type = 'node')
       ids << id
     end
     # Pattern 2: "Node NODE_ID" or "Link LINK_ID"
-    if msg.match?/#{type}\s+['"]?([^'"\s,]+)/i)
+    if msg.match?(/#{type}\s+['"]?([^'"\s,]+)/i)
       id = msg.match(/#{type}\s+['"]?([^'"\s,]+)/i)[1]
       ids << id
     end
@@ -296,6 +296,39 @@ begin
       end
       
       list_name = create_unique_name(group, "Sim#{sim_object.id}_Instability")
+      sl = group.new_model_object('Selection List', list_name)
+      net.save_selection(sl)
+      created_lists << list_name
+      puts "Created selection list: #{list_name}"
+    end
+  end
+  
+  # Process all errors (general category for errors not in specific categories)
+  if issues[:errors].length > 0
+    puts "\n--- Creating selection list for All Error Locations ---"
+    node_ids = extract_ids(issues[:errors], 'node')
+    link_ids = extract_ids(issues[:errors], 'link')
+    
+    if node_ids.length > 0 || link_ids.length > 0
+      net.clear_selection
+      
+      node_ids.each do |id|
+        if node = net.row_object('_nodes', id)
+          node.selected = true
+          node.write
+          puts "Selected node: #{id}"
+        end
+      end
+      
+      link_ids.each do |id|
+        if link = net.row_object('_links', id)
+          link.selected = true
+          link.write
+          puts "Selected link: #{id}"
+        end
+      end
+      
+      list_name = create_unique_name(group, "Sim#{sim_object.id}_AllErrors")
       sl = group.new_model_object('Selection List', list_name)
       net.save_selection(sl)
       created_lists << list_name
