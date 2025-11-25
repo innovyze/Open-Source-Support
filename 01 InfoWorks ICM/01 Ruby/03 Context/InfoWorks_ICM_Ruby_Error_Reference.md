@@ -9,7 +9,7 @@
 
 ---
 
-## Common Error Messages
+## Data Access Errors
 
 ### "undefined method 'current_network' for WSApplication:Class"
 
@@ -68,6 +68,8 @@ net.row_objects('hw_node').to_a.each { |n| n.delete if condition }
 ```
 
 ---
+
+## Data Modification Errors
 
 ### Changes Not Being Saved
 
@@ -191,6 +193,8 @@ end
 
 ---
 
+## Simulation Errors
+
 ### Simulation Won't Start or Fails Immediately
 
 **Symptom:** sim.run or sim.run_ex doesn't execute  
@@ -217,6 +221,75 @@ end
 ```
 
 ---
+
+### "error reading file" with SystemExit in Exchange
+
+**Symptom:** Exchange shows "error reading file $script.rb$ 6#<SystemExit: exit>"  
+**Cause:** Using `exit` instead of `return` in Exchange scripts  
+**Solution:** Always use `return` to exit Exchange scripts gracefully
+
+**Quick Fix:**
+```ruby
+# WRONG in Exchange:
+if sim_mo.nil?
+  puts "ERROR: Simulation not found"
+  exit  # Throws SystemExit exception
+end
+
+# CORRECT:
+if sim_mo.nil?
+  puts "ERROR: Simulation not found"
+  return  # Graceful exit
+end
+```
+
+---
+
+### "WSApplication.prompt not available in Exchange" or "gets returns nil"
+
+**Symptom:** User input methods don't work  
+**Cause:** Standard Ruby console input doesn't work in ICM; WSApplication.prompt only works in UI  
+**Solution:** Use WSApplication.prompt in UI scripts; use config files/ENV vars in Exchange
+
+**Critical - These DON'T work:**
+```ruby
+# ❌ INVALID in both UI and Exchange:
+input = gets.chomp      # Returns nil immediately
+input = STDIN.gets      # Returns nil immediately
+args = ARGV             # Always empty in UI scripts
+
+# ✅ UI Script - Use prompt:
+values = WSApplication.prompt('Enter Sim ID', [['ID', 'NUMBER', 1]])
+exit if values.nil?
+
+# ✅ Exchange - Use config files or ENV vars:
+config_file = File.join(script_dir, 'config.txt')
+input = File.read(config_file).strip if File.exist?(config_file)
+sim_id = ENV.fetch('SIM_ID', '1')
+```
+
+---
+
+### "no such field" - Model Network fields on Run not Sim
+
+**Symptom:** `sim_mo['Model Network']` fails with "no such field"  
+**Cause:** Fields like 'Model Network' and 'Model Network Commit ID' exist on Run object, not Sim  
+**Solution:** Navigate to parent Run object
+
+**Quick Fix:**
+```ruby
+# WRONG - Sim doesn't have these fields:
+net_id = sim_mo['Model Network']  # ❌ no such field
+
+# CORRECT - Get from parent Run:
+run_mo = db.model_object_from_type_and_id('Run', sim_mo.parent_id)
+net_id = run_mo['Model Network']  # ✅
+commit_id = run_mo['Model Network Commit ID']  # ✅
+```
+
+---
+
+## Results Access Errors
 
 ### Can't Access Simulation Results
 
@@ -289,43 +362,18 @@ end
 
 ---
 
-### String Interpolation Doesn't Work
-
-**Symptom:** Variables not expanded in strings  
-**Cause:** Using single quotes instead of double quotes  
-**Solution:** Use double quotes for interpolation
-
-**Quick Fix:**
-```ruby
-name = 'Node'
-
-# WRONG (single quotes):
-puts 'Object: #{name}'  # Prints literally: Object: #{name}
-
-# CORRECT (double quotes):
-puts "Object: #{name}"  # Prints: Object: Node
-```
-
----
-
 ### Can't Require External Gems
 
 **Symptom:** `require 'gem_name'` fails  
 **Cause:** InfoWorks ICM uses embedded Ruby 2.4.0 - no gem support  
-**Solution:** See PAT_STANDARD_LIBRARIES_046
+**Solution:** Use standard library or load local .rb files
 
-**Workarounds:**
+**Quick Fix:**
 ```ruby
-# Can use standard library:
+# Available: csv, json, date, set, fileutils
 require 'csv'
-require 'json'
-require 'date'
 
-# Can load local .rb files:
-require 'C:/Scripts/my_utilities.rb'
-
-# Cannot use:
-require 'nokogiri'  # External gems not available
+# Cannot use external gems like nokogiri, httparty, etc.
 ```
 
 ---

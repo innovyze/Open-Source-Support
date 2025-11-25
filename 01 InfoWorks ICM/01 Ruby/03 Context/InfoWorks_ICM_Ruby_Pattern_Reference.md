@@ -79,8 +79,12 @@ This is a **pattern reference guide** for LLM-assisted Ruby scripting in InfoWor
 | PAT_ENV_CONFIG_042 | Utilities | Environment-driven config | config, deployment |
 | PAT_USER_INPUT_043 | Utilities | Get user input (UI only) | ui, dialog, input |
 | PAT_FILE_PATH_044 | Utilities | Script file path handling | path, files, compat |
-| PAT_CONSOLE_IO_INVALID_045 | Utilities | Console I/O limitations | ui, validation, compat |
-| PAT_STANDARD_LIBRARIES_046 | Utilities | Safe Ruby libraries | require, libraries, compat |
+| PAT_STANDARD_LIBRARIES_046 | Utilities | Safe Ruby libraries | require, libraries |
+| PAT_DATETIME_SIM_047 | Utilities | DateTime vs relative time | simulation, time |
+| PAT_RESULTS_FIELD_048 | Results | Results field code reference | results, fields |
+| PAT_ODIC_OPTIONS_049 | Import/Export | ODIC/ODEC option hashes | import, export, options |
+| PAT_LAUNCH_SIM_050 | Simulation | Launch sims with agent | simulation, exchange |
+| PAT_RESULTS_PATH_051 | Utilities | Handle results_path file path | results, sim, path |
 
 ---
 
@@ -632,84 +636,209 @@ network_id = ENV.fetch('ICM_NETWORK_ID', '1')
 
 ### PAT_USER_INPUT_043: User Input Dialog
 **Intent:** Prompt user for input (UI only)  
-**Critical:** Use `WSApplication.prompt`, NOT `gets.chomp` (standard Ruby input doesn't work in ICM)  
+**Critical:** Standard Ruby input methods DON'T WORK in InfoWorks ICM
 
 ```ruby
-# Basic types: STRING, NUMBER, DATE, BOOLEAN, READONLY
+# ❌ INVALID - These fail in InfoWorks ICM:
+# input = gets.chomp      # Returns nil
+# input = STDIN.gets      # Returns nil
+# args = ARGV             # Always empty
+
+# ✅ VALID - Use WSApplication.prompt:
 layout = [
   ['Enter node ID', 'STRING', 'MH001'],
   ['Depth (m)', 'NUMBER', 1.5, 2],                                      # 2 decimal places
   ['Process?', 'BOOLEAN', true],
-  ['Scenario', 'STRING', 'Base', nil, 'LIST', ['Base', 'Storm1']],      # dropdown list
+  ['Scenario', 'STRING', 'Base', nil, 'LIST', ['Base', 'Storm1']],      # dropdown
   ['Month', 'NUMBER', 7, nil, 'MONTH'],                                 # month picker
-  ['Range', 'NUMBER', 300, 0, 'RANGE', 100, 1000],                      # min/max slider
+  ['Range', 'NUMBER', 300, 0, 'RANGE', 100, 1000],                      # slider
   ['Output file', 'STRING', nil, nil, 'FILE', false, 'csv', 'CSV', false], # file save
   ['Folder', 'STRING', nil, nil, 'FOLDER', 'Select Folder']             # folder picker
 ]
 
 values = WSApplication.prompt('Parameters', layout)
-exit if values.nil?  # user cancelled
+exit if values.nil?  # User cancelled
 ```
 
 ### PAT_FILE_PATH_044: Script File Path Handling
 **Intent:** Reliable file paths in UI and Exchange  
-**Critical:** Use `WSApplication.script_file`, NOT `__FILE__` or `Dir.pwd`  
+**Critical:** `__FILE__` and `Dir.pwd` are unreliable in InfoWorks ICM
 
 ```ruby
-# WRONG: Unreliable in ICM
-# working_dir = Dir.pwd
-# script_path = __FILE__
+# ❌ WRONG - Unreliable in ICM:
+# working_dir = Dir.pwd        # Different in UI vs Exchange
+# script_path = __FILE__       # Inconsistent behavior
+# config = 'config.cfg'        # Relative path - won't resolve
 
-# CORRECT: Use ICM-specific method
+# ✅ CORRECT - Use ICM-specific method:
 script_file = WSApplication.script_file
 script_dir = File.dirname(script_file)
 
-# Use for related files
+# Build paths to related files:
 config_file = File.join(script_dir, 'config.cfg')
 data_folder = File.join(script_dir, 'data')
 
-# Always prefer absolute paths for robustness
-output_file = 'C:/Output/results.csv'  # absolute
-# Avoid: output_file = 'results.csv'    # relative - working dir varies!
-```
-
-### PAT_CONSOLE_IO_INVALID_045: Console I/O Limitations
-**Intent:** Avoid invalid console operations  
-**Critical:** Standard Ruby console I/O doesn't work in UI scripts  
-
-```ruby
-# ❌ INVALID in UI scripts:
-# input = gets.chomp
-# input = STDIN.gets  
-# args = ARGV
-# input = readline
-
-# ✅ VALID alternatives:
-# UI scripts: Use WSApplication.prompt (see PAT_USER_INPUT_043)
-# Exchange: Pass config via ENV vars or config files
-
-# Console output works for logging (visibility varies):
-puts "Processing node #{node.id}"  # UI: Ruby console; Exchange: stdout/log
+# Always prefer absolute paths:
+output_file = 'C:/Output/results.csv'  # Explicit
 ```
 
 ### PAT_STANDARD_LIBRARIES_046: Safe Ruby Libraries
 **Intent:** Know which Ruby libraries work in ICM  
+**Critical:** External gems NOT available - only standard library
 
 ```ruby
-# ✅ Safe/common libraries:
+# ✅ AVAILABLE - Standard library modules:
 require 'csv'       # CSV file operations
 require 'date'      # Date/time handling  
 require 'set'       # Set operations
-require 'pathname'  # Path operations
 require 'json'      # JSON parsing
 require 'fileutils' # File utilities
+require 'pathname'  # Path operations
 
-# Math (no require needed):
-distance = Math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-area = Math::PI * radius**2
+# ❌ NOT AVAILABLE - External gems:
+# require 'nokogiri'   # XML parsing - will fail
+# require 'httparty'   # HTTP requests - will fail
+# require 'sqlite3'    # Database - will fail
+# require 'pg'         # PostgreSQL - will fail
 
-# ⚠️ Platform-specific (Windows only):
-require 'Win32API'  # For GUID generation, system calls
+# ✅ CAN LOAD - Local Ruby files:
+require 'C:/Scripts/my_utilities.rb'
+require File.join(script_dir, 'helpers.rb')
+```
+
+### PAT_DATETIME_SIM_047: DateTime vs Relative Time in Simulations
+**Intent:** Handle absolute and relative simulation times correctly
+**Context:** Simulations can use absolute DateTime or relative negative double
+**Critical:** InfoWorks-specific time representation
+
+```ruby
+# Check timestep type
+timesteps = net.list_timesteps
+
+if timesteps.first.is_a?(DateTime)
+  # Absolute time simulation
+  puts "Start: #{timesteps.first.strftime('%Y-%m-%d %H:%M:%S')}"
+  # Use DateTime methods
+  duration = (timesteps.last - timesteps.first) * 24 * 3600  # seconds
+else
+  # Relative time simulation (negative double in seconds)
+  puts "Relative time: #{timesteps.first} seconds"
+  # Time values are negative
+  duration = timesteps.last.abs - timesteps.first.abs
+end
+```
+
+### PAT_RESULTS_FIELD_048: Results Field Code Reference
+**Intent:** Use correct field codes for accessing results
+**Context:** Results methods require specific field codes, not UI display names
+**Critical:** Field codes are case-sensitive and product-specific
+
+```ruby
+# Common InfoWorks results field codes:
+RESULTS_FIELDS_HW = {
+  'depnod' => 'Node depth',
+  'level' => 'Node level',
+  'flood' => 'Node flooding',
+  'qlink' => 'Link flow',
+  'vlink' => 'Link velocity',
+  'dlink' => 'Link depth',
+  'sednod' => 'Node sediment depth'
+}
+
+# Access results by field code
+node.results('depnod').max  # Node depth
+link.results('qlink').mean  # Link flow
+
+# Get all available result field names
+result_field_names = net.list_result_field_names
+result_field_names.each { |name| puts name }
+```
+
+### PAT_ODIC_OPTIONS_049: ODIC/ODEC Option Hashes
+**Intent:** Common option hash keys for import/export operations
+**Context:** ODIC (import) and ODEC (export) use option hashes for configuration
+**Critical:** Key names are case-sensitive and must match exactly
+
+```ruby
+# Common ODIC import options
+odic_options = {
+  'Error File' => 'C:/Temp/import_errors.txt',
+  'Duplication Behaviour' => 'Merge',  # or 'Overwrite', 'Ignore'
+  'Units Behaviour' => 'Native',       # or 'User', 'Custom'
+  'Update Based On Asset ID' => false,
+  'Set Value Flag' => '#'
+}
+
+net.odic_import_ex('CSV', 'config.cfg', odic_options, 'Node', 'nodes.csv')
+
+# Common ODEC export options
+odec_options = {
+  'Error File' => 'C:/Temp/export_errors.txt',
+  'Units Behaviour' => 'User',
+  'Native System' => false,
+  'Export Selection' => true
+}
+
+net.odec_export('CSV', 'config.cfg', odec_options, 'nodes.csv')
+
+# Always check error file after operations
+if File.exist?(odic_options['Error File']) && File.size(odic_options['Error File']) > 0
+  puts "Import errors occurred:"
+  puts File.read(odic_options['Error File'])
+end
+```
+
+### PAT_LAUNCH_SIM_050: Launch Simulations with Agent
+**Intent:** Properly configure and launch simulations in Exchange
+**Context:** Exchange scripts require agent connection and proper launch parameters
+**Critical:** Must connect to agent before launching
+
+```ruby
+# Connect to local agent
+timeout_ms = 1000
+WSApplication.connect_local_agent(timeout_ms)
+
+# Get simulation object
+sim_mo = db.model_object_from_type_and_id('Sim', sim_id)
+
+# Launch simulation
+working_dir = 'C:/Temp/ICM_Results'
+agent_id = 1  # Local agent
+job_id = sim_mo.run_ex(working_dir, agent_id)
+
+puts "Simulation launched with job ID: #{job_id}"
+
+# Wait for completion
+WSApplication.wait_for_jobs(job_id)
+
+# Check status
+case sim_mo.status
+when 'Complete'
+  puts "Simulation completed successfully"
+  results_file = sim_mo.results_path  # Note: This is file path, not directory
+  results_dir = File.dirname(results_file)
+  log_file = File.join(results_dir, "SIM#{sim_id}.log")
+when 'Failed'
+  puts "Simulation failed"
+else
+  puts "Simulation status: #{sim_mo.status}"
+end
+```
+
+### PAT_RESULTS_PATH_051: Simulation results_path Returns File Not Directory
+**Intent:** Handle results_path which returns .iwr file path, not directory  
+**Context:** Accessing log files or CSV exports in results folder  
+**Critical:** Unlike typical "path" properties, results_path is a file path
+
+```ruby
+# results_path returns FILE path including .iwr:
+results_path = sim_mo.results_path
+# => "C:/Users/.../Results/SIM2608.iwr"
+
+# Extract directory for file operations:
+results_dir = File.dirname(results_path)
+log_path = File.join(results_dir, "SIM#{sim_id}.log")
+csv_path = File.join(results_dir, "SIM#{sim_id}.csv")
 ```
 
 ---

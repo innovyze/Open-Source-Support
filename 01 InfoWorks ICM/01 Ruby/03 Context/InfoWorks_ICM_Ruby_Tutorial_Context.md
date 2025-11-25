@@ -20,9 +20,9 @@ This context file is being **organically evolved and trialed** to improve the ef
 - **Best For**: Learning, understanding concepts, generating complete scripts from scratch
 
 ### **When to Use Which Guide**
-- **Use Tutorial Context (this file)**: Learning Ruby scripting, understanding concepts, generating complete scripts
-- **Use Pattern Reference**: Quick pattern lookup, specific pattern IDs, composing complex scripts from patterns
-- **Use Database Reference**: Looking up database table names (`hw_*`, `sw_*`) for row_objects() calls AND Model Object Type names for model_object_from_type_and_id() calls
+- **Tutorial Context (this file)**: Learning concepts, complete script examples
+- **Pattern Reference**: Pattern IDs and code templates
+- **Database Reference**: Table names and Model Object Types
 
 ### **Contributing Updates**
 If you have suggestions for improvements or additional patterns, please provide:
@@ -41,57 +41,94 @@ InfoWorks ICM provides two main Ruby scripting environments:
 1. **UI Scripts**: Run within the InfoWorks ICM graphical interface (`WSApplication.current_network`)
 2. **Exchange Scripts**: Run independently via Exchange API (`WSApplication.open`)
 
-## Ruby Environment Limitations
+## InfoWorks-Specific Limitations and Behaviors
 
-InfoWorks ICM provides a Ruby scripting environment, but some standard Ruby features don't work or behave differently:
-
-### Console Input (UI Scripts) - INVALID
-Standard Ruby console input methods **do not work** in UI scripts:
+### Console Input Does NOT Work (Critical)
+**Standard Ruby console input methods fail in InfoWorks ICM:**
 ```ruby
-# INVALID - These don't work in ICM UI:
-input = gets.chomp
-input = STDIN.gets
-args = ARGV
-input = readline
+# ❌ INVALID - These don't work in ICM:
+input = gets.chomp      # Returns nil immediately
+input = STDIN.gets      # Returns nil immediately
+args = ARGV             # Always empty in UI scripts
+input = readline        # Not available
 
-# CORRECT - Use ICM-specific method:
+# ✅ CORRECT - Use ICM-specific method in UI scripts:
 values = WSApplication.prompt('Enter Parameters', [
   ['Node ID', 'STRING', 'MH001'],
   ['Depth', 'NUMBER', 1.5, 2]
 ])
+exit if values.nil?  # User cancelled
+
+# ✅ CORRECT - In Exchange scripts, use config files or ENV vars:
+config = File.read('config.txt').strip if File.exist?('config.txt')
+db_path = ENV.fetch('ICM_DB_PATH', 'default.icmm')
 # See Pattern Reference: PAT_USER_INPUT_043
 ```
 
-### File Paths - USE WITH CAUTION
-File path handling requires care due to different working directories:
+### Script File Paths - Working Directory Unreliable
+**Standard Ruby path methods behave inconsistently:**
 ```ruby
-# UNRELIABLE - Working directory varies:
+# ❌ UNRELIABLE - Working directory varies between UI and Exchange:
 script_path = __FILE__          # Different in UI vs Exchange
-working_dir = Dir.pwd           # Unpredictable
+working_dir = Dir.pwd           # Unpredictable location
+relative = 'data/file.csv'      # May not resolve correctly
 
-# CORRECT - Use ICM-specific method:
+# ✅ CORRECT - Use ICM-specific method:
 script_file = WSApplication.script_file
 script_dir = File.dirname(script_file)
 config_file = File.join(script_dir, 'config.cfg')
 
-# Always prefer absolute paths:
-output_file = 'C:/Output/results.csv'  # Good
-# Avoid: output_file = 'results.csv'    # Risky
+# ✅ BEST PRACTICE - Always use absolute paths:
+output_file = 'C:/Output/results.csv'  # Explicit and reliable
 # See Pattern Reference: PAT_FILE_PATH_044
 ```
 
-### What Works - VALID
-These standard Ruby features work normally:
-- **Data structures**: `Array`, `Hash`, `Set`
-- **Libraries**: `require 'csv'`, `'date'`, `'set'`, `'pathname'`, `'json'`, `'fileutils'`
-- **String/Numeric**: `.to_s`, `.to_f`, `.round`, `.upcase`, `.downcase`, `.strip`, etc.
-- **Collections**: `.each`, `.map`, `.select`, `.compact`, `.reject`, `.find`, etc.
-- **Error handling**: `begin`/`rescue`/`ensure`
-- **File I/O**: `File.read`, `File.write`, `CSV.open` (use absolute paths)
-- **Console output**: `puts`, `print`, `p` (visible in Ruby console/log)
-- **Math**: `Math.sqrt`, `Math::PI`, etc.
+### External Gems NOT Available
+**InfoWorks ICM uses embedded Ruby 2.4.0 without gem support:**
+```ruby
+# ❌ CANNOT USE external gems:
+require 'nokogiri'   # Will fail
+require 'httparty'   # Will fail
+require 'sqlite3'    # Will fail
 
-See Pattern Reference: PAT_STANDARD_LIBRARIES_046 for complete list.
+# ✅ CAN USE standard library:
+require 'csv'
+require 'json'
+require 'date'
+require 'set'
+require 'fileutils'
+
+# ✅ CAN LOAD local .rb files:
+require File.join(script_dir, 'utilities.rb')
+```
+
+### DateTime in Simulations
+```ruby
+# Simulations can use absolute or relative times:
+# - Absolute times: DateTime object (e.g., DateTime.new(2024, 1, 1, 12, 0))
+# - Relative times: Negative double in seconds (e.g., -3600.0 for T-1 hour)
+
+timesteps = net.list_timesteps
+if timesteps.first.is_a?(DateTime)
+  puts "Absolute time: #{timesteps.first.strftime('%Y-%m-%d %H:%M')}"
+else
+  puts "Relative time: #{timesteps.first} seconds"
+end
+```
+
+### Results Field Naming
+```ruby
+# Results use specific field codes (not UI names):
+# Common InfoWorks results fields:
+# - 'depnod' = Node depth
+# - 'qlink' = Link flow
+# - 'vlink' = Link velocity  
+# - 'level' = Node level
+# - 'flood' = Node flooding
+
+node.results('depnod')  # Get depth results
+link.results('qlink')   # Get flow results
+```
 
 ## Quick Reference for AI Code Generation
 
@@ -285,6 +322,33 @@ net.row_objects('_nodes').each { |o| o._seen = false }
 
 **For conditional/filtered tracing:** See PAT_TRACE_CONDITIONAL_015 in Pattern Reference
 
+## Simulation Management (Exchange Only)
+
+### Launching Simulations (see PAT_SIM_RUN_021)
+```ruby
+# Connect to local agent first
+WSApplication.connect_local_agent(1000)  # 1000ms timeout
+
+# Get run and sim objects
+run_mo = db.model_object_from_type_and_id('Run', run_id)
+sim_mo = db.model_object_from_type_and_id('Sim', sim_id)
+
+# Launch with agent
+working_dir = 'C:/Temp'
+agent_id = 1
+job_id = sim_mo.run_ex(working_dir, agent_id)
+
+# Wait for completion
+WSApplication.wait_for_jobs(job_id)
+
+# Check results
+if sim_mo.status == 'Complete'
+  puts "Simulation completed successfully"
+else
+  puts "Simulation failed: #{sim_mo.status}"
+end
+```
+
 ## Results Handling (see PAT_RESULTS_ACCESS_018, PAT_RESULTS_FIELDS_ENUM_019)
 
 ### Accessing Results
@@ -292,9 +356,9 @@ net.row_objects('_nodes').each { |o| o._seen = false }
 net = WSApplication.current_network  # Results always from current network
 timesteps = net.list_timesteps
 
-# Get results - InfoWorks
+# Get results - InfoWorks (use field codes not UI names)
 net.row_objects('hw_node').each do |node|
-  depth_results = node.results('depnod')
+  depth_results = node.results('depnod')  # 'depnod' = depth at node
   puts "#{node.id}: Max=#{depth_results.max}, Mean=#{depth_results.mean}"
 end
 

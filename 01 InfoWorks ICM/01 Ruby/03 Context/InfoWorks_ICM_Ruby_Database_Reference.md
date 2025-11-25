@@ -349,7 +349,41 @@ end
 - `oid` - Object identifier
 - `selected` - Selection state
 
+**Flag Fields:**
+- Most fields have a corresponding flag field with `_flag` suffix
+- Example: `diameter` has `diameter_flag`
+- Flags store annotation text for the field
+
+```ruby
+# Access field and its flag
+conduit.diameter = 300
+conduit.diameter_flag = 'Estimated'
+```
+
 ---
 
-**Last Updated:** October 21, 2025  
+## Results Field Codes
+
+**Purpose:** Results methods require specific field codes (not UI display names)
+
+**Common InfoWorks Results Fields:**
+- `'depnod'` - Node depth
+- `'level'` - Node level  
+- `'flood'` - Node flooding
+- `'qlink'` - Link flow
+- `'vlink'` - Link velocity
+- `'dlink'` - Link depth
+
+**Discovery:**
+```ruby
+# List all available result field names
+result_fields = net.list_result_field_names
+result_fields.each { |name| puts name }
+```
+
+**See:** Autodesk Help > Results Field Reference for complete listings
+
+---
+
+**Last Updated:** November 25, 2025  
 **Note:** Always verify table and field names against latest Autodesk Help documentation.
