@@ -98,7 +98,7 @@ The tool automatically handles common data quality issues:
 | Non-compliant node IDs | Dots replaced with underscores (e.g., `403-21.01` → `403-21_01`) |
 | Short conduits (<3.3 ft) | Extended to InfoWorks minimum length |
 | Long conduits (>16404 ft) | Reduced to InfoWorks maximum length |
-| Pump control defaults | TYPE=0 pumps with no CONTROL data get defaults (OFF=1 ft, ON=3 ft) |
+| Pump control defaults | TYPE=0 pumps with no CONTROL data get defaults (OFF=1 ft above wet well bottom, ON=3 ft above wet well bottom) |
 
 **All corrections are clearly reported in console output.**
 
