@@ -1,0 +1,19 @@
+table: hw_unit_hydrograph
+
+defaults:
+  # No defaults needed
+
+import:
+  hydrogrh:
+    ID: 'ID'
+    T1: 'PEAKTM1'
+    K1: 'RECESS1'
+    T2: 'PEAKTM2'
+    K2: 'RECESS2'
+    T3: 'PEAKTM3'
+    K3: 'RECESS3'
+    user_number_1: 'RFVOL_EFF'
+    user_number_2: 'RFVOL1'
+    user_number_3: 'RFVOL2'
+    user_text_1: 'DESCRIPT'
+

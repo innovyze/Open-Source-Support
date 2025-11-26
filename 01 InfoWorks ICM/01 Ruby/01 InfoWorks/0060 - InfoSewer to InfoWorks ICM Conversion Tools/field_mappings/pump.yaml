@@ -1,0 +1,25 @@
+table: hw_pump
+
+defaults:
+  link_type: FIXPMP
+  system_type: sanitary
+
+import:
+  pump:
+    discharge: 'CAPACITY'
+    user_text_10: 'Pump'
+  
+  pumphyd:
+    discharge: 'CAPACITY'
+    user_number_1: 'CAPACITY'
+    user_number_2: 'SHUT_HEAD'
+    user_number_3: 'DSGN_HEAD'
+    user_number_4: 'DSGN_FLOW'
+    user_number_5: 'HIGH_HEAD'
+    user_number_6: 'HIGH_FLOW'
+    user_text_1: 'TYPE'
+    user_text_2: 'PARALLEL'
+  
+  control:
+    switch_on_level: 'ON'
+    switch_off_level: 'OFF'
