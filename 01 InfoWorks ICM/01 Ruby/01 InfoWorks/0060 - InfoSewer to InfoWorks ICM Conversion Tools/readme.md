@@ -28,7 +28,6 @@ This tool is a **completely refreshed version** of the InfoSewer import workflow
    - `InfoSewer_Import_UI.rb` (main script)
    - `lib/` folder (required helper modules)
    - `field_mappings/` folder (required configuration files)
-   - Optional: `import_active_network_selection_lists.rb` and `import_query_set_selection_lists.rb` (standalone scripts)
 2. **Open InfoWorks ICM**
 3. **Create a new blank InfoWorks network**
 4. **Network → Run Ruby Script**
