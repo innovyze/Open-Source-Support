@@ -2,10 +2,27 @@
 
 **Purpose:** Quick diagnostic reference mapping common error messages to solutions and pattern IDs. Load conditionally when debugging issues.
 
-**Load Condition:** CONDITIONAL - Load only when query contains error/debugging keywords  
+**Load Priority:** 🟢 DEBUGGING - Load when errors occur  
+**Load Condition:** CONDITIONAL - When query contains error/debugging keywords  
 **Keywords:** error, exception, fails, broken, debugging, NoMethodError, NilClass, undefined method
 
-**Last Updated:** October 21, 2025
+**Last Updated:** December 2, 2025
+
+## How to Use This File
+
+**For LLMs:** Use this file to:
+- Diagnose error messages by matching symptom to cause
+- Find quick fixes for common errors
+- Identify which pattern (PAT_XXX_NNN) provides correct solution
+- Understand root causes to prevent similar errors
+
+**Prerequisite:** Many errors are prevented by reading `Lessons_Learned.md` FIRST
+
+**Related Files:**
+- `InfoWorks_ICM_Ruby_Lessons_Learned.md` - 🔴 PREVENTS most errors listed here
+- `InfoWorks_ICM_Ruby_API_Reference.md` - Method signatures to verify correct usage
+- `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Pattern IDs referenced in solutions
+- `InfoWorks_ICM_Ruby_Database_Reference.md` - Correct table names and types
 
 ---
 

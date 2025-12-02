@@ -2,7 +2,24 @@
 
 **Purpose:** Define all project-specific terms, acronyms, class names, and technical jargon used in InfoWorks ICM Ruby scripting to enable accurate LLM code generation and prevent terminology confusion.
 
-**Last Updated:** October 21, 2025
+**Load Priority:** 🟢 REFERENCE - Load for terminology clarification  
+**Load Condition:** CONDITIONAL - When user asks "what is" or unfamiliar terms appear  
+**Keywords:** definition, terminology, meaning, what is, explain
+
+**Last Updated:** December 2, 2025
+
+## How to Use This File
+
+**For LLMs:** Use this file to:
+- Clarify InfoWorks-specific terminology (Agent, Workgroup, Transportable, etc.)
+- Understand class name meanings (WSApplication, WSOpenNetwork, etc.)
+- Distinguish between similar concepts (Model Object vs Row Object)
+- Verify correct terminology when generating code
+
+**Related Files:**
+- `InfoWorks_ICM_Ruby_API_Reference.md` - Class method documentation
+- `InfoWorks_ICM_Ruby_Database_Reference.md` - Model Object Type definitions
+- `InfoWorks_ICM_Ruby_Tutorial_Context.md` - Terms used in context
 
 ---
 
