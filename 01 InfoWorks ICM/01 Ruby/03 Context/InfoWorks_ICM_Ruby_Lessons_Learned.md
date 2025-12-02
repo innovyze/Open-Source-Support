@@ -458,17 +458,51 @@ end
 2. **Set flag before adding** to unprocessed queue
 3. **Check flag before processing** to skip already-seen objects
 
-### Code Pattern
+### Code Pattern - Downstream Trace
 
 ```ruby
 # ✅ Correct - prevents infinite loops
 unprocessed = []
 
 selected_nodes.each do |node|
-  node.us_links.each do |link|
+  node.ds_links.each do |link|
     if !link._seen
       unprocessed << link
       link._seen = true  # Mark immediately
+    end
+  end
+end
+
+while unprocessed.size > 0
+  link = unprocessed.shift
+  link.selected = true
+  
+  ds_node = link.ds_node
+  if ds_node && !ds_node._seen
+    ds_node._seen = true
+    ds_node.selected = true
+    
+    ds_node.ds_links.each do |l|
+      if !l._seen
+        unprocessed << l
+        l._seen = true
+      end
+    end
+  end
+end
+```
+
+### Code Pattern - Upstream Trace
+
+```ruby
+# ✅ Upstream trace - same pattern, different direction
+unprocessed = []
+
+selected_nodes.each do |node|
+  node.us_links.each do |link|
+    unless link._seen
+      unprocessed << link
+      link._seen = true
     end
   end
 end
@@ -483,7 +517,7 @@ while unprocessed.size > 0
     us_node.selected = true
     
     us_node.us_links.each do |l|
-      if !l._seen
+      unless l._seen
         unprocessed << l
         l._seen = true
       end
@@ -491,6 +525,8 @@ while unprocessed.size > 0
   end
 end
 ```
+
+**Key**: Just change `ds_links` → `us_links` and `ds_node` → `us_node`
 
 ---
 

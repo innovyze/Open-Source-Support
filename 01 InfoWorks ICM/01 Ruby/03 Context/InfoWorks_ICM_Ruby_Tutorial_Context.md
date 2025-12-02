@@ -422,6 +422,25 @@ end
 puts "Available results fields: #{results_set.to_a}"
 ```
 
+### Iterating Selected Objects
+
+```ruby
+# Convenience method for processing selected objects
+net.each_selected do |selected_obj|
+  # selected_obj is a reference, get actual row object
+  node = net.row_object('hw_node', selected_obj.node_id)
+  
+  # Process the node
+  puts "#{node.node_id}: Level = #{node.ground_level}"
+end
+
+# Equivalent to:
+selected = net.row_object_collection_selection('_nodes')
+selected.each do |node|
+  puts "#{node.node_id}: Level = #{node.ground_level}"
+end
+```
+
 ### Comparing Simulations
 ```ruby
 cn = WSApplication.current_network      # Current simulation

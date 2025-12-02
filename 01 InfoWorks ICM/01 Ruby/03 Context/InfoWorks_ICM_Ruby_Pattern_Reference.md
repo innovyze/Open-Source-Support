@@ -367,6 +367,28 @@ end
 
 ---
 
+### PAT_RELATIONSHIP_MAP_017: Build Relationship Index
+**Intent:** Build relationship index  
+
+```ruby
+# Build node→subcatchments map
+node_sub_map = Hash.new { |h, k| h[k] = [] }
+
+net.row_objects('hw_node').each do |node|
+  node.navigate('subcatchments').each do |sub|
+    node_sub_map[node.node_id] << sub
+  end
+end
+
+# Use the map
+nodes.each do |node|
+  subs = node_sub_map[node.node_id]
+  puts "Node #{node.node_id} has #{subs.length} subcatchments"
+end
+```
+
+---
+
 ## 6. Results Handling Patterns
 
 ### PAT_RESULTS_ACCESS_018: Access 1D Results
@@ -681,15 +703,15 @@ exit if values.nil?  # User cancelled
 
 ### PAT_FILE_PATH_044: Script File Path Handling
 **Intent:** Reliable file paths in UI and Exchange  
-**Critical:** `__FILE__` and `Dir.pwd` are unreliable in InfoWorks ICM
+**Critical:** `__FILE__` behavior varies between UI and Exchange
 
 ```ruby
-# ❌ WRONG - Unreliable in ICM:
-# working_dir = Dir.pwd        # Different in UI vs Exchange
-# script_path = __FILE__       # Inconsistent behavior
-# config = 'config.cfg'        # Relative path - won't resolve
+# ❌ UNRELIABLE - Works in Exchange, fails in UI:
+script_path = __FILE__         # Inconsistent across environments
+working_dir = Dir.pwd          # Different in UI vs Exchange
+config = 'config.cfg'          # Relative path - won't resolve
 
-# ✅ CORRECT - Use ICM-specific method:
+# ✅ CORRECT - Consistent in both environments:
 script_file = WSApplication.script_file
 script_dir = File.dirname(script_file)
 
@@ -699,6 +721,9 @@ data_folder = File.join(script_dir, 'data')
 
 # Always prefer absolute paths:
 output_file = 'C:/Output/results.csv'  # Explicit
+
+# Note: __FILE__ typically works in Exchange scripts but may fail in UI.
+# For consistency and reliability, always use WSApplication.script_file.
 ```
 
 ### PAT_STANDARD_LIBRARIES_046: Safe Ruby Libraries

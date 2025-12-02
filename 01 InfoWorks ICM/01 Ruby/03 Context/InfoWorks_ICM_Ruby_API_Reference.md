@@ -718,6 +718,27 @@ Switches active scenario.
 
 ---
 
+### each_selected
+**Availability:** Both  
+**Returns:** nil (iterator)  
+**Signature:** `net.each_selected { |obj| }`
+
+Iterates through currently selected objects in the network.
+
+**Parameters:** None (uses current selection)
+
+**Example:**
+```ruby
+net.each_selected do |selected_obj|
+  node = net.row_object('hw_node', selected_obj.node_id)
+  puts "Selected: #{node.node_id}"
+end
+```
+
+**See:** PAT_SELECTION_FALLBACK_007
+
+---
+
 ## WSSimObject
 
 **Purpose:** Simulation objects in ICM (subclass of WSModelObject).
@@ -892,7 +913,7 @@ Gets downstream links.
 
 ---
 
-### navigate
+### navigate (tracing)
 **Availability:** Both  
 **Returns:** nil  
 **Signature:** `node.navigate(direction)`
@@ -903,6 +924,31 @@ Traces network and marks selection.
 - `direction` (String) - 'us' or 'ds'
 
 **See:** PAT_TRACE_BASIC_014
+
+---
+
+### navigate (relationships)
+**Availability:** Both  
+**Returns:** WSRowObjectCollection  
+**Signature:** `node.navigate(relationship_name)`
+
+Navigates relationships to find connected objects.
+
+**Parameters:**
+- `relationship_name` (String) - Relationship type to navigate
+
+**Common relationships:**
+- `'subcatchments'` - Subcatchments connected to this node
+- `'links'` - Links connected to this node
+
+**Example:**
+```ruby
+node.navigate('subcatchments').each do |sub|
+  puts "Subcatchment #{sub.id} drains to #{node.node_id}"
+end
+```
+
+**See:** PAT_RELATIONSHIP_MAP_017
 
 ---
 
