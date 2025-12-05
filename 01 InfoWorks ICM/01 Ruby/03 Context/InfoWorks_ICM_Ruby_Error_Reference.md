@@ -2,7 +2,7 @@
 
 **Purpose:** Quick diagnostic reference mapping common error messages to solutions and pattern IDs. Load conditionally when debugging issues.
 
-**Load Priority:** 🟢 DEBUGGING - Load when errors occur  
+**Load Priority:** DEBUGGING - Load when errors occur  
 **Load Condition:** CONDITIONAL - When query contains error/debugging keywords  
 **Keywords:** error, exception, fails, broken, debugging, NoMethodError, NilClass, undefined method
 
@@ -19,7 +19,7 @@
 **Prerequisite:** Many errors are prevented by reading `Lessons_Learned.md` FIRST
 
 **Related Files:**
-- `InfoWorks_ICM_Ruby_Lessons_Learned.md` - 🔴 PREVENTS most errors listed here
+- `InfoWorks_ICM_Ruby_Lessons_Learned.md` - PREVENTS most errors listed here
 - `InfoWorks_ICM_Ruby_API_Reference.md` - Method signatures to verify correct usage
 - `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Pattern IDs referenced in solutions
 - `InfoWorks_ICM_Ruby_Database_Reference.md` - Correct table names and types
@@ -270,16 +270,16 @@ end
 
 **Critical - These DON'T work:**
 ```ruby
-# ❌ INVALID in both UI and Exchange:
+# INVALID in both UI and Exchange:
 input = gets.chomp      # Returns nil immediately
 input = STDIN.gets      # Returns nil immediately
 args = ARGV             # Always empty in UI scripts
 
-# ✅ UI Script - Use prompt:
+# UI Script - Use prompt:
 values = WSApplication.prompt('Enter Sim ID', [['ID', 'NUMBER', 1]])
 exit if values.nil?
 
-# ✅ Exchange - Use config files or ENV vars:
+# Exchange - Use config files or ENV vars:
 config_file = File.join(script_dir, 'config.txt')
 input = File.read(config_file).strip if File.exist?(config_file)
 sim_id = ENV.fetch('SIM_ID', '1')
@@ -296,12 +296,12 @@ sim_id = ENV.fetch('SIM_ID', '1')
 **Quick Fix:**
 ```ruby
 # WRONG - Sim doesn't have these fields:
-net_id = sim_mo['Model Network']  # ❌ no such field
+net_id = sim_mo['Model Network']  # no such field
 
 # CORRECT - Get from parent Run:
 run_mo = db.model_object_from_type_and_id('Run', sim_mo.parent_id)
-net_id = run_mo['Model Network']  # ✅
-commit_id = run_mo['Model Network Commit ID']  # ✅
+net_id = run_mo['Model Network']  #
+commit_id = run_mo['Model Network Commit ID']  #
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 **Purpose:** High-priority warnings about InfoWorks Ruby behavior that differs from standard Ruby. Load this FIRST before generating any code.
 
-**Load Priority:** 🔴 CRITICAL - Always load FIRST before any code generation  
+**Load Priority:** CRITICAL - Always load FIRST before any code generation  
 **Last Updated:** December 2, 2025
 
 ## How to Use This File
@@ -22,7 +22,7 @@
 
 ---
 
-## ⚠️ CRITICAL: Collection Objects Are NOT Ruby Arrays
+## CRITICAL: Collection Objects Are NOT Ruby Arrays
 
 ### The Problem
 
@@ -35,28 +35,28 @@ InfoWorks custom collection classes look like Ruby arrays but **DO NOT** support
 
 **What Works:**
 ```ruby
-# ✅ ONLY .each is supported
+# ONLY .each is supported
 commits.each do |c|
   puts c.commit_id
 end
 
-# ✅ Convert to array first if needed
+# Convert to array first if needed
 children_array = parent_group.children.to_a
 found = children_array.find { |c| c.name == "MyNetwork" }
 ```
 
 **What FAILS:**
 ```ruby
-# ❌ NoMethodError: undefined method 'find'
+# NoMethodError: undefined method 'find'
 commit = commits.find { |c| c.commit_id == 123 }
 
-# ❌ NoMethodError: undefined method 'select'
+# NoMethodError: undefined method 'select'
 networks = children.select { |c| c.type == 'Model Network' }
 
-# ❌ NoMethodError: undefined method 'map'
+# NoMethodError: undefined method 'map'
 names = children.map(&:name)
 
-# ❌ All other Enumerable methods fail
+# All other Enumerable methods fail
 .any?, .all?, .first, .last, .count, .filter, .reject, etc.
 ```
 
@@ -88,7 +88,7 @@ end
 
 ---
 
-## ⚠️ CRITICAL: DateTime Class Not Available
+## CRITICAL: DateTime Class Not Available
 
 ### The Problem
 
@@ -99,10 +99,10 @@ undefined class/module DateTime
 
 **What FAILS:**
 ```ruby
-# ❌ Causes DateTime class error
+# Causes DateTime class error
 commit.date
 
-# ❌ Even .to_s doesn't help
+# Even .to_s doesn't help
 commit.date.to_s
 ```
 
@@ -115,18 +115,75 @@ commit.date.to_s
 ### Code Pattern
 
 ```ruby
-# ✅ Safe - use only commit_id and user
+# Safe - use only commit_id and user
 commits.each do |c|
   puts "Commit #{c.commit_id} by #{c.user}"  # No .date
 end
 
-# ✅ For timestamps, use Time.now
+# For timestamps, use Time.now
 timestamp = Time.now.strftime('%Y-%m-%d %H:%M:%S')
 ```
 
 ---
 
-## ⚠️ Documentation Inaccuracies
+## CRITICAL: Must Call .write() After Modifications
+
+### The Problem
+
+Modifications to row objects are **NOT saved** unless you explicitly call `.write()` on the object. This is a **silent failure** - no error message, changes just don't persist.
+
+**What FAILS:**
+```ruby
+# Changes silently ignored - no error, no save
+node = net.row_object('hw_node', 'NODE001')
+node.ground_level = 100.0
+# Missing: node.write
+
+# Structure changes ignored without BOTH writes
+reach.sections[0].roughness = 0.035
+reach.sections.write  # Need this
+# Missing: reach.write (also needed!)
+```
+
+**What WORKS:**
+```ruby
+# Correct - always call .write()
+node = net.row_object('hw_node', 'NODE001')
+node.ground_level = 100.0
+node.write  # REQUIRED!
+
+# Correct - structures need TWO writes
+reach.sections[0].roughness = 0.035
+reach.sections.write  # Write structure first
+reach.write           # Write parent object second
+```
+
+### LLM Agent Rules
+
+1. **ALWAYS call .write()** after modifying any row object field
+2. **For WSStructure modifications:** Call .write() on BOTH the structure AND the parent object
+3. **Check script doesn't exit early** before .write() calls execute
+4. **This is SILENT** - no error message, changes just don't persist
+5. **Wrap in transactions** for atomicity (see PAT_TRANSACTION_010)
+
+### Code Pattern
+
+```ruby
+net.transaction_begin
+begin
+  net.row_objects('hw_node').each do |node|
+    node.ground_level = 100.0
+    node.write  # REQUIRED for each modified object!
+  end
+ensure
+  net.transaction_commit
+end
+net.commit('Updated ground levels')  # Database commit (Exchange only)
+```
+
+---
+
+## Documentation Inaccuracies
 
 ### API Reference Issues
 
@@ -153,7 +210,7 @@ Method: .children
 
 ---
 
-## ✅ Safe API Usage Patterns
+## Safe API Usage Patterns
 
 ### Collections - Always Safe
 
@@ -216,7 +273,7 @@ end
 
 ---
 
-## 🎯 LLM Agent Checklist
+## LLM Agent Checklist
 
 Before generating InfoWorks Ruby code, verify:
 
@@ -234,7 +291,7 @@ Before generating InfoWorks Ruby code, verify:
 
 ---
 
-## ⚠️ CRITICAL: Transaction vs Database Commit
+## CRITICAL: Transaction vs Database Commit
 
 ### The Problem
 
@@ -261,7 +318,7 @@ net.commit('Description of changes')  # Commits to database version control
 ### Code Pattern
 
 ```ruby
-# ✅ Correct pattern for bulk updates
+# Correct pattern for bulk updates
 net.transaction_begin
 net.row_objects('hw_subcatchment').each do |sub|
   sub.drying_time = 1
@@ -270,7 +327,7 @@ end
 net.transaction_commit  # Commit to network object
 net.commit('Set drying time to 1 day')  # Commit to database
 
-# ❌ Wrong - no transaction (slow for bulk updates)
+# Wrong - no transaction (slow for bulk updates)
 net.row_objects('hw_subcatchment').each do |sub|
   sub.drying_time = 1
   sub.write  # Each write commits individually!
@@ -279,7 +336,7 @@ end
 
 ---
 
-## ⚠️ CRITICAL: Parent Object Handling
+## CRITICAL: Parent Object Handling
 
 ### The Problem
 
@@ -287,7 +344,7 @@ Networks can be nested inside other networks OR inside model groups. Assuming pa
 
 **What FAILS:**
 ```ruby
-# ❌ Assumes parent is always Model Group
+# Assumes parent is always Model Group
 parent_id = network.model_object.parent_id
 group = db.model_object_from_type_and_id('Model Group', parent_id)
 # ^ Crashes if network is inside another network
@@ -302,7 +359,7 @@ group = db.model_object_from_type_and_id('Model Group', parent_id)
 ### Code Pattern
 
 ```ruby
-# ✅ Correct - handles nested networks
+# Correct - handles nested networks
 parent_id = net.model_object.parent_id
 
 begin
@@ -316,7 +373,7 @@ end
 
 ---
 
-## ⚠️ Domain-Specific Validation
+## Domain-Specific Validation
 
 ### The Problem
 
@@ -324,12 +381,12 @@ Not all data quality issues are errors. Some conduit types legitimately have dif
 
 **Example: Reverse Slope Pipes**
 ```ruby
-# ❌ Incomplete - flags pressure pipes as errors
+# Incomplete - flags pressure pipes as errors
 if conduit.gradient < 0
   # Report as reverse slope
 end
 
-# ✅ Correct - excludes legitimate negative gradients
+# Correct - excludes legitimate negative gradients
 if conduit.gradient < 0 && 
    conduit.solution_model != 'Pressure' && 
    conduit.solution_model != 'ForceMain'
@@ -345,12 +402,12 @@ end
 
 ---
 
-## ✅ Safe User Feedback Patterns
+## Safe User Feedback Patterns
 
 ### Check Before Creating
 
 ```ruby
-# ✅ Check if any results before creating objects
+# Check if any results before creating objects
 found_items = false
 collection.each do |item|
   if condition
@@ -370,7 +427,7 @@ end
 ### Handle Naming Conflicts
 
 ```ruby
-# ✅ Ensure unique names with counter suffix
+# Ensure unique names with counter suffix
 base_name = 'My Selection List'
 list_name = base_name
 counter = 1
@@ -389,7 +446,7 @@ sl = parent_group.new_model_object('Selection List', list_name)
 ### Validate Collections
 
 ```ruby
-# ✅ Check for nil and empty collections
+# Check for nil and empty collections
 if net.nil?
   puts "Error: No network open"
   return
@@ -404,9 +461,9 @@ end
 
 ---
 
-## 🎯 LLM Agent Checklist
+## LLM Agent Checklist
 
-## 📚 Related Context Files
+## Related Context Files
 
 Load in this order:
 1. **This file** (Lessons_Learned.md) - FIRST, ALWAYS
@@ -417,7 +474,7 @@ Load in this order:
 
 ---
 
-## 🔄 Update Log
+## Update Log
 
 | Date | Change | Reason |
 |------|--------|--------|
@@ -431,7 +488,7 @@ Load in this order:
 
 ---
 
-## ⚠️ CRITICAL: Network Traversal with _seen Flag
+## CRITICAL: Network Traversal with _seen Flag
 
 ### The Problem
 
@@ -439,7 +496,7 @@ Networks can contain loops. Without tracking visited objects, traversal algorith
 
 **What FAILS:**
 ```ruby
-# ❌ Infinite loop on networks with cycles
+# Infinite loop on networks with cycles
 unprocessed = [start_link]
 
 while unprocessed.size > 0
@@ -461,7 +518,7 @@ end
 ### Code Pattern - Downstream Trace
 
 ```ruby
-# ✅ Correct - prevents infinite loops
+# Correct - prevents infinite loops
 unprocessed = []
 
 selected_nodes.each do |node|
@@ -495,7 +552,7 @@ end
 ### Code Pattern - Upstream Trace
 
 ```ruby
-# ✅ Upstream trace - same pattern, different direction
+# Upstream trace - same pattern, different direction
 unprocessed = []
 
 selected_nodes.each do |node|
@@ -530,7 +587,7 @@ end
 
 ---
 
-## ⚠️ CRITICAL: Blob Structures (Arrays/Tables in Objects)
+## CRITICAL: Blob Structures (Arrays/Tables in Objects)
 
 ### The Problem
 
@@ -540,10 +597,10 @@ Some object properties are blob structures (arrays of data) that have special wr
 
 **What FAILS:**
 ```ruby
-# ❌ .clear doesn't exist on blob structures
+# .clear doesn't exist on blob structures
 sub.suds_controls.clear
 
-# ❌ Forgot to write structure itself
+# Forgot to write structure itself
 sub.suds_controls.size = 0
 sub.write  # Not enough - structure not saved!
 ```
@@ -557,12 +614,12 @@ sub.write  # Not enough - structure not saved!
 ### Code Pattern
 
 ```ruby
-# ✅ Clearing blob structure
+# Clearing blob structure
 sub.suds_controls.size = 0
 sub.suds_controls.write  # Write structure
 sub.write                # Write parent
 
-# ✅ Modifying blob structure data
+# Modifying blob structure data
 reach.sections[0].roughness = 0.035
 reach.sections.write  # Write structure
 reach.write           # Write parent
@@ -570,7 +627,7 @@ reach.write           # Write parent
 
 ---
 
-## ⚠️ Simulation Launching (Exchange)
+## Simulation Launching (Exchange)
 
 ### The Problem
 
@@ -578,11 +635,11 @@ Launching simulations via agent requires specific setup and status monitoring.
 
 **What FAILS:**
 ```ruby
-# ❌ Forgot to connect agent
+# Forgot to connect agent
 sims = [sim1, sim2]
 WSApplication.launch_sims(sims, '.', false, 0, 0)  # Fails - no agent
 
-# ❌ No status monitoring
+# No status monitoring
 WSApplication.launch_sims(sims, '.', false, 0, 0)
 puts "Done"  # Wrong - sims still running!
 ```
@@ -596,7 +653,7 @@ puts "Done"  # Wrong - sims still running!
 ### Code Pattern
 
 ```ruby
-# ✅ Correct simulation launch pattern
+# Correct simulation launch pattern
 sims_array = []
 run.children.each { |sim| sims_array << sim }
 
@@ -617,7 +674,7 @@ puts 'All simulations complete'
 
 ---
 
-## ⚠️ Scenario Field Modifications
+## Scenario Field Modifications
 
 ### The Problem
 
@@ -625,7 +682,7 @@ When modifying fields in scenarios, you must set flags to indicate scenario-spec
 
 **What FAILS:**
 ```ruby
-# ❌ Modified field but no flag
+# Modified field but no flag
 sub.area_absolute_1 = new_value
 sub.write  # Change not marked as scenario-specific
 ```
@@ -639,7 +696,7 @@ sub.write  # Change not marked as scenario-specific
 ### Code Pattern
 
 ```ruby
-# ✅ Scenario-specific field modification
+# Scenario-specific field modification
 # Create/switch to scenario first
 timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
 net.add_scenario(timestamp, nil, timestamp)
@@ -657,7 +714,7 @@ net.transaction_commit
 
 ---
 
-## ⚠️ Performance: Pre-build Hash Maps
+## Performance: Pre-build Hash Maps
 
 ### The Problem
 
@@ -665,7 +722,7 @@ Looking up relationships repeatedly in loops is inefficient. Build hash maps fir
 
 **What FAILS:**
 ```ruby
-# ❌ Slow - looks up subcatchments repeatedly
+# Slow - looks up subcatchments repeatedly
 nodes.each do |node|
   node.navigate('subcatchments').each do |sub|  # Expensive!
     # Process subcatchment
@@ -682,7 +739,7 @@ end
 ### Code Pattern
 
 ```ruby
-# ✅ Fast - pre-build node→subcatchments map
+# Fast - pre-build node→subcatchments map
 node_sub_map = Hash.new { |h, k| h[k] = [] }
 
 # Initialize with all nodes
@@ -707,15 +764,15 @@ end
 
 ---
 
-## ⚠️ User Experience Patterns
+## User Experience Patterns
 
 ### Selection State Requires Write
 
 ```ruby
-# ❌ Selection not saved
+# Selection not saved
 obj.selected = true  # Not persisted
 
-# ✅ Correct
+# Correct
 obj.selected = true
 obj.write  # Required to persist selection
 ```
@@ -723,7 +780,7 @@ obj.write  # Required to persist selection
 ### Confirmation for Destructive Operations
 
 ```ruby
-# ✅ Always confirm deletions
+# Always confirm deletions
 choice = WSApplication.message_box(
   "Delete #{items.length} items?",
   "YesNo",
@@ -747,7 +804,7 @@ WSApplication.message_box(
 ### Progress Feedback for Bulk Operations
 
 ```ruby
-# ✅ Timing and feedback
+# Timing and feedback
 start_time = Time.now
 
 count = 0
@@ -764,9 +821,9 @@ puts "Processed #{count} items in #{duration.round(2)} seconds"
 
 ---
 
-## 🔄 Update Log
+## Update Log
 
-## 💡 Key Insight for LLMs
+## Key Insight for LLMs
 
 **InfoWorks Ruby is NOT standard Ruby**
 

@@ -2,7 +2,7 @@
 
 **Source:** Exchange.pdf Version 2024.2 | **Last Updated:** December 2, 2025
 
-**Load Priority:** 🟡 CORE - Load after Lessons_Learned.md for code generation  
+**Load Priority:** CORE - Load after Lessons_Learned.md for code generation  
 **Load Condition:** ALWAYS for Exchange scripts, CONDITIONAL for UI scripts
 
 ## Purpose
@@ -17,7 +17,7 @@ This guide provides **API method reference** for InfoWorks ICM Ruby scripting.
 **Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
-- `InfoWorks_ICM_Ruby_Lessons_Learned.md` - 🔴 Read FIRST - Critical gotchas and anti-patterns
+- `InfoWorks_ICM_Ruby_Lessons_Learned.md` - Read FIRST - Critical gotchas and anti-patterns
 - `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Working code templates for each method
 - `InfoWorks_ICM_Ruby_Database_Reference.md` - Table names for row_objects() calls
 - `InfoWorks_ICM_Ruby_Tutorial_Context.md` - Complete workflow examples

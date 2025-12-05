@@ -2,62 +2,62 @@
 
 **Last Updated:** December 2, 2025
 
-## 🎯 Quick Start for LLMs
+## Quick Start for LLMs
 
 **CRITICAL:** Always load `Lessons_Learned.md` FIRST before generating ANY InfoWorks ICM Ruby code.
 
 ### File Loading Priority
 
-🔴 **CRITICAL (Always Load First)**
-1. **Lessons_Learned.md** (~730 lines) - Anti-patterns, gotchas, critical warnings
+**CRITICAL (Always Load First)**
+1. **Lessons_Learned.md** (~837 lines) - Anti-patterns, gotchas, critical warnings
 
-🟡 **CORE (Load for Most Code Generation)**
-2. **API_Reference.md** (~1,050 lines) - Method signatures, parameters, return types
-3. **Pattern_Reference.md** (~1,120 lines) - 56 code templates (PAT_XXX_NNN)
+**CORE (Load for Most Code Generation)**
+2. **API_Reference.md** (~1,115 lines) - Method signatures, parameters, return types
+3. **Pattern_Reference.md** (~1,276 lines) - 58 code templates (PAT_XXX_NNN)
 
-🟢 **LOOKUP/CONDITIONAL (Load As Needed)**
-4. **Database_Reference.md** (~390 lines) - Table names, Model Object Types
-5. **Tutorial_Context.md** (~1,070 lines) - Complete examples, workflows
-6. **Error_Reference.md** (~490 lines) - Error diagnosis and solutions
-7. **Glossary.md** (~380 lines) - Terminology definitions
+**LOOKUP/CONDITIONAL (Load As Needed)**
+4. **Database_Reference.md** (~406 lines) - Table names, Model Object Types
+5. **Tutorial_Context.md** (~1,492 lines) - Complete examples, workflows, Ruby fundamentals
+6. **Error_Reference.md** (~504 lines) - Error diagnosis and solutions
+7. **Glossary.md** (~396 lines) - Terminology definitions
 
-⚠️ **Archive folder**: Human reference only - do NOT load for LLM queries
+**WARNING:** **Archive folder**: Human reference only - do NOT load for LLM queries
 
 ---
 
-## 📋 Loading Decision Tree
+## Loading Decision Tree
 
 ### Step 1: ALWAYS Load First
-- ✅ `Lessons_Learned.md` - Prevents 90% of errors
+- `Lessons_Learned.md` - Prevents 90% of errors
 
 ### Step 2: Choose Based on Query Type
 
 **Exchange Script (database/automation)**
-- ✅ `API_Reference.md` (method signatures)
-- ✅ `Pattern_Reference.md` (code templates)
-- ✅ `Database_Reference.md` (table names)
-- ⚠️ `Tutorial_Context.md` (if complex workflow)
+- `API_Reference.md` (method signatures)
+- `Pattern_Reference.md` (code templates)
+- `Database_Reference.md` (table names)
+- `Tutorial_Context.md` (if complex workflow)
 
 **UI Script (network editing)**
-- ✅ `Pattern_Reference.md` (code templates)
-- ✅ `Database_Reference.md` (table names)
-- ⚠️ `API_Reference.md` (if using model objects)
+- `Pattern_Reference.md` (code templates)
+- `Database_Reference.md` (table names)
+- `API_Reference.md` (if using model objects)
 
 **Debugging Existing Code**
-- ✅ `Error_Reference.md` (error diagnosis)
-- ✅ `API_Reference.md` (verify method usage)
-- ⚠️ `Pattern_Reference.md` (correct examples)
+- `Error_Reference.md` (error diagnosis)
+- `API_Reference.md` (verify method usage)
+- `Pattern_Reference.md` (correct examples)
 
 **Learning/Complex Tasks**
-- ✅ All files (comprehensive context)
+- All files (comprehensive context)
 
 **Terminology Questions**
-- ✅ `Glossary.md` (definitions)
-- ⚠️ `Tutorial_Context.md` (concepts in context)
+- `Glossary.md` (definitions)
+- `Tutorial_Context.md` (concepts in context)
 
 ---
 
-## 🔗 How Files Interlink
+## How Files Interlink
 
 ### Cross-Reference Flow
 
@@ -104,7 +104,7 @@ Lessons_Learned.md (ALWAYS FIRST)
 
 ---
 
-## 🎓 LLM Instructions: How to Use These Files
+## LLM Instructions: How to Use These Files
 
 ### When User Asks to Generate Code:
 
@@ -164,76 +164,76 @@ Lessons_Learned.md (ALWAYS FIRST)
 
 ---
 
-## 📊 Performance & Token Budget
+## Performance & Token Budget
 
 ### File Sizes (Approximate)
-- `Lessons_Learned.md`: ~730 lines (18-20k tokens)
-- `API_Reference.md`: ~1,050 lines (26-28k tokens)  
-- `Pattern_Reference.md`: ~1,120 lines (28-30k tokens)
-- `Database_Reference.md`: ~390 lines (10-12k tokens)
-- `Tutorial_Context.md`: ~1,070 lines (27-29k tokens)
-- `Error_Reference.md`: ~490 lines (12-14k tokens)
-- `Glossary.md`: ~380 lines (9-11k tokens)
+- `Lessons_Learned.md`: ~633 lines (16-18k tokens)
+- `API_Reference.md`: ~762 lines (19-21k tokens)  
+- `Pattern_Reference.md`: ~1,057 lines (26-28k tokens)
+- `Database_Reference.md`: ~333 lines (8-10k tokens)
+- `Tutorial_Context.md`: ~1,240 lines (31-33k tokens)
+- `Error_Reference.md`: ~375 lines (9-11k tokens)
+- `Glossary.md`: ~262 lines (6-8k tokens)
 
-**Total if all loaded:** ~5,230 lines (~130-144k tokens)
+**Total if all loaded:** ~4,662 lines (~116-129k tokens)
 
 ### Recommended Loading Strategies
 
-**Minimal (Quick queries):** 50-60k tokens
+**Minimal (Quick queries):** 44-47k tokens
 - Lessons_Learned + API + Pattern
 
-**Standard (Most code generation):** 70-80k tokens  
+**Standard (Most code generation):** 53-57k tokens  
 - Lessons_Learned + API + Pattern + Database
 
-**Extended (Complex workflows):** 110-120k tokens
+**Extended (Complex workflows):** 90-98k tokens
 - Lessons_Learned + API + Pattern + Database + Tutorial
 
-**Full (Learning/debugging):** 130-144k tokens
+**Full (Learning/debugging):** 116-128k tokens
 - All 7 files
 
-**⚠️ Archive folder alone:** ~6,000 lines (150-200k tokens) - Do NOT load with RAG files
+**Archive folder alone:** ~6,000 lines (150-200k tokens) - Do NOT load with RAG files
 
 ---
 
-## 📚 File Summaries
+## File Summaries
 
-### 🔴 Lessons_Learned.md (CRITICAL - Always First)
+### Lessons_Learned.md (CRITICAL - Always First)
 **Purpose:** Prevent common mistakes by documenting anti-patterns  
 **Content:** Collection iteration gotchas (.each vs .find), DateTime unavailability, _seen flag pattern, blob structures, transaction patterns, simulation launching, scenario field flags  
 **When to Load:** ALWAYS before generating any code  
 **Key Value:** Consolidates scattered warnings into single high-priority document
 
-### 🟡 API_Reference.md (CORE - Method Lookup)
+### API_Reference.md (CORE - Method Lookup)
 **Purpose:** Quick reference for method signatures and parameters  
 **Content:** WSApplication (9 methods), WSDatabase (6 methods), WSModelObject (14 methods), WSNumbatNetworkObject (6 methods), WSOpenNetwork (14 methods), WSSimObject (3 methods), WSRowObject/WSNode/WSLink (13 methods), plus supporting classes  
 **When to Load:** Always for Exchange scripts, conditionally for UI scripts  
 **Key Value:** Authoritative method signatures with Exchange vs UI availability
 
-### 🟡 Pattern_Reference.md (CORE - Code Templates)
+### Pattern_Reference.md (CORE - Code Templates)
 **Purpose:** Reusable code patterns organized by task  
-**Content:** 56 patterns across 11 categories (Initialization, Data Access, Selection, Modification, Tracing, Results, Simulation, Import/Export, Spatial, Utilities, Exchange)  
+**Content:** 58 patterns across 11 categories (Initialization, Data Access, Selection, Modification, Tracing, Results, Simulation, Import/Export, Spatial, Utilities, Exchange)  
 **When to Load:** Always when implementing specific functionality  
 **Key Value:** Working code templates with intent, context, and related patterns
 
-### 🟢 Database_Reference.md (LOOKUP - Table Names)
+### Database_Reference.md (LOOKUP - Table Names)
 **Purpose:** Database table and object type reference  
 **Content:** 90+ Model Object Types with ShortCodes, InfoWorks (hw_*) and SWMM (sw_*) network table names, usage examples, field naming conventions  
 **When to Load:** When script calls row_objects() or model_object_from_type_and_id()  
 **Key Value:** Correct spelling and case-sensitivity for table/type names
 
-### 🟢 Tutorial_Context.md (LEARNING - Complete Examples)
+### Tutorial_Context.md (LEARNING - Complete Examples)
 **Purpose:** Complete workflow examples from start to finish  
 **Content:** Network access, iteration, transactions, tracing, results, version control, Exchange workflows (database operations, InfoWorks/SWMM run setup, simulation launch, ODIC/ODEC)  
 **When to Load:** When user asks "how to" or requests complete script  
 **Key Value:** Shows how multiple patterns combine to solve real problems
 
-### 🟢 Error_Reference.md (DEBUGGING - Error Solutions)
+### Error_Reference.md (DEBUGGING - Error Solutions)
 **Purpose:** Quick error diagnosis and solutions  
 **Content:** Common error messages mapped to causes and solutions, organized by category with pattern references  
 **When to Load:** When debugging errors or user reports problems  
 **Key Value:** Fast symptom→solution mapping with pattern IDs
 
-### 🟢 Glossary.md (REFERENCE - Terminology)
+### Glossary.md (REFERENCE - Terminology)
 **Purpose:** Define InfoWorks-specific terminology  
 **Content:** General terms (ICMExchange, Agent, Workgroup), API classes (WSApplication, WSOpenNetwork), object types (Model Object, Row Object), technical jargon  
 **When to Load:** When unfamiliar terms appear or user asks definitions  
@@ -241,25 +241,48 @@ Lessons_Learned.md (ALWAYS FIRST)
 
 ---
 
-## ✅ File Validation Checklist
+## File Validation Checklist
 
 All files now include:
-- ✅ Load priority indicator (🔴 CRITICAL, 🟡 CORE, 🟢 CONDITIONAL)
-- ✅ "For LLMs: Use this file to..." section
-- ✅ "Prerequisite: Read Lessons_Learned.md FIRST" reminder
-- ✅ "Related Files:" cross-reference section
-- ✅ Last Updated date (December 2, 2025)
-- ✅ Consistent formatting and structure
+- Load priority indicator (**CRITICAL**, **CORE**, **CONDITIONAL**)
+- "For LLMs: Use this file to..." section
+- "Prerequisite: Read Lessons_Learned.md FIRST" reminder
+- "Related Files:" cross-reference section
+- Last Updated date (December 2, 2025)
+- Consistent formatting and structure
 
 Cross-reference integrity:
-- ✅ Lessons_Learned → API, Pattern, Error references
-- ✅ API → Pattern references (PAT_XXX_NNN)
-- ✅ Pattern → Database, Tutorial references
-- ✅ Database → Pattern, Tutorial references  
-- ✅ Tutorial → All other files
-- ✅ Error → Pattern, Lessons_Learned references
-- ✅ Glossary → API, Database, Tutorial references
+- Lessons_Learned → API, Pattern, Error references
+- API → Pattern references (PAT_XXX_NNN)
+- Pattern → Database, Tutorial references
+- Database → Pattern, Tutorial references  
+- Tutorial → All other files
+- Error → Pattern, Lessons_Learned references
+- Glossary → API, Database, Tutorial references
 
 ---
 
-*For human developers: See individual files for detailed content. For LLMs: Follow the loading decision tree above.*
+<!-- LLM_STOP_PARSING -->
+
+## Content Below This Line: Human Developers Only
+
+**Note for AI/LLM Systems:** All actionable technical content is above this delimiter. The section below contains guidance for human developers and is not relevant for code generation.
+
+---
+
+## For Human Developers
+
+This directory contains LLM-optimized context files for InfoWorks ICM Ruby scripting. The files are designed for Retrieval-Augmented Generation (RAG) systems and AI code assistants.
+
+**File Organization:**
+- See individual files for detailed technical content
+- Follow the loading decision tree above for optimal context window usage
+- All files include "For LLMs:" sections explaining their purpose
+- Pattern IDs (PAT_XXX_NNN) enable cross-file navigation
+
+**Contributing:**
+- Maintain consistent metadata headers (Load Priority, Keywords, etc.)
+- Preserve "For LLMs:" sections at file tops
+- Update line counts in this README when editing files
+- Avoid decorative formatting (emojis, excessive bold/italic)
+- Keep code examples concise with clear CORRECT/WRONG labels

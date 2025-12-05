@@ -2,7 +2,7 @@
 
 **Purpose:** Define all project-specific terms, acronyms, class names, and technical jargon used in InfoWorks ICM Ruby scripting to enable accurate LLM code generation and prevent terminology confusion.
 
-**Load Priority:** 🟢 REFERENCE - Load for terminology clarification  
+**Load Priority:** REFERENCE - Load for terminology clarification  
 **Load Condition:** CONDITIONAL - When user asks "what is" or unfamiliar terms appear  
 **Keywords:** definition, terminology, meaning, what is, explain
 
