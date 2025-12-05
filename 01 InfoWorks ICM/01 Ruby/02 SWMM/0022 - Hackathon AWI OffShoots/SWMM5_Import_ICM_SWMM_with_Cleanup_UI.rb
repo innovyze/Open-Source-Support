@@ -556,7 +556,7 @@ end
 # ----------------------------------------------------------------------------
 # STEP 9: Launch Exchange script
 # ----------------------------------------------------------------------------
-exchange_script = File.join(script_dir, 'SWMM5_Import_with_Cleanup_Exchange.rb')
+exchange_script = File.join(script_dir, 'SWMM5_Import_ICM_SWMM_with_Cleanup_Exchange.rb')
 
 unless File.exist?(exchange_script)
   WSApplication.message_box(

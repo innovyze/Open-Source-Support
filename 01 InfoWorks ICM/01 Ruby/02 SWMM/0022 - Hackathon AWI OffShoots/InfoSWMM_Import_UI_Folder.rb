@@ -85,8 +85,8 @@ WSApplication.message_box(
 begin
   file_path = WSApplication.file_dialog(
     true,                          # open (not save)
-    'mxd',                         # extension
-    'InfoSWMM Model File',         # description
+    'mxd;hsm',                     # extension (InfoSWMM .mxd or H2OMapSWMM .hsm)
+    'InfoSWMM/H2OMapSWMM Model File', # description
     '',                            # default filename
     false,                         # single file (not multiple)
     nil                            # don't exit on cancel
@@ -122,14 +122,25 @@ puts "Model: #{File.basename(file_path, '.*')}"
 # STEP 2: Read actual scenario names from SCENARIO.DBF
 # ----------------------------------------------------------------------------
 mxd_dir = File.dirname(file_path)
-mxd_basename = File.basename(file_path, '.mxd')
+ext = File.extname(file_path).downcase
+if ['.mxd', '.hsm'].include?(ext)
+  mxd_basename = File.basename(file_path, ext)
+else
+  raise "Unsupported file type: #{ext}. Expected .mxd or .hsm"
+end
 
-# Try different possible ISDB folder names
+# Try different possible ISDB/HSDB folder names
 possible_isdb_folders = [
+  # InfoSWMM ISDB folders
   File.join(mxd_dir, "#{mxd_basename}.ISDB"),
   File.join(mxd_dir, "ISDB"),
   File.join(mxd_dir, "#{mxd_basename}.isdb"),
-  File.join(mxd_dir, "isdb")
+  File.join(mxd_dir, "isdb"),
+  # InfoSewer HSDB folders
+  File.join(mxd_dir, "#{mxd_basename}.HSDB"),
+  File.join(mxd_dir, "HSDB"),
+  File.join(mxd_dir, "#{mxd_basename}.hsdb"),
+  File.join(mxd_dir, "hsdb")
 ]
 
 scenario_names = []
@@ -139,7 +150,7 @@ isdb_folder = nil
 possible_isdb_folders.each do |folder|
   if Dir.exist?(folder)
     isdb_folder = folder
-    puts "Found ISDB folder: #{isdb_folder}"
+    puts "Found database folder: #{isdb_folder}"
     break
   end
 end
@@ -309,7 +320,7 @@ if scenario_names.any?
   
   # Check if any additional scenarios were selected (BASE is already included)
   if selected_scenarios.length == 1 && selected_scenarios.first&.upcase == 'BASE'
-    WSApplication.message_box(
+     result = WSApplication.message_box(
       "Only BASE Scenario Selected\n\n" +
       "You haven't selected any additional scenarios.\n\n" +
       "This script is designed to merge multiple scenarios.\n" +
@@ -320,7 +331,7 @@ if scenario_names.any?
       false
     )
     # User chose No
-    if WSApplication.message_box_return_value == "No"
+    if result == "No"
       return
     end
   end
@@ -422,7 +433,7 @@ File.open(config_file, 'w') { |f| f.write(config.to_yaml) }
 # ----------------------------------------------------------------------------
 # STEP 7: Launch Exchange script
 # ----------------------------------------------------------------------------
-exchange_script = File.join(script_dir, 'InfoSWMM_Import_Exchange.rb')
+exchange_script = File.join(script_dir, 'InfoSWMM_Import_Exchange_Folder.rb')
 
 # Pass config file location to Exchange script via environment variable
 ENV['ICM_IMPORT_CONFIG'] = config_file
