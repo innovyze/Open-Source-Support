@@ -2,65 +2,49 @@
 # InfoSWMM Multi-Scenario Import - UI SCRIPT
 # ============================================================================
 # 
-# PURPOSE:
-#   User-facing script that collects user input and launches the Exchange script
+# DESCRIPTION:
+#   User interface script for importing multiple InfoSWMM scenarios into ICM.
+#   Collects user input and launches the Exchange script for processing.
 #
-# WHAT THIS SCRIPT DOES:
-#   Phase 1:   Import each scenario to separate model groups
-#              + Clean up empty label lists after each import
-#
-#   Phase 1.5: Analyze and deduplicate Rainfall Events & Inflows across all scenarios
-#              (Note: Time Patterns and Climatology don't support deduplication)
-#
-#   Phase 2:   Create merged network with all scenarios combined
-#              + Copy only unique objects (deduplicated)
-#              + Add all scenarios to merged network
-#              + Delete inactive elements from each scenario
-#
-#   Phase 2.5: Set up SWMM runs for each scenario in the merged network
-#              + Create runs with essential configuration (network, scenario, rainfall)
-#              + Link to deduplicated rainfall/inflow events in merged group
-#              [!] Manual setup required: timesteps, climatology, time patterns, inflows
-#
-# HOW TO USE:
-#   1. Open your ICM database
-#   2. Go to: Network menu -> Run Ruby Script
-#   3. Select this file: InfoSWMM_Import_UI.rb
-#   4. Follow the dialogs
-#   5. Wait for import, cleanup, deduplication, merge, and run setup to complete
-#   6. Manually configure timesteps, climatology, time patterns, and inflows in each run
-#
-# KEY FEATURES:
+# FEATURES:
+#   - Import multiple scenarios simultaneously
+#   - Content-based deduplication of Rainfall & Inflow Events
+#   - Automatic label list cleanup
+#   - Creates merged network with all scenarios
+#   - Sets up SWMM runs (partial - timesteps/climatology require manual config)
 #   - Sequential naming: "Rainfall Event 01", "Inflow 01", etc.
-#   - Scenario names stored in Description field (line-break separated)
-#   - Content-based deduplication (compares actual data, not names)
-#   - SWMM runs with essential configuration
-#   - Comprehensive cleanup and logging
+#   - Tracks scenario usage in object Description fields
+#
+# USAGE:
+#   1. Close InfoSWMM (if model is open)
+#   2. Open ICM database
+#   3. Network → Run Ruby Script → Select this file
+#   4. Follow prompts to select .mxd file and scenarios
+#   5. Wait for completion
+#   6. Manually configure timesteps, climatology, time patterns in runs
 #
 # OUTPUT:
-#   - Individual model groups (one per scenario, cleaned up)
-#     * Use these for climatology/time pattern references
-#   - One merged model group with:
-#     * All scenarios combined
-#     * Deduplicated Rainfall Events & Inflows (numbered, scenarios in Description)
-#     * Inactive elements removed from each scenario
-#     * SWMM runs (partially configured - need manual setup)
-#   - Detailed log files in [YourModel]/ICM Import Log Files/
+#   - Individual model groups (one per scenario) - keep for reference
+#   - Merged model group with deduplicated objects and partial runs
+#   - Log files in [YourModel]/ICM Import Log Files/
 #
 # REQUIREMENTS:
-#   - InfoWorks ICM (tested with 2026.2)
-#   - InfoSWMM model file (.mxd) with matching .ISDB folder
-#   - Open ICM database
-#   - BASE scenario recommended (auto-included as master)
+#   - InfoWorks ICM 2023.2+ (tested with 2026.2)
+#   - InfoSWMM .mxd file with .ISDB folder
+#   - BASE scenario recommended
 #
 # ============================================================================
 
 require 'yaml'
 
-# Wrap main logic in a method to allow clean exits with 'return' instead of 'exit'
-def run_import_ui
-  # Get the script directory
-  script_dir = File.dirname(WSApplication.script_file)
+# Get the script directory
+script_dir = File.dirname(WSApplication.script_file)
+
+# ============================================================================
+# Main execution with error handling
+# ============================================================================
+catch :cancel_import do
+begin
 
 # ----------------------------------------------------------------------------
 # STEP 1: Get InfoSWMM model file using file dialog
@@ -81,36 +65,91 @@ WSApplication.message_box(
   false
 )
 
-# Wrap file dialog in exception handler for graceful cancellation
-begin
-  file_path = WSApplication.file_dialog(
-    true,                          # open (not save)
-    'mxd',                         # extension
-    'InfoSWMM Model File',         # description
-    '',                            # default filename
-    false,                         # single file (not multiple)
-    nil                            # don't exit on cancel
-  )
-rescue Interrupt
-  # User clicked Cancel button
-  WSApplication.message_box(
-    "Import cancelled - no file selected.",
-    "OK",
-    "Information",
-    false
-  )
-  return
-end
+file_path = WSApplication.file_dialog(
+  true,                          # open (not save)
+  'mxd',                         # extension
+  'InfoSWMM Model File',         # description
+  '',                            # default filename
+  false,                         # single file (not multiple)
+  nil                            # don't exit on cancel
+)
 
-# Check if user cancelled (alternate path)
+# Check if user cancelled
 if file_path.nil?
   WSApplication.message_box(
     "Import cancelled - no file selected.",
     "OK",
-    "Information",
+    "!",
     false
   )
-  return
+  throw :cancel_import
+end
+
+# ----------------------------------------------------------------------------
+# Check for InfoSWMM lock files
+# ----------------------------------------------------------------------------
+mxd_dir = File.dirname(file_path)
+mxd_basename = File.basename(file_path, '.mxd')
+lock_files = []
+
+begin
+  if Dir.exist?(mxd_dir)
+    # Get all entries in the directory
+    entries = Dir.entries(mxd_dir)
+    
+    # Filter for lock files (start with ~)
+    lock_entries = entries.select { |entry| entry.start_with?('~') && entry != '~' }
+    
+    if lock_entries.any?
+      # Build full paths
+      lock_files = lock_entries.map { |entry| File.join(mxd_dir, entry) }
+      
+      # Verify they exist (not just directory artifacts)
+      lock_files = lock_files.select { |f| File.exist?(f) }
+    end
+  end
+rescue => e
+  # Silent error handling
+end
+
+# Check ISDB folder for lock files
+possible_isdb_folders = [
+  File.join(mxd_dir, "#{mxd_basename}.ISDB"),
+  File.join(mxd_dir, "ISDB"),
+  File.join(mxd_dir, "#{mxd_basename}.isdb"),
+  File.join(mxd_dir, "isdb")
+]
+
+possible_isdb_folders.each do |isdb_path|
+  next unless Dir.exist?(isdb_path)
+  
+  begin
+    entries = Dir.entries(isdb_path)
+    lock_entries = entries.select { |entry| entry.start_with?('~') && entry != '~' }
+    
+    if lock_entries.any?
+      isdb_locks = lock_entries.map { |entry| File.join(isdb_path, entry) }
+      isdb_locks = isdb_locks.select { |f| File.exist?(f) }
+      lock_files.concat(isdb_locks)
+    end
+  rescue => e
+    # Silent error handling
+  end
+end
+
+if lock_files.any?
+  lock_file_paths = lock_files.join("\n")
+  
+  WSApplication.message_box(
+    "InfoSWMM is open or has a residual lock file.\n\n" +
+    "Lock file(s):\n" +
+    "#{lock_file_paths}\n\n" +
+    "Close InfoSWMM or delete the lock file, then run this script again.",
+    "OK",
+    "!",
+    false
+  )
+  throw :cancel_import
 end
 
 puts "\n" + "="*70
@@ -121,8 +160,6 @@ puts "Model: #{File.basename(file_path, '.*')}"
 # ----------------------------------------------------------------------------
 # STEP 2: Read actual scenario names from SCENARIO.DBF
 # ----------------------------------------------------------------------------
-mxd_dir = File.dirname(file_path)
-mxd_basename = File.basename(file_path, '.mxd')
 
 # Try different possible ISDB folder names
 possible_isdb_folders = [
@@ -137,6 +174,9 @@ isdb_folder = nil
 
 # Find the ISDB folder
 possible_isdb_folders.each do |folder|
+  folder_name = File.basename(folder)
+  next if folder_name.start_with?('~')  # Skip lock files
+  
   if Dir.exist?(folder)
     isdb_folder = folder
     puts "Found ISDB folder: #{isdb_folder}"
@@ -279,10 +319,10 @@ if scenario_names.any?
     WSApplication.message_box(
       "Import cancelled - no scenarios selected.",
       "OK",
-      "Information",
+      "!",
       false
     )
-    return
+    throw :cancel_import
   end
   
   # Check if "Select All" is checked
@@ -309,6 +349,7 @@ if scenario_names.any?
   
   # Check if any additional scenarios were selected (BASE is already included)
   if selected_scenarios.length == 1 && selected_scenarios.first&.upcase == 'BASE'
+    puts "Only BASE scenario selected"
     WSApplication.message_box(
       "Only BASE Scenario Selected\n\n" +
       "You haven't selected any additional scenarios.\n\n" +
@@ -321,7 +362,7 @@ if scenario_names.any?
     )
     # User chose No
     if WSApplication.message_box_return_value == "No"
-      return
+      throw :cancel_import
     end
   end
   
@@ -346,22 +387,23 @@ else
     WSApplication.message_box(
       "Import cancelled - no scenarios entered.",
       "OK",
-      "Information",
+      "!",
       false
     )
-    return
+    throw :cancel_import
   end
   
   scenario_input = result[1].strip
   
   if scenario_input.empty?
+    puts "No scenarios entered"
     WSApplication.message_box(
       "No scenarios entered. Import cancelled.",
       "OK",
-      "Information",
+      "!",
       false
     )
-    return
+    throw :cancel_import
   end
   
   scenario_count = scenario_input.split(',').length
@@ -388,7 +430,8 @@ unless scenarios_list.any? { |s| s.upcase == 'BASE' }
   )
   
   if result == "No"
-    return
+    puts "\nImport cancelled - BASE scenario required for merging"
+    throw :cancel_import
   end
 end
 
@@ -399,9 +442,8 @@ db = WSApplication.current_database
 db_guid = db.guid
 
 # ----------------------------------------------------------------------------
-# STEP 6: Save configuration to YAML file (in model folder)
+# Save configuration for Exchange script
 # ----------------------------------------------------------------------------
-# Save config next to model file so it's with other import files
 model_dir = File.dirname(file_path)
 config_folder = File.join(model_dir, "ICM Import Log Files")
 Dir.mkdir(config_folder) unless Dir.exist?(config_folder)
@@ -411,9 +453,9 @@ config = {
   'scenarios' => scenario_input,
   'database_guid' => db_guid,
   'timestamp' => Time.now.to_s,
-  'merge_scenarios' => true,  # Flag to enable merging
-  'cleanup_empty_label_lists' => true,  # Flag to enable cleanup
-  'copy_swmm_runs' => true  # NEW: Flag to enable SWMM run copying
+  'merge_scenarios' => true,
+  'cleanup_empty_label_lists' => true,
+  'copy_swmm_runs' => true
 }
 
 config_file = File.join(config_folder, 'import_config.yaml')
@@ -457,7 +499,7 @@ if icm_exchange.nil?
     "!",
     false
   )
-  return
+  throw :cancel_import
 end
 
 # Launch Exchange script (capture output for summary)
@@ -577,7 +619,28 @@ else
   )
 end
 
-end  # End of run_import_ui method
+rescue SystemExit, Interrupt
+  # Allow intentional exits and interrupts to pass through silently
+  raise
+rescue => e
+  # Handle any unexpected errors
+  puts "\n" + "="*70
+  puts "FATAL ERROR"
+  puts "="*70
+  puts "Error: #{e.class} - #{e.message}"
+  puts "\nStack trace:"
+  puts e.backtrace.first(10).join("\n")
+  puts "="*70
+  
+  WSApplication.message_box(
+    "An unexpected error occurred:\n\n" +
+    "#{e.message}\n\n" +
+    "Check the Ruby output window for details.",
+    "OK",
+    "!",
+    false
+  )
+end
+end  # catch :cancel_import
 
-# Run the import UI
-run_import_ui
+

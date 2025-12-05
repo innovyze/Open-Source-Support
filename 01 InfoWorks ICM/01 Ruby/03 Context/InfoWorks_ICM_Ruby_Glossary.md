@@ -2,7 +2,24 @@
 
 **Purpose:** Define all project-specific terms, acronyms, class names, and technical jargon used in InfoWorks ICM Ruby scripting to enable accurate LLM code generation and prevent terminology confusion.
 
-**Last Updated:** October 21, 2025
+**Load Priority:** REFERENCE - Load for terminology clarification  
+**Load Condition:** CONDITIONAL - When user asks "what is" or unfamiliar terms appear  
+**Keywords:** definition, terminology, meaning, what is, explain
+
+**Last Updated:** December 2, 2025
+
+## How to Use This File
+
+**For LLMs:** Use this file to:
+- Clarify InfoWorks-specific terminology (Agent, Workgroup, Transportable, etc.)
+- Understand class name meanings (WSApplication, WSOpenNetwork, etc.)
+- Distinguish between similar concepts (Model Object vs Row Object)
+- Verify correct terminology when generating code
+
+**Related Files:**
+- `InfoWorks_ICM_Ruby_API_Reference.md` - Class method documentation
+- `InfoWorks_ICM_Ruby_Database_Reference.md` - Model Object Type definitions
+- `InfoWorks_ICM_Ruby_Tutorial_Context.md` - Terms used in context
 
 ---
 
@@ -81,6 +98,9 @@ Represents network validation results.
 
 ### WSBaseline
 Represents a baseline (snapshot) of network data.
+
+### WSStructureRow
+Individual row within a WSStructure object, accessed by index.
 
 ## Network Concepts
 
@@ -207,6 +227,9 @@ Individual simulation instance within a run representing specific conditions or 
 ### Results
 Output data from completed simulations stored in binary format.
 
+### Results Field Code
+Specific string identifier for accessing result data (e.g., 'depnod' for node depth, 'qlink' for link flow).
+
 ### Timestep
 Interval of time in simulation calculations.
 
@@ -270,57 +293,27 @@ Lowercase words separated by underscores (e.g., `current_network`, `row_objects`
 ### SCREAMING_SNAKE_CASE
 Uppercase words separated by underscores (e.g., `MAX_DIAMETER`, `DEBUG_MODE`). Used for constants.
 
-## Common Abbreviations
+## InfoWorks-Specific Abbreviations
 
-### API
-Application Programming Interface - methods and classes for programmatic access.
+### ODIC
+Open Data Import Centre - framework for importing data from external formats.
 
-### CSV
-Comma-Separated Values file format.
-
-### DLL
-Dynamic Link Library - Windows binary library file.
-
-### DSN
-Data Source Name - connection string for databases.
-
-### GIS
-Geographic Information System.
-
-### GUID
-Globally Unique Identifier.
-
-### ID
-Identifier - unique reference for an object.
-
-### JSON
-JavaScript Object Notation data format.
-
-### MIF
-MapInfo Interchange Format for GIS data.
-
-### ODBC
-Open Database Connectivity standard.
+### ODEC
+Open Data Export Centre - framework for exporting data to external formats.
 
 ### RTC
 Real-Time Control logic system.
 
-### SQL
-Structured Query Language for database queries.
-
 ### SWMM
 Storm Water Management Model (EPA model engine).
 
-### UI
-User Interface.
+### MIF
+MapInfo Interchange Format for GIS data.
 
-### UUID
-Universally Unique Identifier (synonym for GUID).
+### IWR File
+InfoWorks Results file format containing simulation output data.
 
-### XML
-eXtensible Markup Language data format.
-
-## Method Return Type Notation
+## Scripting Concepts
 
 ### void
 Method returns no value.
@@ -348,29 +341,6 @@ Key-value dictionary.
 
 ### Any
 Can return various types depending on context.
-
-## Special Syntax
-
-### ⇒
-Arrow indicating return type in method documentation (e.g., `#current_network ⇒ WSOpenNetwork`).
-
-### #method_name
-Documentation convention for instance methods.
-
-### .method_name
-Documentation convention for class methods (static methods).
-
-### ||
-Ruby syntax for block parameters (e.g., `each do |item|`).
-
-### =>
-Ruby hash syntax for key-value pairs (e.g., `{key => value}`).
-
-### @variable
-Ruby instance variable (not commonly used in InfoWorks scripts).
-
-### $variable
-Ruby global variable (rarely used, may appear in examples).
 
 ## Version Control Terms
 
@@ -400,16 +370,16 @@ Ruby keyword for throwing exceptions.
 ### ensure
 Ruby keyword for code that runs regardless of success or failure.
 
-## Performance Terms
+## Agent Terminology
 
-### Batch Operation
-Processing multiple items together for efficiency.
+### Agent
+Background service that manages and executes simulation runs, typically running on local or remote compute resources.
 
-### Lazy Evaluation
-Computing values only when needed.
+### Job ID
+Unique identifier returned when launching a simulation, used to track and wait for completion.
 
-### Memoization
-Caching computed values to avoid recalculation.
+### Working Directory
+Directory path where simulation results and temporary files are stored during execution.
 
 ---
 

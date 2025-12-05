@@ -2,82 +2,59 @@
 # InfoSWMM Multi-Scenario Import - EXCHANGE SCRIPT
 # ============================================================================
 # 
-# EXECUTION:
-#   This script is launched automatically by the UI script (InfoSWMM_Import_UI.rb)
-#   Do not run this directly - use the UI script instead
+# DESCRIPTION:
+#   Core processing script - launched automatically by UI script.
+#   Do not run directly - use InfoSWMM_Import_UI.rb instead.
 #
-# WHAT THIS SCRIPT DOES:
-#   Phase 1:   Import each scenario to separate model groups
-#              + Clean up empty label lists after each import
+# PROCESS:
+#   Phase 1:   Import scenarios to separate model groups, cleanup label lists
+#   Phase 1.5: Deduplicate Rainfall & Inflow Events by content (SHA-256 hash)
+#   Phase 2:   Create merged network with all scenarios, remove inactive elements
+#   Phase 2.5: Create SWMM runs with network/scenario/rainfall configured
 #
-#   Phase 1.5: Analyze and deduplicate Rainfall Events & Inflows by content
-#              (Note: Time Patterns and Climatology cannot be deduplicated - API limitation)
-#
-#   Phase 2:   Create merged network with all scenarios combined
-#              + Copy only unique objects (deduplicated)
-#              + Use sequential naming: "Rainfall Event 01", "Inflow 01", etc.
-#              + Store scenario names in Description field (line-break separated)
-#              + Add all scenarios to merged network
-#              + Delete inactive elements from each scenario
-#
-#   Phase 2.5: Set up SWMM runs for each scenario in merged network
-#              + Create runs with essential configuration (network, scenario, rainfall)
-#              + Link to deduplicated rainfall events in merged group
-#              [!] Manual setup required: timesteps, climatology, time patterns, inflows
-#
-# KEY FEATURES:
-#   - Content-based deduplication (compares actual data, not just names)
-#   - Sequential object naming for clean output
-#   - Scenario tracking via Description field
+# FEATURES:
+#   - Content-based deduplication (not name-based)
+#   - Sequential naming: "Rainfall Event 01", "Inflow 01", etc.
+#   - Scenario tracking in Description fields
 #   - Comprehensive error handling and logging
 #
 # API LIMITATIONS (require manual post-import setup):
-#   - Timestep controls cannot be reliably copied
-#   - Climatology cannot be assigned programmatically
-#   - Time Patterns cannot be assigned programmatically
+#   - Timestep controls cannot be copied reliably
+#   - Climatology/Time Patterns cannot be assigned via API
 #   - Inflow Events cannot be linked to runs programmatically
-#   - See API_LIMITATIONS.md for details and feature requests
+#   - See API_LIMITATIONS.md for details
 #
 # ============================================================================
 
 require 'yaml'
 
 # ----------------------------------------------------------------------------
-# Helper method for logging
+# Helper Methods
 # ----------------------------------------------------------------------------
+
 def log(message, log_file = nil)
   puts message
   log_file.puts message if log_file
 end
 
-# ----------------------------------------------------------------------------
-# Helper method to check if a label list is empty
-# ----------------------------------------------------------------------------
-# NOTE: InfoSWMM imports always create empty label lists as artifacts
-#       This method checks the 'labels' field (blob) for content
-#       If it's nil or empty, the label list is considered empty
-# ----------------------------------------------------------------------------
+# Check if label list is empty (InfoSWMM imports create empty lists as artifacts)
 def is_label_list_empty?(label_list, log_file = nil)
   begin
-    # Check the 'Blob' field (blob data) - if empty, label list is empty
     blob = label_list['Blob']
     return blob.nil? || blob.empty?
   rescue => e
     log "  WARNING: Error checking label list: #{e.message}", log_file
-    # On error, assume it's NOT empty (safer to keep it)
-    false
+    false  # On error, assume not empty (safer to keep it)
   end
 end
 
 # ----------------------------------------------------------------------------
-# Read configuration
+# Read Configuration
 # ----------------------------------------------------------------------------
-# Config file is saved in the log folder next to the model file.
-# The UI script passes the location via environment variable.
 
 config_file = ENV['ICM_IMPORT_CONFIG']
 
-# Fallback: search for recent config files if not passed
+# Fallback: search for recent config files
 unless config_file && File.exist?(config_file)
   script_dir = File.dirname(__FILE__)
   parent_dir = File.dirname(script_dir)
@@ -97,11 +74,16 @@ end
 
 unless config_file && File.exist?(config_file)
   puts "ERROR: Configuration file not found"
-  puts "Please run InfoSWMM_Import_with_Cleanup_UI.rb first to generate the config file."
+  puts "Please run InfoSWMM_Import_UI.rb first to generate the config file."
   exit 1
 end
 
-config = YAML.load_file(config_file)
+begin
+  config = YAML.load_file(config_file)
+rescue => e
+  puts "ERROR: Could not read configuration file: #{e.message}"
+  exit 1
+end
 
 # Validate required configuration keys
 required_keys = ['file_path', 'scenarios', 'merge_scenarios', 'cleanup_empty_label_lists', 'copy_swmm_runs']
@@ -140,7 +122,7 @@ puts "Scenarios: #{scenario_input}"
 puts "\n" + "="*70
 
 # ----------------------------------------------------------------------------
-# Open database
+# Open Database
 # ----------------------------------------------------------------------------
 begin
   db = WSApplication.open
@@ -168,13 +150,50 @@ if scenarios.empty?
 end
 
 # ----------------------------------------------------------------------------
-# Setup logging
+# Setup Logging
 # ----------------------------------------------------------------------------
 log_dir = File.join(File.dirname(file_path), "ICM Import Log Files")
 Dir.mkdir(log_dir) unless Dir.exist?(log_dir)
 
 log_filename = File.join(log_dir, "Import_Runs_#{Time.now.strftime('%Y%m%d_%H%M%S')}.log")
 log_file = File.open(log_filename, 'w')
+
+# ============================================================================
+# Main execution with error handling
+# ============================================================================
+begin
+
+# ----------------------------------------------------------------------------
+# Safety Check: Verify InfoSWMM is not open
+# ----------------------------------------------------------------------------
+mxd_dir = File.dirname(file_path)
+lock_files = []
+
+begin
+  if Dir.exist?(mxd_dir)
+    entries = Dir.entries(mxd_dir)
+    lock_entries = entries.select { |entry| entry.start_with?('~') && entry != '~' }
+    lock_files = lock_entries.map { |entry| File.join(mxd_dir, entry) }.select { |f| File.exist?(f) }
+  end
+rescue => e
+  puts "Warning: Could not check for lock files: #{e.message}"
+end
+
+if lock_files.any?
+  error_msg = "\n" + "="*70 + "\n"
+  error_msg += "ERROR: InfoSWMM Model is Currently Open\n"
+  error_msg += "="*70 + "\n\n"
+  error_msg += "Lock files detected:\n"
+  lock_files.each { |f| error_msg += "  - #{File.basename(f)}\n" }
+  error_msg += "\nPlease close InfoSWMM and run the script again.\n"
+  error_msg += "="*70 + "\n"
+  
+  puts error_msg
+  log_file.puts error_msg
+  log_file.close
+  
+  raise "InfoSWMM model is currently open. Close InfoSWMM and try again."
+end
 
 log "\n" + "="*70, log_file
 log "InfoSWMM Multi-Scenario Import with SWMM Runs - #{Time.now}", log_file
@@ -1580,7 +1599,34 @@ puts ""
 puts "Log file: #{log_filename}"
 puts "+" + "="*68 + "+"
 
-exit(failed_imports.any? ? 1 : 0)
+rescue SystemExit, Interrupt
+  # Allow intentional exits and interrupts to pass through
+  raise
+rescue => e
+  # Handle any unexpected errors
+  error_msg = "\n" + "="*70 + "\n"
+  error_msg += "FATAL ERROR: Import failed\n"
+  error_msg += "="*70 + "\n"
+  error_msg += "Error: #{e.class} - #{e.message}\n"
+  error_msg += "\nStack trace:\n"
+  error_msg += e.backtrace.first(10).join("\n")
+  error_msg += "\n" + "="*70 + "\n"
+  
+  puts error_msg
+  
+  if defined?(log_file) && log_file && !log_file.closed?
+    log error_msg, log_file
+  end
+  
+  exit 1
+ensure
+  # Always close the log file
+  if defined?(log_file) && log_file && !log_file.closed?
+    log_file.close
+  end
+end
+
+exit(defined?(failed_imports) && failed_imports.any? ? 1 : 0)
 
 
 
