@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby Context Files - LLM Usage Guide
 
-**Last Updated:** December 2, 2025
+**Last Updated:** December 10, 2025
 
 ## Quick Start for LLMs
 
@@ -9,17 +9,20 @@
 ### File Loading Priority
 
 **CRITICAL (Always Load First)**
-1. **Lessons_Learned.md** (~837 lines) - Anti-patterns, gotchas, critical warnings
+
+1. **Lessons_Learned.md** (~836 lines) - Anti-patterns, gotchas, critical warnings
 
 **CORE (Load for Most Code Generation)**
-2. **API_Reference.md** (~1,115 lines) - Method signatures, parameters, return types
-3. **Pattern_Reference.md** (~1,276 lines) - 58 code templates (PAT_XXX_NNN)
+
+2. **API_Reference.md** (~1,114 lines) - Method signatures, parameters, return types
+3. **Pattern_Reference.md** (~1,269 lines) - 56 code templates (PAT_XXX_NNN)
 
 **LOOKUP/CONDITIONAL (Load As Needed)**
-4. **Database_Reference.md** (~406 lines) - Table names, Model Object Types
-5. **Tutorial_Context.md** (~1,492 lines) - Complete examples, workflows, Ruby fundamentals
-6. **Error_Reference.md** (~504 lines) - Error diagnosis and solutions
-7. **Glossary.md** (~396 lines) - Terminology definitions
+
+4. **Database_Reference.md** (~404 lines) - Table names, Model Object Types
+5. **Tutorial_Context.md** (~1,520 lines) - Complete examples, workflows, Ruby fundamentals
+6. **Error_Reference.md** (~503 lines) - Error diagnosis and solutions
+7. **Glossary.md** (~395 lines) - Terminology definitions
 
 **WARNING:** **Archive folder**: Human reference only - do NOT load for LLM queries
 

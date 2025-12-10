@@ -1,6 +1,6 @@
 # Archive - Reference Documentation
 
-⚠️ **NOT for LLM/AI consumption** - Use optimized RAG files in parent directory instead
+**NOT for LLM/AI consumption** - Use optimized RAG files in parent directory instead
 
 ## Contents
 
@@ -17,10 +17,12 @@
 
 ## Optimized RAG Files (Parent Directory)
 
-1. **Tutorial_Context.md** - Learning guide with examples
-2. **Pattern_Reference.md** - Code patterns with IDs
-3. **Database_Reference.md** - Table names and types
-4. **Error_Reference.md** - Common errors and fixes
-5. **Glossary.md** - InfoWorks terminology
+1. **Lessons_Learned.md** (~836 lines) - Anti-patterns, gotchas, critical warnings
+2. **API_Reference.md** (~1,114 lines) - Method signatures, parameters, return types
+3. **Pattern_Reference.md** (~1,269 lines) - 58 code templates with PAT_XXX_NNN IDs
+4. **Database_Reference.md** (~404 lines) - Table names and Model Object Types
+5. **Tutorial_Context.md** (~1,520 lines) - Complete examples, workflows, Ruby fundamentals
+6. **Error_Reference.md** (~503 lines) - Error diagnosis and solutions
+7. **Glossary.md** (~395 lines) - InfoWorks terminology definitions
 
-**Last Updated:** November 25, 2025
+**Last Updated:** December 5, 2025
