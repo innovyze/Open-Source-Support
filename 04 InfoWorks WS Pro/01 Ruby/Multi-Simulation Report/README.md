@@ -1,4 +1,4 @@
-# Simulation Violation Report
+# Multi-Simulation Report
 
 A Ruby UI script for InfoWorks WS Pro that analyzes simulation results to identify pressure and velocity violations across multiple runs and simulations.
 
@@ -51,7 +51,7 @@ The report displays results grouped by Run:
 
 ```
 ================================================================================
-SIMULATION VIOLATION REPORT
+MULTI-SIMULATION REPORT
 ================================================================================
 
 Generated: 2025-12-11 14:30:00
@@ -116,3 +116,4 @@ Only simulations with a "Success" status are analyzed. Failed or incomplete simu
 ## License
 
 This script is provided as-is under the MIT License. See the repository root for full license terms.
+

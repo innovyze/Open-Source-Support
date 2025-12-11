@@ -1,6 +1,6 @@
 ################################################################################
-# Script Name: simulation_violation_report.rb
-# Description: Simulation Pressure and Velocity Violation Report
+# Script Name: multi_simulation_report.rb
+# Description: Multi-Simulation Pressure and Velocity Violation Report
 #              - Gets the parent model group from the current network
 #              - Lists all Run objects in that group
 #              - Prompts user to select multiple Runs and specify thresholds
@@ -44,7 +44,7 @@ end
 # Navigate to parent model group
 # ==============================================================================
 log "=" * 80
-log "SIMULATION VIOLATION REPORT"
+log "MULTI-SIMULATION REPORT"
 log "=" * 80
 log ""
 log "Getting parent model group..."
@@ -350,7 +350,7 @@ log ""
 # Generate Report (always output, regardless of ENABLE_LOGGING)
 # ==============================================================================
 puts "=" * 80
-puts "SIMULATION VIOLATION REPORT"
+puts "MULTI-SIMULATION REPORT"
 puts "=" * 80
 puts ""
 puts "Generated: #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
@@ -444,14 +444,14 @@ save_result = WSApplication.message_box(
 if save_result == "yes"
   # Get save file location
   timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
-  default_filename = "violation_report_#{timestamp}"
+  default_filename = "multi_simulation_report_#{timestamp}"
   
   save_path = WSApplication.file_dialog(false, 'txt', 'Text files', default_filename, false, true)
   
   if save_path && !save_path.empty?
     File.open(save_path, 'w') do |file|
       file.puts "=" * 80
-      file.puts "SIMULATION VIOLATION REPORT"
+      file.puts "MULTI-SIMULATION REPORT"
       file.puts "=" * 80
       file.puts ""
       file.puts "Generated: #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
@@ -526,3 +526,4 @@ end
 
 puts ""
 puts "Script completed."
+
