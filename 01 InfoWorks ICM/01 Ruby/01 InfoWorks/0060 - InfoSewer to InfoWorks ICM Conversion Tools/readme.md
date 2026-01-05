@@ -30,6 +30,11 @@ This tool is a **completely refreshed version** of the InfoSewer import workflow
    - `field_mappings/` folder (required configuration files)
 2. **Open InfoWorks ICM**
 3. **Create a new blank InfoWorks network**
+   - ⚠️ **IMPORTANT**: Right-click Model Group → New InfoWorks → **InfoWorks Network** (yellow icon)
+   - ❌ **NOT** SWMM network (blue icon)
+   
+   ![Network Types](images/network-types.png)
+   
 4. **Network → Run Ruby Script**
 5. **Select:** `InfoSewer_Import_UI.rb`
 6. **Follow the dialogs:**
@@ -146,6 +151,8 @@ import:
 
 | Issue | Solution |
 |-------|----------|
+| "Wrong Network Type!" error | **You opened a SWMM network (blue icon)** - Right-click Model Group → New InfoWorks → **InfoWorks Network (yellow icon)** |
+| "no such table" error | Same as above - wrong network type. InfoSewer converts to InfoWorks networks (yellow icon), not SWMM (blue icon) |
 | "Wetwell limitation" notice | If using wetwell CURVES (not diameter), manually set `chamber_area` and `shaft_area` |
 | Validation errors: pipe length | Should be auto-fixed - check console for "Fixed X short conduit(s)" messages |
 | Validation errors: connectivity | Invalid links automatically removed - check console "DATA QUALITY WARNING" section |

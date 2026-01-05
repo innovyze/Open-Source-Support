@@ -80,6 +80,28 @@ def main()
     return false
   end
   
+  # ----------------------------------------------------------------
+  # Verify network type (must be InfoWorks, not SWMM)
+  # ----------------------------------------------------------------
+  begin
+    # Try to access hw_node table - this will fail if not an InfoWorks network
+    test_table = network.row_objects('hw_node')
+  rescue => err
+    # Network doesn't support hw_node table - wrong network type
+    WSApplication.message_box(
+      "Wrong Network Type!\n\n" +
+      "InfoSewer models are converted to InfoWorks networks, not SWMM.\n\n" +
+      "Solution:\n" +
+      "  1. Right-click on your Model Group\n" +
+      "  2. Select: New InfoWorks > InfoWorks Network\n" +
+      "  3. Open the new network and re-run this script",
+      "OK",
+      "!",
+      false
+    )
+    return false
+  end
+  
   # Check if the network is empty - if not, prompt the user
   unless is_network_empty?(network)
     continue = prompt_delete_network()
