@@ -27,7 +27,7 @@ This tool is a **completely refreshed version** of the InfoSewer import workflow
 1. **Download the tool** and save these files/folders to the same location:
    - `InfoSewer_Import_UI.rb` (main script)
    - `lib/` folder (required helper modules)
-   - `field_mappings/` folder (required configuration files)
+   - `import_config/` folder (required configuration files)
 2. **Open InfoWorks ICM**
 3. **Create a new blank InfoWorks network**
    - ⚠️ **IMPORTANT**: Right-click Model Group → New InfoWorks → **InfoWorks Network** (yellow icon)
@@ -38,8 +38,8 @@ This tool is a **completely refreshed version** of the InfoSewer import workflow
 4. **Network → Run Ruby Script**
 5. **Select:** `InfoSewer_Import_UI.rb`
 6. **Follow the dialogs:**
-   - Choose your `.IEDB` folder
-   - Select field mappings folder
+   - Choose your `.IEDB` folder (InfoSewer model folder)
+   - Select Import Configuration Folder (contains conversion settings - default: `import_config`)
    - Choose scenarios to import
    - Confirm import
 
@@ -113,14 +113,14 @@ The tool automatically handles common data quality issues:
 
 - `InfoSewer_Import_UI.rb` - **Run this** (main import tool)
 - `lib/*.rb` - Core modules (auto-loaded)
-- `field_mappings/*.yaml` - Field mapping configurations
+- `import_config/*.yaml` - Conversion settings (maps InfoSewer fields to ICM fields)
 - `config.yaml` - Saved settings (auto-generated)
 
 ---
 
-## Field Mappings
+## Import Configuration Files
 
-Field mappings are defined in YAML files (one per object type):
+Conversion settings are defined in YAML files (one per object type) in the `import_config/` folder. These files tell the tool how to map InfoSewer fields to InfoWorks ICM fields.
 
 **Example: pipe.yaml**
 ```yaml

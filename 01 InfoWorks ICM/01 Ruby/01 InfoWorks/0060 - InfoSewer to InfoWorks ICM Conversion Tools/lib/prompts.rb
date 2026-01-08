@@ -14,7 +14,7 @@ def prompt_get_config(config_file)
     script_dir = File.dirname(config_file)
     previous = {
       'model_path' => '',
-      'fields_path' => File.join(script_dir, 'field_mappings')
+      'fields_path' => File.join(script_dir, 'import_config')
     }
   end
   
@@ -23,7 +23,7 @@ def prompt_get_config(config_file)
   # The values are the WSApplication.prompt layout structure
   options = {
     model_path: ['InfoSewer Model (.IEDB folder)', 'String', previous['model_path'], nil, 'FOLDER', 'Select the .IEDB folder'],
-    fields_path: ['Field mapping YAML folder', 'String', previous['fields_path'], nil, 'FOLDER', 'Folder containing YAML files']
+    fields_path: ['Import Configuration (import_config folder)', 'String', previous['fields_path'], nil, 'FOLDER', 'Select the folder containing conversion settings (default: import_config)']
   }
   
   response = WSApplication.prompt('InfoSewer to ICM Importer - Configuration', options.values, false)

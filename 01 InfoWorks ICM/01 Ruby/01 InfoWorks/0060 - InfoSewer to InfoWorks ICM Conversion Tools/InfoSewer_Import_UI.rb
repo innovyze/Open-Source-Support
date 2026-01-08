@@ -31,7 +31,7 @@
 #   - No manual file conversion required
 #   - No ArcCatalog shapefile conversion required
 #   - Automatic scenario detection and selection
-#   - Comprehensive field mapping via YAML files
+#   - Comprehensive field mapping via configuration files
 #   - Post-import cleanup and validation
 #   - Progress logging to script window
 #
