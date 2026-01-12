@@ -1,6 +1,5 @@
 # Native DBF File Reader
 # Reads FoxPro 2.x DBF files without requiring Excel
-# Based on proven implementation from InfoSWMM Import tool
 
 # Makes a string safe for use as a file/object name
 # Removes problematic characters like pipes and exclamation marks

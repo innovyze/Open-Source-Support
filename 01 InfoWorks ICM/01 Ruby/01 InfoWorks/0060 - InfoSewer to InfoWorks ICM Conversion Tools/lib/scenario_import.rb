@@ -436,7 +436,7 @@ def import_scenario_control(network, scenario_id, iedb_path, control_set)
       data = control_data[pump.asset_id.strip.downcase]
       
       if data && (data["ON"] || data["OFF"])
-        # Use CONTROL.CSV data
+        # Use CONTROL.DBF data
         on_level = data["ON"].to_f
         off_level = data["OFF"].to_f
       elsif pump.user_text_1 == '0'
