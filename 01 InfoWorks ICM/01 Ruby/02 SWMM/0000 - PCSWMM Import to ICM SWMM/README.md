@@ -1,6 +1,8 @@
 # PCSWMM to InfoWorks ICM Import Tool
 
-**Import PCSWMM models (.pcz files) into InfoWorks ICM as SWMM networks**
+**Imports PCSWMM model (.pcz file) into InfoWorks ICM as a SWMM network**
+
+**⚠️ IMPORTANT: An InfoWorks ICM Ultimate license is required to run this script.**
 
 ---
 
@@ -68,8 +70,6 @@
 | "Model group already exists" | Delete or rename existing group, or choose a different name |
 | "Cannot find ICMExchange.exe" | Install InfoWorks ICM 2024+ or contact support |
 | No objects imported | Check logs for field value errors - truncation may have failed |
-| Object counts seem low | Normal - some PCSWMM objects may not transfer to SWMM5 format |
-| Subcatchment polygons look strange | Check source PCSWMM model for geometry issues |
 | Where are my log files? | `[PCZfileLocation]\[PCZfilename]\PCSWMM_Import_*.log` |
 
 ---
