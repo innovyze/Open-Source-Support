@@ -4,7 +4,7 @@ require 'date'
 def print_table_results(cn)
   # Iterate over each table in the network
   puts
-  puts "Tables and their result fields in this ICM InfoWorks Run"
+  puts "Tables and their result fields in this ICM SWMM Run"
   puts
   
   cn.tables.each do |table|

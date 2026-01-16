@@ -1,104 +1,130 @@
-# Initialize the current network
+# ICM InfoWorks vs ICM SWMM Subcatchment Comparison Script
+# Compares SWMM subcatchment data to InfoWorks runoff surfaces and land use tables
+
+# =============================================================================
+# Get the current network (ICM InfoWorks) and background network (ICM SWMM)
+# =============================================================================
 cn = WSApplication.current_network
-
-# Clear any existing selection
-cn.clear_selection
-
-# Initialize an array to store subcatchment areas
-subcatchment_areas = []
-
-# Loop through each subcatchment in the network
-cn.row_objects('hw_subcatchment').each do |ro|
-  # Add the total area of the subcatchment to the array if it exists
-  subcatchment_areas << ro.total_area if ro.total_area
-end
-
-# Calculate the threshold area for the lowest ten percent
-# This is done by adding 10% of the range of areas to the minimum area
-threshold_area = subcatchment_areas.min + (subcatchment_areas.max - subcatchment_areas.min) * 0.1
-
-# Calculate the median area (50th percentile)
-# This is done by sorting the areas and selecting the middle one
-sorted_areas = subcatchment_areas.sort
-median_area = sorted_areas[sorted_areas.length / 2]
-
-# Initialize an array to store the selected subcatchments
-selected_subcatchments = []
-
-# Loop through each subcatchment in the network again
-cn.row_objects('hw_subcatchment').each do |ro|
-  # If the total area of the subcatchment is below the threshold or median, select it
-  if ro.total_area && (ro.total_area < threshold_area || ro.total_area < median_area)
-    ro.selected = true
-    selected_subcatchments << ro
-  end
-end
-
-# Calculate the total number of subcatchments
-total_subcatchments = subcatchment_areas.length
-
-# If any subcatchments were selected, print the statistics
-if selected_subcatchments.any?
-  puts "Subcatchment Parameter Statistics for ICM InfoWorks Network"
-  printf("%44s: %10.2f\n", "Minimum subcatchment area", subcatchment_areas.min)
-  printf("%44s: %10.2f\n", "Maximum subcatchment area", subcatchment_areas.max)
-  printf("%44s: %10.2f\n", "Threshold area for lowest 10%", threshold_area)
-  printf("%44s: %10.2f\n", "Median subcatchment area (50th percentile)", median_area)
-  printf("%44s: %10d\n", "Number of subcatchments below threshold", selected_subcatchments.length)
-  printf("%44s: %10d\n", "Total number of subcatchments", total_subcatchments)  
-else
-  puts "No subcatchments were selected."
-end
-#==================================================================
-# Initialize the current network
 bn = WSApplication.background_network
 
-# Clear any existing selection
-bn.clear_selection
+puts "=" * 100
+puts "ICM InfoWorks vs ICM SWMM Subcatchment Comparison"
+puts "=" * 100
+puts ""
 
-# Initialize an array to store subcatchment areas
-subcatchment_areas = []
+# =============================================================================
+# DIAGNOSTIC: Show network information
+# =============================================================================
+puts "NETWORK INFORMATION:"
+puts "-" * 80
 
-# Loop through each subcatchment in the network
-bn.row_objects('sw_subcatchment').each do |ro|
-  # Add the total area of the subcatchment to the array if it exists
-  subcatchment_areas << ro.area if ro.area
+if cn.nil?
+  puts "Current Network: NOT FOUND"
+else
+  puts "Current Network:"
+  puts "  Object: #{cn}"
+  puts "  Class:  #{cn.class}"
+  begin; puts "  Name:   #{cn.name}"; rescue => e; puts "  Name:   (error: #{e.message})"; end
+  begin; puts "  Path:   #{cn.path}"; rescue => e; puts "  Path:   (error: #{e.message})"; end
+  begin; puts "  Type:   #{cn.type}"; rescue => e; puts "  Type:   (error: #{e.message})"; end
 end
 
-# Calculate the threshold area for the lowest ten percent
-# This is done by adding 10% of the range of areas to the minimum area
-threshold_area = subcatchment_areas.min + (subcatchment_areas.max - subcatchment_areas.min) * 0.1
+puts ""
 
-# Calculate the median area (50th percentile)
-# This is done by sorting the areas and selecting the middle one
-sorted_areas = subcatchment_areas.sort
-median_area = sorted_areas[sorted_areas.length / 2]
+if bn.nil?
+  puts "Background Network: NOT FOUND"
+else
+  puts "Background Network:"
+  puts "  Object: #{bn}"
+  puts "  Class:  #{bn.class}"
+  begin; puts "  Name:   #{bn.name}"; rescue => e; puts "  Name:   (error: #{e.message})"; end
+  begin; puts "  Path:   #{bn.path}"; rescue => e; puts "  Path:   (error: #{e.message})"; end
+  begin; puts "  Type:   #{bn.type}"; rescue => e; puts "  Type:   (error: #{e.message})"; end
+end
 
-# Initialize an array to store the selected subcatchments
-selected_subcatchments = []
+puts ""
+puts "-" * 80
 
-# Loop through each subcatchment in the network again
-bn.row_objects('sw_subcatchment').each do |ro|
-  # If the total area of the subcatchment is below the threshold or median, select it
-  if ro.area && (ro.area < threshold_area || ro.area < median_area)
-    ro.selected = true
-    selected_subcatchments << ro
+# =============================================================================
+# DIAGNOSTIC: List available tables in each network
+# =============================================================================
+puts "AVAILABLE TABLES IN CURRENT NETWORK:"
+puts "-" * 80
+begin
+  cn.tables.each do |table|
+    puts "  #{table}"
+  end
+rescue => e
+  puts "  Error listing tables: #{e.message}"
+  # Try alternate method
+  begin
+    cn.table_names.each do |name|
+      puts "  #{name}"
+    end
+  rescue => e2
+    puts "  Alternate method also failed: #{e2.message}"
   end
 end
 
-# Calculate the total number of subcatchments
-total_subcatchments = subcatchment_areas.length
-
-# If any subcatchments were selected, print the statistics
-if selected_subcatchments.any?
-  puts ""
-  puts "Subcatchment Parameter Statistics for ICM SWMM Network"
-  printf("%44s: %10.2f\n", "Minimum subcatchment area", subcatchment_areas.min)
-  printf("%44s: %10.2f\n", "Maximum subcatchment area", subcatchment_areas.max)
-  printf("%44s: %10.2f\n", "Threshold area for lowest 10%", threshold_area)
-  printf("%44s: %10.2f\n", "Median subcatchment area (50th percentile)", median_area)
-  printf("%44s: %10d\n", "Number of subcatchments below threshold", selected_subcatchments.length)
-  printf("%44s: %10d\n", "Total number of subcatchments", total_subcatchments)  
-else
-  puts "No subcatchments were selected."
+puts ""
+puts "AVAILABLE TABLES IN BACKGROUND NETWORK:"
+puts "-" * 80
+begin
+  bn.tables.each do |table|
+    puts "  #{table}"
+  end
+rescue => e
+  puts "  Error listing tables: #{e.message}"
+  # Try alternate method
+  begin
+    bn.table_names.each do |name|
+      puts "  #{name}"
+    end
+  rescue => e2
+    puts "  Alternate method also failed: #{e2.message}"
+  end
 end
+
+puts ""
+puts "-" * 80
+
+# =============================================================================
+# Try to access sw_subcatchment directly and show any errors
+# =============================================================================
+puts "ATTEMPTING TO ACCESS sw_subcatchment IN BACKGROUND NETWORK:"
+puts "-" * 80
+begin
+  count = 0
+  bn.row_objects('sw_subcatchment').each do |sc|
+    count += 1
+    if count <= 3
+      puts "  Found: #{sc.subcatchment_id}"
+    end
+  end
+  puts "  Total sw_subcatchment count: #{count}"
+rescue => e
+  puts "  ERROR accessing sw_subcatchment: #{e.message}"
+  puts "  Error class: #{e.class}"
+end
+
+puts ""
+puts "ATTEMPTING TO ACCESS hw_subcatchment IN CURRENT NETWORK:"
+puts "-" * 80
+begin
+  count = 0
+  cn.row_objects('hw_subcatchment').each do |sc|
+    count += 1
+    if count <= 3
+      puts "  Found: #{sc.subcatchment_id}"
+    end
+  end
+  puts "  Total hw_subcatchment count: #{count}"
+rescue => e
+  puts "  ERROR accessing hw_subcatchment: #{e.message}"
+  puts "  Error class: #{e.class}"
+end
+
+puts ""
+puts "=" * 100
+puts "Diagnostic Complete"
+puts "=" * 100

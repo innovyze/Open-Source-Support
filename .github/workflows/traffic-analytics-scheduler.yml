@@ -1,0 +1,58 @@
+name: Traffic Data Collection
+
+on:
+  schedule: 
+    # runs once a week on sunday
+    - cron: '55 23 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  traffic:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Check out the traffic-analysis branch where dashboard lives
+    - uses: actions/checkout@v4
+      with:
+        ref: traffic-analysis
+
+    # Calculates traffic and clones (outputs to traffic/ directory)
+    - name: GitHub traffic
+      uses: innovyze/repository-traffic-action@v0.1.8
+      env:
+        REPOSITORY_NAME: innovyze/Open-Source-Support
+        TRAFFIC_ACTION_TOKEN: ${{ secrets.TRAFFIC_ACTION_TOKEN }}
+
+    # Merge new data into existing files with deduplication
+    - name: Merge and deduplicate data
+      run: |
+        for file in views clones; do
+          if [ -f "traffic/${file}.csv" ]; then
+            if [ -f "data/${file}.csv" ]; then
+              # Merge: keep header, combine data, deduplicate by date (keep newer), sort
+              (
+                head -1 "data/${file}.csv"
+                tail -n +2 "data/${file}.csv"
+                tail -n +2 "traffic/${file}.csv"
+              ) | awk -F',' 'NR==1 {print; next} {lines[$1]=$0} END {for (date in lines) print lines[date]}' | \
+              sort -t',' -k1,1 > "data/${file}.csv.tmp"
+              mv "data/${file}.csv.tmp" "data/${file}.csv"
+            else
+              # No existing file, just move the new one
+              mv "traffic/${file}.csv" "data/${file}.csv"
+            fi
+          fi
+        done
+        rm -rf traffic
+
+    # Commits files to traffic-analysis branch
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Update traffic data [automated]'
+        add: 'data/*.csv'
+        default_author: github_actions
+
