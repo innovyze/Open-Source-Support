@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby API Reference for LLM Agents
 
-**Source:** Exchange.pdf Version 2024.2 | **Last Updated:** December 2, 2025
+**Source:** Exchange.pdf Version 2024.2 | **Last Updated:** January 16, 2026
 
 **Load Priority:** CORE - Load after Lessons_Learned.md for code generation  
 **Load Condition:** ALWAYS for Exchange scripts, CONDITIONAL for UI scripts
@@ -39,6 +39,11 @@ This guide provides **API method reference** for InfoWorks ICM Ruby scripting.
 | WSApplication | ui? | Both | Boolean | Check if running in UI | PAT_UNIVERSAL_MODE_002 |
 | WSApplication | open_net | UI | WSOpenNetwork | Open network in UI | - |
 | WSApplication | launch_sims | Exch | Array | Launch sims via agent | PAT_LAUNCH_SIM_050 |
+| WSApplication | message_box | UI | String | Show message dialog | PAT_USER_MSGBOX_057 |
+| WSApplication | prompt | UI | Array | Multi-field input dialog | PAT_USER_INPUT_043 |
+| WSApplication | input_box | UI | String | Single text input | PAT_USER_INPUTBOX_058 |
+| WSApplication | folder_dialog | UI | String | Folder picker dialog | - |
+| WSApplication | file_dialog | UI | String/Array | File open/save dialog | - |
 | **WSDatabase** |
 | WSDatabase | model_object | Both | WSModelObject | Get object by path | PAT_DATA_FETCH_004 |
 | WSDatabase | model_object_from_type_and_id | Both | WSModelObject | Get object by type/ID | PAT_DATA_FETCH_004 |
@@ -205,6 +210,85 @@ Cancels simulation job.
 **Signature:** `WSApplication.job_status(job_id)`
 
 Returns job status ('Pending', 'Running', 'Complete', 'Failed').
+
+---
+
+### message_box
+**Availability:** UI only  
+**Returns:** String ('ok', 'cancel', 'yes', 'no' - lowercase)  
+**Signature:** `WSApplication.message_box(text, buttons, icon, hard_wire_cancel)`
+
+Displays modal message box.
+
+**Parameters:**
+- `text` (String) - Message text (use `\n` for newlines)
+- `buttons` (String, nil) - 'OK', 'OkCancel', 'YesNo', 'YesNoCancel' (nil defaults to 'OkCancel')
+- `icon` (String, nil) - '!', '?', 'Information', 'Stop' (nil defaults to '!')
+- `hard_wire_cancel` (Boolean) - If true/nil, Cancel terminates script immediately
+
+**See:** PAT_USER_MSGBOX_057
+
+---
+
+### prompt
+**Availability:** UI only  
+**Returns:** Array or nil  
+**Signature:** `WSApplication.prompt(title, layout, hard_wire_cancel)`
+
+Displays multi-field input dialog.
+
+**Parameters:**
+- `title` (String) - Dialog title
+- `layout` (Array) - Field definitions array (see PAT_USER_INPUT_043 for field types)
+- `hard_wire_cancel` (Boolean) - If true/nil, Cancel terminates script immediately
+
+**See:** PAT_USER_INPUT_043
+
+---
+
+### input_box
+**Availability:** UI only  
+**Returns:** String or nil  
+**Signature:** `WSApplication.input_box(prompt, title, default)`
+
+Displays single-line text input dialog.
+
+**Parameters:**
+- `prompt` (String) - Prompt text (use `\n` for multiline)
+- `title` (String) - Dialog title
+- `default` (String) - Default value
+
+**See:** PAT_USER_INPUTBOX_058
+
+---
+
+### folder_dialog
+**Availability:** UI only  
+**Returns:** String or nil  
+**Signature:** `WSApplication.folder_dialog(title, hard_wire_cancel)`
+
+Displays folder selection dialog.
+
+**Parameters:**
+- `title` (String) - Dialog title
+- `hard_wire_cancel` (Boolean) - If true/nil, Cancel terminates script immediately
+
+---
+
+### file_dialog
+**Availability:** UI only  
+**Returns:** String, Array, or nil  
+**Signature:** `WSApplication.file_dialog(open, extension, description, default, multiple, hard_wire_cancel)`
+
+Displays file open/save dialog.
+
+**Parameters:**
+- `open` (Boolean) - true for Open dialog, false for Save dialog
+- `extension` (String) - File extension without period (e.g., 'csv')
+- `description` (String) - File filter description (e.g., 'CSV Files (*.csv)|*.csv')
+- `default` (String) - Default filename
+- `multiple` (Boolean) - Allow multiple selection (Open only)
+- `hard_wire_cancel` (Boolean) - If true/nil, Cancel terminates script immediately
 
 ---
 

@@ -3,7 +3,7 @@
 **Purpose:** High-priority warnings about InfoWorks Ruby behavior that differs from standard Ruby. Load this FIRST before generating any code.
 
 **Load Priority:** CRITICAL - Always load FIRST before any code generation  
-**Last Updated:** December 2, 2025
+**Last Updated:** January 16, 2026
 
 ## How to Use This File
 
@@ -780,25 +780,17 @@ obj.write  # Required to persist selection
 ### Confirmation for Destructive Operations
 
 ```ruby
-# Always confirm deletions
+# Always confirm deletions - See PAT_USER_MSGBOX_057 for full options
 choice = WSApplication.message_box(
   "Delete #{items.length} items?",
   "YesNo",
   "?",
-  false
+  false  # IMPORTANT: use false to allow cleanup on cancel
 )
 
-return unless choice == "Yes"
+return unless choice == 'yes'  # lowercase return values
 
 # Proceed with deletion...
-
-# Remind to commit
-WSApplication.message_box(
-  "Items deleted. Remember to commit changes.",
-  "OK",
-  "Information",
-  false
-)
 ```
 
 ### Progress Feedback for Bulk Operations
@@ -818,6 +810,95 @@ duration = end_time - start_time
 
 puts "Processed #{count} items in #{duration.round(2)} seconds"
 ```
+
+---
+
+## CRITICAL: UI Dialog Methods Are UI-Only
+
+### The Problem
+
+Dialog methods (`message_box`, `prompt`, `input_box`, `folder_dialog`, `file_dialog`) only work in UI scripts. They fail in Exchange scripts.
+
+**What FAILS in Exchange:**
+```ruby
+# Exchange script - causes error
+result = WSApplication.message_box('Hello', 'OK', 'Information', false)
+# => undefined method or runtime error
+```
+
+### LLM Agent Rules
+
+1. **Check environment** with `WSApplication.ui?` before calling dialog methods
+2. **UI-only methods:** message_box, prompt, input_box, folder_dialog, file_dialog
+3. **In Exchange:** Use environment variables, config files, or hardcoded values instead
+
+### Code Pattern
+
+```ruby
+if WSApplication.ui?
+  folder = WSApplication.folder_dialog('Select folder', false)
+else
+  folder = ENV.fetch('OUTPUT_FOLDER', 'C:/Default')
+end
+```
+
+---
+
+## CRITICAL: hard_wire_cancel Terminates Script
+
+### The Problem
+
+The `hard_wire_cancel` parameter (last parameter on dialog methods) controls whether Cancel/Escape terminates the entire script - not just returns nil.
+
+**What's Dangerous:**
+```ruby
+# DANGER: true/nil = script dies on Cancel with no cleanup
+result = WSApplication.message_box('Continue?', 'OKCancel', '?', true)
+# If user clicks Cancel, script exits immediately
+
+# ALSO DANGEROUS: nil defaults to true
+result = WSApplication.message_box('Continue?', 'OKCancel', '?', nil)
+```
+
+**Safe Pattern:**
+```ruby
+# SAFE: false = returns nil on cancel, script continues
+result = WSApplication.message_box('Continue?', 'OKCancel', '?', false)
+if result == 'cancel' || result.nil?
+  puts "User cancelled - cleaning up..."
+  # Cleanup code runs
+  exit
+end
+```
+
+### LLM Agent Rules
+
+1. **Always use `false`** for hard_wire_cancel unless you want Cancel to kill the script
+2. **Return values are lowercase:** 'ok', 'cancel', 'yes', 'no' (NOT 'OK', 'Cancel')
+3. **Check for nil** when hard_wire_cancel is false
+
+**See:** PAT_USER_MSGBOX_057, PAT_USER_INPUT_043, PAT_USER_INPUTBOX_058
+
+---
+
+## CRITICAL: Field Discovery for Unknown Properties
+
+### The Problem
+
+Field names won't match user's natural language (e.g., `ground_level` not `elevation`, `conduit_width` not `diameter`). When you get "field not in table" errors, provide this discovery snippet:
+
+```ruby
+# Field Discovery - ask user to run this UI script
+net = WSApplication.current_network
+table_info = net.table_info('hw_node')  # Change table name as needed
+table_info.fields.each { |f| puts "#{f.name} (#{f.type})" }
+```
+
+### LLM Agent Rules
+
+1. **Don't guess field names** - provide discovery snippet if uncertain
+2. **Workflow:** Error → snippet → user reports fields → regenerate with correct names
+3. **100+ tables, thousands of fields** - names vary by version/license/network type
 
 ---
 
