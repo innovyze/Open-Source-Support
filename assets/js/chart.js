@@ -1,5 +1,5 @@
 // Chart drawing module
-import { CONFIG } from './config.js';
+import { CONFIG, MISSING_PERIODS } from './config.js';
 import { formatNumber, formatDate, filterDataByDays } from './utils.js';
 
 export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }) {
@@ -46,6 +46,78 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
         .domain([0, maxY * 1.1])
         .range([height, 0]);
 
+    // --- GAP VISUALIZATION START ---
+    
+    // 1. Define the Stripe Pattern
+    const defs = svg.append('defs');
+
+    defs.append('pattern')
+        .attr('id', 'error-stripe')
+        .attr('patternUnits', 'userSpaceOnUse')
+        .attr('width', 8)
+        .attr('height', 8)
+        .append('path')
+        .attr('d', 'M-1,1 l2,-2 M0,8 l8,-8 M7,9 l2,-2')
+        .attr('stroke', 'var(--chart-error-stroke)')
+        .attr('stroke-width', 1);
+
+    // 2. Draw the Zones
+    const xDomain = x.domain();
+    const visibleMissingPeriods = MISSING_PERIODS.filter(p => 
+        p.end > xDomain[0] && p.start < xDomain[1]
+    );
+
+    const zones = svg.selectAll('.missing-zone')
+        .data(visibleMissingPeriods)
+        .enter()
+        .append('g')
+        .attr('class', 'missing-zone');
+
+    // Background Rect (Red Tint)
+    zones.append('rect')
+        .attr('x', d => x(Math.max(d.start, xDomain[0])))
+        .attr('width', d => {
+            const startX = x(Math.max(d.start, xDomain[0]));
+            const endX = x(Math.min(d.end, xDomain[1]));
+            return Math.max(0, endX - startX);
+        })
+        .attr('y', 0)
+        .attr('height', height)
+        .attr('fill', 'var(--chart-error-bg)');
+
+    // Pattern Overlay (Stripes)
+    zones.append('rect')
+        .attr('x', d => x(Math.max(d.start, xDomain[0])))
+        .attr('width', d => {
+            const startX = x(Math.max(d.start, xDomain[0]));
+            const endX = x(Math.min(d.end, xDomain[1]));
+            return Math.max(0, endX - startX);
+        })
+        .attr('y', 0)
+        .attr('height', height)
+        .attr('fill', 'url(#error-stripe)')
+        .style('pointer-events', 'none');
+
+    // 3. Add Label
+    zones.append('text')
+        .attr('x', d => {
+            const startX = x(Math.max(d.start, xDomain[0]));
+            const endX = x(Math.min(d.end, xDomain[1]));
+            return startX + (endX - startX) / 2; 
+        })
+        .attr('y', 20)
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'var(--chart-error-stroke)')
+        .style('font-size', '10px')
+        .style('font-weight', 'bold')
+        .style('opacity', d => {
+            const width = x(Math.min(d.end, xDomain[1])) - x(Math.max(d.start, xDomain[0]));
+            return width > 60 ? 1 : 0;
+        })
+        .text('DATA GAP');
+
+    // --- GAP VISUALIZATION END ---
+
     // Grid
     svg.append('g')
         .attr('class', 'grid')
@@ -76,11 +148,17 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
 
     // Line generators
     const lineTotal = d3.line()
+        .defined(d => {
+            return !MISSING_PERIODS.some(p => d.date >= p.start && d.date <= p.end);
+        })
         .x(d => x(d.date))
         .y(d => y(d.total))
         .curve(d3.curveMonotoneX);
 
     const lineUnique = d3.line()
+        .defined(d => {
+            return !MISSING_PERIODS.some(p => d.date >= p.start && d.date <= p.end);
+        })
         .x(d => x(d.date))
         .y(d => y(d.unique))
         .curve(d3.curveMonotoneX);
