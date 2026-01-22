@@ -18,6 +18,8 @@
     --button-bg: #334155;
     --button-hover: #475569;
     --button-active: #3b82f6;
+    --chart-error-bg: rgba(239, 68, 68, 0.1);
+    --chart-error-stroke: rgba(239, 68, 68, 0.4);
 }
 
 body.light-theme {
@@ -34,6 +36,8 @@ body.light-theme {
     --button-bg: #f7fafc;
     --button-hover: #edf2f7;
     --button-active: #2563eb;
+    --chart-error-bg: rgba(239, 68, 68, 0.08);
+    --chart-error-stroke: rgba(239, 68, 68, 0.3);
 }
 
 body {
