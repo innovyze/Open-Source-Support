@@ -119,9 +119,15 @@ async function init() {
         });
 
         // Update last updated date
-        const lastDate = viewsData[viewsData.length - 1].date;
-        document.getElementById('lastUpdated').textContent = 
-            `Last updated: ${formatDate(lastDate)}`;
+        const lastUpdatedEl = document.getElementById('lastUpdated');
+        if (lastUpdatedEl) {
+            if (viewsData.length > 0) {
+                const lastDate = viewsData[viewsData.length - 1].date;
+                lastUpdatedEl.textContent = `Last updated: ${formatDate(lastDate)}`;
+            } else {
+                lastUpdatedEl.textContent = 'Last updated: No data';
+            }
+        }
 
     } catch (error) {
         console.error('Error initializing dashboard:', error);

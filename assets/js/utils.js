@@ -1,9 +1,15 @@
 // Utility functions
 export function formatNumber(num) {
+    if (num == null || (typeof num === 'number' && Number.isNaN(num))) {
+        return '-';
+    }
     return num.toLocaleString();
 }
 
 export function formatDate(date) {
+    if (!date || !(date instanceof Date) || Number.isNaN(date.getTime())) {
+        return '-';
+    }
     return date.toLocaleDateString('en-US', { 
         year: 'numeric', 
         month: 'short', 
