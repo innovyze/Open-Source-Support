@@ -6,6 +6,8 @@ require 'csv'
 # Get the network
 net = WSApplication.current_network
 
+WSApplication.message_box("This script must be run when Display Units (Tools > Options) are set as 'MGD'!\nAt a minimum Length must be set as 'ft'.",'OKCancel','!',nil)
+
 # Prompt for variables
 val=WSApplication.prompt "Export PACP 7",
 [
@@ -136,27 +138,104 @@ survey_objects.each do |survey|
     if details.size > 0
         puts "  Found #{details.size} detail records"
         
-        # Process each detail record
+        # Check if 'cd' field exists for continuous defects
+        has_cd_field = fieldsHash.key?('cd')
+        has_distance_field = fieldsHash.key?('distance')
+        
+        # First pass: Identify continuous defects and calculate equivalent point defects
+        # Map detail index to number of equivalent point defects (only for start markers to avoid double counting)
+        detail_segments = {}
+        continuous_defects_processed = {}
+        finish_markers = {}  # Track finish markers so we skip them in counting
+        
+        if has_cd_field && has_distance_field
+            # Find all continuous defect pairs (start and finish)
+            (0...details.size).each do |i|
+                cd_value = details[i]['cd']
+                if !cd_value.nil? && !cd_value.to_s.empty?
+                    cd_str = cd_value.to_s.strip.upcase
+                    # Check if it's a start marker (S + pairing ID, e.g., S01, S02)
+                    if cd_str.start_with?('S')
+                        # Extract the pairing ID after 'S' (e.g., "01" from "S01")
+                        pairing_id = cd_str[1..-1].strip
+                        if !pairing_id.empty?
+                            # Get the distance value for the start marker
+                            start_distance = details[i]['distance']
+                            if !start_distance.nil? && start_distance.is_a?(Numeric)
+                                # Find the matching finish marker with same pairing ID
+                                (i+1...details.size).each do |j|
+                                    finish_cd = details[j]['cd']
+                                    if !finish_cd.nil? && !finish_cd.to_s.empty?
+                                        finish_cd_str = finish_cd.to_s.strip.upcase
+                                        # Check if this is the matching finish marker (F + same pairing ID)
+                                        if finish_cd_str == "F#{pairing_id}"
+                                            # Get the distance value for the finish marker
+                                            finish_distance = details[j]['distance']
+                                            if !finish_distance.nil? && finish_distance.is_a?(Numeric)
+                                                # Calculate length: finish_distance - start_distance
+                                                length = finish_distance - start_distance
+                                                # Calculate equivalent point defects: length ÷ 5, rounded to nearest whole number
+                                                # Per PACP: "The quotient is then rounded to the nearest whole number"
+                                                # Example: 19.7 feet ÷ 5 = 3.94 → rounds to 4
+                                                equivalent_defects = (length / 5.0).round
+                                                # Ensure at least 1 defect is counted (even if length < 2.5 feet)
+                                                equivalent_defects = 1 if equivalent_defects < 1
+                                                # Found matching pair - mark start index with equivalent defects, mark finish to skip
+                                                detail_segments[i] = equivalent_defects
+                                                finish_markers[j] = true
+                                                continuous_defects_processed[i] = true
+                                                continuous_defects_processed[j] = true
+                                                puts "    Continuous defect found: Detail #{i+1} (#{cd_str}, dist=#{start_distance}) and #{j+1} (#{finish_cd_str}, dist=#{finish_distance}), length=#{length.round(2)}ft, equivalent point defects=#{equivalent_defects}"
+                                                break
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        # Second pass: Process each detail record with continuous defect handling
         (0...details.size).each do |i|
+            # Skip finish markers - we only count the start marker
+            if finish_markers[i]
+                puts "    Detail #{i+1}: (finish marker - skipped in counting)"
+                next
+            end
+            
             serviceScore = details[i]['service_score']
             structuralScore = details[i]['structural_score']
             
+            # Determine how many times to count this defect (1 for regular, N for continuous)
+            # N = equivalent point defects calculated from length ÷ 5, rounded
+            count_multiplier = detail_segments[i] || 1
+            
             # Count service_score values (1-5) - handle null values
             if !serviceScore.nil? && serviceScore.is_a?(Numeric) && serviceScore >= 1 && serviceScore <= 5
-                serviceScoreCounts[serviceScore.to_i] += 1
-                totalServiceScoreCounts[serviceScore.to_i] += 1
+                # Count this grade count_multiplier times (equivalent point defects)
+                count_multiplier.times do
+                    serviceScoreCounts[serviceScore.to_i] += 1
+                    totalServiceScoreCounts[serviceScore.to_i] += 1
+                end
             end
             
             # Count structural_score values (1-5) - handle null values
             if !structuralScore.nil? && structuralScore.is_a?(Numeric) && structuralScore >= 1 && structuralScore <= 5
-                structuralScoreCounts[structuralScore.to_i] += 1
-                totalStructuralScoreCounts[structuralScore.to_i] += 1
+                # Count this grade count_multiplier times (equivalent point defects)
+                count_multiplier.times do
+                    structuralScoreCounts[structuralScore.to_i] += 1
+                    totalStructuralScoreCounts[structuralScore.to_i] += 1
+                end
             end
             
             # Display values, showing "null" for nil values
             serviceDisplay = serviceScore.nil? ? "null" : serviceScore.to_s
             structuralDisplay = structuralScore.nil? ? "null" : structuralScore.to_s
-            puts "    Detail #{i+1}: service_score=#{serviceDisplay}, structural_score=#{structuralDisplay}"
+            cd_info = continuous_defects_processed[i] ? " (continuous defect = #{count_multiplier} equivalent point defects)" : ""
+            puts "    Detail #{i+1}: service_score=#{serviceDisplay}, structural_score=#{structuralDisplay}#{cd_info}"
         end
         
         puts "  Survey #{survey.id} summary:"
