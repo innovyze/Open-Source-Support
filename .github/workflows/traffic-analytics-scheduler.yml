@@ -29,6 +29,7 @@ jobs:
     # Merge new data into existing files with deduplication
     - name: Merge and deduplicate data
       run: |
+        sudo chown -R $USER:$USER traffic
         for file in views clones; do
           if [ -f "traffic/${file}.csv" ]; then
             if [ -f "data/${file}.csv" ]; then
