@@ -1,9 +1,10 @@
 // Data loading module
 export async function loadTrafficData() {
     try {
+        const timestamp = Date.now();
         const [views, clones] = await Promise.all([
-            d3.csv('data/views.csv'),
-            d3.csv('data/clones.csv')
+            d3.csv(`data/views.csv?t=${timestamp}`),
+            d3.csv(`data/clones.csv?t=${timestamp}`)
         ]);
 
         const viewsData = views.map(d => ({
