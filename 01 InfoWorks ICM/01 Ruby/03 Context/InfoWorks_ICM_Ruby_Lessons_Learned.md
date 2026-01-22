@@ -485,6 +485,7 @@ Load in this order:
 | 2025-12-02 | Added structure/blob patterns | Blob structures use .size=0, require double .write |
 | 2025-12-02 | Added simulation launch patterns | Must connect_local_agent before launch_sims |
 | 2025-12-02 | Added scenario management | Scenario changes require commit, flags for field changes |
+| 2026-01-21 | Added blob coordinate interpretation | River reach sections use map XY, not offsets; key is name not chainage |
 
 ---
 
@@ -623,6 +624,44 @@ sub.write                # Write parent
 reach.sections[0].roughness = 0.035
 reach.sections.write  # Write structure
 reach.write           # Write parent
+```
+
+---
+
+## CRITICAL: Blob Coordinate Interpretation
+
+### The Problem
+
+Blob geometry fields may use **map coordinates** not **local offsets**.
+
+**Example: `reach.sections` blob**
+- `X`, `Y` = Map coordinates (eastings/northings)
+- `key` = Section name, NOT chainage
+
+**What FAILS:**
+```ruby
+# X is ~591426 (easting), not 0-21m offset!
+section_points << { x: sections_blob[i].X, z: sections_blob[i].Z }
+```
+
+### LLM Agent Rules
+
+1. **Calculate offset** from cumulative XY distances between points
+2. **Calculate chainage** from `point_array` centreline, not section `key`
+
+### Code Pattern
+
+```ruby
+# Offset from consecutive XY distances
+cumulative_offset = 0.0
+raw_points.each_with_index do |pt, i|
+  if i > 0
+    dx = pt[:map_x] - raw_points[i-1][:map_x]
+    dy = pt[:map_y] - raw_points[i-1][:map_y]
+    cumulative_offset += Math.sqrt(dx*dx + dy*dy)
+  end
+  section_points << { x: cumulative_offset, z: pt[:z] }
+end
 ```
 
 ---
