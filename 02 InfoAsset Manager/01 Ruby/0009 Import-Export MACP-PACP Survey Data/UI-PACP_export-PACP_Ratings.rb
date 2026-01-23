@@ -1,4 +1,5 @@
 ## Export surveys to the PACP 7 Access MDB format including PACP Ratings
+## This script must be run when Display Units (Tools > Options) are set as 'MGD'! At a minimum Length must be set as 'ft'.
 
 require 'win32ole'
 require 'csv'

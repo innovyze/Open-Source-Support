@@ -40,6 +40,7 @@ on.pacp_export(filename,optionsHash)
 Export CCTV Surveys to PACP7 format and populate the PACP_Ratings table.  
 A prompt dialog is used to populate the export filename and other options, like the UI dialog.  
 The process does require having the InfoAsset Survey ID value exported to one of the PACP_Custom_Field fields, as this is needed to find the correct InspectionID to create the relationship between the tables within the mdb. The prompt will default to use field one.  
+**Note**: This script must be run with the Display Units (Tools > Options > Units) as 'MGD'. At a minimum, 'Length' needs to be in 'ft'.  
 
 
 # [MACP_import](./UIIE-MACP_import.rb)
