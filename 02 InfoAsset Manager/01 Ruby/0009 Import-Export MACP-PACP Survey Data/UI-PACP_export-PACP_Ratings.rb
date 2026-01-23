@@ -94,8 +94,9 @@ end
 #puts "structural_score field found at index #{fieldsHash['structural_score']}"
 
 # Check for PACP fields (optional - won't fail if missing)
+# Note: LoFPACP (likelihood_score) is calculated from pacp_overall_quick_rating, not read directly
 pacpFields = ['pacp_struct_quick_rating', 'pacp_oandm_quick_rating', 'pacp_overall_quick_rating', 
-              'pacp_struct_index_rating', 'pacp_oandm_index_rating', 'pacp_overall_index_rating', 'likelihood_score']
+              'pacp_struct_index_rating', 'pacp_oandm_index_rating', 'pacp_overall_index_rating']
 availablePacpFields = []
 pacpFields.each do |field|
     if fieldsHash.key?(field)
@@ -258,6 +259,50 @@ survey_objects.each do |survey|
         pacpValues[field] = value.nil? ? nil : value
     end
     
+    # Calculate LoFPACP (Likelihood of Failure) from PACP Quick Rating
+    lof_pacp = nil
+    pacp_quick_rating = pacpValues['pacp_overall_quick_rating']
+    
+    # Check if there are no defects (all grades are 0)
+    has_defects = (structuralScoreCounts[1] + structuralScoreCounts[2] + structuralScoreCounts[3] + 
+                   structuralScoreCounts[4] + structuralScoreCounts[5] + 
+                   serviceScoreCounts[1] + serviceScoreCounts[2] + serviceScoreCounts[3] + 
+                   serviceScoreCounts[4] + serviceScoreCounts[5]) > 0
+    
+    if !pacp_quick_rating.nil? && !pacp_quick_rating.to_s.strip.empty?
+        quick_rating_str = pacp_quick_rating.to_s.strip
+        
+        if !has_defects
+            # If condition assessment data is available and there are no defects, LoF is 1.0
+            lof_pacp = 1.0
+            puts "  LoFPACP calculation: No defects found → LoF = 1.0"
+        elsif quick_rating_str.length >= 2
+            # Extract the first two characters
+            first_char = quick_rating_str[0]
+            second_char = quick_rating_str[1]
+            
+            if second_char.match?(/[A-Za-z]/)
+                # Second character is a letter (indicating more than 9 occurrences)
+                # Replace the letter with 0, then divide by 10 and add 1.0
+                numeric_value = "#{first_char}0".to_i
+                lof_pacp = (numeric_value / 10.0) + 1.0
+                puts "  LoFPACP calculation: #{quick_rating_str} → #{first_char}#{second_char} (letter) → #{numeric_value}/10 + 1.0 = #{lof_pacp}"
+            elsif second_char.match?(/[0-9]/)
+                # Second character is a digit (no more than 9 occurrences)
+                # Divide the first two numbers by 10
+                numeric_value = "#{first_char}#{second_char}".to_i
+                lof_pacp = numeric_value / 10.0
+                puts "  LoFPACP calculation: #{quick_rating_str} → #{numeric_value}/10 = #{lof_pacp}"
+            else
+                puts "  LoFPACP calculation: Warning - unexpected format in PACP Quick Rating: #{quick_rating_str}"
+            end
+        else
+            puts "  LoFPACP calculation: Warning - PACP Quick Rating too short: #{quick_rating_str}"
+        end
+    else
+        puts "  LoFPACP calculation: No PACP Quick Rating available"
+    end
+    
     # Store the result with weighted values (count * score) and PACP values
     surveyResult = {
         'survey_id' => survey.id,
@@ -280,7 +325,7 @@ survey_objects.each do |survey|
         'STPipeRatingsIndex' => pacpValues['pacp_struct_index_rating'],
         'OMPipeRatingsIndex' => pacpValues['pacp_oandm_index_rating'],
         'OverallPipeRatingsIndex' => pacpValues['pacp_overall_index_rating'],
-        'LoFPACP' => pacpValues['likelihood_score']
+        'LoFPACP' => lof_pacp
     }
     
     surveyResults << surveyResult
