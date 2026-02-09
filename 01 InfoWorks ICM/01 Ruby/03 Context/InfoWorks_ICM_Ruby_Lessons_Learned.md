@@ -924,7 +924,7 @@ end
 
 ### The Problem
 
-Field names won't match user's natural language (e.g., `ground_level` not `elevation`, `conduit_width` not `diameter`). When you get "field not in table" errors, provide this discovery snippet:
+Field names won't match user's natural language (e.g., `ground_level` not `elevation`, `conduit_width` not `diameter`). When you get "field not in table" errors, provide a separate ruby script to discover available fields:
 
 ```ruby
 # Field Discovery - ask user to run this UI script
@@ -935,8 +935,8 @@ table_info.fields.each { |f| puts "#{f.name} (#{f.type})" }
 
 ### LLM Agent Rules
 
-1. **Don't guess field names** - provide discovery snippet if uncertain
-2. **Workflow:** Error → snippet → user reports fields → regenerate with correct names
+1. **Don't guess field names** - provide discovery script if uncertain
+2. **Workflow:** Error → script → user reports fields → regenerate with correct names
 3. **100+ tables, thousands of fields** - names vary by version/license/network type
 
 ---
