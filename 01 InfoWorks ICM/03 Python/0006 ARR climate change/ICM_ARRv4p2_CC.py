@@ -10,7 +10,7 @@ import re
 # Constants for SSP options and file/section names
 SSP_OPTIONS = ["SSP1-2.6", "SSP2-4.5", "SSP3-7.0", "SSP5-8.5"]
 SECTION_END_PREFIX = "[END_"
-NUMERIC_PATTERN = re.compile(r"[-+]?(?:\d+\.\d*|\.\d+|\d+)")
+NUMERIC_PATTERN = re.compile(r"[-+]?(?:\d+\.\d+|\d+\.|\.\d+|\d+)")
 ARR_DATA_HUB_FILENAME = "ArrDataHub.txt"
 BOM_IFDS_FILENAME = "BomIfds.csv"
 
@@ -356,4 +356,5 @@ def copy_and_update_zip():
 
 if __name__ == "__main__":
     copy_and_update_zip()
+
 
