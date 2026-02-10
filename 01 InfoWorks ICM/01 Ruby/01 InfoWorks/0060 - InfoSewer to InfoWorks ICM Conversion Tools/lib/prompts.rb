@@ -1,4 +1,4 @@
-require 'yaml'
+require 'json'
 
 # Show user prompt to customize the import
 #
@@ -8,7 +8,7 @@ require 'yaml'
 def prompt_get_config(config_file)
   # Load previous config if it exists, otherwise use defaults
   if File.exist?(config_file)
-    previous = YAML.load_file(config_file)
+    previous = JSON.parse(File.read(config_file))
   else
     # Default config for first run
     script_dir = File.dirname(config_file)
@@ -50,9 +50,9 @@ def prompt_get_config(config_file)
   end
   
   # Save the config for next time
-  yaml_hash = Hash.new
-  config.each { |key, value| yaml_hash[key.to_s] = value }
-  File.write(config_file, yaml_hash.to_yaml)
+  json_hash = Hash.new
+  config.each { |key, value| json_hash[key.to_s] = value }
+  File.write(config_file, JSON.pretty_generate(json_hash))
   
   return config
 end

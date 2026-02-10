@@ -118,7 +118,7 @@ def main()
   # ----------------------------------------------------------------
   # Get configuration from user
   # ----------------------------------------------------------------
-  config_path = File.join(__dir__, 'config.yaml')
+  config_path = File.join(__dir__, 'config.json')
   $config = prompt_get_config(config_path)
   
   if $config.nil?
