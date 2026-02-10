@@ -6,16 +6,18 @@
 # This script is automatically launched by PCSWMM_Import_UI.rb
 #
 # WHAT IT DOES:
-#   1. Reads config from YAML file (created by UI script)
-#   2. Extracts .pcz file (ZIP format) using PowerShell
-#   3. Finds INP file in extracted contents
-#   4. Truncates overly long field values (ICM 100-char limit)
-#   5. Creates model group in database
-#   6. Imports INP to ICM using import_all_sw_model_objects
-#   7. Cleans up URL-encoded names (%20 → spaces)
-#   8. Removes empty label lists
-#   9. Commits network to database
-#   10. Deletes temporary files
+#   1. Reads config from JSON file (created by UI script)
+#   2. Opens correct database using connection string
+#   3. Verifies database GUID matches expected database
+#   4. Extracts .pcz file (ZIP format) using PowerShell
+#   5. Finds INP file in extracted contents
+#   6. Truncates overly long field values (ICM 100-char limit)
+#   7. Creates model group in database
+#   8. Imports INP to ICM using import_all_sw_model_objects
+#   9. Cleans up URL-encoded names (%20 → spaces)
+#   10. Removes empty label lists
+#   11. Commits network to database
+#   12. Deletes temporary files
 #
 # REQUIREMENTS:
 #   - InfoWorks ICM 2024 or later
@@ -28,7 +30,7 @@
 #
 # =============================================================================
 
-require 'yaml'
+require 'json'
 require 'fileutils'
 require 'tmpdir'
 require 'open3'
@@ -143,11 +145,11 @@ begin
   config_file = ENV['PCSWMM_IMPORT_CONFIG']
   puts "ENV variable: #{config_file.inspect}"
 
-  # Fallback: look for config.yaml in script directory
+  # Fallback: look for config.json in script directory
   if config_file.nil? || config_file.empty?
     script_dir = File.dirname(__FILE__)
-    config_file = File.join(script_dir, 'config.yaml')
-    puts "Using config.yaml from script directory"
+    config_file = File.join(script_dir, 'config.json')
+    puts "Using config.json from script directory"
   end
 
   puts "Config file: #{config_file}"
@@ -155,18 +157,19 @@ begin
   unless File.exist?(config_file)
     puts "ERROR: Configuration file not found: #{config_file}"
     puts ""
-    puts "Please create a config.yaml file with the following format:"
+    puts "Please create a config.json file with the following format:"
     puts ""
-    puts "---"
-    puts "pcz_file: \"C:/path/to/model.pcz\""
-    puts "model_group_name: \"PCSWMM - Model Name\""
+    puts "{"
+    puts "  \"pcz_file\": \"C:/path/to/model.pcz\","
+    puts "  \"model_group_name\": \"PCSWMM - Model Name\""
+    puts "}"
     puts ""
     exit 1
   end
 
   puts "Config file found!"
 
-  config = YAML.load_file(config_file)
+  config = JSON.parse(File.read(config_file))
   
 rescue => e
   puts ""
@@ -221,10 +224,20 @@ puts "="*70
 # =============================================================================
 # STEP 2: OPEN DATABASE
 # =============================================================================
+expected_guid = config['database_guid']
+db_path = config['database_path']
+
 begin
   puts ""
-  puts "Opening database..."
-  db = WSApplication.open
+  # Try to open the specific database by path/connection string if available
+  if db_path && !db_path.empty?
+    puts "Opening database: #{db_path}"
+    db = WSApplication.open(db_path)
+    puts "Successfully opened database"
+  else
+    puts "Database path not available, using default connection"
+    db = WSApplication.open
+  end
   
   if db.nil?
     puts "ERROR: Database is nil"
@@ -247,6 +260,30 @@ rescue => e
   puts "="*70
   exit 1
 end
+
+# Verify we're connected to the correct database
+actual_guid = db.guid
+if actual_guid != expected_guid
+  error_msg = "\n" + "="*70 + "\n"
+  error_msg += "ERROR: Connected to Wrong Database!\n"
+  error_msg += "="*70 + "\n\n"
+  error_msg += "Expected database GUID: #{expected_guid}\n"
+  error_msg += "Actually connected to:   #{actual_guid}\n\n"
+  error_msg += "This usually happens when:\n"
+  error_msg += "  1. Multiple ICM instances are/were open\n"
+  error_msg += "  2. ICMExchange connected to the last-used database\n\n"
+  error_msg += "Solutions:\n"
+  error_msg += "  1. Close ALL ICM instances\n"
+  error_msg += "  2. Open ONLY the target database\n"
+  error_msg += "  3. Run a simple script to 'prime' ICMExchange\n"
+  error_msg += "  4. Run this script again\n"
+  error_msg += "="*70 + "\n"
+  
+  puts error_msg
+  exit 1
+end
+
+puts "Connected to correct database (GUID: #{actual_guid})"
 
 # =============================================================================
 # STEP 3: SETUP LOGGING

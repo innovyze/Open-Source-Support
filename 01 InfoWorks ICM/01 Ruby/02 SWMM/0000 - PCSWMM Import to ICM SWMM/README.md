@@ -68,9 +68,11 @@
 |-------|----------|
 | "No database is currently open" | Open an ICM database before running the script |
 | "Model group already exists" | Delete or rename existing group, or choose a different name |
+| "Connected to Wrong Database" error | Script automatically detects and reports database mismatches - follow on-screen instructions |
 | "Cannot find ICMExchange.exe" | Install InfoWorks ICM 2024+ or contact support |
 | No objects imported | Check logs for field value errors - truncation may have failed |
 | Where are my log files? | `[PCZfileLocation]\[PCZfilename]\PCSWMM_Import_*.log` |
+| Temporary screen resize during import | Normal behavior - ICMExchange process temporarily takes focus |
 
 ---
 

@@ -31,13 +31,13 @@
 #
 # =============================================================================
 
-require 'yaml'
+require 'json'
 require 'open3'
 
 # Main import function - handles all user interaction and launches Exchange script
 def run_import
   # ============================================================
-  # STEP 1: Check database is open
+  # STEP 1: Check database is open and capture connection info
   # ============================================================
   db = WSApplication.current_database
   
@@ -50,6 +50,19 @@ def run_import
       false
     )
     return
+  end
+  
+  # Capture database GUID and path for Exchange script
+  db_guid = db.guid
+  db_path = nil
+  begin
+    # Try common properties that might contain the path
+    db_path = db.path if db.respond_to?(:path)
+    db_path ||= db.database_path if db.respond_to?(:database_path)
+    db_path ||= db.location if db.respond_to?(:location)
+    db_path ||= db.file_path if db.respond_to?(:file_path)
+  rescue => e
+    # Couldn't get path - will rely on GUID check only
   end
   
   script_dir = File.dirname(WSApplication.script_file)
@@ -165,15 +178,17 @@ def run_import
   # ============================================================
   
   log_dir = File.dirname(pcz_file)
-  config_file = File.join(log_dir, 'pcswmm_import_config.yaml')
+  config_file = File.join(log_dir, 'pcswmm_import_config.json')
   
   config = {
     'pcz_file' => pcz_file,
-    'model_group_name' => group_name
+    'model_group_name' => group_name,
+    'database_guid' => db_guid,
+    'database_path' => db_path
   }
   
   begin
-    File.open(config_file, 'w') { |f| f.write(config.to_yaml) }
+    File.open(config_file, 'w') { |f| f.write(JSON.pretty_generate(config)) }
     
     # Verify file was created and has content
     unless File.exist?(config_file) && File.size(config_file) > 0
@@ -195,6 +210,10 @@ def run_import
   # Find ICMExchange executable
   icm_exchange = nil
   icm_paths = [
+    "C:\\Program Files\\Autodesk\\InfoWorks ICM Ultimate 2027\\ICMExchange.exe",
+    "C:\\Program Files\\Autodesk\\InfoWorks ICM Sewer 2027\\ICMExchange.exe",
+    "C:\\Program Files\\Autodesk\\InfoWorks ICM Flood 2027\\ICMExchange.exe",
+    "C:\\Program Files\\Autodesk\\InfoWorks ICM 2027\\ICMExchange.exe",
     "C:\\Program Files\\Autodesk\\InfoWorks ICM Ultimate 2026\\ICMExchange.exe",
     "C:\\Program Files\\Autodesk\\InfoWorks ICM 2026\\ICMExchange.exe",
     "C:\\Program Files\\Autodesk\\InfoWorks ICM Ultimate 2025.2\\ICMExchange.exe",
