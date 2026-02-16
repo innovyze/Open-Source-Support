@@ -4,9 +4,9 @@
 
 **Empowering the water modeling community with open-source scripts, tools, and automation**
 
-[![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
-[![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
-[![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
+[![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)](https://github.com/innovyze/Open-Source-Support/search?l=ruby)
+[![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)](https://github.com/innovyze/Open-Source-Support/search?q=*.sql)
+[![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)](https://github.com/innovyze/Open-Source-Support/search?l=python)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](./LICENSE)
 
 ---
