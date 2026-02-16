@@ -1,0 +1,11 @@
+#This SQL query helps in identifying post code & address for particular manhole while proposing manhole survey/survey schedule. 
+#This SQL query populates user text 1 & user text 2 with post code & address respectively. 
+#To use this query you need to add a appropriate GIS file in Geo plan which should contain post code & address data. 
+#The GIS usually be a address point data for the study area.
+
+UPDATE Node set user_text_1 = '';
+UPDATE Node set user_text_2 = '';
+
+##Take Post code & address data from addresspoints.
+SET user_text_1 =spatial.POSTCODE_LOCATOR ;
+SET user_text_2 = spatial.LOCATION_DESC
