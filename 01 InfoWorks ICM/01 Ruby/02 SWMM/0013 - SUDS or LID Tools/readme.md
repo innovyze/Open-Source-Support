@@ -56,13 +56,12 @@ This section focuses on the **0013 - SUDS or LID Tools** directory under the `02
 
 To use the scripts within the `0013 - SUDS or LID Tools` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0013 - SUDS or LID Tools` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for managing SUDS or LID implementations.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `UI_*.rb` or `hw_UI_*.rb` script from this folder.
 
-For example, to create SUDS for all subcatchments:
-```sh
-ruby UI_Script_Create SuDS for All Subcatchments.rb
+For example, to create SuDS for all subcatchments, choose:
+`UI_Script_Create SuDS for All Subcatchments.rb`.
 
 Note
 Always check for permissions before running scripts that might modify your model or data.
