@@ -4,9 +4,9 @@
 
 **Empowering the water modeling community with open-source scripts, tools, and automation**
 
-![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)
-![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)
-![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)
+[![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)](#ruby-script-library)
+[![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)](#sql-query-library)
+[![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)](#python-tool-library)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](./LICENSE)
 
 ---
@@ -38,11 +38,30 @@ This repository is your **central hub** for open-source code that enhances Autod
 | Product | Description | Scripts Available |
 |---------|-------------|-------------------|
 | [**InfoWorks ICM**](./01%20InfoWorks%20ICM/) | Integrated Catchment Modeling | Ruby, SQL, Python |
-| [**InfoAsset Manager**](./02%20InfoAsset%20Manager/) | Asset Management Platform | Ruby Scripts |
+| [**InfoAsset Manager**](./02%20InfoAsset%20Manager/) | Asset Management Platform | Ruby, SQL |
 | [**ICMLive**](./03%20ICMLive/) | Real-time Operational Platform | Data Formats, APIs |
 | [**InfoWorks WS Pro**](./04%20InfoWorks%20WS%20Pro/) | Water Distribution Modeling | Ruby, SQL, VBScript |
 | [**InfoWater Pro**](./05%20InfoWater%20Pro/) | ArcGIS-based Water Modeling | Python Integration |
 | [**XPSWMM**](./06%20XPSWMM/) | Stormwater & Flooding Analysis | Tutorials, Resources |
+
+### Browse by Script Type
+
+#### Ruby Script Library
+
+- [InfoWorks ICM Ruby](./01%20InfoWorks%20ICM/01%20Ruby/)
+- [InfoAsset Manager Ruby](./02%20InfoAsset%20Manager/01%20Ruby/)
+- [InfoWorks WS Pro Ruby](./04%20InfoWorks%20WS%20Pro/01%20Ruby/)
+
+#### SQL Query Library
+
+- [InfoWorks ICM SQL](./01%20InfoWorks%20ICM/02%20SQL/)
+- [InfoAsset Manager SQL](./02%20InfoAsset%20Manager/02%20SQL/)
+- [InfoWorks WS Pro SQL](./04%20InfoWorks%20WS%20Pro/02%20SQL/)
+
+#### Python Tool Library
+
+- [InfoWorks ICM Python](./01%20InfoWorks%20ICM/03%20Python/)
+- [InfoWater Pro Python](./05%20InfoWater%20Pro/01%20Python/)
 
 ## Featured Scripts
 
