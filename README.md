@@ -123,6 +123,9 @@ DESELECT WHERE condition3;
 
 We welcome contributions from the water modeling community!
 
+Before opening or reviewing a pull request, please read:
+[`PR_RULES_OF_ENGAGEMENT.md`](./PR_RULES_OF_ENGAGEMENT.md)
+
 ### Share Your Scripts
 
 1. Fork this repository
