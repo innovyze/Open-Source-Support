@@ -7,7 +7,7 @@
 [![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
 [![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
 [![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
-[![License](https://img.shields.io/badge/License-Open%20Source-green?style=flat)](https://github.com/innovyze/Open-Source-Support)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](./LICENSE)
 
 ---
 
@@ -162,9 +162,11 @@ This repository is **growing organically** with the community. We may occasional
 
 ### Liability & Support
 
-- **Community-Driven**: Scripts are shared in good faith by Autodesk Support and community contributors
-- **Open Source**: All code is transparent and available for review
-- **Use at Own Risk**: Autodesk is not liable for unintended consequences
+- **Community-Driven**: Scripts are shared in good faith by individual contributors (including Autodesk Support) and the broader community; contributors are not necessarily professional software developers
+- **Provided "AS IS"**: Scripts and examples are provided at face value, without warranties or guarantees; see [`LICENSE`](./LICENSE)
+- **Limitation of Liability**: Autodesk and contributors are not liable for damages or losses arising from use of this repository; see [`LICENSE`](./LICENSE)
+- **Use at Own Risk**: You are responsible for backups, review, testing, and validation in your environment before using results in production
+- **No Official Support / SLA**: GitHub issues and pull requests are best-effort and are not covered by Autodesk product support obligations or SLAs
 - **Not for Bespoke Projects**: Custom development requests should go through official Autodesk channels
 
 ### Script Quality
@@ -175,6 +177,12 @@ Scripts are typically developed for specific customer use cases. While functiona
 - Report issues for enhancement
 - Add documentation and examples
 - Share your own optimizations
+
+## License
+
+This repository is licensed under the [MIT License](./LICENSE).
+
+Autodesk and related product names are trademarks of Autodesk, Inc. The license does not grant permission to use Autodesk trademarks.
 
 ## Analytics
 
