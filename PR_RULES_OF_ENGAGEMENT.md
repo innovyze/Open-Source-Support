@@ -112,7 +112,8 @@ Include proof that the change is valid. PRs without evidence will be returned.
 - Tag only confirmed GitHub handles.
 - Do not guess usernames.
 - If handle mapping is uncertain, ask maintainers to confirm.
-- Prefer tagging current maintainers and confirmed original authors only.
+- Prefer tagging current maintainers and confirmed original authors of affected files.
+- Do not tag the Issue opener by default. Tag them only if they are also a maintainer or an original author of an affected file.
 
 ## PR body template (copy + fill in)
 
@@ -166,3 +167,4 @@ When reviewing:
 6. Confirm before/after code blocks match the actual diff.
 7. Confirm evidence is included.
 8. Confirm no accidental formatting churn.
+9. Confirm tagging follows policy: affected-file originators/maintainers only, not the Issue opener by default.
