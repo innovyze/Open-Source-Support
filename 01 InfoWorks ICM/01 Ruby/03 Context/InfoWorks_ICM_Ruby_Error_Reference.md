@@ -6,7 +6,7 @@
 **Load Condition:** CONDITIONAL - When query contains error/debugging keywords  
 **Keywords:** error, exception, fails, broken, debugging, NoMethodError, NilClass, undefined method
 
-**Last Updated:** December 2, 2025
+**Last Updated:** January 16, 2026
 
 ## How to Use This File
 
@@ -32,7 +32,7 @@
 
 **Symptom:** Script fails immediately in Exchange context  
 **Cause:** Using UI-only method in Exchange script  
-**Solution:** See PAT_SCRIPT_INIT_001 (UI) vs PAT_SCRIPT_INIT_002 (Exchange)
+**Solution:** See PAT_APP_ACCESS_001 (UI) vs PAT_EXC_DB_OPEN_052 (Exchange)
 
 **Quick Fix:**
 ```ruby
@@ -92,7 +92,7 @@ net.row_objects('hw_node').to_a.each { |n| n.delete if condition }
 
 **Symptom:** Script runs without error but data unchanged  
 **Cause:** Missing write() call after modifications  
-**Solution:** See PAT_NETWORK_MODIFY_001, PAT_STRUCTURE_DATA_010
+**Solution:** See PAT_BULK_MODIFY_011, PAT_STRUCTURE_UPDATE_012
 
 **Quick Fix:**
 ```ruby
@@ -194,7 +194,7 @@ value = node['Category']  # If 'Category' conflicts with method
 
 **Symptom:** transaction_commit fails with validation error  
 **Cause:** Data violates network rules (missing nodes, invalid values)  
-**Solution:** See PAT_TRANSACTION_005
+**Solution:** See PAT_TRANSACTION_010
 
 **Quick Fix:**
 ```ruby
@@ -330,7 +330,7 @@ end
 
 **Symptom:** No error but data not imported/exported  
 **Cause:** Configuration issue or data format problem  
-**Solution:** See PAT_IMPORT_EXPORT_022, PAT_IMPORT_EXPORT_023, use error file
+**Solution:** See PAT_EXPORT_ODEC_022, PAT_FILE_WRITE_CSV_023, use error file
 
 **Quick Fix:**
 ```ruby

@@ -13,6 +13,8 @@
 #   Phase 2.5: Create SWMM runs with network/scenario/rainfall configured
 #
 # FEATURES:
+#   - Opens correct database using connection string (works with multiple ICM instances)
+#   - Verifies database GUID before proceeding (prevents wrong database errors)
 #   - Content-based deduplication (not name-based)
 #   - Sequential naming: "Rainfall Event 01", "Inflow 01", etc.
 #   - Scenario tracking in Description fields
@@ -22,11 +24,11 @@
 #   - Timestep controls cannot be copied reliably
 #   - Climatology/Time Patterns cannot be assigned via API
 #   - Inflow Events cannot be linked to runs programmatically
-#   - See API_LIMITATIONS.md for details
+#   - Users must manually configure these settings in each SWMM run after import
 #
 # ============================================================================
 
-require 'yaml'
+require 'json'
 
 # ----------------------------------------------------------------------------
 # Helper Methods
@@ -62,7 +64,7 @@ unless config_file && File.exist?(config_file)
   
   search_paths = []
   [script_dir, parent_dir, grandparent_dir].each do |dir|
-    Dir.glob(File.join(dir, "**", "ICM Import Log Files", "import_config.yaml")).each do |path|
+    Dir.glob(File.join(dir, "**", "ICM Import Log Files", "import_config.json")).each do |path|
       search_paths << path
     end
   end
@@ -79,7 +81,7 @@ unless config_file && File.exist?(config_file)
 end
 
 begin
-  config = YAML.load_file(config_file)
+  config = JSON.parse(File.read(config_file))
 rescue => e
   puts "ERROR: Could not read configuration file: #{e.message}"
   exit 1
@@ -124,10 +126,22 @@ puts "\n" + "="*70
 # ----------------------------------------------------------------------------
 # Open Database
 # ----------------------------------------------------------------------------
+expected_guid = config['database_guid']
+db_path = config['database_path']
+
 begin
-  db = WSApplication.open
+  # Try to open the specific database by path/connection string if available
+  if db_path && !db_path.empty?
+    puts "Opening database: #{db_path}"
+    db = WSApplication.open(db_path)
+    puts "Successfully opened database"
+  else
+    puts "Database path not available, using default connection"
+    db = WSApplication.open
+  end
 rescue => e
   puts "Error opening database: #{e.message}"
+  puts "Backtrace: #{e.backtrace.first(5).join("\n")}" if e.backtrace
   exit 1
 end
 
@@ -135,6 +149,30 @@ if db.nil?
   puts "Failed to open the database."
   exit 1
 end
+
+# Verify we're connected to the correct database
+actual_guid = db.guid
+if actual_guid != expected_guid
+  error_msg = "\n" + "="*70 + "\n"
+  error_msg += "ERROR: Connected to Wrong Database!\n"
+  error_msg += "="*70 + "\n\n"
+  error_msg += "Expected database GUID: #{expected_guid}\n"
+  error_msg += "Actually connected to:   #{actual_guid}\n\n"
+  error_msg += "This usually happens when:\n"
+  error_msg += "  1. Multiple ICM instances are/were open\n"
+  error_msg += "  2. ICMExchange connected to the last-used database\n\n"
+  error_msg += "Solutions:\n"
+  error_msg += "  1. Close ALL ICM instances\n"
+  error_msg += "  2. Open ONLY the target database\n"
+  error_msg += "  3. Run a simple script to 'prime' ICMExchange\n"
+  error_msg += "  4. Run this script again\n"
+  error_msg += "="*70 + "\n"
+  
+  puts error_msg
+  exit 1
+end
+
+puts "Connected to correct database (GUID: #{actual_guid})"
 
 # File validation already done above after config loading
 # Additional validation handled earlier in the script

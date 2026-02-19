@@ -22,7 +22,7 @@
 #   - Writes summary file for accurate statistics reporting
 #
 # RUNS AUTOMATICALLY:
-#   Launched by SWMM5_Import_with_Cleanup_UI.rb (UI script)
+#   Launched by SWMM5_Import_ICM_SWMM_with_Cleanup_UI.rb (UI script)
 #   Reads configuration from YAML file
 #
 # ============================================================================
@@ -74,7 +74,7 @@ end
 
 unless config_file && File.exist?(config_file)
   puts "ERROR: Configuration file not found"
-  puts "Please run SWMM5_Import_with_Cleanup_UI.rb first to generate the config file."
+  puts "Please run SWMM5_Import_ICM_SWMM_with_Cleanup_UI.rb first to generate the config file."
   exit 1
 end
 

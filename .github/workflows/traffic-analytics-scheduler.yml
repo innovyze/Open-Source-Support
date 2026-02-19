@@ -29,16 +29,21 @@ jobs:
     # Merge new data into existing files with deduplication
     - name: Merge and deduplicate data
       run: |
+        sudo chown -R $USER:$USER traffic
         for file in views clones; do
           if [ -f "traffic/${file}.csv" ]; then
             if [ -f "data/${file}.csv" ]; then
               # Merge: keep header, combine data, deduplicate by date (keep newer), sort
+              # 1. Grab header from existing file
+              head -1 "data/${file}.csv" > "data/${file}.csv.tmp"
+              
+              # 2. Combine bodies, deduplicate, and sort
               (
-                head -1 "data/${file}.csv"
                 tail -n +2 "data/${file}.csv"
                 tail -n +2 "traffic/${file}.csv"
-              ) | awk -F',' 'NR==1 {print; next} {lines[$1]=$0} END {for (date in lines) print lines[date]}' | \
-              sort -t',' -k1,1 > "data/${file}.csv.tmp"
+              ) | awk -F',' '{lines[$1]=$0} END {for (date in lines) print lines[date]}' | \
+              sort -t',' -k1,1 >> "data/${file}.csv.tmp"
+              
               mv "data/${file}.csv.tmp" "data/${file}.csv"
             else
               # No existing file, just move the new one

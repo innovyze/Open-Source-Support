@@ -1,10 +1,13 @@
 ## Export surveys to the PACP 7 Access MDB format including PACP Ratings
+## This script must be run when Display Units (Tools > Options) are set as 'MGD'! At a minimum Length must be set as 'ft'.
 
 require 'win32ole'
 require 'csv'
 
 # Get the network
 net = WSApplication.current_network
+
+WSApplication.message_box("This script must be run when Display Units (Tools > Options) are set as 'MGD'!\nAt a minimum Length must be set as 'ft'.",'OKCancel','!',nil)
 
 # Prompt for variables
 val=WSApplication.prompt "Export PACP 7",
@@ -91,8 +94,9 @@ end
 #puts "structural_score field found at index #{fieldsHash['structural_score']}"
 
 # Check for PACP fields (optional - won't fail if missing)
+# Note: LoFPACP (likelihood_score) is calculated from pacp_overall_quick_rating, not read directly
 pacpFields = ['pacp_struct_quick_rating', 'pacp_oandm_quick_rating', 'pacp_overall_quick_rating', 
-              'pacp_struct_index_rating', 'pacp_oandm_index_rating', 'pacp_overall_index_rating', 'likelihood_score']
+              'pacp_struct_index_rating', 'pacp_oandm_index_rating', 'pacp_overall_index_rating']
 availablePacpFields = []
 pacpFields.each do |field|
     if fieldsHash.key?(field)
@@ -136,27 +140,104 @@ survey_objects.each do |survey|
     if details.size > 0
         puts "  Found #{details.size} detail records"
         
-        # Process each detail record
+        # Check if 'cd' field exists for continuous defects
+        has_cd_field = fieldsHash.key?('cd')
+        has_distance_field = fieldsHash.key?('distance')
+        
+        # First pass: Identify continuous defects and calculate equivalent point defects
+        # Map detail index to number of equivalent point defects (only for start markers to avoid double counting)
+        detail_segments = {}
+        continuous_defects_processed = {}
+        finish_markers = {}  # Track finish markers so we skip them in counting
+        
+        if has_cd_field && has_distance_field
+            # Find all continuous defect pairs (start and finish)
+            (0...details.size).each do |i|
+                cd_value = details[i]['cd']
+                if !cd_value.nil? && !cd_value.to_s.empty?
+                    cd_str = cd_value.to_s.strip.upcase
+                    # Check if it's a start marker (S + pairing ID, e.g., S01, S02)
+                    if cd_str.start_with?('S')
+                        # Extract the pairing ID after 'S' (e.g., "01" from "S01")
+                        pairing_id = cd_str[1..-1].strip
+                        if !pairing_id.empty?
+                            # Get the distance value for the start marker
+                            start_distance = details[i]['distance']
+                            if !start_distance.nil? && start_distance.is_a?(Numeric)
+                                # Find the matching finish marker with same pairing ID
+                                (i+1...details.size).each do |j|
+                                    finish_cd = details[j]['cd']
+                                    if !finish_cd.nil? && !finish_cd.to_s.empty?
+                                        finish_cd_str = finish_cd.to_s.strip.upcase
+                                        # Check if this is the matching finish marker (F + same pairing ID)
+                                        if finish_cd_str == "F#{pairing_id}"
+                                            # Get the distance value for the finish marker
+                                            finish_distance = details[j]['distance']
+                                            if !finish_distance.nil? && finish_distance.is_a?(Numeric)
+                                                # Calculate length: finish_distance - start_distance
+                                                length = finish_distance - start_distance
+                                                # Calculate equivalent point defects: length ÷ 5, rounded to nearest whole number
+                                                # Per PACP: "The quotient is then rounded to the nearest whole number"
+                                                # Example: 19.7 feet ÷ 5 = 3.94 → rounds to 4
+                                                equivalent_defects = (length / 5.0).round
+                                                # Ensure at least 1 defect is counted (even if length < 2.5 feet)
+                                                equivalent_defects = 1 if equivalent_defects < 1
+                                                # Found matching pair - mark start index with equivalent defects, mark finish to skip
+                                                detail_segments[i] = equivalent_defects
+                                                finish_markers[j] = true
+                                                continuous_defects_processed[i] = true
+                                                continuous_defects_processed[j] = true
+                                                puts "    Continuous defect found: Detail #{i+1} (#{cd_str}, dist=#{start_distance}) and #{j+1} (#{finish_cd_str}, dist=#{finish_distance}), length=#{length.round(2)}ft, equivalent point defects=#{equivalent_defects}"
+                                                break
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        # Second pass: Process each detail record with continuous defect handling
         (0...details.size).each do |i|
+            # Skip finish markers - we only count the start marker
+            if finish_markers[i]
+                puts "    Detail #{i+1}: (finish marker - skipped in counting)"
+                next
+            end
+            
             serviceScore = details[i]['service_score']
             structuralScore = details[i]['structural_score']
             
+            # Determine how many times to count this defect (1 for regular, N for continuous)
+            # N = equivalent point defects calculated from length ÷ 5, rounded
+            count_multiplier = detail_segments[i] || 1
+            
             # Count service_score values (1-5) - handle null values
             if !serviceScore.nil? && serviceScore.is_a?(Numeric) && serviceScore >= 1 && serviceScore <= 5
-                serviceScoreCounts[serviceScore.to_i] += 1
-                totalServiceScoreCounts[serviceScore.to_i] += 1
+                # Count this grade count_multiplier times (equivalent point defects)
+                count_multiplier.times do
+                    serviceScoreCounts[serviceScore.to_i] += 1
+                    totalServiceScoreCounts[serviceScore.to_i] += 1
+                end
             end
             
             # Count structural_score values (1-5) - handle null values
             if !structuralScore.nil? && structuralScore.is_a?(Numeric) && structuralScore >= 1 && structuralScore <= 5
-                structuralScoreCounts[structuralScore.to_i] += 1
-                totalStructuralScoreCounts[structuralScore.to_i] += 1
+                # Count this grade count_multiplier times (equivalent point defects)
+                count_multiplier.times do
+                    structuralScoreCounts[structuralScore.to_i] += 1
+                    totalStructuralScoreCounts[structuralScore.to_i] += 1
+                end
             end
             
             # Display values, showing "null" for nil values
             serviceDisplay = serviceScore.nil? ? "null" : serviceScore.to_s
             structuralDisplay = structuralScore.nil? ? "null" : structuralScore.to_s
-            puts "    Detail #{i+1}: service_score=#{serviceDisplay}, structural_score=#{structuralDisplay}"
+            cd_info = continuous_defects_processed[i] ? " (continuous defect = #{count_multiplier} equivalent point defects)" : ""
+            puts "    Detail #{i+1}: service_score=#{serviceDisplay}, structural_score=#{structuralDisplay}#{cd_info}"
         end
         
         puts "  Survey #{survey.id} summary:"
@@ -176,6 +257,50 @@ survey_objects.each do |survey|
     pacpFields.each do |field|
         value = survey[field]
         pacpValues[field] = value.nil? ? nil : value
+    end
+    
+    # Calculate LoFPACP (Likelihood of Failure) from PACP Quick Rating
+    lof_pacp = nil
+    pacp_quick_rating = pacpValues['pacp_overall_quick_rating']
+    
+    # Check if there are no defects (all grades are 0)
+    has_defects = (structuralScoreCounts[1] + structuralScoreCounts[2] + structuralScoreCounts[3] + 
+                   structuralScoreCounts[4] + structuralScoreCounts[5] + 
+                   serviceScoreCounts[1] + serviceScoreCounts[2] + serviceScoreCounts[3] + 
+                   serviceScoreCounts[4] + serviceScoreCounts[5]) > 0
+    
+    if !pacp_quick_rating.nil? && !pacp_quick_rating.to_s.strip.empty?
+        quick_rating_str = pacp_quick_rating.to_s.strip
+        
+        if !has_defects
+            # If condition assessment data is available and there are no defects, LoF is 1.0
+            lof_pacp = 1.0
+            puts "  LoFPACP calculation: No defects found → LoF = 1.0"
+        elsif quick_rating_str.length >= 2
+            # Extract the first two characters
+            first_char = quick_rating_str[0]
+            second_char = quick_rating_str[1]
+            
+            if second_char.match?(/[A-Za-z]/)
+                # Second character is a letter (indicating more than 9 occurrences)
+                # Replace the letter with 0, then divide by 10 and add 1.0
+                numeric_value = "#{first_char}0".to_i
+                lof_pacp = (numeric_value / 10.0) + 1.0
+                puts "  LoFPACP calculation: #{quick_rating_str} → #{first_char}#{second_char} (letter) → #{numeric_value}/10 + 1.0 = #{lof_pacp}"
+            elsif second_char.match?(/[0-9]/)
+                # Second character is a digit (no more than 9 occurrences)
+                # Divide the first two numbers by 10
+                numeric_value = "#{first_char}#{second_char}".to_i
+                lof_pacp = numeric_value / 10.0
+                puts "  LoFPACP calculation: #{quick_rating_str} → #{numeric_value}/10 = #{lof_pacp}"
+            else
+                puts "  LoFPACP calculation: Warning - unexpected format in PACP Quick Rating: #{quick_rating_str}"
+            end
+        else
+            puts "  LoFPACP calculation: Warning - PACP Quick Rating too short: #{quick_rating_str}"
+        end
+    else
+        puts "  LoFPACP calculation: No PACP Quick Rating available"
     end
     
     # Store the result with weighted values (count * score) and PACP values
@@ -200,7 +325,7 @@ survey_objects.each do |survey|
         'STPipeRatingsIndex' => pacpValues['pacp_struct_index_rating'],
         'OMPipeRatingsIndex' => pacpValues['pacp_oandm_index_rating'],
         'OverallPipeRatingsIndex' => pacpValues['pacp_overall_index_rating'],
-        'LoFPACP' => pacpValues['likelihood_score']
+        'LoFPACP' => lof_pacp
     }
     
     surveyResults << surveyResult

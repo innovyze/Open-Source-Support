@@ -55,13 +55,12 @@ This section focuses on the **0012 - ICM InfoWorks Results to SWMM5 Summary Tabl
 
 To use the scripts within the `0012 - ICM InfoWorks Results to SWMM5 Summary Tables` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0012 - ICM InfoWorks Results to SWMM5 Summary Tables` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow to convert ICM InfoWorks results into SWMM5 summary tables.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `hw_UI_*.rb` script from this folder.
 
-For example, to generate a summary table for conduit surcharge:
-```sh
-ruby hw_UI_script_swmm5_conduit_surcharge_summary_table.rb
+For example, to generate a summary table for conduit surcharge, choose:
+`hw_UI_script_swmm5_conduit_surcharge_summary_table.rb`.
 
 Note
 Always ensure you have the necessary permissions to run these scripts, especially since they might involve reading or writing result data.

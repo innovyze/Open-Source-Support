@@ -45,13 +45,13 @@ This section focuses on the **0007 - Hydraulic Comparison Tools for ICM InfoWork
 
 To use the scripts within the `0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system. SQL scripts might require an appropriate SQL environment or tool for execution.
-2. **Navigation:** Navigate to the `0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for comparing hydraulic parameters. For SQL scripts, use an SQL environment to execute them.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI for Ruby scripts.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `UI_*.rb` or `hw_UI_*.rb` script from this folder.
+4. **SQL Files:** Run `.sql` files using an SQL environment (not through the Ruby script dialog).
 
-For example, to compare headloss:
-```sh
-ruby hw_UI_script_compare_icm_headloss.rb
+For example, to compare headloss in ICM, choose:
+`hw_UI_script_compare_icm_headloss.rb`.
 
 Note
 Always check for permissions before running scripts that might access or modify data.

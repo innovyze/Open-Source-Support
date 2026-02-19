@@ -12,7 +12,7 @@ Go to [Using SQL](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-9C3E
 # Resources
 
 For further learning, check out the following resources:
-* [InfoWorks ICM Technical Information Hub](https://boards.autodesk.com/4bf242?token=a671af9e76)
+* [InfoWorks ICM Technical Information Hub](https://boards.autodesk.com/4bf242)
 * [Update models for capacity planning with SQL in InfoWorks ICM](https://www.youtube.com/watch?v=Tvakg0tbo24)
 * [Practical SQL queries in InfoWorks ICM and InfoWorks WS Pro](https://www.youtube.com/watch?v=qMMLJh4FCj4)
 * [Using SQL queries to automate processes in InfoWorks ICM](https://www.youtube.com/watch?v=6Q49nQqHsH4)

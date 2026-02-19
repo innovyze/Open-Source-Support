@@ -1,4 +1,4 @@
-require 'yaml'
+require 'json'
 
 # Show user prompt to customize the import
 #
@@ -8,13 +8,13 @@ require 'yaml'
 def prompt_get_config(config_file)
   # Load previous config if it exists, otherwise use defaults
   if File.exist?(config_file)
-    previous = YAML.load_file(config_file)
+    previous = JSON.parse(File.read(config_file))
   else
     # Default config for first run
     script_dir = File.dirname(config_file)
     previous = {
       'model_path' => '',
-      'fields_path' => File.join(script_dir, 'field_mappings')
+      'fields_path' => File.join(script_dir, 'import_config')
     }
   end
   
@@ -23,7 +23,7 @@ def prompt_get_config(config_file)
   # The values are the WSApplication.prompt layout structure
   options = {
     model_path: ['InfoSewer Model (.IEDB folder)', 'String', previous['model_path'], nil, 'FOLDER', 'Select the .IEDB folder'],
-    fields_path: ['Field mapping YAML folder', 'String', previous['fields_path'], nil, 'FOLDER', 'Folder containing YAML files']
+    fields_path: ['Import Configuration (import_config folder)', 'String', previous['fields_path'], nil, 'FOLDER', 'Select the folder containing conversion settings (default: import_config)']
   }
   
   response = WSApplication.prompt('InfoSewer to ICM Importer - Configuration', options.values, false)
@@ -50,9 +50,9 @@ def prompt_get_config(config_file)
   end
   
   # Save the config for next time
-  yaml_hash = Hash.new
-  config.each { |key, value| yaml_hash[key.to_s] = value }
-  File.write(config_file, yaml_hash.to_yaml)
+  json_hash = Hash.new
+  config.each { |key, value| json_hash[key.to_s] = value }
+  File.write(config_file, JSON.pretty_generate(json_hash))
   
   return config
 end

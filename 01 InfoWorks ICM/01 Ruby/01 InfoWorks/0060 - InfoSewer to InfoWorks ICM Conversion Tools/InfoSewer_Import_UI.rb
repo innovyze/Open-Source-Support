@@ -31,7 +31,7 @@
 #   - No manual file conversion required
 #   - No ArcCatalog shapefile conversion required
 #   - Automatic scenario detection and selection
-#   - Comprehensive field mapping via YAML files
+#   - Comprehensive field mapping via configuration files
 #   - Post-import cleanup and validation
 #   - Progress logging to script window
 #
@@ -39,7 +39,6 @@
 #   - InfoWorks ICM 2024+
 #   - InfoSewer model (.IEDB folder)
 #   - Open ICM database with current network
-#   - Microsoft Excel (optional - only if using Excel COM mode)
 #
 # ============================================================================
 
@@ -119,7 +118,7 @@ def main()
   # ----------------------------------------------------------------
   # Get configuration from user
   # ----------------------------------------------------------------
-  config_path = File.join(__dir__, 'config.yaml')
+  config_path = File.join(__dir__, 'config.json')
   $config = prompt_get_config(config_path)
   
   if $config.nil?
@@ -462,12 +461,13 @@ def main()
   return true  # Import completed successfully
 end
 
-# Get data for a given file, with caching
+# Get data for a given DBF file, with caching
+# Note: Function name kept as 'get_csv' for backward compatibility
 #
-# @param name [String] name of the file - lowercase, no extension
+# @param name [String] name of the DBF file - lowercase, no extension
 # @param hash_by_id [Boolean] whether to return as hash keyed by ID
 # @param cache [Boolean] whether to use/store cache
-# @return [Hash or Array] the data
+# @return [Hash or Array] the data from the DBF file
 #
 
 def get_csv(name, hash_by_id: true, cache: true)
@@ -542,8 +542,7 @@ def import_nodes(network, nodes)
   end
   
   # Note: Subcatchments are created via SQL after import (sql_create_subcatchments)
-  # This matches the 0060 workflow where SQL creates empty subcatchments,
-  # then ODIC imports update them with data from mhhyd.csv
+  # Scenario-specific subcatchment data is then imported from MHHYD.DBF during scenario import
 end
 
 # Import links into the network

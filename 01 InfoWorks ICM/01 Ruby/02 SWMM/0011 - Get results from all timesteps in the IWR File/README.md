@@ -67,13 +67,12 @@ This section focuses on the **0011 - Get results from all timesteps in the IWR F
 
 To use the scripts within the `0011 - Get results from all timesteps in the IWR File` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0011 - Get results from all timesteps in the IWR File` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow to retrieve results from all timesteps in the IWR file.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `hw_UI_*.rb` or `sw_UI_*.rb` script from this folder.
 
-For example, to get results for manholes:
-```sh
-ruby hw_UI_script Get results from all timesteps for Manholes All Params.rb
+For example, to get results for manholes, choose:
+`hw_UI_script Get results from all timesteps for Manholes All Params.rb`.
 
 Note
 Always check for permissions before running scripts that might access or modify result files.

@@ -399,11 +399,11 @@ def set_field_on_object(object, field, value, flag = nil, overwrite: false)
   end
 end
 
-# Apply field mappings from YAML to an ICM object
+# Apply field mappings from JSON config to an ICM object
 #
 # @param object [WSRowObject] the object to modify
 # @param id [String] the object ID (for looking up data in InfoSewer files)
-# @param fields [Hash] field mapping from YAML
+# @param fields [Hash] field mapping from JSON config
 # @param config [Hash] configuration hash (unused but kept for compatibility)
 
 def apply_fields_to_object(object, id, fields, config)
