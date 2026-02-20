@@ -3,7 +3,7 @@
 **Purpose:** High-priority warnings about InfoWorks Ruby behavior that differs from standard Ruby. Load this FIRST before generating any code.
 
 **Load Priority:** CRITICAL - Always load FIRST before any code generation  
-**Last Updated:** January 16, 2026
+**Last Updated:** February 20, 2026
 
 ## How to Use This File
 
@@ -288,6 +288,50 @@ Before generating InfoWorks Ruby code, verify:
 - [ ] **User feedback** provided with `puts` statements
 - [ ] **Edge cases handled** (empty results, naming conflicts, nil checks)
 - [ ] **Two-level commits** understood (transaction_commit vs database commit)
+- [ ] **mo.path parsing** extracts ALL container types, not just MODG~ (See API_Reference → children)
+- [ ] **children staleness** tracked locally after import operations (See PAT_HIERARCHY_IMPORT_060)
+- [ ] **Windows file paths** tracked case-insensitively with `.downcase` (See PAT_FILE_PATH_044)
+
+---
+
+## CRITICAL: Model Object Path Has Multiple Container Types
+
+### The Problem
+
+`mo.path` returns `">TYPE~Name>TYPE~Name>RAIN~EventName"`. Container types include MODG~ (Model Group), TDBG~ (Transportable DB Group), and others. Filtering only for `MODG~` segments loses higher-level containers and collapses distinct branches.
+
+### LLM Agent Rules
+
+1. **Extract ALL non-leaf segments** — don't assume only MODG~
+2. **Use generic regex** `/^(\w+)~(.+)$/` and skip only the leaf type
+3. **See:** `API_Reference.md` → `children` for container type codes, PAT_HIERARCHY_EXPORT_059
+
+---
+
+## CRITICAL: parent.children Stale After Import
+
+### The Problem
+
+`.children` does NOT refresh after `import_new_model_object()`. Checking for name conflicts via `.children` will miss just-imported objects, causing silent "name already in use" failures.
+
+### LLM Agent Rules
+
+1. **Track names locally** in a Hash after each import
+2. **Don't re-query `.children`** to check for recently imported items
+3. **See:** `API_Reference.md` → `children`, PAT_HIERARCHY_IMPORT_060
+
+---
+
+## CRITICAL: Windows File Paths Are Case-Insensitive
+
+### The Problem
+
+Ruby string comparison is case-sensitive, but Windows filesystem is not. Tracking file paths with case-sensitive keys causes silent overwrites (e.g., `"Event.red"` and `"event.red"` map to the same file).
+
+### LLM Agent Rules
+
+1. **Always use `.downcase`** when tracking file paths in hashes
+2. **See:** PAT_FILE_PATH_044 for complete pattern
 
 ---
 
@@ -486,6 +530,9 @@ Load in this order:
 | 2025-12-02 | Added simulation launch patterns | Must connect_local_agent before launch_sims |
 | 2025-12-02 | Added scenario management | Scenario changes require commit, flags for field changes |
 | 2026-01-21 | Added blob coordinate interpretation | River reach sections use map XY, not offsets; key is name not chainage |
+| 2026-02-20 | Added mo.path container types | mo.path has MODG~, TDBG~, and other types; must extract all non-leaf segments |
+| 2026-02-20 | Added children staleness after import | parent.children doesn't refresh after import_new_model_object |
+| 2026-02-20 | Added Windows case-insensitive paths | Ruby case-sensitive vs Windows case-insensitive causes file overwrites |
 
 ---
 

@@ -140,6 +140,13 @@ end
 # Format: >TYPE~Name>TYPE~Name
 path = '>MODG~My Group>NNET~My Network'
 
+# Common container type codes in mo.path:
+#   MODG~  Model group          TDBG~  Time-series database group
+#   NNET~  Network              RAIN~  Rainfall event
+#   CNET~  Catchment            SIM ~  Simulation (note trailing space)
+# A deeply nested path uses ALL intermediate containers:
+path = '>MODG~Folder>TDBG~Rainfall>RAIN~Storm 2024'
+
 # Escape special characters (> ~ \) with backslash:
 path = '>MODG~My\~Group>NNET~My\>Network'
 
