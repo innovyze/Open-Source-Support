@@ -16,7 +16,7 @@ Two Ruby scripts for bulk exporting and importing Rainfall Event objects in Info
 
 Batch file launcher — double-click, then select Export (1), Import (2), or Exit (3). Edit the folder paths in the Ruby scripts first (see configuration below).
 
-### hw_export_rainfall_events_to_csv.rb
+### hw_export_rainfall_events_to_red.rb
 
 **Configuration (edit at top of script):**
 ```ruby
@@ -26,7 +26,7 @@ DATABASE_PATH = ''                   # Empty = database picker dialog
 
 **Run:**
 ```
-"C:\Program Files\Autodesk\InfoWorks ICM Ultimate 2026\ICMExchange.exe" "path\to\hw_export_rainfall_events_to_csv.rb"
+"C:\Program Files\Autodesk\InfoWorks ICM Ultimate 2026\ICMExchange.exe" "path\to\hw_export_rainfall_events_to_red.rb"
 ```
 
 **What it does:**
@@ -58,7 +58,7 @@ D:/TEMP/
 │               └── Rainfall event_M10-30.red
 ```
 
-### hw_import_rainfall_events_from_csv.rb
+### hw_import_rainfall_events_from_red.rb
 
 **Configuration (edit at top of script):**
 ```ruby
@@ -69,7 +69,7 @@ DATABASE_PATH = ''                   # Empty = database picker dialog
 
 **Run:**
 ```
-"C:\Program Files\Autodesk\InfoWorks ICM Ultimate 2026\ICMExchange.exe" "path\to\hw_import_rainfall_events_from_csv.rb"
+"C:\Program Files\Autodesk\InfoWorks ICM Ultimate 2026\ICMExchange.exe" "path\to\hw_import_rainfall_events_from_red.rb"
 ```
 
 **What it does:**
@@ -91,10 +91,10 @@ Time Series_2/
 ### Migrate Between Databases
 ```batch
 REM 1. Export from source database
-"C:\...\ICMExchange.exe" "C:\Scripts\hw_export_rainfall_events_to_csv.rb"
+"C:\...\ICMExchange.exe" "C:\Scripts\hw_export_rainfall_events_to_red.rb"
 
 REM 2. Import to target database
-"C:\...\ICMExchange.exe" "C:\Scripts\hw_import_rainfall_events_from_csv.rb"
+"C:\...\ICMExchange.exe" "C:\Scripts\hw_import_rainfall_events_from_red.rb"
 ```
 
 ### Share Specific Events

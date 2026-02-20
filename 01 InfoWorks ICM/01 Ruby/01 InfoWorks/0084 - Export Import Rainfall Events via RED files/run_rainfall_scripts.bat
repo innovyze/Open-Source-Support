@@ -14,8 +14,8 @@ echo ===================================================================
 echo   RAINFALL EVENT EXPORT/IMPORT SCRIPT LAUNCHER
 echo ===================================================================
 echo.
-echo   1. Export Rainfall Events to CSV
-echo   2. Import Rainfall Events from CSV
+echo   1. Export Rainfall Events to RED
+echo   2. Import Rainfall Events from RED
 echo   3. Exit
 echo.
 echo ===================================================================
@@ -35,7 +35,7 @@ goto END
 echo.
 echo Starting Export Script...
 echo.
-"%ICMEXCHANGE%" "%SCRIPT_DIR%hw_export_rainfall_events_to_csv.rb"
+"%ICMEXCHANGE%" "%SCRIPT_DIR%hw_export_rainfall_events_to_red.rb"
 echo.
 pause
 goto END
@@ -44,7 +44,7 @@ goto END
 echo.
 echo Starting Import Script...
 echo.
-"%ICMEXCHANGE%" "%SCRIPT_DIR%hw_import_rainfall_events_from_csv.rb"
+"%ICMEXCHANGE%" "%SCRIPT_DIR%hw_import_rainfall_events_from_red.rb"
 echo.
 pause
 goto END
