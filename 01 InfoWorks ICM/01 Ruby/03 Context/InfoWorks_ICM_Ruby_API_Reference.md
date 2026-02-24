@@ -306,7 +306,11 @@ Gets model object by scripting path.
 **Parameters:**
 - `path` (String) - Scripting path (e.g., '>MODG~Group>NNET~Network')
 
-**See:** PAT_DATA_FETCH_004
+**Path Format:** `">TYPE~Name>TYPE~Name>LEAF~ObjectName"`  
+**Known container type codes:** MODG (Model Group), TDBG (Transportable DB Group), NNET (Model Network), RAIN (Rainfall Event), and others.  
+**Escape rules:** `\~` for literal ~, `\>` for literal >, `\\` for literal \
+
+**See:** PAT_DATA_FETCH_004, PAT_HIERARCHY_EXPORT_059
 
 ---
 
@@ -529,6 +533,8 @@ Gets parent object ID.
 **Signature:** `mo.children`
 
 Gets child objects.
+
+**Warning:** Collection does NOT refresh after `import_new_model_object()` or `new_model_object()` calls within the same script execution. Track names locally if importing multiple objects. See PAT_HIERARCHY_IMPORT_060.
 
 ---
 

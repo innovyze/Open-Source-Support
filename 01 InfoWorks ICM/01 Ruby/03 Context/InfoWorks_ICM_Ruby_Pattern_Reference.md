@@ -70,6 +70,10 @@ This is a **pattern reference guide** for LLM-assisted Ruby scripting in InfoWor
 | PAT_EXPORT_ODEC_022 | Import/Export | Export with format options | export, odec |
 | PAT_FILE_WRITE_CSV_023 | Import/Export | Simple CSV export | export, csv |
 | PAT_STRUCTURE_TO_ARRAY_024 | Import/Export | Export WSStructure | export, structure |
+| PAT_HIERARCHY_EXPORT_059 | Import/Export | Export with hierarchy + manifest | export, hierarchy, path |
+| PAT_HIERARCHY_IMPORT_060 | Import/Export | Import with hierarchy recreation | import, hierarchy, groups |
+| PAT_NAME_CONFLICT_061 | Import/Export | Sibling group on name conflict | import, naming, conflict |
+| PAT_MULTI_FILE_DETECT_062 | Import/Export | Detect multi-file exports | export, detection |
 | **Spatial Patterns** |
 | PAT_SPATIAL_CLUSTER_025 | Spatial | Group by distance | spatial, geometry |
 | PAT_NEAREST_OBJECT_026 | Spatial | Find nearest node | spatial, proximity |
@@ -505,6 +509,137 @@ def structure_to_array(structure)
 end
 ```
 
+### PAT_HIERARCHY_EXPORT_059: Export Model Objects with Hierarchy Preservation
+**Intent:** Export objects preserving full container hierarchy via mo.path parsing  
+**Critical:** mo.path contains multiple container types (MODG~, TDBG~, etc.) — extract ALL non-leaf segments
+
+```ruby
+# Parse ALL parent container names from mo.path
+# Format: ">TYPE~Name>TYPE~Name>RAIN~EventName"
+def extract_group_path(full_path)
+  return [] if full_path.nil? || full_path.empty?
+  groups = []
+  full_path.split('>').each do |seg|
+    next if seg.empty?
+    if seg =~ /^(\w+)~(.+)$/
+      seg_type = $1
+      seg_name = $2.gsub('\\~', '~').gsub('\\>', '>').gsub('\\\\', '\\')
+      next if seg_type == 'RAIN'  # Skip leaf node, keep ALL containers
+      groups << seg_name
+    end
+  end
+  groups
+end
+
+# Export with manifest for later import
+all_events = []
+db.model_object_collection('Rainfall Event').each { |mo| all_events << mo }
+
+all_events.each do |event|
+  group_segments = extract_group_path(event.path)
+  group_path_str = group_segments.join(' | ')
+  target_folder = ensure_folder_path(export_folder, group_segments)
+  event.export(file_path, '')
+  manifest << { file_path: relative_path, group_path: group_path_str }
+end
+```
+
+### PAT_HIERARCHY_IMPORT_060: Import with Hierarchy Recreation
+**Intent:** Recreate Model Group hierarchy from manifest under a root group  
+**Critical:** `.children` is stale after import — track names locally in a Hash
+
+```ruby
+$name_registry = {}  # gkey -> { name.downcase => true }
+
+def register_name(gkey, name)
+  $name_registry[gkey] ||= {}
+  $name_registry[gkey][name.downcase] = true
+end
+
+def name_taken?(gkey, name)
+  return false unless $name_registry.key?(gkey)
+  $name_registry[gkey].key?(name.downcase)
+end
+
+# Create root import group
+root = nil
+db.root_model_objects.each do |obj|
+  root = obj if obj.type == 'Model Group' && obj.name == 'Imported Data'
+end
+root ||= db.new_model_object('Model Group', 'Imported Data')
+
+# Walk/create group hierarchy under root
+def ensure_group_hierarchy(parent, group_path_str)
+  return parent if group_path_str.nil? || group_path_str.strip.empty?
+  current = parent
+  group_path_str.split('|').each do |seg|
+    name = seg.strip
+    next if name.empty?
+    child = nil
+    current.children.each { |c| child = c if c.type == 'Model Group' && c.name == name }
+    child ||= current.new_model_object('Model Group', name)
+    current = child
+  end
+  current
+end
+
+# Import each entry
+manifest.each do |entry|
+  target = ensure_group_hierarchy(root, entry[:group_path])
+  gkey = entry[:group_path]
+  target.import_new_model_object('Rainfall Event', entry[:name], '', entry[:file])
+  register_name(gkey, entry[:name])  # Track locally, don't rely on .children
+end
+```
+
+### PAT_NAME_CONFLICT_061: Sibling Group on Name Conflict
+**Intent:** Resolve name conflicts by creating sibling groups rather than renaming objects  
+**Rationale:** Preserves original names for use in simulations and references
+
+```ruby
+# If name already exists in target group, create sibling group with _2 suffix
+if name_taken?(gkey, event_name)
+  parent_of_target = get_parent(target_group)
+  leaf_name = get_leaf_name(target_group)
+  counter = 2
+  loop do
+    sibling_name = "#{leaf_name}_#{counter}"
+    sibling = find_or_create_child_group(parent_of_target, sibling_name)
+    sibling_gkey = "#{gkey}_#{counter}"
+    unless name_taken?(sibling_gkey, event_name)
+      target_group = sibling
+      gkey = sibling_gkey
+      break
+    end
+    counter += 1
+  end
+end
+# Import with ORIGINAL name intact
+target_group.import_new_model_object('Rainfall Event', event_name, '', file_path)
+```
+
+### PAT_MULTI_FILE_DETECT_062: Detect Multi-File Exports
+**Intent:** Detect when a single export produces multiple files (e.g., multi-profile rainfall)  
+**Critical:** API behavior — not documented; must snapshot directory before/after
+
+```ruby
+# Snapshot before export
+before = Dir.glob(File.join(folder, '*')).reject { |f| File.directory?(f) }
+
+event.export(file_path, '')
+
+# Snapshot after export
+after = Dir.glob(File.join(folder, '*')).reject { |f| File.directory?(f) }
+new_files = after - before
+
+if new_files.size > 1
+  # Multi-file export: group in subfolder
+  subfolder = File.join(folder, sanitize_name(event.name))
+  FileUtils.mkdir_p(subfolder)
+  new_files.each { |f| FileUtils.mv(f, File.join(subfolder, File.basename(f))) }
+end
+```
+
 ---
 
 ## 9. Spatial & Geometry Patterns
@@ -829,6 +964,17 @@ data_folder = File.join(script_dir, 'data')
 
 # Prefer absolute paths
 output_file = 'C:/Output/results.csv'
+
+# WINDOWS: Case-insensitive file path tracking
+# Ruby strings are case-sensitive but Windows FS is not.
+# Always use .downcase when tracking paths in hashes:
+used_paths = {}
+candidate = File.join(folder, "#{name}.red")
+if used_paths.key?(candidate.downcase)
+  # Path collision - append suffix
+else
+  used_paths[candidate.downcase] = true
+end
 
 # Note: __FILE__ unreliable in UI - use WSApplication.script_file
 ```

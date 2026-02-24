@@ -79,13 +79,12 @@ This section focuses on the **0015 - Export SWMM5 Calibration Files** directory 
 
 To use the scripts within the `0015 - Export SWMM5 Calibration Files` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0015 - Export SWMM5 Calibration Files` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow to export calibration data for SWMM5.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `hw_UI_*.rb` script from this folder.
 
-For example, to export downstream velocity data:
-```sh
-ruby hw_UI_script_downstream_velocity.rb
+For example, to export downstream velocity data, choose:
+`hw_UI_scrip_downstream_velocity.rb`.
 
 Note
 Always check for permissions before running scripts that might access or modify calibration files.

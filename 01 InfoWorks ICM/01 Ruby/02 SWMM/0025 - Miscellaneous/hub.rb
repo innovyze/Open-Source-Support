@@ -18,7 +18,7 @@ The output is formatted in two sections with aligned columns for better readabil
 
 
 puts "1/ InfoWorks ICM Technical Information Hub for InfoWorks and SWMM Networks"
-puts "https://boards.autodesk.com/4bf242?token=a671af9e76"
+puts "https://boards.autodesk.com/4bf242"
 puts "Category                 ".ljust(30) + "Details"
 puts "Support               ".ljust(30) + "Innovyze Support"
 puts "                         ".ljust(30) + "Autodesk Support"
@@ -41,7 +41,7 @@ puts "                         ".ljust(30) + "System Requirements"
 puts "                         ".ljust(30) + "Security Advisories"
 puts "                         ".ljust(30) + "ICM Ideas Portal"
 puts "2/ InfoWorks ICM Technical Information Hub for InfoWorks and SWMM Networks"
-puts "https://boards.autodesk.com/4bf242?token=a671af9e76"
+puts "https://boards.autodesk.com/4bf242"
 puts "Configuration          ".ljust(30) + "Innovyze Workgroup Products IT Architecture"
 puts "                         ".ljust(30) + "Workgroup Data Server Administration"
 puts "                         ".ljust(30) + "InfoWorks ICM Workgroup Best Practices"

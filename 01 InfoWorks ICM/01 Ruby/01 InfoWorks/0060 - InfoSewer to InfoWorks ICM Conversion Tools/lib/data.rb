@@ -1,4 +1,4 @@
-require 'yaml'
+require 'json'
 require 'fileutils'
 
 # Gets DBF files and returns a hash mapping to their filepaths
@@ -81,18 +81,18 @@ end
 #
 # @param base_path [String] the folder to read from
 # @param types [Array of Strings] the object types, which should match the name
-#   of each file, i.e. object 'manhole' should be 'manhole.yaml'
-# @return [Hash] Hash of each object type to the contents of it's '.yaml' file
+#   of each file, i.e. object 'manhole' should be 'manhole.json'
+# @return [Hash] Hash of each object type to the contents of it's '.json' file
 
 def get_field_maps(base_path, types)
   mappings = Hash.new
   
   types.each do |type|
-    path = File.join(base_path, type + '.yaml')
+    path = File.join(base_path, type + '.json')
     map = nil
     
     begin
-      map = YAML.load_file(path)
+      map = JSON.parse(File.read(path))
       raise "Missing table in field config for #{type}" if map['table'].nil?
       mappings[type] = map
     rescue => err

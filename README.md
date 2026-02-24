@@ -4,10 +4,10 @@
 
 **Empowering the water modeling community with open-source scripts, tools, and automation**
 
-[![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
-[![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
-[![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)](https://github.com/innovyze/Open-Source-Support)
-[![License](https://img.shields.io/badge/License-Open%20Source-green?style=flat)](https://github.com/innovyze/Open-Source-Support)
+[![Ruby](https://img.shields.io/badge/Ruby-Scripts-CC342D?style=flat&logo=ruby&logoColor=white)](#ruby-script-library)
+[![SQL](https://img.shields.io/badge/SQL-Queries-4479A1?style=flat&logo=postgresql&logoColor=white)](#sql-query-library)
+[![Python](https://img.shields.io/badge/Python-Automation-3776AB?style=flat&logo=python&logoColor=white)](#python-tool-library)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](./LICENSE)
 
 ---
 
@@ -38,11 +38,30 @@ This repository is your **central hub** for open-source code that enhances Autod
 | Product | Description | Scripts Available |
 |---------|-------------|-------------------|
 | [**InfoWorks ICM**](./01%20InfoWorks%20ICM/) | Integrated Catchment Modeling | Ruby, SQL, Python |
-| [**InfoAsset Manager**](./02%20InfoAsset%20Manager/) | Asset Management Platform | Ruby Scripts |
+| [**InfoAsset Manager**](./02%20InfoAsset%20Manager/) | Asset Management Platform | Ruby, SQL |
 | [**ICMLive**](./03%20ICMLive/) | Real-time Operational Platform | Data Formats, APIs |
 | [**InfoWorks WS Pro**](./04%20InfoWorks%20WS%20Pro/) | Water Distribution Modeling | Ruby, SQL, VBScript |
 | [**InfoWater Pro**](./05%20InfoWater%20Pro/) | ArcGIS-based Water Modeling | Python Integration |
 | [**XPSWMM**](./06%20XPSWMM/) | Stormwater & Flooding Analysis | Tutorials, Resources |
+
+### Browse by Script Type
+
+#### Ruby Script Library
+
+- [InfoWorks ICM Ruby](./01%20InfoWorks%20ICM/01%20Ruby/)
+- [InfoAsset Manager Ruby](./02%20InfoAsset%20Manager/01%20Ruby/)
+- [InfoWorks WS Pro Ruby](./04%20InfoWorks%20WS%20Pro/01%20Ruby/)
+
+#### SQL Query Library
+
+- [InfoWorks ICM SQL](./01%20InfoWorks%20ICM/02%20SQL/)
+- [InfoAsset Manager SQL](./02%20InfoAsset%20Manager/02%20SQL/)
+- [InfoWorks WS Pro SQL](./04%20InfoWorks%20WS%20Pro/02%20SQL/)
+
+#### Python Tool Library
+
+- [InfoWorks ICM Python](./01%20InfoWorks%20ICM/03%20Python/)
+- [InfoWater Pro Python](./05%20InfoWater%20Pro/01%20Python/)
 
 ## Featured Scripts
 
@@ -104,6 +123,9 @@ DESELECT WHERE condition3;
 
 We welcome contributions from the water modeling community!
 
+Before opening or reviewing a pull request, please read:
+[`PR_RULES_OF_ENGAGEMENT.md`](./PR_RULES_OF_ENGAGEMENT.md)
+
 ### Share Your Scripts
 
 1. Fork this repository
@@ -162,9 +184,11 @@ This repository is **growing organically** with the community. We may occasional
 
 ### Liability & Support
 
-- **Community-Driven**: Scripts are shared in good faith by Autodesk Support and community contributors
-- **Open Source**: All code is transparent and available for review
-- **Use at Own Risk**: Autodesk is not liable for unintended consequences
+- **Community-Driven**: Scripts are shared in good faith by individual contributors (including Autodesk Support) and the broader community; contributors are not necessarily professional software developers
+- **Provided "AS IS"**: Scripts and examples are provided at face value, without warranties or guarantees; see [`LICENSE`](./LICENSE)
+- **Limitation of Liability**: Autodesk and contributors are not liable for damages or losses arising from use of this repository; see [`LICENSE`](./LICENSE)
+- **Use at Own Risk**: You are responsible for backups, review, testing, and validation in your environment before using results in production
+- **No Official Support / SLA**: GitHub issues and pull requests are best-effort and are not covered by Autodesk product support obligations or SLAs
 - **Not for Bespoke Projects**: Custom development requests should go through official Autodesk channels
 
 ### Script Quality
@@ -175,6 +199,12 @@ Scripts are typically developed for specific customer use cases. While functiona
 - Report issues for enhancement
 - Add documentation and examples
 - Share your own optimizations
+
+## License
+
+This repository is licensed under the [MIT License](./LICENSE).
+
+Autodesk and related product names are trademarks of Autodesk, Inc. The license does not grant permission to use Autodesk trademarks.
 
 ## Analytics
 

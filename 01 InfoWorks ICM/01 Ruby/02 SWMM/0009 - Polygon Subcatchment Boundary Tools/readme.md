@@ -55,13 +55,12 @@ This section focuses on the **0009 - Polygon Subcatchment Boundary Tools** direc
 
 To use the scripts within the `0009 - Polygon Subcatchment Boundary Tools` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0009 - Polygon Subcatchment Boundary Tools` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for managing polygon subcatchment boundaries.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `UI_*.rb` script from this folder.
 
-For example, to create nodes from a polygon subcatchment boundary:
-```sh
-ruby UI_script_Create nodes from polygon subcatchment boundary.rb
+For example, to create nodes from a polygon subcatchment boundary, choose:
+`UI_script_Create nodes from polygon subcatchment boundary.rb`.
 
 Note
 Always check for permissions before running scripts that might modify data or create new elements.

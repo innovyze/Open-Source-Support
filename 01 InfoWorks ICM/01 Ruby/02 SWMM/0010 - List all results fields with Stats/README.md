@@ -53,13 +53,12 @@ This section focuses on the **0010 - List all results fields with Stats** direct
 
 To use the scripts within the `0010 - List all results fields with Stats` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0010 - List all results fields with Stats` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for listing and analyzing simulation results with statistics.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `UI_*.rb` or `hw_UI_*.rb` script from this folder.
 
-For example, to find the time of maximum downstream depth:
-```sh
-ruby hw_UI_script Find Time of Max DS Depth.rb
+For example, to find the time of maximum downstream depth, choose:
+`hw_UI_script Find Time of Max DS Depth.rb`.
 
 Note
 Always ensure you have the necessary permissions to run these scripts.

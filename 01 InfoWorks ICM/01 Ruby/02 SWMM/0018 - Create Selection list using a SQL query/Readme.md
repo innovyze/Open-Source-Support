@@ -73,13 +73,12 @@ This section focuses on the **0018 - Create Selection list using a SQL query** d
 
 To use the scripts within the `0018 - Create Selection list using a SQL query` directory:
 
-1. **Environment Setup:** Ensure Ruby is installed on your system.
-2. **Navigation:** Navigate to the `0018 - Create Selection list using a SQL query` subdirectory under `02 SWMM`.
-3. **Execution:** Run the Ruby scripts from the command line or integrate them into your workflow for creating selection lists or managing data with SQL queries.
+1. **Open InfoWorks ICM:** Open a relevant network in the UI.
+2. **Run Script Dialog:** Navigate to **Network -> Run Ruby Script**.
+3. **Select Script:** Choose the required `UI_*.rb` script from this folder.
 
-For example, to select links sharing the same upstream and downstream node IDs:
-```sh
-ruby UI_Script_Select links sharing the same us and ds node ids.rb
+For example, to select links sharing the same upstream and downstream node IDs, choose:
+`UI_Script_Select links sharing the same us and ds node ids.rb`.
 
 Note
 Always check for permissions before running scripts that might access or modify your model data.

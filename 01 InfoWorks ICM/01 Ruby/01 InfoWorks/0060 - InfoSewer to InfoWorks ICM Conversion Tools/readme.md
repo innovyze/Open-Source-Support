@@ -113,34 +113,37 @@ The tool automatically handles common data quality issues:
 
 - `InfoSewer_Import_UI.rb` - **Run this** (main import tool)
 - `lib/*.rb` - Core modules (auto-loaded)
-- `import_config/*.yaml` - Conversion settings (maps InfoSewer fields to ICM fields)
-- `config.yaml` - Saved settings (auto-generated)
+- `import_config/*.json` - Conversion settings (maps InfoSewer fields to ICM fields)
+- `config.json` - Saved settings (auto-generated)
 
 ---
 
 ## Import Configuration Files
 
-Conversion settings are defined in YAML files (one per object type) in the `import_config/` folder. These files tell the tool how to map InfoSewer fields to InfoWorks ICM fields.
+Conversion settings are defined in JSON files (one per object type) in the `import_config/` folder. These files tell the tool how to map InfoSewer fields to InfoWorks ICM fields.
 
-**Example: pipe.yaml**
-```yaml
-table: hw_conduit
-
-defaults:
-  conduit_type: 1         # Circular pipe
-  roughness_type: 'N'     # Manning's N
-  solution_model: Full
-
-import:
-  pipe:
-    us_node_id: 'UPMANHOLE'
-    ds_node_id: 'DNMANHOLE'
-    conduit_width: 'DIAMETER'
-  
-  pipehyd:
-    conduit_length: 'LENGTH'
-    us_invert: 'UPSELEV'
-    ds_invert: 'DNSELEV'
+**Example: pipe.json**
+```json
+{
+  "table": "hw_conduit",
+  "defaults": {
+    "conduit_type": 1,
+    "roughness_type": "N",
+    "solution_model": "Full"
+  },
+  "import": {
+    "pipe": {
+      "us_node_id": "UPMANHOLE",
+      "ds_node_id": "DNMANHOLE",
+      "conduit_width": "DIAMETER"
+    },
+    "pipehyd": {
+      "conduit_length": "LENGTH",
+      "us_invert": "UPSELEV",
+      "ds_invert": "DNSELEV"
+    }
+  }
+}
 ```
 
 **Available mappings:** `manhole`, `outlet`, `wetwell`, `pipe`, `forcemain`, `pump`, `subcatchment`, `unit_hydrograph`

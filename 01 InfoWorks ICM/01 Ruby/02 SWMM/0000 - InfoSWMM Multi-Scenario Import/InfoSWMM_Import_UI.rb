@@ -11,9 +11,10 @@
 #   - Content-based deduplication of Rainfall & Inflow Events
 #   - Automatic label list cleanup
 #   - Creates merged network with all scenarios
-#   - Sets up SWMM runs (partial - timesteps/climatology require manual config)
+#   - Sets up SWMM runs (network/scenario/rainfall auto-configured)
 #   - Sequential naming: "Rainfall Event 01", "Inflow 01", etc.
 #   - Tracks scenario usage in object Description fields
+#   - Works with multiple ICM versions open simultaneously
 #
 # USAGE:
 #   1. Close InfoSWMM (if model is open)
@@ -21,21 +22,26 @@
 #   3. Network → Run Ruby Script → Select this file
 #   4. Follow prompts to select .mxd file and scenarios
 #   5. Wait for completion
-#   6. Manually configure timesteps, climatology, time patterns in runs
+#   6. Manually configure: timesteps, climatology, time patterns, inflows in runs
 #
 # OUTPUT:
 #   - Individual model groups (one per scenario) - keep for reference
 #   - Merged model group with deduplicated objects and partial runs
 #   - Log files in [YourModel]/ICM Import Log Files/
 #
+# COMPATIBILITY:
+#   - InfoWorks ICM 2023.2+
+#   - Tested with: 2023.2.7, 2025.5.1, 2027.1.0
+#   - Works with local (.icmm) and network (snumbat://) databases
+#   - Multiple ICM instances can be open during import
+#
 # REQUIREMENTS:
-#   - InfoWorks ICM 2023.2+ (tested with 2026.2)
 #   - InfoSWMM .mxd file with .ISDB folder
-#   - BASE scenario recommended
+#   - BASE scenario recommended (used as master network)
 #
 # ============================================================================
 
-require 'yaml'
+require 'json'
 
 # Get the script directory
 script_dir = File.dirname(WSApplication.script_file)
@@ -441,6 +447,18 @@ end
 db = WSApplication.current_database
 db_guid = db.guid
 
+# Try to get database path - different ICM versions may expose this differently
+db_path = nil
+begin
+  # Try common properties that might contain the path
+  db_path = db.path if db.respond_to?(:path)
+  db_path ||= db.database_path if db.respond_to?(:database_path)
+  db_path ||= db.location if db.respond_to?(:location)
+  db_path ||= db.file_path if db.respond_to?(:file_path)
+rescue => e
+  # Couldn't get path - will rely on GUID check only
+end
+
 # ----------------------------------------------------------------------------
 # Save configuration for Exchange script
 # ----------------------------------------------------------------------------
@@ -452,14 +470,15 @@ config = {
   'file_path' => file_path,
   'scenarios' => scenario_input,
   'database_guid' => db_guid,
+  'database_path' => db_path,
   'timestamp' => Time.now.to_s,
   'merge_scenarios' => true,
   'cleanup_empty_label_lists' => true,
   'copy_swmm_runs' => true
 }
 
-config_file = File.join(config_folder, 'import_config.yaml')
-File.open(config_file, 'w') { |f| f.write(config.to_yaml) }
+config_file = File.join(config_folder, 'import_config.json')
+File.open(config_file, 'w') { |f| f.write(JSON.pretty_generate(config)) }
 
 # ----------------------------------------------------------------------------
 # STEP 7: Launch Exchange script
@@ -472,6 +491,10 @@ ENV['ICM_IMPORT_CONFIG'] = config_file
 # Find ICMExchange.exe
 icm_exchange = nil
 [
+  "C:\\Program Files\\Autodesk\\InfoWorks ICM Ultimate 2027\\ICMExchange.exe",
+  "C:\\Program Files\\Autodesk\\InfoWorks ICM Sewer 2027\\ICMExchange.exe",
+  "C:\\Program Files\\Autodesk\\InfoWorks ICM Flood 2027\\ICMExchange.exe",
+  "C:\\Program Files\\Autodesk\\InfoWorks ICM 2027\\ICMExchange.exe",
   "C:\\Program Files\\Autodesk\\InfoWorks ICM Ultimate 2026\\ICMExchange.exe",
   "C:\\Program Files\\Autodesk\\InfoWorks ICM Sewer 2026\\ICMExchange.exe",
   "C:\\Program Files\\Autodesk\\InfoWorks ICM Flood 2026\\ICMExchange.exe",
@@ -642,5 +665,4 @@ rescue => e
   )
 end
 end  # catch :cancel_import
-
 

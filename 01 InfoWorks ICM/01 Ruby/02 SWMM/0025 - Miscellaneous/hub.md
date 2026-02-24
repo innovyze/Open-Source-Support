@@ -61,7 +61,7 @@ This resource directory provides a comprehensive collection of technical informa
 - Cloud Simulation Usage
 
 ## Access
-The hub can be accessed at: https://boards.autodesk.com/4bf242?token=a671af9e76
+The hub can be accessed at: https://boards.autodesk.com/4bf242
 
 ## Note
 This documentation hub serves as a central reference point for both new and experienced users of InfoWorks ICM software, providing easy access to essential resources, documentation, and support channels.

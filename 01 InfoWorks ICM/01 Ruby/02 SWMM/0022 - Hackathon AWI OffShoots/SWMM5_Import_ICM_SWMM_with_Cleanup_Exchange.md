@@ -9,7 +9,7 @@
 
 This Ruby script is the **worker component** of the SWMM5 Import system. It runs within the ICMExchange environment (headless/command-line mode) and performs the actual import of SWMM5 `.inp` files into ICM model groups.
 
-The script is designed to be launched automatically by the companion UI script (`SWMM5_Import_with_Cleanup_UI.rb`) and reads its configuration from a YAML file.
+The script is designed to be launched automatically by the companion UI script (`SWMM5_Import_ICM_SWMM_with_Cleanup_UI.rb`) and reads its configuration from a YAML file.
 
 ---
 
@@ -352,7 +352,7 @@ The script also relies on ICMExchange-specific APIs:
 
 | File | Purpose |
 |------|---------|
-| `SWMM5_Import_with_Cleanup_UI.rb` | User interface script that launches this |
+| `SWMM5_Import_ICM_SWMM_with_Cleanup_UI.rb` | User interface script that launches this |
 | `import_config.yaml` | Configuration file (input) |
 | `batch_summary.txt` | Statistics file (output) |
 

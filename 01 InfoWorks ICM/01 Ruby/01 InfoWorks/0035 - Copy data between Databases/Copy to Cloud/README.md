@@ -9,6 +9,3 @@ From the top toolbar: Help > About InfoWorks > Additional Information (button): 
 
 ## Back up Cloud Database 
 Cloud databases can be manually backed up on the Cloud database management page prior to copying data. [Info360 Model Management Help](https://help.autodesk.com/view/INNCS/ENU/)
-
-## Batch file editing
-Batch file is best edited in Notepad++ and not Excel as the encoding can cause the code to error. If you run into issues ensure that the file encoding is set to ANSI.

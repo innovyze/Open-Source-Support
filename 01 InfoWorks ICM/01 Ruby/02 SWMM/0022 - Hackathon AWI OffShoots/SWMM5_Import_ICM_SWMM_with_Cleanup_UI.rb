@@ -23,7 +23,7 @@
 # HOW TO USE:
 #   1. Open your ICM database
 #   2. Go to: Network menu -> Run Ruby Script
-#   3. Select this file: SWMM5_Import_with_Cleanup_UI.rb
+#   3. Select this file: SWMM5_Import_ICM_SWMM_with_Cleanup_UI.rb
 #   4. Choose import mode (Single/Batch/Recursive)
 #   5. Select file or directory
 #   6. Configure options

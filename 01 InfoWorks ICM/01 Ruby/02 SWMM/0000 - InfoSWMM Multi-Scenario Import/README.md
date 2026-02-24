@@ -32,7 +32,7 @@
 - Cleans up empty label lists
 
 ### Requires Manual Setup ⚠️
-- Timestep controls
+- Run parameters including timestep controls
 - Climatology
 - Time Patterns
 - Inflow Events (use Description field to find correct one)
@@ -49,7 +49,7 @@
 - SWMM runs (partially configured)
 
 **Post-Import:** For each run in the merged group, manually configure:
-1. Timestep controls (copy from original run)
+1. Run parameters including timestep controls (copy from original run)
 2. Climatology (drag from individual model group)
 3. Time Patterns (drag from individual model group)
 4. Inflow Events (check Description field to find correct one)
@@ -72,9 +72,11 @@
 |-------|----------|
 | No scenarios detected | Check that `.ISDB/SCENARIO.DBF` exists next to .mxd file |
 | "Model group already exists" | Delete or rename existing groups before running |
+| "Connected to Wrong Database" error | Script automatically detects and reports database mismatches - follow on-screen instructions |
 | Import fails for one scenario | Script continues with others - check log file |
 | Run missing configuration | Expected - see Post-Import Setup (API limitations) |
 | Where are logs? | `[YourModel]/ICM Import Log Files/Import_Runs_*.log` |
+| Temporary screen resize during import | Normal behavior - ICMExchange process temporarily takes focus |
 
 ---
 

@@ -31,7 +31,7 @@ The script handles everything from single-file imports to large batch operations
 
 1. **InfoWorks ICM** must be installed (2025.2 or later recommended)
 2. An **ICM database must be open** before running the script
-3. The companion **Exchange script** (`SWMM5_Import_ICM_InfoWorks_with_Cleanup_Exchange.rb`) must be in the same directory
+3. The companion **Exchange script** (`SWMM5_Import_ICM_SWMM_with_Cleanup_Exchange.rb`) must be in the same directory
 
 ---
 
@@ -228,7 +228,7 @@ require 'fileutils'  # Directory creation
 
 | File | Purpose |
 |------|---------|
-| `SWMM5_Import_ICM_InfoWorks_with_Cleanup_Exchange.rb` | Companion Exchange script that performs the actual import |
+| `SWMM5_Import_ICM_SWMM_with_Cleanup_Exchange.rb` | Companion Exchange script that performs the actual import |
 | `import_config.yaml` | Generated configuration file |
 | `batch_summary.txt` | Generated results file |
 
