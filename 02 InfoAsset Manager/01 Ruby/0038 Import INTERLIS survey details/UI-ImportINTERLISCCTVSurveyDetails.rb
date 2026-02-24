@@ -29,8 +29,8 @@ def process_xml(file_path)
     end
   end
 
-  ## Iterate through each 'Normschachtschaden' element
-  XPath.each(xml_doc, '//VSA_KEK_2020_LV95.KEK.Normschachtschaden') do |node|
+  ## Iterate through each 'Kanalschaden' element
+  XPath.each(xml_doc, '//VSA_KEK_2020_LV95.KEK.Kanalschaden') do |node|
     ## Extract the values from the specified elements
     tid = node.attribute('TID')&.value
     anmerkung = XPath.first(node, 'Anmerkung')&.text
@@ -39,10 +39,9 @@ def process_xml(file_path)
     videozaehlerstand = XPath.first(node, 'Videozaehlerstand')&.text
     letzte_aenderung = XPath.first(node, 'Letzte_Aenderung')&.text
     distanz = XPath.first(node, 'Distanz')&.text
-    schachtschadencode = XPath.first(node, 'SchachtSchadencode')&.text
     quantifizierung1 = XPath.first(node, 'Quantifizierung1')&.text
     quantifizierung2 = XPath.first(node, 'Quantifizierung2')&.text
-    schachtbereich = XPath.first(node, 'Schachtbereich')&.text
+    kanalschadencode = XPath.first(node, 'KanalSchadencode')&.text
     schadenlageanfang = XPath.first(node, 'SchadenlageAnfang')&.text
     schadenlageende = XPath.first(node, 'SchadenlageEnde')&.text
 
@@ -62,10 +61,9 @@ def process_xml(file_path)
       videozaehlerstand: videozaehlerstand,
       letzte_aenderung: letzte_aenderung,
       distanz: distanz,
-      schachtschadencode: schachtschadencode,
       quantifizierung1: quantifizierung1,
       quantifizierung2: quantifizierung2,
-      schachtbereich: schachtbereich,
+      kanalschadencode: kanalschadencode,
       schadenlageanfang: schadenlageanfang,
       schadenlageende: schadenlageende,
       foto_bezeichnung: foto_bezeichnung,  ## Add Foto Bezeichnung value to the hash
@@ -73,17 +71,17 @@ def process_xml(file_path)
     }
   end
 
-#  ## Output the result hash to the screen
-#  $result.each do |ref, values_array|
-#    puts "Ref: #{ref}"
-#    values_array.each_with_index do |values, index|
-#      puts "  Set #{index + 1}:"
-#      values.each do |key, value|
-#        puts "    #{key}: #{value}"
-#      end
-#    end
-#    puts
-#  end
+  ## Output the result hash to the screen
+  # $result.each do |ref, values_array|
+    # puts "Ref: #{ref}"
+    # values_array.each_with_index do |values, index|
+      # puts "  Set #{index + 1}:"
+      # values.each do |key, value|
+        # puts "    #{key}: #{value}"
+      # end
+    # end
+    # puts
+  # end
 end
 
 
@@ -91,7 +89,7 @@ end
 net=WSApplication.current_network 
 
 ## Specify the path to the XML file via user prompt
-file_path = WSApplication.file_dialog(true,'xml','Select INTERLIS XML survey file',nil,false,false)
+file_path = WSApplication.file_dialog(true,'*','Select INTERLIS XML CCTV Survey survey file',nil,false,false)
 if file_path.nil?
 	WSApplication.message_box("No file selected\nProcess cancelled",'OK','!',false)
 else
@@ -103,13 +101,13 @@ else
 	net.transaction_begin
 
 	## Iterate through each row object
-	net.row_objects('cams_manhole_survey').each do |ro|
+	net.row_objects('cams_cctv_survey').each do |ro|												
 	#puts "Processing survey ID: #{ro.id}"
 	  
 		if $result.has_key?(ro.id)
 			## Sort the details by distanz and videozaehlerstand in ascending order
 			sorted_details = $result[ro.id].sort_by { |details| [details[:distanz] ? details[:distanz].to_f : Float::INFINITY, details[:videozaehlerstand]] }
-			puts "Inserting details on survey: #{ro.id} from TIDs:"
+			puts "Adding new details on survey: #{ro.id} from TIDs:"
 			
 			sorted_details.each do |details|
 				puts "   #{details[:tid]}"
@@ -121,16 +119,14 @@ else
 				details_row[n].joint = details[:verbindung] == 'ja' ? 'true' : 'false'					## Set 'ja' to Boolean true value.
 				details_row[n].video_no2 = details[:videozaehlerstand]
 				details_row[n].distance = details[:distanz]
-				details_row[n].code = details[:schachtschadencode]
-				details_row[n].video_file = details[:schachtschadencode]
-				details_row[n].quant1 = details[:quantifizierung1]
-				details_row[n].quant2 = details[:quantifizierung2]
-				details_row[n].descriptive_location = details[:schachtbereich]
+				details_row[n].code = details[:kanalschadencode]
+				details_row[n].diameter = details[:quantifizierung1]
+				details_row[n].intrusion = details[:quantifizierung2]
 				details_row[n].clock_at = details[:schadenlageanfang] == '12' ? '0' : details[:schadenlageanfang]	## Convert Clock At 12 to 0.
 				details_row[n].clock_to = details[:schadenlageende] == '12' ? '0' : details[:schadenlageende]	## Convert Clock At 12 to 0.
 				details_row[n].photo_no = details[:foto_bezeichnung]
 				details_row[n].video_file = details[:video_bezeichnung]
-				#details_row[n].characterisation3 = details[:tid]		## The tid code for the observation in the XML
+				details_row[n].characterisation3 = details[:tid]		## The tid code for the observation in the XML
 				details_row.write
 				ro.video_file_in = details[:video_bezeichnung]
 				ro.write
