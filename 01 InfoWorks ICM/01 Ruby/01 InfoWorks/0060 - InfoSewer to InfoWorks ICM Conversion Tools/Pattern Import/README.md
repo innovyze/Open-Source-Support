@@ -12,7 +12,7 @@ This tool converts InfoSewer diurnal pattern data (PATNDATA.DBF) into properly f
 
 **⚠️ IMPORTANT:** This script **generates CSV files only** - it does NOT import them into ICM. You must manually import the generated CSV files through the InfoWorks ICM user interface.
 
-**Why?** Wastewater and Trade Waste profiles are Model Group objects that cannot be created via Ruby scripts. CSV import through the UI is required (avoids using Exchange).
+**Why?** Wastewater and Trade Waste profiles are Model Group objects that cannot be created via UI Ruby scripts (Network → Run Ruby Script). They require either Exchange scripts or CSV import through the UI. This tool uses CSV generation to avoid Exchange complexity.
 
 ---
 
@@ -132,7 +132,6 @@ TIME,FLOW,POLLUTANT
 | **Script fails immediately** | Check that `../lib/dbf_reader.rb` exists in parent folder |
 | "Could not find PATNDATA.DBF" | Verify file exists in `.IEDB` folder root |
 | "No pattern data found" | Check that PATNDATA.DBF is not empty or corrupted |
-| Import error in ICM | Use "Import InfoWorks" → "from InfoWorks format CSV file..." |
 | Profiles not showing in model | Profiles must be manually linked to subcatchments after import |
 
 ---

@@ -5,8 +5,8 @@
 #   - CSV files must be manually imported through InfoWorks ICM UI
 #   - This script does NOT import the profiles directly into ICM
 #
-# WHY: Wastewater/Trade Waste profiles are Model Group objects and cannot be
-#      created via Ruby scripts. CSV import avoids using Exchange scripts.
+# WHY: Wastewater/Trade Waste profiles are Model Group objects that cannot be
+#      created via UI Ruby scripts. CSV import avoids using Exchange scripts.
 #
 # For InfoSewer models (.IEDB) only
 #
