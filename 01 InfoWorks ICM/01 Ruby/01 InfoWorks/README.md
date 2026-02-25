@@ -40,7 +40,7 @@
 | 0032 | UI & EX  | List complete database objects contents                             | Network Data Get      |
 | 0033 | EX       | Export a tree object file                                           | Database Data Export  |
 | 0034 | EX       | Check simulation status                                             | Simulations Data Get  |
-| 0035 | EX       | Copy objects to new transportable                                   | Database Data Export  |
+| 0035 | EX       | Copy data between Databases                                         | Database Data Export  |
 | 0036 | UI & EX  | Export CSV with QM results from UI                                  | Simulations Data Get  |
 | 0037 | EX       | Rerunning existing simulation                                       | Simulations Run       |
 | 0038 | EX       | Querying simulation objects                                         | Simulations Data Get  |
@@ -61,11 +61,10 @@
 | 0053 | UI       | Import cross section data from CSV                                  | Network Data Get      |
 | 0054 | UI       | Change subcatchment boundaries to a polygon                         | Network Data Set      |
 | 0055 | UI       | Scenario maker - adds ten user defined names                        | Network Data Set      |
-| 0056 | UI       | Delete all scenarios except Base                                    | Network Data Get      |
 | 0057 | UI       | Select header nodes                                                 | Network Data Get      |
 | 0058 | UI       | Select bifurcation nodes                                            | Network Data Get      |
 | 0059 | UI       | Select dry pipes                                                    | Network Data Get      |
-| 0060 | UI       | ODIC and SQL, Ruby  Scripts for Importing InfoSewer to ICM          | Network Data Get      |
+| 0060 | UI       | InfoSewer to InfoWorks ICM Conversion Tools                         | Network Data Import   |
 | 0061 | UI       | Transfer conduit user defined headloss parameters between networks  | Network Data Set      |
 | 0062 | UI       | Export simulation results to CSV                                    | Network Data Set      |
 | 0063 | UI       | Scenario Maker (Names Only)                                         | Network Data Set      |
@@ -74,11 +73,24 @@
 | 0066 | UI       | Export User Fields to CSV with User Name                            | Network Data Get      |
 | 0067 | UI       | Set SWMM5 Buildup Washoff for HW_Subcatchments                      | Network Data Get      |
 | 0068 | UI       | Change All Node, Subs and Link IDs                                  | Network Data Get      |
-| 0069 | EX       | Exports and imports database objects (event files)                  | Database Data Export/Import|
+| 0069 | EX       | Exporting and Importing Event Files                                 | Database Data Export/Import|
 | 0070 | UI       | Create selection list from CSV                                      | Database Data Import  |
 | 0071 | UI       | Run Python Scripts from UI                                          | Network Data Get      |
 | 0072 | UI       | Access link geometry data                                           | Network Data Get      |
 | 0073 | UI       | Populate storage array data                                         | Network Data Get      |
+| 0074 | UI       | Remove bank line Z values that don't match cross section line ends  | Network Data Set      |
+| 0075 | UI       | Find the longest upstream path of the selected node                 | Network Data Analysis |
+| 0076 | UI       | Bulk delete existing scenarios                                      | Network Data Set      |
+| 0077 | UI       | Convert Polygon to Mesh level zone                                  | Network Data Set      |
+| 0078 | UI       | Earthworks Cost Estimator for Pipes and Storage                     | Network Data Analysis |
+| 0079 | UI       | Trace all flow paths to downstream nodes                            | Network Data Analysis |
+| 0080 | EX       | Create clean copy of Network                                        | Database Data Set     |
+| 0081 | EX       | Batch Copy Group Data                                               | Database Data Set     |
+| 0082 | UI       | Channel and River Volume                                            | Network Data Analysis |
+| 0083 | EX       | ODEC Export Subcatchments                                           | Network Data Export   |
+| 0084 | EX       | Export Import Rainfall Events via RED files                         | Database Data Export  |
+| 0085 | UI       | Graphs Syntax                                                       | Developer Tools       |
+| 3030 | EX       | Simulation Diagnostic Tool                                          | Simulations Data Get  |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
