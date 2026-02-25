@@ -61,6 +61,7 @@
 | 0053 | UI       | Import cross section data from CSV                                  | Network Data Get      |
 | 0054 | UI       | Change subcatchment boundaries to a polygon                         | Network Data Set      |
 | 0055 | UI       | Scenario maker - adds ten user defined names                        | Network Data Set      |
+| 0056 | UI       | Assign Node IDs by Link Geometry                                    | Network Data Set      |
 | 0057 | UI       | Select header nodes                                                 | Network Data Get      |
 | 0058 | UI       | Select bifurcation nodes                                            | Network Data Get      |
 | 0059 | UI       | Select dry pipes                                                    | Network Data Get      |
