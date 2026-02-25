@@ -115,6 +115,7 @@ The tool automatically handles common data quality issues:
 - `lib/*.rb` - Core modules (auto-loaded)
 - `import_config/*.json` - Conversion settings (maps InfoSewer fields to ICM fields)
 - `config.json` - Saved settings (auto-generated)
+- `Pattern Import/` - **Optional tool** for importing diurnal patterns (see subfolder README)
 
 ---
 
@@ -234,12 +235,11 @@ All transformations applied automatically via SQL:
 
 ### InfoSewer Data Limitations
 1. **RDII Unit Hydrographs**: Imported but not automatically linked to subcatchments (InfoSewer stores linkage in GIS layer, not in DBF files).
-2. **Time Patterns**: Not imported (ICM stores patterns in a format requiring Exchange script for import).
+2. **Time Patterns (Diurnal Profiles)**: Not imported by main tool. Use separate tool: `Pattern Import/Import_Patterns_to_Profiles.rb`
 3. **Rainfall Events**: Not imported (ICM stores rainfall data in a format requiring Exchange script for import).
-4. **Trade/Wastewater Profiles**: Not imported (similar to time patterns, requires Exchange script).
-5. **Custom Pipe/Manhole Shapes**: Only standard circular pipes supported. Custom cross-sections from InfoSewer shape libraries not imported.
-6. **Simulation Settings**: Run options (time steps, output settings) not transferred - must be configured manually in ICM.
-7. **Model Calibration Data**: Observed data, calibration targets not imported.
+4. **Custom Pipe/Manhole Shapes**: Only standard circular pipes supported. Custom cross-sections from InfoSewer shape libraries not imported.
+5. **Simulation Settings**: Run options (time steps, output settings) not transferred - must be configured manually in ICM.
+6. **Model Calibration Data**: Observed data, calibration targets not imported.
 
 ---
 
