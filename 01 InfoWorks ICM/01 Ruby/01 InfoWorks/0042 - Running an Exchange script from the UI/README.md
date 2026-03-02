@@ -32,7 +32,7 @@ Escaping double-quotes is done by using `\"`. These can then be used to surround
 
 In this line:
 ```ruby
-system("\"#{$exchange_path}\" \"#{$script_path}\" ICM \"#{$arg1}\" \"#{$arg2}\"")
+system("\"#{$exchange_path}\" \"#{$script_path}\" ICM \"#{$param1}\" \"#{$param2}\"")
 ```
 The system method has five arguments which are interpreted as:
 ````
@@ -47,11 +47,16 @@ The system method has five arguments which are interpreted as:
 
 This example targets the legacy `IExchange.exe` launcher and explicitly passes `ICM` as argument 3.
 
-If you run via Autodesk `ICMExchange.exe` instead, note:
+The two launchers inject different values into `ARGV`, as confirmed by testing:
 
-- `ICMExchange.exe` is a wrapper and may reserve one argument slot.
-- The product argument is handled by the wrapper, so do not manually add `ICM` in the command line.
-- If `ICM` is still passed manually, user arguments can appear shifted (for example, first user argument at `ARGV[2]` instead of `ARGV[1]`).
+| Launcher | Auto-injected | ARGV[0] | First user arg |
+|---|---|---|---|
+| `IExchange.exe script.rb ICM ...` | nothing — `ICM` is user-supplied | `"ICM"` | `ARGV[1]` |
+| `ICMExchange.exe script.rb ...` | `"ADSK"` | `"ADSK"` | `ARGV[1]` |
+
+For `ICMExchange.exe`:
+- Do **not** pass `ICM` manually — it is not required and the wrapper does not expect it.
+- Your user arguments still start at `ARGV[1]` (after the auto-injected `"ADSK"`).
 
 To reduce Windows path escaping issues, prefer forward slashes (`C:/path/to/file.rb`) or use escaped backslashes (`C:\\path\\to\\file.rb`).
 

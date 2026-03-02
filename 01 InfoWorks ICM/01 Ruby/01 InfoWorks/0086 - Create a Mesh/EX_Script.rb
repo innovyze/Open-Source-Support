@@ -1,24 +1,24 @@
 # InfoWorks ICM - Run Mesh Job
 # EXCHANGE Script
 #
-# Usage: ICMExchange.exe EX_Script.rb /ICM <database_path> <network_id> <scenario_name> <ground_model_id>
+# Usage: ICMExchange.exe EX_Script.rb <database_path> <network_id> <scenario_name> <ground_model_id>
 #
-# Arguments (ICMExchange auto-injects ARGV[0]="ADSK" and ARGV[1]="/ICM"):
-#   ARGV[2] - Database path (cloud://... or local path)
-#   ARGV[3] - Network ID
-#   ARGV[4] - Scenario name
-#   ARGV[5] - Ground Model ID (positive for grid, negative for TIN)
+# Arguments (ICMExchange auto-injects ARGV[0]="ADSK" only):
+#   ARGV[1] - Database path (cloud://... or local path)
+#   ARGV[2] - Network ID
+#   ARGV[3] - Scenario name
+#   ARGV[4] - Ground Model ID (positive for grid, negative for TIN)
 
-if ARGV.length < 6
+if ARGV.length < 5
   puts "❌ ERROR: Missing required arguments"
-  puts "Usage: ICMExchange.exe script.rb /ICM <database_path> <network_id> <scenario_name> <ground_model_id>"
+  puts "Usage: ICMExchange.exe script.rb <database_path> <network_id> <scenario_name> <ground_model_id>"
   exit(1)
 end
 
-DATABASE_PATH = ARGV[2]
-NETWORK_ID = ARGV[3].to_i
-SCENARIO_NAME = ARGV[4]
-GROUND_MODEL_ID = ARGV[5].to_i
+DATABASE_PATH = ARGV[1]
+NETWORK_ID = ARGV[2].to_i
+SCENARIO_NAME = ARGV[3]
+GROUND_MODEL_ID = ARGV[4].to_i
 
 puts "=" * 80
 puts "RUNNING MESH JOB"

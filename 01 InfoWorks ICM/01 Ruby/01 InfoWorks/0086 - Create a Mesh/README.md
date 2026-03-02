@@ -19,7 +19,7 @@ ICMExchange.exe EX_Script.rb <database_path> <network_id> <scenario_name> <groun
 | `scenario_name`    | Scenario to set before meshing (e.g. `Base`)                                |
 | `ground_model_id`  | Ground model ID — positive integer for a grid, negative integer for a TIN   |
 
-> ICMExchange automatically injects `ARGV[0]="ADSK"` and `ARGV[1]="/ICM"` before your arguments.
+> ICMExchange automatically injects `ARGV[0]="ADSK"` before your arguments, so your first argument begins at `ARGV[1]`.
 
 ## What It Does
 
