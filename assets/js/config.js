@@ -10,12 +10,11 @@ export const CONFIG = {
 };
 
 export const FULLY_MISSING_PERIODS = [
-    { start: new Date('2025-10-19'), end: new Date('2025-10-31'), label: 'Missing Data' },
-    { start: new Date('2025-11-14'), end: new Date('2025-11-14'), label: 'Missing Data' }
+    { start: new Date('2025-10-20'), end: new Date('2025-10-30'), label: 'Missing Data' }
 ];
 
 export const RECONSTRUCTED_TOTALS_PERIODS = [
-    { start: new Date('2025-11-15'), end: new Date('2026-01-08'), label: 'Reconstructed Totals' }
+    { start: new Date('2025-11-15'), end: new Date('2026-01-07'), label: 'Reconstructed Totals' }
 ];
 
 export const TIME_RANGES = {

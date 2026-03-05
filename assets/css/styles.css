@@ -22,6 +22,14 @@
     --chart-error-stroke: rgba(239, 68, 68, 0.4);
     --chart-reconstructed-bg: rgba(245, 158, 11, 0.12);
     --chart-reconstructed-stroke: rgba(245, 158, 11, 0.45);
+    --badge-up: #10b981;
+    --badge-up-bg: rgba(16, 185, 129, 0.15);
+    --badge-down: #ef4444;
+    --badge-down-bg: rgba(239, 68, 68, 0.15);
+    --bar-color: #3b82f6;
+    --bar-stripe: rgba(255, 255, 255, 0.5);
+    --table-row-alt: rgba(255, 255, 255, 0.02);
+    --table-row-hover: rgba(255, 255, 255, 0.05);
 }
 
 body.light-theme {
@@ -42,6 +50,14 @@ body.light-theme {
     --chart-error-stroke: rgba(239, 68, 68, 0.3);
     --chart-reconstructed-bg: rgba(217, 119, 6, 0.08);
     --chart-reconstructed-stroke: rgba(217, 119, 6, 0.35);
+    --badge-up: #059669;
+    --badge-up-bg: rgba(5, 150, 105, 0.12);
+    --badge-down: #dc2626;
+    --badge-down-bg: rgba(220, 38, 38, 0.12);
+    --bar-color: #2563eb;
+    --bar-stripe: rgba(255, 255, 255, 0.7);
+    --table-row-alt: rgba(15, 23, 42, 0.03);
+    --table-row-hover: rgba(15, 23, 42, 0.06);
 }
 
 body {
@@ -60,6 +76,16 @@ body {
     height: calc(100vh - 30px);
     display: flex;
     flex-direction: column;
+}
+
+body.insights-page {
+    min-height: 100vh;
+    height: auto;
+}
+
+.insights-page .container {
+    height: auto;
+    min-height: calc(100vh - 30px);
 }
 
 header {
@@ -111,6 +137,38 @@ h1 {
     font-weight: 500;
 }
 
+.page-toggle {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    background: var(--button-bg);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 3px;
+    border: 1px solid var(--border-color);
+}
+
+.page-toggle-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.page-toggle-btn:hover {
+    color: var(--text-primary);
+}
+
+.page-toggle-btn.active {
+    background: var(--button-active);
+    color: #ffffff;
+    font-weight: 600;
+}
+
 .theme-toggle:hover {
     background: var(--button-hover);
     transform: translateY(-2px);
@@ -158,6 +216,211 @@ h1 {
     font-size: 1.5em;
     font-weight: 700;
     color: var(--chart-blue);
+}
+
+.stat-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.badge {
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    color: var(--text-muted);
+    background: var(--button-bg);
+}
+
+.badge.up {
+    color: var(--badge-up);
+    background: var(--badge-up-bg);
+}
+
+.badge.down {
+    color: var(--badge-down);
+    background: var(--badge-down-bg);
+}
+
+.stat-context {
+    font-size: 0.72em;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.insights-stats {
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+}
+
+.insights-stats .stat-card {
+    display: block;
+    padding: 16px 20px;
+}
+
+.insights-stats .stat-value {
+    font-size: 1.8em;
+}
+
+.insights-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    flex: 1;
+    min-height: 0;
+}
+
+.panel {
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-title {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.panel-note {
+    margin-top: 10px;
+    font-size: 0.75em;
+    color: var(--text-muted);
+}
+
+.bar-chart {
+    width: 100%;
+    min-height: 280px;
+}
+
+.bar-chart-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.bar {
+    transition: opacity 0.2s ease;
+}
+
+.bar.projected {
+    opacity: 0.95;
+}
+
+.bar-group {
+    pointer-events: none;
+}
+
+.bar-growth,
+.bar-value,
+.bar-label {
+    font-variant-numeric: tabular-nums;
+}
+
+.bar-growth {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--text-secondary);
+}
+
+.bar-value {
+    font-size: 11px;
+    font-weight: 700;
+    fill: var(--text-secondary);
+}
+
+.bar-label {
+    font-size: 12px;
+    font-weight: 600;
+    fill: var(--text-muted);
+}
+
+.text-up {
+    color: var(--badge-up);
+}
+
+.text-down {
+    color: var(--badge-down);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.bar-growth.text-up,
+.yoy-cell.text-up {
+    fill: var(--badge-up);
+    color: var(--badge-up);
+}
+
+.bar-growth.text-down,
+.yoy-cell.text-down {
+    fill: var(--badge-down);
+    color: var(--badge-down);
+}
+
+.bar-growth.text-muted,
+.yoy-cell.text-muted {
+    fill: var(--text-muted);
+    color: var(--text-muted);
+}
+
+.monthly-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85em;
+}
+
+.monthly-table th {
+    text-align: left;
+    padding: 8px 10px;
+    color: var(--text-muted);
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+.monthly-table th:not(:first-child) {
+    text-align: right;
+}
+
+.monthly-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.monthly-table td:not(:first-child) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.monthly-table tr:nth-child(even) {
+    background: var(--table-row-alt);
+}
+
+.monthly-table tr:hover {
+    background: var(--table-row-hover);
+}
+
+.monthly-table .yoy-cell {
+    font-weight: 600;
+}
+
+.monthly-table .current-year {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.monthly-table tr.gap-row {
+    opacity: 0.7;
 }
 
 .chart-container {
@@ -467,6 +730,12 @@ h1 {
         margin: 15px auto 0;
     }
 
+    .page-toggle {
+        position: static;
+        margin: 0 auto 12px;
+        width: fit-content;
+    }
+
     .chart-header {
         flex-direction: column;
         align-items: flex-start;
@@ -506,6 +775,19 @@ h1 {
         min-width: 60px;
         padding: 6px 10px;
         font-size: 0.8em;
+    }
+
+    .insights-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .insights-layout {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .panel {
+        padding: 14px;
     }
 }
 

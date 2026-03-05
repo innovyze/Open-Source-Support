@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Year-over-year traffic insights dashboard for GitHub repository - Open Source Support">
+    <meta name="author" content="Traffic Data Analytics">
+    <title>Open Source Support - Traffic Insights</title>
+
+    <!-- D3.js Library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="insights-page">
+    <div class="container">
+        <header>
+            <div class="page-toggle">
+                <a href="index.html" class="page-toggle-btn">Daily Traffic</a>
+                <a href="insights.html" class="page-toggle-btn active">Insights</a>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">☀️</span>
+                <span>Theme</span>
+            </button>
+            <h1>📊 Open Source Support</h1>
+            <p class="subtitle">Year-over-Year Insights</p>
+            <p class="last-updated" id="lastUpdated">Loading data...</p>
+        </header>
+
+        <section class="stats-grid insights-stats">
+            <div class="stat-card">
+                <div class="stat-label">Views YTD</div>
+                <div class="stat-row">
+                    <div class="stat-value" id="viewsYtdValue">-</div>
+                    <span class="badge" id="viewsYtdBadge">-</span>
+                </div>
+                <div class="stat-context" id="viewsYtdContext">Comparing with previous year...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Clones YTD</div>
+                <div class="stat-row">
+                    <div class="stat-value" id="clonesYtdValue">-</div>
+                    <span class="badge" id="clonesYtdBadge">-</span>
+                </div>
+                <div class="stat-context" id="clonesYtdContext">Comparing with previous year...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Daily Views (30d)</div>
+                <div class="stat-row">
+                    <div class="stat-value" id="avg30dValue">-</div>
+                    <span class="badge" id="avg30dBadge">-</span>
+                </div>
+                <div class="stat-context" id="avg30dContext">Last 30 days trend...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Clone Rate</div>
+                <div class="stat-row">
+                    <div class="stat-value" id="cloneRateValue">-</div>
+                    <span class="badge" id="cloneRateBadge">-</span>
+                </div>
+                <div class="stat-context" id="cloneRateContext">Clones as a share of views...</div>
+            </div>
+        </section>
+
+        <section class="insights-layout">
+            <div class="panel">
+                <h2 class="panel-title">Total Views by Year</h2>
+                <div id="yearlyChart" class="bar-chart"></div>
+                <p class="panel-note" id="yearlyChartNote"></p>
+            </div>
+            <div class="panel">
+                <h2 class="panel-title">Monthly Trends</h2>
+                <div id="monthlyTable"></div>
+                <p class="panel-note" id="monthlyTableNote"></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module" src="assets/js/insightsApp.js"></script>
+</body>
+</html>
