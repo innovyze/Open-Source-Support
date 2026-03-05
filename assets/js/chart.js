@@ -1,13 +1,23 @@
 // Chart drawing module
-import { CONFIG, MISSING_PERIODS } from './config.js';
+import { CONFIG, FULLY_MISSING_PERIODS, RECONSTRUCTED_TOTALS_PERIODS } from './config.js';
 import { formatNumber, formatDate, filterDataByDays } from './utils.js';
+
+function isDateInPeriods(date, periods) {
+    return periods.some(period => date >= period.start && date <= period.end);
+}
+
+function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
 
 export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
     const filteredData = filterDataByDays(data, range);
-    
+
     if (filteredData.length === 0) {
         container.innerHTML = '<div class="loading">No data available</div>';
         return;
@@ -15,9 +25,6 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
 
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
-    
-    // Use the full container height for the SVG
-    // The drawing area (height) is the container height minus margins
     const svgHeight = Math.max(300, containerHeight);
     const height = svgHeight - CONFIG.margin.top - CONFIG.margin.bottom;
     const width = containerWidth - CONFIG.margin.left - CONFIG.margin.right;
@@ -30,95 +37,112 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
         .append('g')
         .attr('transform', `translate(${CONFIG.margin.left},${CONFIG.margin.top})`);
 
-    // Scales
+    const isUniqueAvailable = (point) =>
+        Number.isFinite(point.unique) && !isDateInPeriods(point.date, RECONSTRUCTED_TOTALS_PERIODS);
+
     const x = d3.scaleTime()
         .domain(d3.extent(filteredData, d => d.date))
         .range([0, width]);
 
-    // Calculate max Y based on visible series only
     const maxY = d3.max(filteredData, d => {
         const values = [];
-        if (visibleSeries.total) values.push(d.total);
-        if (visibleSeries.unique) values.push(d.unique);
-        return values.length > 0 ? Math.max(...values) : 0;
-    });
+        if (visibleSeries.total && Number.isFinite(d.total)) values.push(d.total);
+        if (visibleSeries.unique && isUniqueAvailable(d)) values.push(d.unique);
+        return values.length > 0 ? Math.max(...values) : undefined;
+    }) ?? 0;
+
     const y = d3.scaleLinear()
-        .domain([0, maxY * 1.1])
+        .domain([0, maxY > 0 ? maxY * 1.1 : 1])
         .range([height, 0]);
 
-    // --- GAP VISUALIZATION START ---
-    
-    // 1. Define the Stripe Pattern
+    const xDomain = x.domain();
     const defs = svg.append('defs');
 
-    defs.append('pattern')
-        .attr('id', 'error-stripe')
-        .attr('patternUnits', 'userSpaceOnUse')
-        .attr('width', 8)
-        .attr('height', 8)
-        .append('path')
-        .attr('d', 'M-1,1 l2,-2 M0,8 l8,-8 M7,9 l2,-2')
-        .attr('stroke', 'var(--chart-error-stroke)')
-        .attr('stroke-width', 1);
+    const addStripePattern = (patternId, strokeVariable) => {
+        defs.append('pattern')
+            .attr('id', patternId)
+            .attr('patternUnits', 'userSpaceOnUse')
+            .attr('width', 8)
+            .attr('height', 8)
+            .append('path')
+            .attr('d', 'M-1,1 l2,-2 M0,8 l8,-8 M7,9 l2,-2')
+            .attr('stroke', `var(${strokeVariable})`)
+            .attr('stroke-width', 1);
+    };
 
-    // 2. Draw the Zones
-    const xDomain = x.domain();
-    const visibleMissingPeriods = MISSING_PERIODS.filter(p => 
-        p.end > xDomain[0] && p.start < xDomain[1]
-    );
+    const drawPeriodZones = (periods, options) => {
+        const {
+            zoneClass,
+            patternId,
+            fillVariable,
+            strokeVariable,
+            defaultLabel
+        } = options;
 
-    const zones = svg.selectAll('.missing-zone')
-        .data(visibleMissingPeriods)
-        .enter()
-        .append('g')
-        .attr('class', 'missing-zone');
+        const visiblePeriods = periods
+            .map(period => {
+                const rangeStart = period.start > xDomain[0] ? period.start : xDomain[0];
+                const periodEndExclusive = addDays(period.end, 1);
+                const rangeEnd = periodEndExclusive < xDomain[1] ? periodEndExclusive : xDomain[1];
+                return { ...period, rangeStart, rangeEnd };
+            })
+            .filter(period => period.rangeEnd > period.rangeStart);
 
-    // Background Rect (Red Tint)
-    zones.append('rect')
-        .attr('x', d => x(Math.max(d.start, xDomain[0])))
-        .attr('width', d => {
-            const startX = x(Math.max(d.start, xDomain[0]));
-            const endX = x(Math.min(d.end, xDomain[1]));
-            return Math.max(0, endX - startX);
-        })
-        .attr('y', 0)
-        .attr('height', height)
-        .attr('fill', 'var(--chart-error-bg)');
+        if (visiblePeriods.length === 0) {
+            return;
+        }
 
-    // Pattern Overlay (Stripes)
-    zones.append('rect')
-        .attr('x', d => x(Math.max(d.start, xDomain[0])))
-        .attr('width', d => {
-            const startX = x(Math.max(d.start, xDomain[0]));
-            const endX = x(Math.min(d.end, xDomain[1]));
-            return Math.max(0, endX - startX);
-        })
-        .attr('y', 0)
-        .attr('height', height)
-        .attr('fill', 'url(#error-stripe)')
-        .style('pointer-events', 'none');
+        const zones = svg.selectAll(`.${zoneClass}`)
+            .data(visiblePeriods)
+            .enter()
+            .append('g')
+            .attr('class', zoneClass);
 
-    // 3. Add Label
-    zones.append('text')
-        .attr('x', d => {
-            const startX = x(Math.max(d.start, xDomain[0]));
-            const endX = x(Math.min(d.end, xDomain[1]));
-            return startX + (endX - startX) / 2; 
-        })
-        .attr('y', 20)
-        .attr('text-anchor', 'middle')
-        .attr('fill', 'var(--chart-error-stroke)')
-        .style('font-size', '10px')
-        .style('font-weight', 'bold')
-        .style('opacity', d => {
-            const width = x(Math.min(d.end, xDomain[1])) - x(Math.max(d.start, xDomain[0]));
-            return width > 60 ? 1 : 0;
-        })
-        .text('DATA GAP');
+        zones.append('rect')
+            .attr('x', d => x(d.rangeStart))
+            .attr('width', d => Math.max(0, x(d.rangeEnd) - x(d.rangeStart)))
+            .attr('y', 0)
+            .attr('height', height)
+            .attr('fill', `var(${fillVariable})`);
 
-    // --- GAP VISUALIZATION END ---
+        zones.append('rect')
+            .attr('x', d => x(d.rangeStart))
+            .attr('width', d => Math.max(0, x(d.rangeEnd) - x(d.rangeStart)))
+            .attr('y', 0)
+            .attr('height', height)
+            .attr('fill', `url(#${patternId})`)
+            .style('pointer-events', 'none');
 
-    // Grid
+        zones.append('text')
+            .attr('x', d => x(d.rangeStart) + (x(d.rangeEnd) - x(d.rangeStart)) / 2)
+            .attr('y', 20)
+            .attr('text-anchor', 'middle')
+            .attr('fill', `var(${strokeVariable})`)
+            .style('font-size', '10px')
+            .style('font-weight', '600')
+            .style('opacity', d => (x(d.rangeEnd) - x(d.rangeStart) > 90 ? 1 : 0))
+            .text(d => d.label || defaultLabel);
+    };
+
+    addStripePattern('missing-stripe', '--chart-error-stroke');
+    addStripePattern('reconstructed-stripe', '--chart-reconstructed-stroke');
+
+    drawPeriodZones(FULLY_MISSING_PERIODS, {
+        zoneClass: 'missing-zone',
+        patternId: 'missing-stripe',
+        fillVariable: '--chart-error-bg',
+        strokeVariable: '--chart-error-stroke',
+        defaultLabel: 'Missing Data'
+    });
+
+    drawPeriodZones(RECONSTRUCTED_TOTALS_PERIODS, {
+        zoneClass: 'reconstructed-zone',
+        patternId: 'reconstructed-stripe',
+        fillVariable: '--chart-reconstructed-bg',
+        strokeVariable: '--chart-reconstructed-stroke',
+        defaultLabel: 'Reconstructed Totals'
+    });
+
     svg.append('g')
         .attr('class', 'grid')
         .attr('opacity', 0.1)
@@ -126,7 +150,6 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             .tickSize(-width)
             .tickFormat(''));
 
-    // Axes
     const xAxis = svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -146,68 +169,57 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             .ticks(8)
             .tickFormat(d => formatNumber(d)));
 
-    // Line generators
     const lineTotal = d3.line()
-        .defined(d => {
-            return !MISSING_PERIODS.some(p => d.date >= p.start && d.date <= p.end);
-        })
+        .defined(d => Number.isFinite(d.total))
         .x(d => x(d.date))
         .y(d => y(d.total))
         .curve(d3.curveMonotoneX);
 
     const lineUnique = d3.line()
-        .defined(d => {
-            return !MISSING_PERIODS.some(p => d.date >= p.start && d.date <= p.end);
-        })
+        .defined(d => isUniqueAvailable(d))
         .x(d => x(d.date))
         .y(d => y(d.unique))
         .curve(d3.curveMonotoneX);
 
-    // Draw lines with animation (only if visible)
-    let totalPath, uniquePath, totalLength, uniqueLength;
+    const drawAnimatedLine = (lineGenerator, seriesData, className) => {
+        const pathData = lineGenerator(seriesData);
+        if (!pathData) {
+            return;
+        }
 
-    if (visibleSeries.total) {
-        totalPath = svg.append('path')
-            .datum(filteredData)
-            .attr('class', 'line line-total')
-            .attr('d', lineTotal);
+        const path = svg.append('path')
+            .datum(seriesData)
+            .attr('class', className)
+            .attr('d', pathData);
 
-        // Animate line
-        totalLength = totalPath.node().getTotalLength();
-        totalPath
-            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
-            .attr('stroke-dashoffset', totalLength)
+        const pathLength = path.node()?.getTotalLength() ?? 0;
+        if (pathLength <= 0) {
+            return;
+        }
+
+        path.attr('stroke-dasharray', `${pathLength} ${pathLength}`)
+            .attr('stroke-dashoffset', pathLength)
             .transition()
             .duration(CONFIG.animationDuration)
             .ease(d3.easeLinear)
             .attr('stroke-dashoffset', 0);
+    };
+
+    if (visibleSeries.total) {
+        drawAnimatedLine(lineTotal, filteredData, 'line line-total');
     }
 
     if (visibleSeries.unique) {
-        uniquePath = svg.append('path')
-            .datum(filteredData)
-            .attr('class', 'line line-unique')
-            .attr('d', lineUnique);
-
-        // Animate line
-        uniqueLength = uniquePath.node().getTotalLength();
-        uniquePath
-            .attr('stroke-dasharray', uniqueLength + ' ' + uniqueLength)
-            .attr('stroke-dashoffset', uniqueLength)
-            .transition()
-            .duration(CONFIG.animationDuration)
-            .ease(d3.easeLinear)
-            .attr('stroke-dashoffset', 0);
+        drawAnimatedLine(lineUnique, filteredData, 'line line-unique');
     }
 
-    // Get current theme colors from CSS variables
     const computedStyle = getComputedStyle(document.documentElement);
     const totalColor = computedStyle.getPropertyValue('--chart-blue').trim();
     const uniqueColor = computedStyle.getPropertyValue('--chart-green').trim();
 
-    // Interactive dots (only if series visible)
-    let dotTotal, dotUnique;
-    
+    let dotTotal;
+    let dotUnique;
+
     if (visibleSeries.total) {
         dotTotal = svg.append('circle')
             .attr('class', 'dot')
@@ -224,9 +236,8 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             .attr('fill', uniqueColor);
     }
 
-    // Invisible overlay for mouse tracking
     const bisect = d3.bisector(d => d.date).left;
-    
+
     svg.append('rect')
         .attr('width', width)
         .attr('height', height)
@@ -238,59 +249,61 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             const i = bisect(filteredData, x0, 1);
             const d0 = filteredData[i - 1];
             const d1 = filteredData[i];
-            
+
             if (!d0 || !d1) return;
-            
+
             const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-            
-            // Update dots (only if they exist)
-            if (dotTotal) {
+            const hasTotal = Number.isFinite(d.total);
+            const hasUnique = isUniqueAvailable(d);
+
+            if (dotTotal && hasTotal) {
                 dotTotal
                     .classed('visible', true)
                     .attr('cx', x(d.date))
                     .attr('cy', y(d.total));
+            } else if (dotTotal) {
+                dotTotal.classed('visible', false);
             }
-            
-            if (dotUnique) {
+
+            if (dotUnique && hasUnique) {
                 dotUnique
                     .classed('visible', true)
                     .attr('cx', x(d.date))
                     .attr('cy', y(d.unique));
+            } else if (dotUnique) {
+                dotUnique.classed('visible', false);
             }
-            
-            // Update tooltip
+
             const tooltip = document.getElementById('tooltip');
             tooltip.classList.add('visible');
             tooltip.querySelector('.tooltip-date').textContent = formatDate(d.date);
-            
+
             const label = type === 'views' ? 'Views' : 'Clones';
             let tooltipContent = '';
-            
+
             if (visibleSeries.total) {
                 tooltipContent += `
                     <div class="tooltip-line">
                         <div class="tooltip-color" style="background: ${totalColor};"></div>
-                        <span>Total ${label}: ${formatNumber(d.total)}</span>
+                        <span>Total ${label}: ${formatNumber(hasTotal ? d.total : null)}</span>
                     </div>
                 `;
             }
-            
+
             if (visibleSeries.unique) {
                 tooltipContent += `
                     <div class="tooltip-line">
                         <div class="tooltip-color" style="background: ${uniqueColor};"></div>
-                        <span>Unique ${label}: ${formatNumber(d.unique)}</span>
+                        <span>Unique ${label}: ${formatNumber(hasUnique ? d.unique : null)}</span>
                     </div>
                 `;
             }
-            
+
             tooltip.querySelector('.tooltip-content').innerHTML = tooltipContent;
-            
-            const tooltipWidth = tooltip.offsetWidth;
+
             const tooltipHeight = tooltip.offsetHeight;
-            
-            tooltip.style.left = (event.pageX + 15) + 'px';
-            tooltip.style.top = (event.pageY - tooltipHeight / 2) + 'px';
+            tooltip.style.left = `${event.pageX + 15}px`;
+            tooltip.style.top = `${event.pageY - tooltipHeight / 2}px`;
         })
         .on('mouseleave', function() {
             if (dotTotal) dotTotal.classed('visible', false);

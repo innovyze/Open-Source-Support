@@ -53,7 +53,7 @@ function setupEventListeners() {
     });
 
     // Legend click to toggle series visibility
-    document.querySelectorAll('.legend-item').forEach(item => {
+    document.querySelectorAll('.legend-item[data-series]').forEach(item => {
         item.addEventListener('click', function() {
             const series = this.dataset.series;
             visibleSeries[series] = !visibleSeries[series];

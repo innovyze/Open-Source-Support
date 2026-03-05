@@ -9,9 +9,13 @@ export const CONFIG = {
     animationDuration: 1500
 };
 
-export const MISSING_PERIODS = [
-    { start: new Date('2025-11-14'), end: new Date('2026-01-08'), label: 'Workflow Outage' },
-    { start: new Date('2025-10-19'), end: new Date('2025-10-31'), label: 'Workflow Outage' }
+export const FULLY_MISSING_PERIODS = [
+    { start: new Date('2025-10-19'), end: new Date('2025-10-31'), label: 'Missing Data' },
+    { start: new Date('2025-11-14'), end: new Date('2025-11-14'), label: 'Missing Data' }
+];
+
+export const RECONSTRUCTED_TOTALS_PERIODS = [
+    { start: new Date('2025-11-15'), end: new Date('2026-01-08'), label: 'Reconstructed Totals' }
 ];
 
 export const TIME_RANGES = {
