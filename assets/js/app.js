@@ -8,7 +8,6 @@ let clonesData = [];
 let currentRange = 'all';
 let currentChartType = 'views';
 let visibleSeries = { total: true, unique: true }; // Track which series are visible
-let fitToData = true;
 
 function updateStats() {
     const stats = calculateStats(viewsData, clonesData);
@@ -22,20 +21,10 @@ function updateStats() {
 
 function updateChart() {
     const data = currentChartType === 'views' ? viewsData : clonesData;
-    drawChart('mainChart', data, currentChartType, currentRange, visibleSeries, fitToData);
+    drawChart('mainChart', data, currentChartType, currentRange, visibleSeries);
 }
 
 function setupEventListeners() {
-    const updateFitToggleLabel = function() {
-        const fitToggle = document.getElementById('fitToggle');
-        if (!fitToggle) {
-            return;
-        }
-
-        fitToggle.textContent = fitToData ? 'Fit to data' : 'Full range';
-        fitToggle.classList.toggle('active', fitToData);
-    };
-
     // Chart type toggle
     document.querySelectorAll('.toggle-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -54,7 +43,7 @@ function setupEventListeners() {
     });
 
     // Time range selector
-    document.querySelectorAll('.time-btn[data-days]').forEach(btn => {
+    document.querySelectorAll('.time-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
@@ -62,16 +51,6 @@ function setupEventListeners() {
             updateChart();
         });
     });
-
-    const fitToggle = document.getElementById('fitToggle');
-    if (fitToggle) {
-        updateFitToggleLabel();
-        fitToggle.addEventListener('click', function() {
-            fitToData = !fitToData;
-            updateFitToggleLabel();
-            updateChart();
-        });
-    }
 
     // Legend click to toggle series visibility
     document.querySelectorAll('.legend-item[data-series]').forEach(item => {

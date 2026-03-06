@@ -12,18 +12,6 @@ function addDays(date, days) {
     return result;
 }
 
-function computePercentileMax(values, percentile = 99) {
-    if (values.length === 0) {
-        return 0;
-    }
-
-    const sortedValues = [...values].sort((a, b) => a - b);
-    const clampedPercentile = Math.min(100, Math.max(0, percentile));
-    const index = Math.floor((clampedPercentile / 100) * (sortedValues.length - 1));
-
-    return sortedValues[index];
-}
-
 function aggregateToWeekly(data) {
     if (data.length === 0) return data;
 
@@ -65,7 +53,7 @@ function aggregateToWeekly(data) {
         }));
 }
 
-export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }, fitToData = true) {
+export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
@@ -101,52 +89,19 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
         .domain(d3.extent(filteredData, d => d.date))
         .range([0, width]);
 
-    const allValues = filteredData.flatMap((point) => {
+    const maxY = d3.max(filteredData, d => {
         const values = [];
-        if (visibleSeries.total && Number.isFinite(point.total)) {
-            values.push(point.total);
-        }
-
-        if (visibleSeries.unique && isUniqueAvailable(point)) {
-            values.push(point.unique);
-        }
-
-        return values.length > 0 ? values : [];
-    }).flat();
-
-    const absoluteMax = d3.max(allValues) ?? 0;
-    const percentileMax = computePercentileMax(allValues, 99);
-    const scaleMax = fitToData ? percentileMax : absoluteMax;
-    const yDomainTop = (scaleMax > 0 ? scaleMax : 1) * 1.1;
+        if (visibleSeries.total && Number.isFinite(d.total)) values.push(d.total);
+        if (visibleSeries.unique && isUniqueAvailable(d)) values.push(d.unique);
+        return values.length > 0 ? Math.max(...values) : undefined;
+    }) ?? 0;
 
     const y = d3.scaleLinear()
-        .domain([0, yDomainTop])
+        .domain([0, maxY > 0 ? maxY * 1.1 : 1])
         .range([height, 0]);
 
     const xDomain = x.domain();
     const defs = svg.append('defs');
-    const chartClipId = `line-clip-${Date.now()}`;
-
-    defs.append('clipPath')
-        .attr('id', chartClipId)
-        .append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', width)
-        .attr('height', height);
-
-    const revealClipId = `line-reveal-${Date.now()}`;
-    defs.append('clipPath')
-        .attr('id', revealClipId)
-        .append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', 0)
-        .attr('height', height)
-        .transition()
-        .duration(CONFIG.animationDuration)
-        .ease(d3.easeLinear)
-        .attr('width', width);
 
     const addStripePattern = (patternId, strokeVariable) => {
         defs.append('pattern')
@@ -275,28 +230,36 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
         .y(d => y(d.unique))
         .curve(d3.curveMonotoneX);
 
-    const lineGroup = svg.append('g')
-        .attr('clip-path', `url(#${chartClipId})`);
-
-    const drawLine = (lineGenerator, seriesData, className) => {
+    const drawAnimatedLine = (lineGenerator, seriesData, className) => {
         const pathData = lineGenerator(seriesData);
         if (!pathData) {
             return;
         }
 
-        lineGroup.append('path')
+        const path = svg.append('path')
             .datum(seriesData)
             .attr('class', className)
-            .attr('clip-path', `url(#${revealClipId})`)
             .attr('d', pathData);
+
+        const pathLength = path.node()?.getTotalLength() ?? 0;
+        if (pathLength <= 0) {
+            return;
+        }
+
+        path.attr('stroke-dasharray', `${pathLength} ${pathLength}`)
+            .attr('stroke-dashoffset', pathLength)
+            .transition()
+            .duration(CONFIG.animationDuration)
+            .ease(d3.easeLinear)
+            .attr('stroke-dashoffset', 0);
     };
 
     if (visibleSeries.total) {
-        drawLine(lineTotal, filteredData, 'line line-total');
+        drawAnimatedLine(lineTotal, filteredData, 'line line-total');
     }
 
     if (visibleSeries.unique) {
-        drawLine(lineUnique, filteredData, 'line line-unique');
+        drawAnimatedLine(lineUnique, filteredData, 'line line-unique');
     }
 
     const computedStyle = getComputedStyle(document.documentElement);
