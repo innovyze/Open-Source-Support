@@ -6,6 +6,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scrollbar-gutter: stable;
+}
+
 :root {
     --bg-primary: #0b111d;
     --bg-secondary: #111a29;
@@ -731,8 +735,6 @@ h1 {
 
 .dot.visible {
     opacity: 1;
-}
-
 }
 
 @media (max-width: 768px) {
