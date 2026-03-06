@@ -932,8 +932,8 @@ body.milestones-page {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 24px;
-    padding: 0 5px;
+    margin: 10px 0 0;
+    padding: 0;
 }
 
 .filter-pill {
