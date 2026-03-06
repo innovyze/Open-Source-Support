@@ -819,3 +819,319 @@ h1 {
     }
 }
 
+/* ── Milestones page ───────────────────────────────────── */
+
+body.milestones-page {
+    min-height: 100vh;
+    height: auto;
+    overflow-y: visible;
+}
+
+.milestones-page .container {
+    height: auto;
+    min-height: calc(100vh - 30px);
+    display: block;
+}
+
+.milestones-page header {
+    margin-bottom: 30px;
+}
+
+.context-chart-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    padding: 0 15px 12px;
+    margin: 0 0 20px;
+}
+
+.context-chart-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 0 2px;
+}
+
+.context-chart-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.context-chart-range {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0.7;
+}
+
+.context-chart {
+    width: 100%;
+    height: 100px;
+    position: relative;
+}
+
+.context-chart svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.context-pip {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    bottom: 4px;
+    cursor: default;
+    transition: width 0.2s ease, height 0.2s ease, box-shadow 0.2s ease;
+    transform: translateX(-50%);
+}
+
+.context-pip.ai { background: var(--chart-blue); }
+.context-pip.product { background: var(--chart-green); }
+
+.context-pip.highlight {
+    width: 10px;
+    height: 10px;
+    bottom: 2px;
+    box-shadow: 0 0 12px currentColor, 0 0 24px currentColor;
+    animation: pip-glow 1.2s ease-in-out infinite;
+}
+
+.context-pip.ai.highlight { color: var(--chart-blue); }
+.context-pip.product.highlight { color: var(--chart-green); }
+
+@keyframes pip-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+}
+
+.context-vline {
+    position: absolute;
+    top: 0;
+    bottom: 4px;
+    width: 1px;
+    background: rgba(79, 169, 240, 0.4);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.context-vline.visible {
+    opacity: 1;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 0 5px;
+}
+
+.filter-pill {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--button-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filter-pill:hover {
+    background: var(--button-hover);
+    color: var(--text-primary);
+}
+
+.filter-pill.active {
+    background: var(--button-active);
+    color: white;
+    border-color: var(--button-active);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    padding: 0 5px 40px;
+}
+
+.milestone-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: default;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.milestone-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    border-color: rgba(130, 196, 255, 0.4);
+}
+
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.category-badge .cat-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.category-badge.ai .cat-dot { background: var(--chart-blue); }
+.category-badge.product .cat-dot { background: var(--chart-green); }
+
+.card-date {
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 8px 0 12px;
+    line-height: 1.35;
+}
+
+.card-sparkline {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.card-teaser {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.card-expanded {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.25s ease;
+}
+
+.milestone-card:hover .card-expanded {
+    max-height: 280px;
+    opacity: 1;
+    margin-top: 14px;
+}
+
+.card-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 0 12px;
+}
+
+.before-after-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 12px;
+}
+
+.before-after-bar .ba-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.before-after-bar .ba-label {
+    color: var(--text-muted);
+    min-width: 50px;
+}
+
+.before-after-bar .ba-value {
+    font-weight: 500;
+}
+
+.before-after-bar .ba-value.before {
+    color: var(--text-secondary);
+}
+
+.before-after-bar .ba-value.after.up {
+    color: #4ade80;
+}
+
+.before-after-bar .ba-value.after.down {
+    color: #f87171;
+}
+
+.ms-stat-bar-wrap {
+    width: 80px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+}
+
+.ms-stat-bar {
+    height: 100%;
+    border-radius: 0;
+    transition: width 0.4s ease;
+}
+
+.ms-stat-bar.before {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.ms-stat-bar.after {
+    background: rgba(74, 222, 128, 0.6);
+}
+
+.ms-stat-bar.after.down {
+    background: rgba(248, 113, 113, 0.6);
+}
+
+@media (min-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 720px) and (max-width: 1023px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+

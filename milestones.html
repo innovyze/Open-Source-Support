@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI and industry milestones correlated with traffic patterns for the Autodesk Water open-source support repository.">
+    <meta name="author" content="Traffic Data Analytics">
+    <title>Open Source Support – Milestones</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="https://innovyze.github.io/Open-Source-Support/assets/brand/og-card.png">
+    <meta name="theme-color" content="#0b111d">
+
+    <!-- Open Graph / Social preview -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://innovyze.github.io/Open-Source-Support/milestones.html">
+    <meta property="og:title"       content="Open Source Support – Milestones">
+    <meta property="og:description" content="AI and industry milestones correlated with traffic patterns for the Autodesk Water open-source support repository.">
+    <meta property="og:image"       content="https://innovyze.github.io/Open-Source-Support/assets/brand/og-card.png">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="Open Source Support – Milestones">
+    <meta name="twitter:description" content="AI and industry milestones correlated with traffic patterns for the Autodesk Water open-source support repository.">
+    <meta name="twitter:image"       content="https://innovyze.github.io/Open-Source-Support/assets/brand/og-card.png">
+
+    <!-- D3.js Library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="milestones-page">
+    <div class="container">
+        <header>
+            <div class="page-toggle">
+                <a href="index.html" class="page-toggle-btn">Daily Traffic</a>
+                <a href="insights.html" class="page-toggle-btn">Insights</a>
+                <a href="milestones.html" class="page-toggle-btn active">Milestones</a>
+            </div>
+            <h1>Open Source Support</h1>
+            <p class="subtitle">AI & Industry Milestones</p>
+        </header>
+
+        <div class="context-chart-wrap">
+            <div class="context-chart-header">
+                <span class="context-chart-title">Monthly Repository Views</span>
+                <span class="context-chart-range" id="contextChartRange"></span>
+            </div>
+            <div class="context-chart" id="contextChart"></div>
+            <div class="context-vline" id="contextVline"></div>
+        </div>
+
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="ai">AI Milestones</button>
+            <button class="filter-pill" data-filter="product">Product Events</button>
+        </div>
+
+        <div class="card-grid" id="cardGrid">
+            <div class="loading">Loading milestones</div>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module" src="assets/js/milestonesApp.js"></script>
+</body>
+</html>
