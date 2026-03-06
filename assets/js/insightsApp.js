@@ -416,40 +416,6 @@ function render() {
     renderMonthlyTable(appState.monthlyYoY, appState.latestYear);
 }
 
-function setupThemeToggle() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (!themeToggle) {
-        return;
-    }
-
-    themeToggle.addEventListener('click', function onThemeToggle() {
-        document.body.classList.toggle('light-theme');
-        const isLight = document.body.classList.contains('light-theme');
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        const iconEl = this.querySelector('.theme-icon');
-        if (iconEl) {
-            iconEl.textContent = isLight ? '🌙' : '☀️';
-        }
-
-        render();
-    });
-}
-
-function applySavedTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const themeToggle = document.getElementById('themeToggle');
-    const iconEl = themeToggle?.querySelector('.theme-icon');
-
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        if (iconEl) {
-            iconEl.textContent = '🌙';
-        }
-    } else if (iconEl) {
-        iconEl.textContent = '☀️';
-    }
-}
-
 function setupResizeHandler() {
     let resizeTimeout = null;
     window.addEventListener('resize', () => {
@@ -462,8 +428,6 @@ function setupResizeHandler() {
 
 async function init() {
     try {
-        applySavedTheme();
-        setupThemeToggle();
         setupResizeHandler();
 
         const { viewsData, clonesData } = await loadTrafficData();

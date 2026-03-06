@@ -91,22 +91,6 @@ function setupEventListeners() {
         });
     });
 
-    // Theme toggle
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            
-            // Update icon
-            this.querySelector('.theme-icon').textContent = isLight ? '🌙' : '☀️';
-            
-            // Redraw chart with new theme colors
-            updateChart();
-        });
-    }
-
     // Responsive resize
     let resizeTimeout;
     window.addEventListener('resize', function() {
@@ -119,12 +103,6 @@ function setupEventListeners() {
 
 async function init() {
     try {
-        // Load theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-        }
-
         const data = await loadTrafficData();
         viewsData = data.viewsData;
         clonesData = data.clonesData;
