@@ -3,8 +3,8 @@ export const CONFIG = {
     margin: { top: 20, right: 30, bottom: 50, left: 60 },
     chartHeight: Math.min(400, window.innerHeight * 0.45), // Dynamic height, max 400px or 45% of viewport
     colors: {
-        total: '#00d4ff',
-        unique: '#00ff8f'
+        total: '#5eb7ff',
+        unique: '#ff9b5a'
     },
     animationDuration: 1500
 };

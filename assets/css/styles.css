@@ -7,49 +7,49 @@
 }
 
 :root {
-    --bg-primary: #06080f;
-    --bg-secondary: #0a1020;
-    --bg-card: #0f1726;
-    --text-primary: #e8fbff;
-    --text-secondary: #9fb7ca;
-    --text-muted: #6d82a0;
+    --bg-primary: #0b111d;
+    --bg-secondary: #111a29;
+    --bg-card: #131f31;
+    --text-primary: #e7edf6;
+    --text-secondary: #98a9bd;
+    --text-muted: #74829a;
     --border-color: rgba(130, 196, 255, 0.22);
     --shadow: rgba(0, 0, 0, 0.55);
-    --chart-blue: #00d4ff;
-    --chart-green: #00ff8f;
+    --chart-blue: #5eb7ff;
+    --chart-green: #ff9b5a;
     --button-bg: rgba(255, 255, 255, 0.05);
     --button-hover: rgba(255, 255, 255, 0.12);
-    --button-active: #00d4ff;
+    --button-active: #1d68ff;
     --chart-error-bg: rgba(255, 72, 72, 0.16);
     --chart-error-stroke: rgba(255, 72, 72, 0.45);
     --chart-reconstructed-bg: rgba(255, 196, 61, 0.14);
     --chart-reconstructed-stroke: rgba(255, 196, 61, 0.5);
-    --badge-up: #00ff8f;
-    --badge-up-bg: rgba(0, 255, 143, 0.18);
+    --badge-up: #63df8b;
+    --badge-up-bg: rgba(99, 223, 139, 0.2);
     --badge-down: #ff4d82;
     --badge-down-bg: rgba(255, 77, 130, 0.18);
-    --bar-color: #00d4ff;
+    --bar-color: #5eb7ff;
     --bar-stripe: rgba(255, 255, 255, 0.45);
     --table-row-alt: rgba(255, 255, 255, 0.02);
-    --table-row-hover: rgba(0, 212, 255, 0.08);
-    --tooltip-bg: #0c1420;
-    --tooltip-border: rgba(0, 212, 255, 0.35);
+    --table-row-hover: rgba(30, 104, 255, 0.12);
+    --tooltip-bg: #111d2d;
+    --tooltip-border: rgba(94, 183, 255, 0.32);
 }
 
 body.light-theme {
-    --bg-primary: #edf2ff;
-    --bg-secondary: #f6f9ff;
-    --bg-card: #fdfefe;
-    --text-primary: #0d1a30;
-    --text-secondary: #38567f;
-    --text-muted: #5e7596;
+    --bg-primary: #f6f8fd;
+    --bg-secondary: #fbfdff;
+    --bg-card: #ffffff;
+    --text-primary: #0f1a2a;
+    --text-secondary: #395070;
+    --text-muted: #61748f;
     --border-color: rgba(26, 72, 141, 0.24);
     --shadow: rgba(7, 19, 43, 0.12);
-    --chart-blue: #0059ff;
-    --chart-green: #009e60;
+    --chart-blue: #1d68ff;
+    --chart-green: #0ca678;
     --button-bg: #eff4ff;
     --button-hover: #e6edff;
-    --button-active: #0059ff;
+    --button-active: #1d68ff;
     --chart-error-bg: rgba(255, 72, 72, 0.12);
     --chart-error-stroke: rgba(255, 72, 72, 0.32);
     --chart-reconstructed-bg: rgba(217, 119, 6, 0.09);
@@ -58,7 +58,7 @@ body.light-theme {
     --badge-up-bg: rgba(15, 143, 92, 0.14);
     --badge-down: #d12b53;
     --badge-down-bg: rgba(209, 43, 83, 0.12);
-    --bar-color: #0059ff;
+    --bar-color: #1d68ff;
     --bar-stripe: rgba(0, 0, 0, 0.28);
     --table-row-alt: rgba(13, 26, 48, 0.03);
     --table-row-hover: rgba(13, 26, 48, 0.06);
@@ -69,8 +69,8 @@ body.light-theme {
 body {
     font-family: 'Space Grotesk', 'JetBrains Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background:
-        radial-gradient(circle at 20% 0%, rgba(0, 212, 255, 0.17), transparent 40%),
-        radial-gradient(circle at 80% 0%, rgba(0, 255, 143, 0.12), transparent 35%),
+        radial-gradient(circle at 20% 0%, rgba(94, 183, 255, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 0%, rgba(255, 155, 90, 0.1), transparent 35%),
         var(--bg-primary);
     color: var(--text-primary);
     height: 100vh;
@@ -174,9 +174,9 @@ h1 {
 
 .page-toggle-btn.active {
     background: var(--button-active);
-    color: var(--text-primary);
+    color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.35), 0 0 16px rgba(0, 212, 255, 0.25);
+    box-shadow: 0 0 0 1px rgba(30, 104, 255, 0.35), 0 0 16px rgba(30, 104, 255, 0.25);
 }
 
 .theme-toggle:hover {
@@ -543,7 +543,7 @@ h1 {
 
 .toggle-btn.active {
     background: var(--button-active);
-    color: var(--text-primary);
+    color: #ffffff;
     font-weight: 600;
     box-shadow: 0 0 12px rgba(0, 212, 255, 0.32);
 }
@@ -574,10 +574,10 @@ h1 {
 
 .time-btn.active {
     background: var(--button-active);
-    border-color: rgba(0, 212, 255, 0.8);
-    color: var(--text-primary);
+    border-color: rgba(30, 104, 255, 0.8);
+    color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 14px rgba(30, 104, 255, 0.3);
 }
 
 #mainChart {
@@ -604,12 +604,13 @@ h1 {
 
 .line-total {
     stroke: var(--chart-blue);
-    filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.45));
+    filter: drop-shadow(0 0 4px rgba(94, 183, 255, 0.4));
 }
 
 .line-unique {
     stroke: var(--chart-green);
-    filter: drop-shadow(0 0 4px rgba(0, 255, 143, 0.38));
+    filter: drop-shadow(0 0 4px rgba(255, 155, 90, 0.32));
+    stroke-dasharray: 6 8;
 }
 
 .grid line {
