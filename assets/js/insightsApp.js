@@ -245,7 +245,7 @@ function drawYearlyChart(yearlyData, latestDate) {
         )
         .call(g => g.select('.domain').remove());
 
-    const barColor = getCssVar('--bar-color', '#5eb7ff');
+    const barColor = getCssVar('--bar-color', '#4fa9f0');
     const barStripe = getCssVar('--bar-stripe', 'rgba(255, 255, 255, 0.5)');
     const patternId = `year-pace-${Date.now()}`;
 
