@@ -1059,6 +1059,18 @@ body.milestones-page {
     margin: 0 0 12px;
 }
 
+.card-description a {
+    color: var(--chart-blue);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(79, 169, 240, 0.3);
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.card-description a:hover {
+    color: #8ac8f6;
+    border-bottom-color: rgba(79, 169, 240, 0.7);
+}
+
 .before-after-bar {
     display: flex;
     flex-wrap: wrap;

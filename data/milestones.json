@@ -4,118 +4,118 @@
     "name": "Autodesk Acquires Innovyze",
     "category": "product",
     "teaser": "$1B acquisition completed",
-    "description": "Autodesk completed its $1 billion acquisition of Innovyze, positioning itself as a leading provider of end-to-end digital solutions for water infrastructure."
+    "description": "Autodesk <a href='https://adsknews.autodesk.com/en/pressrelease/complete-acquisition-innovyze/' target='_blank' rel='noopener'>completed its $1 billion acquisition of Innovyze</a>, positioning itself as a leading provider of end-to-end digital solutions for water infrastructure. The deal was first <a href='https://investors.autodesk.com/news-releases/news-release-details/autodesk-acquire-innovyze-inc-1-billion-provider-smart-water' target='_blank' rel='noopener'>announced February 24, 2021</a>, bringing ~3,000 utility customers and 35 years of water modeling expertise into the Autodesk portfolio."
   },
   {
     "date": "2021-06-29",
     "name": "GitHub Copilot Preview",
     "category": "ai",
     "teaser": "AI pair programming arrives",
-    "description": "GitHub announced Copilot technical preview powered by OpenAI Codex \u2014 the first mainstream AI coding assistant, working especially well for Python, JavaScript, Ruby, and Go."
+    "description": "GitHub <a href='https://github.blog/2021-06-29-introducing-github-copilot-ai-pair-programmer/' target='_blank' rel='noopener'>announced Copilot technical preview</a> powered by OpenAI Codex — the first mainstream AI coding assistant, working especially well for Python, JavaScript, Ruby, and Go."
   },
   {
     "date": "2022-03-29",
     "name": "Copilot for Visual Studio",
     "category": "ai",
     "teaser": "AI coding hits Visual Studio",
-    "description": "Copilot became available in VS 2022. Clone activity spiked to 483 in March \u2014 10x the typical monthly rate."
+    "description": "Copilot <a href='https://github.blog/news-insights/product-news/github-copilot-now-available-for-visual-studio-2022/' target='_blank' rel='noopener'>became available in VS 2022</a>. Clone activity spiked to 483 in March \u2014 10x the typical monthly rate."
   },
   {
     "date": "2022-06-21",
     "name": "GitHub Copilot GA",
     "category": "ai",
     "teaser": "Copilot exits preview",
-    "description": "Copilot became generally available as a subscription. By this time, it was behind 27% of developers' code across all languages."
+    "description": "Copilot <a href='https://github.blog/2022-06-21-github-copilot-is-generally-available-to-all-developers/' target='_blank' rel='noopener'>became generally available</a> as a subscription. By this time, it was behind 27% of developers' code across all languages."
   },
   {
     "date": "2022-11-30",
     "name": "ChatGPT Launches",
     "category": "ai",
     "teaser": "GPT-3.5 changes everything",
-    "description": "OpenAI released ChatGPT publicly. Fastest-growing consumer app in history \u2014 100M users in two months. Repo traffic rose ~60% within 2 months."
+    "description": "OpenAI <a href='https://openai.com/blog/chatgpt' target='_blank' rel='noopener'>released ChatGPT publicly</a>. Fastest-growing consumer app in history \u2014 100M users in two months. Repo traffic rose ~60% within 2 months."
   },
   {
     "date": "2023-03-14",
     "name": "GPT-4 Released",
     "category": "ai",
     "teaser": "Dramatically improved reasoning",
-    "description": "GPT-4 launched with significantly improved reasoning and coding. The ChatGPT API also opened for developers, enabling programmatic integration."
+    "description": "OpenAI <a href='https://openai.com/research/gpt-4' target='_blank' rel='noopener'>launched GPT-4</a> with significantly improved reasoning and coding. The ChatGPT API also opened for developers, enabling programmatic integration."
   },
   {
-    "date": "2023-07-10",
+    "date": "2023-07-06",
     "name": "Code Interpreter + Claude 2",
     "category": "ai",
     "teaser": "Upload data, run Python in chat",
-    "description": "OpenAI launched Code Interpreter for ChatGPT Plus \u2014 upload files and run Python analysis. Anthropic released Claude 2 the next day. Views jumped from 1,773 to 3,657 in one month."
+    "description": "OpenAI launched <a href='https://platform.openai.com/docs/guides/tools-code-interpreter' target='_blank' rel='noopener'>Code Interpreter</a> for ChatGPT Plus \u2014 upload files and run Python analysis in a sandboxed environment. Anthropic <a href='https://www.anthropic.com/news/claude-2' target='_blank' rel='noopener'>released Claude 2</a> five days later. Views jumped from 1,773 to 3,657 in one month."
   },
   {
     "date": "2024-01-09",
     "name": "ICM 2024.4 + 2024.5",
     "category": "product",
-    "teaser": "Enhanced ICMExchange API",
-    "description": "Autodesk released InfoWorks ICM 2024.4 and 2024.5 with improved SWMM model results and enhanced Ruby scripting and ICMExchange API capabilities."
+    "teaser": "Shortcut keys, speedier results",
+    "description": "Autodesk released <a href='https://www.autodesk.com/blogs/water/2024/01/09/infoworks-icm-2024-4-and-2024-5-new-shortcut-keys-speedier-results-improved-swmm-model-results/' target='_blank' rel='noopener'>InfoWorks ICM 2024.4 and 2024.5</a> with new shortcut keys, significantly faster result retrieval from remote servers, improved SWMM model compatibility, and a new cloud results download dialog."
   },
   {
     "date": "2024-03-04",
     "name": "Claude 3 Family",
     "category": "ai",
     "teaser": "Haiku, Sonnet, and Opus arrive",
-    "description": "Anthropic launched the Claude 3 model family with significantly better coding capabilities. Views surged to 8,965 in April \u2014 up 51% from March."
+    "description": "Anthropic launched the <a href='https://www.anthropic.com/news/claude-3-family' target='_blank' rel='noopener'>Claude 3 model family</a> with significantly better coding capabilities. Views surged to 8,965 in April \u2014 up 51% from March."
   },
   {
     "date": "2024-05-06",
     "name": "ICM 2025 Releases",
     "category": "product",
     "teaser": "Cloud simulation + Civil 3D link",
-    "description": "Autodesk announced 2025 releases for hydraulic modeling with FEH22 rainfall support, Civil 3D integration for sewer networks, and cloud simulation."
+    "description": "Autodesk announced <a href='https://www.autodesk.com/blogs/water/2024/05/06/everything-new-in-autodesks-desktop-hydraulic-modeling-software-2025-releases/' target='_blank' rel='noopener'>2025 releases for hydraulic modeling</a> with FEH22 rainfall support, Civil 3D integration for sewer networks, and cloud simulation."
   },
   {
     "date": "2024-06-21",
     "name": "Claude 3.5 Sonnet",
     "category": "ai",
     "teaser": "Speed meets intelligence",
-    "description": "Anthropic released Claude 3.5 Sonnet with enhanced speed and accuracy, quickly becoming the preferred model for many AI coding workflows."
+    "description": "Anthropic released <a href='https://www.anthropic.com/news/claude-3-5-sonnet' target='_blank' rel='noopener'>Claude 3.5 Sonnet</a> with enhanced speed and accuracy, quickly becoming the preferred model for many AI coding workflows."
   },
   {
     "date": "2024-09-12",
     "name": "OpenAI o1 Reasoning",
     "category": "ai",
     "teaser": "AI learns to think step-by-step",
-    "description": "OpenAI released o1-preview, a new class of reasoning model that \"thinks\" before responding. Scored 83% on math olympiad problems vs GPT-4o's 13%, and reached 89th percentile in coding competitions."
+    "description": "OpenAI released <a href='https://openai.com/index/introducing-openai-o1-preview/' target='_blank' rel='noopener'>o1-preview</a>, a new class of reasoning model that \u201cthinks\u201d before responding. Scored 83% on math olympiad problems vs GPT-4o\u2019s 13%, and reached 89th percentile in coding competitions."
   },
   {
-    "date": "2024-11-01",
+    "date": "2024-11-13",
     "name": "Windsurf IDE Launches",
     "category": "ai",
     "teaser": "The first agentic IDE",
-    "description": "Codeium launched Windsurf, positioning it as the first agentic IDE. Alongside Cursor, it signaled a shift toward AI-native development environments that go beyond code completion to full task autonomy."
+    "description": "Codeium <a href='https://codeium.com/blog/windsurf-launch' target='_blank' rel='noopener'>launched Windsurf</a>, positioning it as the first agentic IDE. Alongside Cursor, it signaled a shift toward AI-native development environments that go beyond code completion to full task autonomy."
   },
   {
     "date": "2025-02-24",
     "name": "Claude Code + 3.7 Sonnet",
     "category": "ai",
     "teaser": "Agentic coding arrives",
-    "description": "Anthropic launched Claude 3.7 Sonnet with hybrid reasoning and Claude Code \u2014 the first agentic coding CLI tool for delegating engineering tasks directly from the terminal."
+    "description": "Anthropic launched <a href='https://www.anthropic.com/news/claude-3-7-sonnet' target='_blank' rel='noopener'>Claude 3.7 Sonnet</a> with hybrid reasoning and <a href='https://www.anthropic.com/news/claude-3-7-sonnet' target='_blank' rel='noopener'>Claude Code</a> \u2014 the first agentic coding CLI tool for delegating engineering tasks directly from the terminal."
   },
   {
     "date": "2025-05-19",
     "name": "Copilot Coding Agent",
     "category": "ai",
     "teaser": "GitHub ships autonomous coding",
-    "description": "GitHub launched the Copilot coding agent in public preview \u2014 an autonomous agent that can be assigned issues, implement changes, run tests, and open pull requests, all in a secure cloud environment."
+    "description": "GitHub launched the <a href='https://github.blog/news-insights/product-news/github-copilot-meet-the-new-coding-agent/' target='_blank' rel='noopener'>Copilot coding agent</a> in public preview \u2014 an autonomous agent that can be <a href='https://github.blog/changelog/2025-05-19-github-copilot-coding-agent-in-public-preview/' target='_blank' rel='noopener'>assigned issues, implement changes, run tests, and open pull requests</a>, all in a secure cloud environment."
   },
   {
     "date": "2025-09-25",
     "name": "Copilot Agent GA",
     "category": "ai",
     "teaser": "Autonomous coding for all",
-    "description": "GitHub Copilot coding agent reached general availability for all paid subscribers. Excels at low-to-medium complexity tasks in well-tested codebases with clear issue descriptions."
+    "description": "GitHub Copilot coding agent <a href='https://github.blog/changelog/2025-09-25-copilot-coding-agent-is-now-generally-available/' target='_blank' rel='noopener'>reached general availability</a> for all paid subscribers. Excels at low-to-medium complexity tasks in well-tested codebases with clear issue descriptions."
   },
   {
     "date": "2025-11-27",
     "name": "Autodesk: Ruby + AI Agents",
     "category": "product",
     "teaser": "AI makes scripting accessible to all",
-    "description": "Autodesk published a blog post encouraging hydraulic modelers to use Claude and Cursor to generate Ruby scripts for InfoWorks ICM \u2014 democratizing automation for engineers without programming backgrounds."
+    "description": "Autodesk published a <a href='https://www.autodesk.com/blogs/water/2025/11/27/using-ruby-scripting-with-ai-agents-to-extend-and-improve-your-hydraulic-models/' target='_blank' rel='noopener'>blog post</a> encouraging hydraulic modelers to use Claude and Cursor to generate Ruby scripts for InfoWorks ICM \u2014 democratizing automation for engineers without programming backgrounds."
   }
 ]
