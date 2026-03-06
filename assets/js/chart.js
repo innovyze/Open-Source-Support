@@ -103,6 +103,19 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
     const xDomain = x.domain();
     const defs = svg.append('defs');
 
+    const revealClipId = `line-reveal-${Date.now()}`;
+    defs.append('clipPath')
+        .attr('id', revealClipId)
+        .append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 0)
+        .attr('height', height)
+        .transition()
+        .duration(CONFIG.animationDuration)
+        .ease(d3.easeLinear)
+        .attr('width', width);
+
     const addStripePattern = (patternId, strokeVariable) => {
         defs.append('pattern')
             .attr('id', patternId)
@@ -230,36 +243,25 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
         .y(d => y(d.unique))
         .curve(d3.curveMonotoneX);
 
-    const drawAnimatedLine = (lineGenerator, seriesData, className) => {
+    const drawLine = (lineGenerator, seriesData, className) => {
         const pathData = lineGenerator(seriesData);
         if (!pathData) {
             return;
         }
 
-        const path = svg.append('path')
+        svg.append('path')
             .datum(seriesData)
             .attr('class', className)
+            .attr('clip-path', `url(#${revealClipId})`)
             .attr('d', pathData);
-
-        const pathLength = path.node()?.getTotalLength() ?? 0;
-        if (pathLength <= 0) {
-            return;
-        }
-
-        path.attr('stroke-dasharray', `${pathLength} ${pathLength}`)
-            .attr('stroke-dashoffset', pathLength)
-            .transition()
-            .duration(CONFIG.animationDuration)
-            .ease(d3.easeLinear)
-            .attr('stroke-dashoffset', 0);
     };
 
     if (visibleSeries.total) {
-        drawAnimatedLine(lineTotal, filteredData, 'line line-total');
+        drawLine(lineTotal, filteredData, 'line line-total');
     }
 
     if (visibleSeries.unique) {
-        drawAnimatedLine(lineUnique, filteredData, 'line line-unique');
+        drawLine(lineUnique, filteredData, 'line line-unique');
     }
 
     const computedStyle = getComputedStyle(document.documentElement);
