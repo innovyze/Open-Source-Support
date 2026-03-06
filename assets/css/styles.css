@@ -593,13 +593,13 @@ h1 {
 
 .line {
     fill: none;
-    stroke-width: 3;
+    stroke-width: 2;
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.4));
     transition: stroke-width 0.3s ease;
 }
 
 .line:hover {
-    stroke-width: 4;
+    stroke-width: 2.6;
 }
 
 .line-total {
@@ -610,7 +610,6 @@ h1 {
 .line-unique {
     stroke: var(--chart-green);
     filter: drop-shadow(0 0 4px rgba(255, 155, 90, 0.32));
-    stroke-dasharray: 6 8;
 }
 
 .grid line {
