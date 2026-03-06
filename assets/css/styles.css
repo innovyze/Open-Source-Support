@@ -36,35 +36,6 @@
     --tooltip-border: rgba(94, 183, 255, 0.32);
 }
 
-body.light-theme {
-    --bg-primary: #f6f8fd;
-    --bg-secondary: #fbfdff;
-    --bg-card: #ffffff;
-    --text-primary: #0f1a2a;
-    --text-secondary: #395070;
-    --text-muted: #61748f;
-    --border-color: rgba(26, 72, 141, 0.24);
-    --shadow: rgba(7, 19, 43, 0.12);
-    --chart-blue: #1b62e8;
-    --chart-green: #0b9569;
-    --button-bg: #eff4ff;
-    --button-hover: #e6edff;
-    --button-active: #1d68ff;
-    --chart-error-bg: rgba(255, 72, 72, 0.12);
-    --chart-error-stroke: rgba(255, 72, 72, 0.32);
-    --chart-reconstructed-bg: rgba(217, 119, 6, 0.09);
-    --chart-reconstructed-stroke: rgba(217, 119, 6, 0.28);
-    --badge-up: #0f8f5c;
-    --badge-up-bg: rgba(15, 143, 92, 0.14);
-    --badge-down: #d12b53;
-    --badge-down-bg: rgba(209, 43, 83, 0.12);
-    --bar-color: #1d68ff;
-    --bar-stripe: rgba(0, 0, 0, 0.28);
-    --table-row-alt: rgba(13, 26, 48, 0.03);
-    --table-row-hover: rgba(13, 26, 48, 0.06);
-    --tooltip-bg: #f8fbff;
-    --tooltip-border: rgba(0, 89, 255, 0.22);
-}
 
 body {
     font-family: 'Space Grotesk', 'JetBrains Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -783,11 +754,6 @@ h1 {
 
     .subtitle {
         font-size: 0.85em;
-    }
-
-    .theme-toggle {
-        position: static;
-        margin: 15px auto 0;
     }
 
     .page-toggle {
