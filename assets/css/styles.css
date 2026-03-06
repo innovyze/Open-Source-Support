@@ -733,10 +733,6 @@ h1 {
     opacity: 1;
 }
 
-.overflow-marker {
-    fill: var(--text-primary);
-    opacity: 0.92;
-    pointer-events: none;
 }
 
 @media (max-width: 768px) {

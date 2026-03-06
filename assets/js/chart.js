@@ -31,12 +31,10 @@ function aggregateToWeekly(data) {
 
     data.forEach(point => {
         const d = new Date(point.date);
-        // Snap to the Monday of this week
-        const day = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-        const diff = day === 0 ? -6 : 1 - day;
-        d.setDate(d.getDate() + diff);
-        d.setHours(0, 0, 0, 0);
-
+        // Snap to Monday — use UTC methods since CSV dates are parsed as UTC midnight
+        const day = d.getUTCDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+        const diff = day === 0 ? -6 : 1 - day; // days to roll back to Monday
+        d.setUTCDate(d.getUTCDate() + diff);
         const weekKey = d.toISOString().slice(0, 10);
 
         if (!weekMap.has(weekKey)) {
