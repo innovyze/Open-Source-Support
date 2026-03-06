@@ -24,11 +24,58 @@ function computePercentileMax(values, percentile = 99) {
     return sortedValues[index];
 }
 
+function aggregateToWeekly(data) {
+    if (data.length === 0) return data;
+
+    const weekMap = new Map();
+
+    data.forEach(point => {
+        const d = new Date(point.date);
+        // Snap to the Monday of this week
+        const day = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+        const diff = day === 0 ? -6 : 1 - day;
+        d.setDate(d.getDate() + diff);
+        d.setHours(0, 0, 0, 0);
+
+        const weekKey = d.toISOString().slice(0, 10);
+
+        if (!weekMap.has(weekKey)) {
+            weekMap.set(weekKey, {
+                date: new Date(d),
+                total: 0,
+                unique: 0,
+                hasReconstructed: false
+            });
+        }
+
+        const week = weekMap.get(weekKey);
+        if (Number.isFinite(point.total)) week.total += point.total;
+
+        if (isDateInPeriods(point.date, RECONSTRUCTED_TOTALS_PERIODS)) {
+            week.hasReconstructed = true;
+        } else if (Number.isFinite(point.unique)) {
+            week.unique += point.unique;
+        }
+    });
+
+    return Array.from(weekMap.values())
+        .sort((a, b) => a.date - b.date)
+        .map(week => ({
+            date: week.date,
+            total: week.total,
+            unique: week.hasReconstructed ? NaN : week.unique
+        }));
+}
+
 export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }, fitToData = true) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
-    const filteredData = filterDataByDays(data, range);
+    let filteredData = filterDataByDays(data, range);
+
+    if (range === 'all') {
+        filteredData = aggregateToWeekly(filteredData);
+    }
 
     if (filteredData.length === 0) {
         container.innerHTML = '<div class="loading">No data available</div>';
@@ -70,7 +117,7 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
     }).flat();
 
     const absoluteMax = d3.max(allValues) ?? 0;
-            const percentileMax = computePercentileMax(allValues, 99);
+    const percentileMax = computePercentileMax(allValues, 99);
     const scaleMax = fitToData ? percentileMax : absoluteMax;
     const yDomainTop = (scaleMax > 0 ? scaleMax : 1) * 1.1;
 
@@ -195,12 +242,16 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             .tickSize(-width)
             .tickFormat(''));
 
+    const tickFormat = range === 'all'
+        ? d3.timeFormat('%b %Y')
+        : d3.timeFormat('%b %d, %Y');
+
     const xAxis = svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
         .call(d3.axisBottom(x)
             .ticks(Math.min(filteredData.length, 10))
-            .tickFormat(d3.timeFormat('%b %d, %Y')));
+            .tickFormat(tickFormat));
 
     xAxis.selectAll('text')
         .attr('transform', 'rotate(-45)')
@@ -253,33 +304,6 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
     const computedStyle = getComputedStyle(document.documentElement);
     const totalColor = computedStyle.getPropertyValue('--chart-blue').trim();
     const uniqueColor = computedStyle.getPropertyValue('--chart-green').trim();
-    const overflowThreshold = yDomainTop;
-    const overflowPoints = [];
-
-    if (visibleSeries.total) {
-        filteredData.forEach(point => {
-            if (Number.isFinite(point.total) && point.total > overflowThreshold) {
-                overflowPoints.push({ x: x(point.date), color: totalColor });
-            }
-        });
-    }
-
-    if (visibleSeries.unique) {
-        filteredData.forEach(point => {
-            if (isUniqueAvailable(point) && point.unique > overflowThreshold) {
-                overflowPoints.push({ x: x(point.date), color: uniqueColor });
-            }
-        });
-    }
-
-    svg.append('g')
-        .attr('class', 'overflow-markers')
-        .selectAll('polygon')
-        .data(overflowPoints)
-        .join('polygon')
-        .attr('class', 'overflow-marker')
-        .attr('points', d => `${d.x},0 ${d.x - 5},10 ${d.x + 5},10`)
-        .attr('fill', d => d.color);
 
     let dotTotal;
     let dotUnique;
@@ -375,4 +399,3 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
             document.getElementById('tooltip').classList.remove('visible');
         });
 }
-

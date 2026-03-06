@@ -19,7 +19,7 @@
     --chart-green: #ef8848;
     --button-bg: rgba(255, 255, 255, 0.05);
     --button-hover: rgba(255, 255, 255, 0.12);
-    --button-active: #1d68ff;
+    --button-active: #1350c8;
     --chart-error-bg: rgba(255, 72, 72, 0.16);
     --chart-error-stroke: rgba(255, 72, 72, 0.45);
     --chart-reconstructed-bg: rgba(255, 196, 61, 0.14);
@@ -130,7 +130,7 @@ h1 {
     background: var(--button-active);
     color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 0 0 1px rgba(30, 104, 255, 0.35), 0 0 16px rgba(30, 104, 255, 0.25);
+    box-shadow: 0 0 0 1px rgba(30, 104, 255, 0.2), 0 0 10px rgba(30, 104, 255, 0.14);
 }
 
 .stats-grid {
@@ -490,7 +490,7 @@ h1 {
     background: var(--button-active);
     color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.32);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.18);
 }
 
 .time-selector {
@@ -514,7 +514,7 @@ h1 {
 .time-btn:hover {
     background: var(--button-hover);
     border-color: rgba(255, 255, 255, 0.35);
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.16);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.1);
 }
 
 .time-btn.active {
@@ -522,7 +522,7 @@ h1 {
     border-color: rgba(30, 104, 255, 0.8);
     color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 0 14px rgba(30, 104, 255, 0.3);
+    box-shadow: 0 0 10px rgba(30, 104, 255, 0.18);
 }
 
 #mainChart {
@@ -587,7 +587,7 @@ h1 {
     opacity: 0;
     transition: opacity 0.2s ease;
     font-size: 0.9em;
-    box-shadow: 0 0 16px rgba(0, 212, 255, 0.16);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
     z-index: 1000;
     color: var(--text-primary);
 }
