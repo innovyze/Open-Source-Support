@@ -377,6 +377,31 @@ h1 {
     font-size: 0.85em;
 }
 
+#monthlyTable {
+    max-height: 420px;
+    overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-muted) transparent;
+}
+
+#monthlyTable::-webkit-scrollbar {
+    width: 8px;
+}
+
+#monthlyTable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#monthlyTable::-webkit-scrollbar-thumb {
+    background-color: var(--text-muted);
+    border-radius: 999px;
+}
+
+#monthlyTable::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary);
+}
+
 .monthly-table th {
     text-align: left;
     padding: 8px 10px;
@@ -386,6 +411,13 @@ h1 {
     letter-spacing: 0.5px;
     border-bottom: 1px solid var(--border-color);
     font-weight: 600;
+}
+
+.monthly-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--bg-card);
 }
 
 .monthly-table th:not(:first-child) {
@@ -408,6 +440,20 @@ h1 {
 
 .monthly-table tr:hover {
     background: var(--table-row-hover);
+}
+
+.monthly-table tr.year-divider:hover {
+    background: transparent;
+}
+
+.monthly-table tr.year-divider td {
+    border-top: 1px solid var(--text-muted);
+    font-size: 0.8em;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: none;
+    padding-top: 10px;
+    padding-bottom: 6px;
 }
 
 .monthly-table .yoy-cell {
@@ -788,6 +834,10 @@ h1 {
 
     .panel {
         padding: 14px;
+    }
+
+    #monthlyTable {
+        max-height: 300px;
     }
 }
 

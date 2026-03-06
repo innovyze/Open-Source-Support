@@ -342,43 +342,50 @@ function renderMonthlyTable(monthlyData, latestYear) {
         return;
     }
 
-    const recentRows = monthlyData.slice(-14);
+    const rowsToRender = [...monthlyData].sort((a, b) => b.month.localeCompare(a.month));
     const gapMonths = collectGapMonths();
 
-    const rowsHtml = recentRows
-        .map(row => {
-            const [yearText] = row.month.split('-');
-            const year = Number.parseInt(yearText, 10);
-            const isGap = gapMonths.has(row.month);
-            const isCurrentYear = year === latestYear;
+    const rowsHtml = rowsToRender.reduce((acc, row, index) => {
+        const [yearText] = row.month.split('-');
+        const year = Number.parseInt(yearText, 10);
+        const previousMonthYear = index > 0
+            ? Number.parseInt(rowsToRender[index - 1].month.split('-')[0], 10)
+            : null;
+        const isGap = gapMonths.has(row.month);
+        const isCurrentYear = year === latestYear;
+        const isYearDivider = index > 0 && year !== previousMonthYear;
+        const yearDividerHtml = isYearDivider
+            ? `<tr class="year-divider"><td colspan="4">${year}</td></tr>`
+            : '';
 
-            let yoyText = 'n/a';
-            let yoyClass = 'text-muted';
+        let yoyText = 'n/a';
+        let yoyClass = 'text-muted';
 
-            if (isGap) {
-                yoyText = 'gap';
-            } else if (Number.isFinite(row.growthPct)) {
-                yoyText = formatSignedPercent(row.growthPct, 0);
-                yoyClass = row.growthPct >= 0 ? 'text-up' : 'text-down';
-            }
+        if (isGap) {
+            yoyText = 'gap';
+        } else if (Number.isFinite(row.growthPct)) {
+            yoyText = formatSignedPercent(row.growthPct, 0);
+            yoyClass = row.growthPct >= 0 ? 'text-up' : 'text-down';
+        }
 
-            const rowClasses = [
-                isGap ? 'gap-row' : '',
-                isCurrentYear ? 'current-year-row' : ''
-            ].filter(Boolean).join(' ');
+        const rowClasses = [
+            isGap ? 'gap-row' : '',
+            isCurrentYear ? 'current-year-row' : ''
+        ].filter(Boolean).join(' ');
 
-            const cellClass = isCurrentYear ? 'current-year' : '';
+        const cellClass = isCurrentYear ? 'current-year' : '';
 
-            return `
-                <tr class="${rowClasses}">
-                    <td class="${cellClass}">${formatMonthLabel(row.month)}</td>
-                    <td class="${cellClass}">${formatNumber(Math.round(row.total))}</td>
-                    <td class="${cellClass}">${formatNumber(Math.round(row.avgDaily))}</td>
-                    <td class="yoy-cell ${yoyClass}">${yoyText}</td>
-                </tr>
-            `;
-        })
-        .join('');
+        const rowHtml = `
+            <tr class="${rowClasses}">
+                <td class="${cellClass}">${formatMonthLabel(row.month)}</td>
+                <td class="${cellClass}">${formatNumber(Math.round(row.total))}</td>
+                <td class="${cellClass}">${formatNumber(Math.round(row.avgDaily))}</td>
+                <td class="yoy-cell ${yoyClass}">${yoyText}</td>
+            </tr>
+        `;
+
+        return `${acc}${yearDividerHtml}${rowHtml}`;
+    }, '');
 
     tableEl.innerHTML = `
         <table class="monthly-table">
@@ -395,6 +402,7 @@ function renderMonthlyTable(monthlyData, latestYear) {
             </tbody>
         </table>
     `;
+    tableEl.scrollTop = 0;
 
     noteEl.textContent = 'Months labeled "gap" include workflow outage periods with incomplete daily coverage.';
 }
