@@ -9,12 +9,11 @@ export const CONFIG = {
     animationDuration: 1500
 };
 
-export const FULLY_MISSING_PERIODS = [
-    { start: new Date('2025-10-20'), end: new Date('2025-10-30'), label: 'Missing Data' }
-];
+export const FULLY_MISSING_PERIODS = [];
 
 export const RECONSTRUCTED_TOTALS_PERIODS = [
-    { start: new Date('2025-11-15'), end: new Date('2026-01-07'), label: 'Reconstructed Totals' }
+    { start: new Date('2025-10-20'), end: new Date('2025-10-30'), label: 'Reconstructed Totals' },
+    { start: new Date('2025-11-14'), end: new Date('2026-01-07'), label: 'Reconstructed Totals' }
 ];
 
 export const TIME_RANGES = {
