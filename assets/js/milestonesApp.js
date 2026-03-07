@@ -1,8 +1,11 @@
-import { loadTrafficData, loadMilestones, aggregateMonthlyViews } from './dataLoader.js';
+import { loadTrafficData, loadMilestones, aggregateMonthlyViews, aggregateMonthlyClones } from './dataLoader.js';
 
 let monthlyData = [];
+let monthlyViewsData = [];
+let monthlyClonesData = [];
 let milestones = [];
 let activeFilter = 'all';
+let activeMetric = 'views';
 
 function monthToIndex(monthKey) {
     for (let i = 0; i < monthlyData.length; i++) {
@@ -20,7 +23,7 @@ function computeBeforeAfter(milestoneDate) {
     for (let b = 1; b <= 3; b++) {
         const bi = idx - b;
         if (bi >= 0 && monthlyData[bi]) {
-            beforeSum += monthlyData[bi].views;
+            beforeSum += monthlyData[bi].value;
             beforeCnt++;
         }
     }
@@ -29,7 +32,7 @@ function computeBeforeAfter(milestoneDate) {
     for (let a = 0; a < 3; a++) {
         const ai = idx + a;
         if (ai < monthlyData.length && monthlyData[ai]) {
-            afterSum += monthlyData[ai].views;
+            afterSum += monthlyData[ai].value;
             afterCnt++;
         }
     }
@@ -49,7 +52,7 @@ function getSparklineData(milestoneDate) {
     const end = Math.min(monthlyData.length - 1, idx + 3);
     const data = [];
     for (let i = start; i <= end; i++) {
-        data.push({ month: monthlyData[i].month, views: monthlyData[i].views });
+        data.push({ month: monthlyData[i].month, value: monthlyData[i].value });
     }
     return { data, centerIdx: idx - start };
 }
@@ -70,13 +73,13 @@ function drawContextChart() {
         .range([0, innerW]);
 
     const y = d3.scaleLinear()
-        .domain([0, d3.max(monthlyData, d => d.views)])
+        .domain([0, d3.max(monthlyData, d => d.value)])
         .range([innerH, 0]);
 
     const area = d3.area()
         .x(d => x(d.month))
         .y0(innerH)
-        .y1(d => y(d.views));
+        .y1(d => y(d.value));
 
     const svg = d3.select(wrap)
         .append('svg')
@@ -124,17 +127,17 @@ function drawSparkline(container, milestone, color) {
         .range([0, innerW]);
 
     const y = d3.scaleLinear()
-        .domain([0, d3.max(sp.data, d => d.views)])
+        .domain([0, d3.max(sp.data, d => d.value)])
         .range([innerH, 0]);
 
     const area = d3.area()
         .x(d => x(d.month))
         .y0(innerH)
-        .y1(d => y(d.views));
+        .y1(d => y(d.value));
 
     const line = d3.line()
         .x(d => x(d.month))
-        .y(d => y(d.views));
+        .y(d => y(d.value));
 
     const svg = d3.select(container)
         .append('svg')
@@ -263,6 +266,30 @@ function setupFilterPills() {
     });
 }
 
+function setupMetricToggle() {
+    document.querySelectorAll('.chart-toggle .toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const selected = btn.getAttribute('data-type');
+            if (selected !== 'views' && selected !== 'clones') return;
+            if (selected === activeMetric) return;
+
+            activeMetric = selected;
+            monthlyData = activeMetric === 'clones' ? monthlyClonesData : monthlyViewsData;
+
+            document.querySelectorAll('.chart-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const metricLabel = document.getElementById('metricLabel');
+            if (metricLabel) {
+                metricLabel.textContent = activeMetric === 'clones' ? 'Clones' : 'Views';
+            }
+
+            drawContextChart();
+            renderCards();
+        });
+    });
+}
+
 let resizeTimer;
 function setupResize() {
     window.addEventListener('resize', () => {
@@ -280,8 +307,15 @@ async function init() {
             loadTrafficData(),
             loadMilestones()
         ]);
-        monthlyData = aggregateMonthlyViews(trafficData.viewsData);
+        monthlyViewsData = aggregateMonthlyViews(trafficData.viewsData);
+        monthlyClonesData = aggregateMonthlyClones(trafficData.clonesData);
+        monthlyData = activeMetric === 'clones' ? monthlyClonesData : monthlyViewsData;
         milestones = milestonesData;
+
+        const metricLabel = document.getElementById('metricLabel');
+        if (metricLabel) {
+            metricLabel.textContent = activeMetric === 'clones' ? 'Clones' : 'Views';
+        }
 
         const rangeEl = document.getElementById('contextChartRange');
         if (rangeEl && monthlyData.length > 0) {
@@ -296,6 +330,7 @@ async function init() {
         drawContextChart();
         renderCards();
         setupFilterPills();
+        setupMetricToggle();
         setupResize();
     } catch (err) {
         console.error('Failed to initialize milestones page:', err);

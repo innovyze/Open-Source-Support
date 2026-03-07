@@ -38,13 +38,21 @@ export async function loadMilestones() {
 }
 
 export function aggregateMonthlyViews(viewsData) {
+    return aggregateMonthlyTraffic(viewsData);
+}
+
+export function aggregateMonthlyClones(clonesData) {
+    return aggregateMonthlyTraffic(clonesData);
+}
+
+function aggregateMonthlyTraffic(rawData) {
     const map = new Map();
-    for (const d of viewsData) {
+    for (const d of rawData) {
         const key = d.date.toISOString().slice(0, 7);
         if (!map.has(key)) map.set(key, 0);
         map.set(key, map.get(key) + d.total);
     }
     return Array.from(map.entries())
-        .map(([month, views]) => ({ month, views }))
+        .map(([month, value]) => ({ month, value }))
         .sort((a, b) => a.month.localeCompare(b.month));
 }

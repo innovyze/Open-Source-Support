@@ -45,7 +45,11 @@
 
         <div class="context-chart-wrap">
             <div class="context-chart-header">
-                <span class="context-chart-title">Monthly Repository Views</span>
+                <span class="context-chart-title">Monthly Repository <span id="metricLabel">Views</span></span>
+                <div class="chart-toggle">
+                    <button class="toggle-btn active" data-type="views">Views</button>
+                    <button class="toggle-btn" data-type="clones">Clones</button>
+                </div>
                 <span class="context-chart-range" id="contextChartRange"></span>
             </div>
             <div class="context-chart" id="contextChart"></div>
