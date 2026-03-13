@@ -16,6 +16,3 @@ This script calculates the full, 3/4, and 1/2 pipe capacities using Kutter's for
 
 To use this script, simply run it in the context of an open database in InfoWorks ICM. The script will automatically calculate the full, 3/4, and 1/2 pipe capacities using Kutter's formula, 
 compare them with the capacity calculated by InfoWorks ICM, and select the results.
-
-
-
