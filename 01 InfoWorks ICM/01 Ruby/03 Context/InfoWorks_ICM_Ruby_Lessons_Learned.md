@@ -533,6 +533,7 @@ Load in this order:
 | 2026-02-20 | Added mo.path container types | mo.path has MODG~, TDBG~, and other types; must extract all non-leaf segments |
 | 2026-02-20 | Added children staleness after import | parent.children doesn't refresh after import_new_model_object |
 | 2026-02-20 | Added Windows case-insensitive paths | Ruby case-sensitive vs Windows case-insensitive causes file overwrites |
+| 2026-03-13 | Added UI `exit` guidance | `exit` in UI scripts can raise SystemExit popups; prefer `catch`/`throw` for graceful stop |
 
 ---
 
@@ -964,6 +965,32 @@ end
 3. **Check for nil** when hard_wire_cancel is false
 
 **See:** PAT_USER_MSGBOX_057, PAT_USER_INPUT_043, PAT_USER_INPUTBOX_058
+
+---
+
+## CRITICAL: Avoid `exit` in UI Scripts (SystemExit Popup)
+
+### The Problem
+
+In UI scripts, calling `exit` after showing a message can raise `SystemExit` and produce an additional error popup.
+
+### LLM Agent Rules
+
+1. **Do not use `exit`** for expected early-return control flow in UI scripts
+2. Use **`catch`/`throw`** for graceful termination after validation failures
+
+### Code Pattern
+
+```ruby
+catch(:stop) do
+  unless selected.size == 1
+    WSApplication.message_box('Please select one subcatchment.', 'OK', 'Information', false)
+    throw :stop
+  end
+
+  # Continue normal processing...
+end
+```
 
 ---
 
