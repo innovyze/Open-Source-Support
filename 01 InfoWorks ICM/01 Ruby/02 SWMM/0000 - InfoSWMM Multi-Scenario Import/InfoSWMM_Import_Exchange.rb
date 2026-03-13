@@ -18,6 +18,7 @@
 #   - Content-based deduplication (not name-based)
 #   - Sequential naming: "Rainfall Event 01", "Inflow 01", etc.
 #   - Scenario tracking in Description fields
+#   - Copies all scenario-variable data to merged network (DWF, rain gages, curves, RDII)
 #   - Comprehensive error handling and logging
 #
 # API LIMITATIONS (require manual post-import setup):
@@ -998,31 +999,54 @@ if merge_scenarios && successful_imports.length > 0
           merged_net_work.transaction_begin
           
           # Copy node data
+          # WSStructure sub-tables (additional_dwf etc.) are not enumerated by
+          # table_info.fields and must be copied separately using the WSStructure API.
+          node_blobs = {
+            'additional_dwf'    => %w[baseline bf_pattern_1 bf_pattern_2 bf_pattern_3 bf_pattern_4],
+            'pollutant_dwf'     => %w[pollutant],
+            'treatment'         => %w[pollutant result function],
+            'pollutant_inflows' => %w[pollutant]
+          }
           source_net.row_objects('_nodes').each do |source_node|
             target_node = merged_net_work.row_object('_nodes', source_node.id)
             next unless target_node
             
-            # Copy each field value
             source_node.table_info.fields.each do |field|
               field_name = field.name
-              # Skip only the object's own ID (not reference fields)
               next if field_name.downcase == 'node_id'
-              
               begin
                 source_value = source_node[field_name]
                 target_value = target_node[field_name]
-                
                 if source_value != target_value
                   target_node[field_name] = source_value
                   fields_updated += 1
                 end
               rescue => e
-                # Skip read-only or incompatible fields
                 fields_skipped += 1
                 log "    Skipped node field '#{field_name}': #{e.message}", log_file if fields_skipped <= 10
               end
             end
-            
+
+            node_blobs.each do |blob_name, sub_fields|
+              begin
+                src_struct = source_node[blob_name]
+                dst_struct = target_node[blob_name]
+                src_rows = []
+                src_struct.each do |row|
+                  row_data = {}
+                  sub_fields.each { |fn| row_data[fn] = row[fn] rescue nil }
+                  src_rows << row_data
+                end
+                dst_struct.size = src_rows.length
+                src_rows.each_with_index do |row_data, idx|
+                  sub_fields.each { |fn| begin; dst_struct[idx][fn] = row_data[fn]; rescue; end }
+                end
+                dst_struct.write
+              rescue => e
+                log "    Skipped blob '#{blob_name}' for node #{source_node.id}: #{e.message}", log_file
+              end
+            end
+
             target_node.write
           end
           
@@ -1089,9 +1113,142 @@ if merge_scenarios && successful_imports.length > 0
           end
           
           log "  Subcatchment fields: #{sub_fields_updated} updated, #{sub_fields_skipped} skipped", log_file
-          
-          total_fields = fields_updated + link_fields_updated + sub_fields_updated
-          total_skipped = fields_skipped + link_fields_skipped + sub_fields_skipped
+
+          # Copy rain gage data
+          gage_fields_updated = 0
+          gage_fields_skipped = 0
+          source_net.row_objects('sw_raingage').each do |source_gage|
+            target_gage = merged_net_work.row_object('sw_raingage', source_gage.id)
+            next unless target_gage
+
+            source_gage.table_info.fields.each do |field|
+              field_name = field.name
+              next if field_name.downcase == 'raingage_id'
+
+              begin
+                source_value = source_gage[field_name]
+                target_value = target_gage[field_name]
+
+                if source_value != target_value
+                  target_gage[field_name] = source_value
+                  gage_fields_updated += 1
+                end
+              rescue => e
+                gage_fields_skipped += 1
+                log "    Skipped gage field '#{field_name}': #{e.message}", log_file if gage_fields_skipped <= 10
+              end
+            end
+
+            target_gage.write
+          end
+
+          log "  Rain gage fields: #{gage_fields_updated} updated, #{gage_fields_skipped} skipped", log_file
+
+          # Copy curve and transect tables (scalar fields + WSStructure data blobs)
+          aux_tables = {
+            'sw_curve_control'    => { 'data'          => %w[variable setting] },
+            'sw_curve_pump'       => { 'pump1_data'    => %w[volume_increment outflow],
+                                       'pump2_data'    => %w[depth_increment outflow],
+                                       'pump3_data'    => %w[head_difference outflow],
+                                       'pump4_data'    => %w[continuous_depth outflow] },
+            'sw_curve_rating'     => { 'data'          => %w[head outflow] },
+            'sw_curve_shape'      => { 'data'          => %w[normalized_depth normalized_width] },
+            'sw_curve_tidal'      => { 'data'          => %w[hour elevation] },
+            'sw_curve_storage'    => { 'data'          => %w[depth surface_area] },
+            'sw_curve_weir'       => { 'data'          => %w[head coefficient],
+                                       'sideflow_data' => %w[head coefficient] },
+            'sw_curve_underdrain' => { 'data'          => %w[depth factor] },
+            'sw_transect'         => { 'profile'       => %w[x z] }
+          }
+          aux_updated = 0
+          aux_skipped = 0
+          aux_tables.each do |table_name, blobs|
+            source_net.row_objects(table_name).each do |src_obj|
+              dst_obj = merged_net_work.row_object(table_name, src_obj.id)
+              next unless dst_obj
+              src_obj.table_info.fields.each do |field|
+                field_name = field.name
+                next if field_name.downcase == 'id'
+                begin
+                  src_val = src_obj[field_name]
+                  dst_val = dst_obj[field_name]
+                  if src_val != dst_val
+                    dst_obj[field_name] = src_val
+                    aux_updated += 1
+                  end
+                rescue
+                  aux_skipped += 1
+                end
+              end
+              blobs.each do |blob_name, sub_fields|
+                begin
+                  src_blob = src_obj[blob_name]
+                  dst_blob = dst_obj[blob_name]
+                  src_rows = []
+                  src_blob.each do |row|
+                    row_data = {}
+                    sub_fields.each { |fn| row_data[fn] = row[fn] rescue nil }
+                    src_rows << row_data
+                  end
+                  dst_blob.size = src_rows.length
+                  src_rows.each_with_index do |row_data, i|
+                    sub_fields.each { |fn| begin; dst_blob[i][fn] = row_data[fn]; rescue; end }
+                  end
+                  dst_blob.write
+                rescue => e
+                  log "    Skipped blob '#{blob_name}' for #{table_name} #{src_obj.id}: #{e.message}", log_file
+                end
+              end
+              dst_obj.write
+            end
+          end
+          log "  Auxiliary tables (curves/transects): #{aux_updated} fields updated, #{aux_skipped} skipped", log_file
+
+          # Copy unit hydrograph (RDII) data
+          uh_group_updated = 0
+          source_net.row_objects('sw_uh_group').each do |src_obj|
+            dst_obj = merged_net_work.row_object('sw_uh_group', src_obj.id)
+            next unless dst_obj
+            src_obj.table_info.fields.each do |field|
+              field_name = field.name
+              next if field_name.downcase == 'id'
+              begin
+                src_val = src_obj[field_name]
+                dst_val = dst_obj[field_name]
+                if src_val != dst_val
+                  dst_obj[field_name] = src_val
+                  uh_group_updated += 1
+                end
+              rescue; end
+            end
+            dst_obj.write
+          end
+          log "  sw_uh_group: #{uh_group_updated} fields updated", log_file
+
+          uh_updated = 0
+          source_net.row_objects('sw_uh').each do |src_obj|
+            dst_obj = merged_net_work.row_object('sw_uh', src_obj.id)
+            next unless dst_obj
+            src_obj.table_info.fields.each do |field|
+              field_name = field.name
+              next if %w[group_id month].include?(field_name.downcase)
+              begin
+                src_val = src_obj[field_name]
+                dst_val = dst_obj[field_name]
+                if src_val != dst_val
+                  dst_obj[field_name] = src_val
+                  uh_updated += 1
+                end
+              rescue; end
+            end
+            dst_obj.write
+          end
+          log "  sw_uh: #{uh_updated} fields updated", log_file
+
+          total_fields = fields_updated + link_fields_updated + sub_fields_updated +
+                         gage_fields_updated + aux_updated + uh_group_updated + uh_updated
+          total_skipped = fields_skipped + link_fields_skipped + sub_fields_skipped +
+                          gage_fields_skipped + aux_skipped
           log "  TOTAL: #{total_fields} field values updated, #{total_skipped} skipped", log_file
           
           # Commit field update transaction
@@ -1220,7 +1377,7 @@ if merge_scenarios && successful_imports.length > 0
     puts "+" + "="*68 + "+"
     
     # ========================================================================
-    # PHASE 2.5: Copy SWMM Runs to Merged Network (NEW IN VERSION 4)
+    # PHASE 2.5: Copy SWMM Runs to Merged Network
     # ========================================================================
     copy_swmm_runs = config['copy_swmm_runs']
     
@@ -1326,7 +1483,7 @@ if merge_scenarios && successful_imports.length > 0
             log "        Climatology and time patterns must be manually assigned in UI.", log_file
             
             # Find rainfall event in MERGED group (deduplicated)
-            # NEW IN VERSION 5: Match by checking Description field (comment in API) which contains scenario names
+            # Match by checking Description field (comment in API) which contains scenario names
             # Description format: "BASE\r\nEXISTING_100YR\r\nSCENARIO03" (Windows line endings)
             merged_rainfall = nil
             merged_group.children.each do |child|
@@ -1371,7 +1528,7 @@ if merge_scenarios && successful_imports.length > 0
             end
             
             # Find inflow in MERGED group (deduplicated)
-            # NEW IN VERSION 5: Same logic as rainfall events
+            # Same logic as rainfall events
             # Description format: "BASE\r\nEXISTING_100YR\r\nSCENARIO03" (Windows line endings)
             merged_inflow = nil
             inflows_found = []
@@ -1527,6 +1684,28 @@ if merge_scenarios && successful_imports.length > 0
     puts "Tip: You can still use the individual model groups."
     puts "="*70
   end
+end
+
+# ============================================================================
+# Update Config with Model Group IDs (for DWF Supplement Script)
+# ============================================================================
+begin
+  updated_config = JSON.parse(File.read(config_file))
+
+  scenario_group_ids = {}
+  successful_imports.each do |info|
+    scenario_group_ids[info[:scenario]] = info[:group_id]
+  end
+  updated_config['scenario_group_ids'] = scenario_group_ids
+
+  if defined?(merged_group) && merged_group
+    updated_config['merged_group_id'] = merged_group.id
+  end
+
+  File.open(config_file, 'w') { |f| f.write(JSON.pretty_generate(updated_config)) }
+  log "Config updated with model group IDs (for DWF supplement script)", log_file
+rescue => e
+  log "WARNING: Could not update config with group IDs: #{e.message}", log_file
 end
 
 # ============================================================================

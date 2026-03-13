@@ -10,7 +10,7 @@
 #   - Import multiple scenarios simultaneously
 #   - Content-based deduplication of Rainfall & Inflow Events
 #   - Automatic label list cleanup
-#   - Creates merged network with all scenarios
+#   - Creates merged network with all scenarios and scenario-variable data
 #   - Sets up SWMM runs (network/scenario/rainfall auto-configured)
 #   - Sequential naming: "Rainfall Event 01", "Inflow 01", etc.
 #   - Tracks scenario usage in object Description fields
@@ -29,15 +29,8 @@
 #   - Merged model group with deduplicated objects and partial runs
 #   - Log files in [YourModel]/ICM Import Log Files/
 #
-# COMPATIBILITY:
-#   - InfoWorks ICM 2023.2+
-#   - Tested with: 2023.2.7, 2025.5.1, 2027.1.0
-#   - Works with local (.icmm) and network (snumbat://) databases
-#   - Multiple ICM instances can be open during import
-#
 # REQUIREMENTS:
 #   - InfoSWMM .mxd file with .ISDB folder
-#   - BASE scenario recommended (used as master network)
 #
 # ============================================================================
 
@@ -61,7 +54,7 @@ WSApplication.message_box(
   "  * Import each scenario to a separate group\n" +
   "  * Clean up empty label lists\n" +
   "  * Deduplicate Rainfall Events & Inflows\n" +
-  "  * Create a merged network with all scenarios\n" +
+  "  * Create a merged network with all scenario-variable data\n" +
   "  * Set up SWMM runs (partial configuration)\n\n" +
   "You will need to manually configure:\n" +
   "  [!] Timesteps, Climatology, Time Patterns, Inflows\n\n" +
