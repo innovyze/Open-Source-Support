@@ -112,10 +112,24 @@
     "description": "GitHub Copilot coding agent <a href='https://github.blog/changelog/2025-09-25-copilot-coding-agent-is-now-generally-available/' target='_blank' rel='noopener'>reached general availability</a> for all paid subscribers. Excels at low-to-medium complexity tasks in well-tested codebases with clear issue descriptions."
   },
   {
+    "date": "2025-11-24",
+    "name": "Claude Sonnet + Opus 4.5",
+    "category": "ai",
+    "teaser": "Anthropic sharpens long-horizon agents",
+    "description": "Anthropic launched <a href='https://www.anthropic.com/news/claude-sonnet-4-5' target='_blank' rel='noopener'>Claude Sonnet 4.5</a> on September 29, 2025 as its strongest model for complex agents, computer use, and coding, then followed with <a href='https://www.anthropic.com/news/claude-opus-4-5' target='_blank' rel='noopener'>Claude Opus 4.5</a> on November 24, 2025 as its most capable 4.5-series model for coding, deep research, spreadsheets, and long-running autonomous workflows. Anthropic's model docs later listed both releases together as part of the Claude 4.5 generation."
+  },
+  {
     "date": "2025-11-27",
     "name": "Autodesk: Ruby + AI Agents",
     "category": "product",
     "teaser": "AI makes scripting accessible to all",
     "description": "Autodesk published a <a href='https://www.autodesk.com/blogs/water/2025/11/27/using-ruby-scripting-with-ai-agents-to-extend-and-improve-your-hydraulic-models/' target='_blank' rel='noopener'>blog post</a> encouraging hydraulic modelers to use Claude and Cursor to generate Ruby scripts for InfoWorks ICM \u2014 democratizing automation for engineers without programming backgrounds."
+  },
+  {
+    "date": "2026-03-28",
+    "name": "Autodesk Spotlights Repository Growth",
+    "category": "product",
+    "teaser": "220k+ views and 4k+ clones",
+    "description": "Autodesk published a <a href='https://autodeskblog.wpengine.com/water/2026/03/28/how-our-open-source-github-repository-grew-from-a-simple-idea-into-a-global-engineering-community/' target='_blank' rel='noopener'>One Water Blog post</a> documenting how this repository grew from an internal script-sharing shortcut into a global engineering resource spanning six products, 220,000+ total views, 19,000+ unique visitors, and 4,000+ full repository clones. The article also highlights how major AI tooling releases tracked clear jumps in repository traffic."
   }
 ]
