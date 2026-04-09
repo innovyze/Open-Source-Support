@@ -169,6 +169,8 @@ function drawSparkline(container, milestone, color) {
     }
 }
 
+const isTouchDevice = window.matchMedia('(hover: none)');
+
 function renderCards() {
     const grid = document.getElementById('cardGrid');
     if (!grid) return;
@@ -226,6 +228,14 @@ function renderCards() {
 
         const sparkEl = card.querySelector('.card-sparkline');
         drawSparkline(sparkEl, ms, color);
+
+        if (isTouchDevice.matches) {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('a')) return;
+                card.classList.toggle('expanded');
+            });
+        }
 
         card.addEventListener('mouseenter', () => {
             document.querySelectorAll('.context-pip').forEach(p => p.classList.remove('highlight'));
@@ -292,8 +302,11 @@ function setupMetricToggle() {
 }
 
 let resizeTimer;
+let lastWidth = window.innerWidth;
 function setupResize() {
     window.addEventListener('resize', () => {
+        if (window.innerWidth === lastWidth) return;
+        lastWidth = window.innerWidth;
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             drawContextChart();

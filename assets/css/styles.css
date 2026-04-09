@@ -1071,6 +1071,26 @@ body.milestones-page {
     margin-top: 14px;
 }
 
+@media (hover: none) {
+    .milestone-card:hover .card-expanded {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+    }
+
+    .milestone-card.expanded .card-expanded {
+        max-height: 280px;
+        opacity: 1;
+        margin-top: 14px;
+    }
+
+    .milestone-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: var(--border-color);
+    }
+}
+
 .card-description {
     font-size: 13px;
     color: var(--text-secondary);
