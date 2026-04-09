@@ -244,7 +244,8 @@ else:
         
         fig.canvas.mpl_connect('pick_event', on_pick)
     
-    ax1.set_title('Tank Levels and Pump Flows\n(Drag legend to reposition • Click legend items to toggle visibility)')
+    fig.suptitle('Tank Levels and Pump Flows')
+    ax1.set_title('(Drag legend to reposition • Click legend items to toggle visibility)', fontsize=9, color='gray')
     
     # Add summary table if any options selected
     if any_summary and table_data:

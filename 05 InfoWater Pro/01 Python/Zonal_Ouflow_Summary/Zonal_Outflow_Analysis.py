@@ -875,11 +875,11 @@ def export_to_csv():
                     row.append(f"{total_unsatisfied[i]:.4f}")
                 writer.writerow(row)
         
-        tk.messagebox.showinfo("Export Successful", f"Data exported to:\n{filepath}")
+        tk.messagebox.showinfo("Export Successful", f"Data exported to: {filepath}")
         print(f"✅ Data exported to: {filepath}")
         
     except Exception as e:
-        tk.messagebox.showerror("Export Error", f"Failed to export data:\n{str(e)}")
+        tk.messagebox.showerror("Export Error", f"Failed to export data: {str(e)}")
         print(f"❌ Export failed: {e}")
 
 ttk.Button(button_frame, text="📊 Export to CSV", command=export_to_csv).pack(side=tk.LEFT, padx=15)
