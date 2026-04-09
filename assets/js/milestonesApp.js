@@ -1,4 +1,5 @@
 import { loadTrafficData, loadMilestones, aggregateMonthlyViews, aggregateMonthlyClones } from './dataLoader.js';
+import { formatDate } from './utils.js';
 
 let monthlyData = [];
 let monthlyViewsData = [];
@@ -311,6 +312,17 @@ async function init() {
         monthlyClonesData = aggregateMonthlyClones(trafficData.clonesData);
         monthlyData = activeMetric === 'clones' ? monthlyClonesData : monthlyViewsData;
         milestones = milestonesData;
+
+        const lastUpdatedEl = document.getElementById('lastUpdated');
+        if (lastUpdatedEl) {
+            const viewsData = trafficData.viewsData;
+            if (viewsData.length > 0) {
+                const lastDate = viewsData[viewsData.length - 1].date;
+                lastUpdatedEl.textContent = `Last updated: ${formatDate(lastDate)}`;
+            } else {
+                lastUpdatedEl.textContent = 'Last updated: No data';
+            }
+        }
 
         const metricLabel = document.getElementById('metricLabel');
         if (metricLabel) {

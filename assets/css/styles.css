@@ -782,12 +782,20 @@ h1 {
         gap: 10px;
     }
 
+    .stat-card {
+        padding: 10px 12px;
+        gap: 8px;
+        min-width: 0;
+        overflow: hidden;
+    }
+
     .stat-label {
         font-size: 0.7em;
+        white-space: normal;
     }
 
     .stat-value {
-        font-size: 1.5em;
+        font-size: 1.3em;
     }
 
     .time-selector {
@@ -816,6 +824,17 @@ h1 {
 
     #monthlyTable {
         max-height: 300px;
+    }
+}
+
+@media (max-width: 380px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        flex-direction: row;
+        justify-content: space-between;
     }
 }
 
