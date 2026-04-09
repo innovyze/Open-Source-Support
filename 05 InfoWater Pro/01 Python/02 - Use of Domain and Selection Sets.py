@@ -54,15 +54,15 @@ j_indices = [i for i, moid in enumerate(junctions) if moid in domain_junctions]
 # Get remaining results to build table
 p1min = out1.get_range_data("Junction", "Pressure", "min")
 p1avg = out1.get_range_data("Junction", "Pressure", "avg")
-dmd1avg = out1.get_range_data("Junction", "Demand", "avg")
+dmd1avg = out1.get_range_data("Junction", "Outflow", "avg")
 
 # Generate table
 df = pd.DataFrame(
 {
     "Junction": [junctions[i] for i in j_indices],
-    "Base Avg Demand (gpm)": [dmd1avg[i]*448.8 for i in j_indices],
+    "Base Avg Outflow (gpm)": [dmd1avg[i]*448.8 for i in j_indices],
     "Base Avg Pressure (psi)": [p1avg[i]*0.433 for i in j_indices],
     "Base min Pressure (psi)": [p1min[i]*0.433 for i in j_indices],
 })
 
-df.sort_values(by='Base Avg Demand (gpm)',ascending=False)
+df.sort_values(by='Base Avg Outflow (gpm)',ascending=False)

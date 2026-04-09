@@ -21,7 +21,7 @@ junctions = outman.get_element_list("junction");
 print(junctions)
 
 # Export results to CSV
-# This example includes Time, Demand, Pressure, and Head for all Junctions.
+# This example includes Time, Outflow, Pressure, and Head for all Junctions.
 # Check the units and convert as needed.
 
 Junction_timeseries = str(project_path) + "/Junction_timeseries.csv"
@@ -30,10 +30,10 @@ time = outman.get_time_list()
 
 with open(Junction_timeseries, 'w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['ID', 'Time (hrs)', 'Demand (gpm)', 'Pressure (psi)', 'Head (ft)'])
+    writer.writerow(['ID', 'Time (hrs)', 'Outflow (gpm)', 'Pressure (psi)', 'Head (ft)'])
     for id in junctions:
-        demand = outman.get_time_data("junction", id, "demand")*448.8
+        outflow = outman.get_time_data("junction", id, "outflow")*448.8
         pressure = outman.get_time_data("junction", id, "pressure")*0.433
         head = outman.get_time_data("junction", id, "head")
         for i in range(len(time)):
-            writer.writerow([id, str(time[i]), str(demand[i]), str(pressure[i]), str(head[i])])
+            writer.writerow([id, str(time[i]), str(outflow[i]), str(pressure[i]), str(head[i])])

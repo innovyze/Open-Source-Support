@@ -325,7 +325,8 @@ if not selected_zone or not selected_scenario:
     print("Analysis cancelled.")
     raise SystemExit("No zone or scenario selected.")
 
-print(f"\nSelected Zone: {selected_zone}")
+print()
+print(f"Selected Zone: {selected_zone}")
 print(f"Selected Scenario: {selected_scenario}")
 print(f"Options: {output_options}")
 
@@ -344,7 +345,8 @@ zone_pumps = read_pzm_elements('PZMPUMP.DBF', selected_zone)
 zone_valves = read_pzm_elements('PZMVALVE.DBF', selected_zone)
 zone_pipes = read_pzm_elements('PZMPIPE.DBF', selected_zone)
 
-print(f"\nZone {selected_zone} elements:")
+print()
+print(f"Zone {selected_zone} elements:")
 print(f"  Tanks: {len(set(zone_tanks['inflow'] + zone_tanks['outflow']))} total")
 print(f"  Reservoirs: Inflow={len(zone_reservoirs['inflow'])}, Outflow={len(zone_reservoirs['outflow'])}")
 print(f"  Pumps: Inflow={len(zone_pumps['inflow'])}, Outflow={len(zone_pumps['outflow'])}")
@@ -505,7 +507,8 @@ def find_zone_pressure_extremes():
 # =============================================================================
 # SECTION 6: Collect all data for plotting
 # =============================================================================
-print("\nCollecting data...")
+print()
+print("Collecting data...")
 
 # Storage (Tanks) - for level display
 tank_ids = list(set(zone_tanks['inflow'] + zone_tanks['outflow']))
@@ -550,10 +553,12 @@ outflow_data.extend(collect_flow_elements("Pipe", zone_pipes['outflow'], "Outflo
 # Find pressure extremes if enabled
 pressure_extremes = None
 if output_options['show_pressure']:
-    print("\nFinding zone pressure extremes...")
+    print()
+    print("Finding zone pressure extremes...")
     pressure_extremes = find_zone_pressure_extremes()
 
-print(f"\nData summary:")
+print()
+print("Data summary:")
 print(f"  Storage elements (tanks): {len(storage_data)}")
 print(f"  Inflow elements: {len(inflow_data)}")
 print(f"  Outflow elements: {len(outflow_data)}")
@@ -586,7 +591,8 @@ total_demand = [
     for i in range(len(times))
 ]
 
-print(f"\nCalculated totals:")
+print()
+print("Calculated totals:")
 print(f"  Total Inflow: avg={np.mean(total_inflow):.2f} {flow_unit}")
 print(f"  Total Outflow: avg={np.mean(total_outflow):.2f} {flow_unit}")
 print(f"  Total Tank Flow: avg={np.mean(total_tank_flow):.2f} {flow_unit}")
@@ -601,10 +607,12 @@ show_net_flow = output_options['show_net_flow'] and (len(inflow_data) > 0 or len
 active_panels = sum([show_storage, show_net_flow])
 
 if active_panels == 0:
-    print("\n⚠️ No data to display for this pressure zone!")
+    print()
+    print("⚠️ No data to display for this pressure zone!")
     raise SystemExit("No data available for the selected zone.")
 
-print(f"\nCreating plot with {active_panels} panel(s)...")
+print()
+print(f"Creating plot with {active_panels} panel(s)...")
 
 # Create main window
 plot_window = tk.Tk()
@@ -1234,7 +1242,8 @@ instructions.pack(side=tk.LEFT, padx=10)
 
 ttk.Button(button_frame, text="Close", command=plot_window.destroy).pack(side=tk.RIGHT, padx=10)
 
-print("\n✅ Plot window opened!")
+print()
+print("✅ Plot window opened!")
 print("Interactive features:")
 print("  - Panel visibility toggles (Storage, Net Flow)")
 print("  - Zone pressure extremes (min/max pressure junctions)")

@@ -305,7 +305,8 @@ else:
         ax2.tick_params(axis='y', labelcolor='red')
     
     if skipped_elements:
-        print(f"\n⚠️ Skipped elements (no data available): {', '.join(skipped_elements)}")
+        print()
+        print(f"⚠️ Skipped elements (no data available): {', '.join(skipped_elements)}")
     
     ax1.set_title(plot_title)
     plt.tight_layout()
