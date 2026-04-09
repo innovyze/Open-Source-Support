@@ -96,16 +96,16 @@ plt.show()
 # Get remaining results to build table
 p1min = out1.get_range_data("Junction", "Pressure", "min")
 p1avg = out1.get_range_data("Junction", "Pressure", "avg")
-dmd1avg = out1.get_range_data("Junction", "Demand", "avg")
+dmd1avg = out1.get_range_data("Junction", "Outflow", "avg")
 
 # Generate table
 dftable = pd.DataFrame(
 {
     "Junction": [junctions[i] for i in j_indices],
-    "Base Avg Demand (gpm)": [dmd1avg[i]*448.8 for i in j_indices],
+    "Base Avg Outflow (gpm)": [dmd1avg[i]*448.8 for i in j_indices],
     "Base Avg Pressure (psi)": [p1avg[i]*0.433 for i in j_indices],
     "Base min Pressure (psi)": [p1min[i]*0.433 for i in j_indices],
 })
 
-dftable.sort_values(by='Base Avg Demand (gpm)',ascending=False)
+dftable.sort_values(by='Base Avg Outflow (gpm)',ascending=False)
 df.to_excel('D:\InfoWater Pro_Python\Junction_report.xlsx')

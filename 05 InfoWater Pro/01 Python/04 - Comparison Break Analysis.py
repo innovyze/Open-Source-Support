@@ -70,18 +70,18 @@ junctions = out1.get_element_list("Junction")
 selection = [i for i, (x, y) in enumerate(zip(p1min, p2min)) if abs(x-y)>10 and y<20]
 
 p1avg = out1.get_range_data("Junction", "Pressure", "avg")
-dmd1avg = out1.get_range_data("Junction", "Demand", "avg")
+dmd1avg = out1.get_range_data("Junction", "Outflow", "avg")
 
 df = pd.DataFrame(
 {
     "Impacted Junctions": [junctions[i] for i in selection],
-    "Base Avg Demand (gpm)": [dmd1avg[i]*448.8 for i in selection],
+    "Base Avg Outflow (gpm)": [dmd1avg[i]*448.8 for i in selection],
     "Base Avg Pressure (psi)": [p1avg[i]*0.433 for i in selection],
     "Base min Pressure (psi)": [p1min[i]*0.433 for i in selection],
     "Break min Pressure (psi)": [p2min[i]*0.433 for i in selection],
 })
 
-df.sort_values(by='Base Avg Demand (gpm)',ascending=False)
+df.sort_values(by='Base Avg Outflow (gpm)',ascending=False)
 
 #Export Table report to Excel
 
@@ -95,12 +95,12 @@ selected_junctions = [junctions[i] for i in selection]
 
 with open(Junction_timeseries, 'w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['ID', 'Time (hrs)', 'Demand (gpm)', 'Pressure (psi)'])
+    writer.writerow(['ID', 'Time (hrs)', 'Outflow (gpm)', 'Pressure (psi)'])
     for id in selected_junctions:
-        demand = out2.get_time_data("junction", id, "demand")
+        outflow = out2.get_time_data("junction", id, "outflow")
         pressure = out2.get_time_data("junction", id, "pressure")
         for i in range(len(times)):
-            writer.writerow([id, str(times[i]), str(demand[i]), str(pressure[i])])
+            writer.writerow([id, str(times[i]), str(outflow[i]), str(pressure[i])])
 
 # Quick Tips:
 

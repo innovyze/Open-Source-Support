@@ -259,7 +259,8 @@ if not selected_zone or not selected_scenario:
     print("Analysis cancelled.")
     raise SystemExit("No zone or scenario selected.")
 
-print(f"\nSelected Zone: {selected_zone}")
+print()
+print(f"Selected Zone: {selected_zone}")
 print(f"Selected Scenario: {selected_scenario}")
 print(f"Options: {output_options}")
 
@@ -288,7 +289,8 @@ print(f"  ℹ 'Unsatisfied Demand' will be calculated as (Required - Actual)")
 
 # Get junctions in the selected zone
 zone_junction_ids = junction_zones.get(selected_zone, [])
-print(f"\nZone {selected_zone} has {len(zone_junction_ids)} junctions")
+print()
+print(f"Zone {selected_zone} has {len(zone_junction_ids)} junctions")
 
 if not zone_junction_ids:
     print(f"Error: No junctions found in zone {selected_zone}")
@@ -329,7 +331,8 @@ volume_factor = volume_conversions.get(flow_unit, 1.0)
 # =============================================================================
 # SECTION 5: Collect junction outflow data (with progress bar)
 # =============================================================================
-print("\nCollecting junction data...")
+print()
+print("Collecting junction data...")
 
 # Known InfoWater Pro junction output field names:
 # - "Outflow" - total outflow from the junction
@@ -533,7 +536,8 @@ def find_max_instantaneous(data_dict):
 max_inst_leakage = find_max_instantaneous(junction_data['leakage'])
 max_inst_unsatisfied = find_max_instantaneous(junction_data['unsatisfied'])
 
-print(f"\n=== Summary Metrics ===")
+print()
+print("=== Summary Metrics ===")
 print(f"Total Outflow Volume: {outflow_volume:.2f} {volume_unit}")
 print(f"Total Required Demand Volume: {required_demand_volume:.2f} {volume_unit}")
 print(f"Total Actual Demand Volume: {actual_demand_volume:.2f} {volume_unit}")
@@ -551,7 +555,8 @@ if junctions_with_unsatisfied > 0:
 # =============================================================================
 # SECTION 7: Create Interactive Plot
 # =============================================================================
-print("\nCreating plot...")
+print()
+print("Creating plot...")
 
 # Create main window
 plot_window = tk.Tk()
@@ -900,7 +905,8 @@ instructions.pack(side=tk.LEFT, padx=10)
 
 ttk.Button(button_frame, text="Close", command=plot_window.destroy).pack(side=tk.RIGHT, padx=10)
 
-print("\n✅ Plot window opened!")
+print()
+print("✅ Plot window opened!")
 print("Interactive features:")
 print("  - Line visibility toggles")
 print("  - Summary metrics (volumes, highest junctions)")
