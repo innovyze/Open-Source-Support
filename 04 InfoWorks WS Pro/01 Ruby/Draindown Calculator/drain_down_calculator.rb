@@ -16,7 +16,11 @@
 #   2. Run this script from the InfoWorks WS Pro UI
 #   3. Follow prompts to confirm washout hydrant, ARV nodes, and enter
 #      hydraulic properties for the valves
-#   4. A CSV time-series and summary message box are produced
+#   4. Enter diameters, Cd, % open for washout and ARV(s), and time step
+#   5. An HTML dashboard opens: adjust % open with sliders and recalculate
+#      in the browser (same physics as the Ruby run). CSV download matches
+#      the current slider settings.
+#   6. A summary message box is also shown
 #
 # ARV nodes are identified by: user_text_1 = 'ARV' on wn_node
 # Washout candidates are wn_hydrant objects in the isolated section
@@ -25,6 +29,7 @@
 #   - Orifice equation for water flow (incompressible)
 #   - Orifice equation for air flow (incompressible; valid for delta < ~0.8 m)
 #   - Multiple ARVs act in parallel (combined orifice area)
+#   - % open scales effective orifice area linearly (area = full bore × %/100)
 #   - Volume-elevation curve built from pipe diameter, length, and node z
 #   - Plug-flow drainage assumed (no partial-full pipe HGL modelling)
 # =============================================================================
@@ -319,8 +324,10 @@ begin
     [
       ['Washout valve diameter (mm)', 'NUMBER', 100],
       ['Washout valve Cd',            'NUMBER', 0.61],
+      ['Washout valve % open (1-100)', 'NUMBER', 100],
       ['ARV orifice diameter (mm)',   'NUMBER', 25],
       ['ARV Cd',                      'NUMBER', 0.61],
+      ['ARV(s) % open (1-100)',       'NUMBER', 100],
       ['Simulation time step (s)',    'NUMBER', 10],
     ],
     false
@@ -329,23 +336,28 @@ begin
 
   washout_d_mm = params[0].to_f
   washout_cd   = params[1].to_f
-  arv_d_mm     = params[2].to_f
-  arv_cd       = params[3].to_f
-  dt           = params[4].to_f
+  washout_pct  = params[2].to_f
+  arv_d_mm     = params[3].to_f
+  arv_cd       = params[4].to_f
+  arv_pct      = params[5].to_f
+  dt           = params[6].to_f
 
   if [washout_d_mm, washout_cd, arv_d_mm, arv_cd, dt].any? { |v| v <= 0 }
-    WSApplication.message_box('All parameter values must be greater than zero.', 'ok', '!', false)
+    WSApplication.message_box('Diameter, Cd, and time step must be greater than zero.', 'ok', '!', false)
     exit
   end
 
-  # Orifice areas in m^2
-  a_w      = Math::PI / 4.0 * (washout_d_mm / 1000.0)**2
-  a_a_each = Math::PI / 4.0 * (arv_d_mm    / 1000.0)**2
-  # All selected ARVs act in parallel — sum their orifice areas
-  a_a_total = a_a_each * selected_arvs.length
+  washout_pct = [[washout_pct, 100.0].min, 0.01].max
+  arv_pct     = [[arv_pct, 100.0].min, 0.01].max
 
-  puts "\nWashout: D=#{washout_d_mm.round(0)}mm  Cd=#{washout_cd}  A=#{(a_w * 1.0e6).round(2)} mm^2"
-  puts "ARV:     D=#{arv_d_mm.round(0)}mm  Cd=#{arv_cd}  x#{selected_arvs.length}  A_total=#{(a_a_total * 1.0e6).round(2)} mm^2"
+  # Full-bore orifice areas in m^2; effective area scales with % open (area proportion)
+  a_w_full   = Math::PI / 4.0 * (washout_d_mm / 1000.0)**2
+  a_a_each_f = Math::PI / 4.0 * (arv_d_mm    / 1000.0)**2
+  a_w        = a_w_full * washout_pct / 100.0
+  a_a_total  = a_a_each_f * selected_arvs.length * arv_pct / 100.0
+
+  puts "\nWashout: D=#{washout_d_mm.round(0)}mm  Cd=#{washout_cd}  #{washout_pct.round(1)}% open  A_eff=#{(a_w * 1.0e6).round(2)} mm^2"
+  puts "ARV:     D=#{arv_d_mm.round(0)}mm  Cd=#{arv_cd}  x#{selected_arvs.length} @ #{arv_pct.round(1)}%  A_total=#{(a_a_total * 1.0e6).round(2)} mm^2"
   puts "dt=#{dt} s"
 
   # ---------------------------------------------------------------------------
@@ -500,6 +512,8 @@ begin
     }
   end
 
+  segments_json = segments.map { |z_lo, z_hi, v| [z_lo, z_hi, v] }
+
   payload = {
     title: "Drain-Down Results",
     summary: {
@@ -512,13 +526,32 @@ begin
       arv_list: arv_list,
       washout_d_mm: washout_d_mm.round(0),
       washout_cd: washout_cd,
+      washout_pct_open: washout_pct.round(2),
       arv_d_mm: arv_d_mm.round(0),
       arv_cd: arv_cd,
+      arv_pct_open: arv_pct.round(2),
       arv_count: selected_arvs.length,
       drain_time: time_str,
       peak_flow_Ls: peak_flow_ls.round(2),
       max_deficit_m: max_deficit_m.round(3),
       max_deficit_kPa: max_deficit_kpa.round(2)
+    },
+    sim: {
+      segments: segments_json,
+      z_washout: z_washout,
+      washout_cd: washout_cd,
+      arv_cd: arv_cd,
+      washout_d_mm: washout_d_mm,
+      arv_d_mm: arv_d_mm,
+      arv_count: selected_arvs.length,
+      dt: dt,
+      gravity: GRAVITY,
+      rho_w: RHO_W,
+      rho_a: RHO_A,
+      washout_pct_open: washout_pct,
+      arv_pct_open: arv_pct,
+      max_iter: max_iter,
+      target_rows: target_rows
     },
     time: ts_data.map { |r| r[:t] },
     series: {
@@ -551,6 +584,11 @@ begin
       .toolbar select { padding: 4px 8px; font-size: .88rem }
       .toolbar button { padding: 5px 12px; font-size: .82rem; cursor: pointer; border: 1px solid #aaa; border-radius: 4px; background: #fff }
       .toolbar button:hover { background: #e8e8e8 }
+      .slider-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 10px 14px }
+      .slider-row label { min-width: 160px; font-size: .85rem }
+      .slider-row input[type="range"] { width: 180px; vertical-align: middle }
+      .slider-row .pct { font-family: monospace; min-width: 3.2em; color: #0057a8 }
+      .hint { font-size: .78rem; color: #555; margin: 0 0 10px }
       .summary-box { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; font-size: .85rem; line-height: 1.6 }
       .summary-box b { color: #333 }
       .summary-box .val { font-family: monospace; color: #0057a8 }
@@ -561,6 +599,16 @@ begin
     </style></head><body>
     <h2 id="title"></h2>
     <div class="summary-box" id="summaryBox"></div>
+    <p class="hint">Adjust valve opening (% of full-bore effective area). Charts and summary update after you change a slider or click Recalculate. Matches the Ruby quasi-steady model in <code>drain_down_calculator.rb</code>.</p>
+    <div class="slider-row">
+      <label for="washoutPct">Washout % open</label>
+      <input type="range" id="washoutPct" min="1" max="100" step="0.5" />
+      <span class="pct" id="washoutPctDisp"></span>
+      <label for="arvPct">ARV % open</label>
+      <input type="range" id="arvPct" min="1" max="100" step="0.5" />
+      <span class="pct" id="arvPctDisp"></span>
+      <button type="button" id="recalcBtn">Recalculate</button>
+    </div>
     <div class="toolbar">
       <label>Output: <select id="seriesSelect"></select></label>
       <button id="csvBtn">Download CSV (all data)</button>
@@ -572,37 +620,195 @@ begin
     <script>
     (function() {
       var P = #{JSON.generate(payload)};
+      var K = P.sim;
       var S = P.summary;
+
+      function clampPct(x) {
+        x = parseFloat(x);
+        if (isNaN(x)) return 100;
+        return Math.min(100, Math.max(0.01, x));
+      }
+
+      function totalVolume(segments) {
+        var sum = 0;
+        for (var i = 0; i < segments.length; i++) sum += segments[i][2];
+        return sum;
+      }
+
+      function volumeAtElevation(segments, z) {
+        var total = 0;
+        for (var i = 0; i < segments.length; i++) {
+          var zLow = segments[i][0], zHigh = segments[i][1], vPipe = segments[i][2];
+          if (z >= zHigh) total += vPipe;
+          else if (z > zLow) total += vPipe * (z - zLow) / (zHigh - zLow);
+        }
+        return total;
+      }
+
+      function elevationFromVolume(segments, vRem, zMin, zMax) {
+        if (vRem <= 0) return zMin;
+        var vTot = totalVolume(segments);
+        if (vRem >= vTot) return zMax;
+        var lo = zMin, hi = zMax;
+        for (var n = 0; n < 50; n++) {
+          var mid = (lo + hi) / 2;
+          if (volumeAtElevation(segments, mid) < vRem) lo = mid; else hi = mid;
+          if ((hi - lo) < 0.00005) break;
+        }
+        return (lo + hi) / 2;
+      }
+
+      function solveDelta(h, cdW, aW, cdA, aATotal, g, rhoW, rhoA) {
+        if (h <= 0) return 0;
+        function f(d) {
+          var qW = cdW * aW * Math.sqrt(2 * g * Math.max(h - d, 0));
+          var qA = cdA * aATotal * Math.sqrt(2 * Math.max(d, 0) * rhoW * g / rhoA);
+          return qW - qA;
+        }
+        if (f(0) <= 0) return 0;
+        if (f(h) >= 0) return h;
+        var lo = 0, hi = h;
+        for (var n = 0; n < 50; n++) {
+          var mid = (lo + hi) / 2;
+          if (f(mid) > 0) lo = mid; else hi = mid;
+          if ((hi - lo) < 1e-7) break;
+        }
+        return (lo + hi) / 2;
+      }
+
+      /** Returns { time, series, csvRows, dataRows, drainTimeS, peakFlowLs, maxDeficitM, maxDeficitKpa } */
+      function runSimulation(washPct, arvPct) {
+        washPct = clampPct(washPct);
+        arvPct = clampPct(arvPct);
+        var g = K.gravity, rhoW = K.rho_w, rhoA = K.rho_a;
+        var segs = K.segments;
+        var zWash = K.z_washout;
+        var cdW = K.washout_cd, cdA = K.arv_cd;
+        var dt = K.dt;
+        var dWm = K.washout_d_mm / 1000;
+        var dAm = K.arv_d_mm / 1000;
+        var nArv = K.arv_count;
+        var aW = (Math.PI / 4) * dWm * dWm * (washPct / 100);
+        var aATotal = (Math.PI / 4) * dAm * dAm * nArv * (arvPct / 100);
+
+        var vTot = totalVolume(segs);
+        var zMin = segs.reduce(function(m, s) { return Math.min(m, s[0]); }, segs[0][0]);
+        var zMax = segs.reduce(function(m, s) { return Math.max(m, s[1]); }, segs[0][1]);
+
+        var targetRows = K.target_rows || 2000;
+        var estSteps = Math.ceil(vTot / (cdW * aW * Math.sqrt(2 * g * (zMax - zWash)) * dt * 0.5) || 1);
+        var recordEvery = Math.max(1, Math.floor(estSteps / targetRows));
+
+        var v = vTot, t = 0, iter = 0;
+        var maxIter = K.max_iter || 500000;
+        var csvHeader = ['time_s', 'volume_m3', 'volume_pct', 'water_surface_m', 'effective_head_m',
+          'flow_rate_Ls', 'pressure_deficit_m', 'pressure_deficit_kPa'];
+        var dataRows = [];
+        var lastQw = 0;
+
+        while (iter < maxIter) {
+          iter++;
+          var zW = elevationFromVolume(segs, v, zMin, zMax);
+          var h = zW - zWash;
+          if (h < 0.001) break;
+
+          var delta = solveDelta(h, cdW, aW, cdA, aATotal, g, rhoW, rhoA);
+          var hEff = Math.max(h - delta, 0);
+          var qw = cdW * aW * Math.sqrt(2 * g * hEff);
+          lastQw = qw;
+
+          if (iter === 1 || (iter % recordEvery === 0) || qw < 0.0001) {
+            dataRows.push([
+              Math.round(t * 10) / 10,
+              Math.round(v * 1e5) / 1e5,
+              Math.round(v / vTot * 10000) / 100,
+              Math.round(zW * 1e4) / 1e4,
+              Math.round(hEff * 1e4) / 1e4,
+              Math.round(qw * 1000 * 1e5) / 1e5,
+              Math.round(delta * 1e6) / 1e6,
+              Math.round(delta * rhoW * g / 1000 * 1e5) / 1e5
+            ]);
+          }
+
+          if (qw < 0.0001 || v < 0.0001) break;
+          var dv = qw * dt;
+          dv = Math.min(dv, v * 0.01);
+          v -= dv;
+          if (v < 0) v = 0;
+          t += dt;
+        }
+
+        dataRows.push([Math.round(t * 10) / 10, 0, 0, Math.round(zWash * 1e4) / 1e4, 0, 0, 0, 0]);
+
+        var peak = 0, maxDef = 0;
+        for (var i = 0; i < dataRows.length; i++) {
+          var q = dataRows[i][5];
+          var d = dataRows[i][6];
+          if (q > peak) peak = q;
+          if (d > maxDef) maxDef = d;
+        }
+        var maxDefKpa = maxDef * rhoW * g / 1000;
+
+        var timeArr = dataRows.map(function(r) { return r[0]; });
+        var series = {
+          volume_pct:     { label: 'Volume (%)', unit: '%', data: dataRows.map(function(r) { return r[2]; }) },
+          volume_m3:      { label: 'Volume (m³)',            unit: 'm³',  data: dataRows.map(function(r) { return r[1]; }) },
+          water_surface:  { label: 'Water Surface (m)',      unit: 'm',   data: dataRows.map(function(r) { return r[3]; }) },
+          effective_head: { label: 'Effective Head (m)',     unit: 'm',   data: dataRows.map(function(r) { return r[4]; }) },
+          flow_rate:      { label: 'Flow Rate (L/s)',        unit: 'L/s', data: dataRows.map(function(r) { return r[5]; }) },
+          deficit_m:      { label: 'Pressure Deficit (m)',   unit: 'm',   data: dataRows.map(function(r) { return r[6]; }) },
+          deficit_kpa:    { label: 'Pressure Deficit (kPa)', unit: 'kPa', data: dataRows.map(function(r) { return r[7]; }) }
+        };
+
+        return {
+          washPct: washPct,
+          arvPct: arvPct,
+          time: timeArr,
+          series: series,
+          csvHeader: csvHeader,
+          csvRows: dataRows,
+          drainTimeS: t,
+          peakFlowLs: peak,
+          maxDeficitM: maxDef,
+          maxDeficitKpa: maxDefKpa
+        };
+      }
+
+      function formatDrainTime(sec) {
+        var hr = sec / 3600;
+        var mn = sec / 60;
+        if (hr >= 1) return hr.toFixed(2) + ' hours (' + Math.round(mn) + ' min)';
+        return mn.toFixed(1) + ' minutes (' + Math.round(sec) + ' s)';
+      }
 
       document.getElementById('title').textContent = P.title;
 
-      var sb = document.getElementById('summaryBox');
-      sb.innerHTML =
-        '<b>Network:</b> ' + S.pipes + ' pipes &nbsp;|&nbsp; ' +
-        'Volume: <span class="val">' + S.volume_L + ' L</span> (' + S.volume_m3 + ' m\\u00B3) &nbsp;|&nbsp; ' +
-        'Elevation: <span class="val">' + S.z_min + '</span> to <span class="val">' + S.z_max + ' m</span><br>' +
-        '<b>Washout:</b> ' + S.washout_id + ' at z = ' + S.z_washout + ' m &nbsp;|&nbsp; \\u00D8' + S.washout_d_mm + ' mm, Cd = ' + S.washout_cd + '<br>' +
-        '<b>ARV:</b> ' + S.arv_list + ' &nbsp;|&nbsp; \\u00D8' + S.arv_d_mm + ' mm, Cd = ' + S.arv_cd + ', \\u00D7 ' + S.arv_count + '<br>' +
-        '<b>Drain time:</b> <span class="val">' + S.drain_time + '</span> &nbsp;|&nbsp; ' +
-        '<b>Peak flow:</b> <span class="val">' + S.peak_flow_Ls + ' L/s</span> &nbsp;|&nbsp; ' +
-        '<b>Max deficit:</b> <span class="val">' + S.max_deficit_m + ' m</span> (' + S.max_deficit_kPa + ' kPa)';
+      var washEl = document.getElementById('washoutPct');
+      var arvEl = document.getElementById('arvPct');
+      washEl.value = String(K.washout_pct_open);
+      arvEl.value = String(K.arv_pct_open);
 
-      // Populate dropdown
-      var sel = document.getElementById('seriesSelect');
-      var keys = Object.keys(P.series);
-      keys.forEach(function(k) {
-        var opt = document.createElement('option');
-        opt.value = k;
-        opt.textContent = P.series[k].label;
-        sel.appendChild(opt);
-      });
+      var currentSeriesKey = Object.keys(P.series)[0];
+      var liveResult = null;
 
-      // Time axis in minutes
-      var tMin = P.time.map(function(t) { return (t / 60.0); });
-      var xLabel = 'Time (min)';
+      function updateSummaryHtml(R) {
+        var sb = document.getElementById('summaryBox');
+        sb.innerHTML =
+          '<b>Network:</b> ' + S.pipes + ' pipes &nbsp;|&nbsp; ' +
+          'Volume: <span class="val">' + S.volume_L + ' L</span> (' + S.volume_m3 + ' m\\u00B3) &nbsp;|&nbsp; ' +
+          'Elevation: <span class="val">' + S.z_min + '</span> to <span class="val">' + S.z_max + ' m</span><br>' +
+          '<b>Washout:</b> ' + S.washout_id + ' at z = ' + S.z_washout + ' m &nbsp;|&nbsp; \\u00D8' + S.washout_d_mm + ' mm, Cd = ' + S.washout_cd +
+          ', <span class="val">' + R.washPct.toFixed(1) + '%</span> open<br>' +
+          '<b>ARV:</b> ' + S.arv_list + ' &nbsp;|&nbsp; \\u00D8' + S.arv_d_mm + ' mm, Cd = ' + S.arv_cd + ', \\u00D7 ' + S.arv_count +
+          ' @ <span class="val">' + R.arvPct.toFixed(1) + '%</span> open<br>' +
+          '<b>Drain time:</b> <span class="val">' + formatDrainTime(R.drainTimeS) + '</span> &nbsp;|&nbsp; ' +
+          '<b>Peak flow:</b> <span class="val">' + R.peakFlowLs.toFixed(2) + ' L/s</span> &nbsp;|&nbsp; ' +
+          '<b>Max deficit:</b> <span class="val">' + R.maxDeficitM.toFixed(3) + ' m</span> (' + R.maxDeficitKpa.toFixed(2) + ' kPa)';
+      }
 
-      function plotSeries(key) {
-        var s = P.series[key];
+      function plotSeries(key, R) {
+        var s = R.series[key];
+        var tMin = R.time.map(function(t) { return t / 60; });
         Plotly.react('mainChart', [{
           x: tMin, y: s.data, mode: 'lines',
           line: { color: '#0057a8', width: 2 },
@@ -610,16 +816,50 @@ begin
         }], {
           title: { text: s.label + ' vs Time', font: { size: 14 } },
           margin: { t: 44, r: 24, b: 50, l: 64 },
-          xaxis: { title: xLabel },
+          xaxis: { title: 'Time (min)' },
           yaxis: { title: s.label },
           hovermode: 'x unified'
         }, { responsive: true });
       }
 
-      sel.addEventListener('change', function() { plotSeries(this.value); });
-      plotSeries(keys[0]);
+      function recalc() {
+        var w = parseFloat(washEl.value);
+        var a = parseFloat(arvEl.value);
+        document.getElementById('washoutPctDisp').textContent = w.toFixed(1) + '%';
+        document.getElementById('arvPctDisp').textContent = a.toFixed(1) + '%';
+        liveResult = runSimulation(w, a);
+        updateSummaryHtml(liveResult);
+        plotSeries(currentSeriesKey, liveResult);
+      }
 
-      // Depth vs Volume curve
+      var sel = document.getElementById('seriesSelect');
+      var keys = Object.keys(P.series);
+      sel.innerHTML = '';
+      keys.forEach(function(k) {
+        var opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = P.series[k].label;
+        sel.appendChild(opt);
+      });
+      sel.value = currentSeriesKey;
+      sel.addEventListener('change', function() {
+        currentSeriesKey = this.value;
+        if (liveResult) plotSeries(currentSeriesKey, liveResult);
+      });
+
+      var debounceT = null;
+      function debounceRecalc() {
+        clearTimeout(debounceT);
+        debounceT = setTimeout(recalc, 120);
+      }
+      washEl.addEventListener('input', debounceRecalc);
+      arvEl.addEventListener('input', debounceRecalc);
+      washEl.addEventListener('change', recalc);
+      arvEl.addEventListener('change', recalc);
+      document.getElementById('recalcBtn').addEventListener('click', recalc);
+
+      recalc();
+
       Plotly.newPlot('dvChart', [{
         x: P.depth_volume.volumes_L,
         y: P.depth_volume.elevations,
@@ -634,11 +874,11 @@ begin
         hovermode: 'closest'
       }, { responsive: true });
 
-      // CSV download — all columns for all time steps
       document.getElementById('csvBtn').addEventListener('click', function() {
-        var hdr = P.csv_header.join(',');
+        if (!liveResult) return;
+        var hdr = liveResult.csvHeader.join(',');
         var lines = [hdr];
-        P.csv_rows.forEach(function(row) { lines.push(row.join(',')); });
+        liveResult.csvRows.forEach(function(row) { lines.push(row.join(',')); });
         var blob = new Blob([lines.join('\\n')], { type: 'text/csv;charset=utf-8;' });
         var a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
@@ -668,8 +908,8 @@ begin
     "  Pipes:         #{isolated_pipes.length}\n" +
     "  Total volume:  #{(v_total * 1000.0).round(0)} L  (#{v_total.round(3)} m^3)\n" +
     "  Elevation:     #{z_min.round(2)} m  to  #{z_max.round(2)} m\n\n" +
-    "Washout:  #{selected_washout.id}  at z = #{z_washout.round(2)} m\n" +
-    "ARV(s):   #{arv_list_msg}\n\n" +
+    "Washout:  #{selected_washout.id}  at z = #{z_washout.round(2)} m  (#{washout_pct.round(1)}% open)\n" +
+    "ARV(s):   #{arv_list_msg}  (#{arv_pct.round(1)}% open each)\n\n" +
     "RESULTS:\n" +
     "  Estimated drain time:    #{time_str}\n" +
     "  Peak flow rate:          #{peak_flow_ls.round(2)} L/s\n" +
