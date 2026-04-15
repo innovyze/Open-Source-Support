@@ -12,66 +12,11 @@ Display Dialogs and other UI Features	✔	❌
 Manipulate any other Database Objects	❌	✔
 Open or Close Databases	❌	✔
 Configure & Run Simulations	❌	✔
-Ruby scripts are only intended to manipulate data via the product's documented API. While you can use most features of the Ruby Standard Library, you cannot install and use external packages (gems).
+Ruby scripts are only intended to manipulate data via the product's documented API. While you can use most features of the Ruby Standard Library, you can also install and use external packages (gems) via RubyGems — install gems only from trusted sources.
 
-The application uses an embedded Ruby 2.4.0 interpreter.
+Note: External gem support was introduced in version 2027.0. Prior to this version, you cannot install external packages (gems).
 
-This example script displays the number of nodes in the network:
-
-network = WSApplication.current_network
-nodes = network.row_objects('_nodes')
-puts format("Your Network has %i nodes!", nodes.length)
-Reading this Documentation
-Ruby is a flexible language with many conventions and style guides. The examples in this documentation try to follow best practices.
-
-Methods
-Throughout this documentation, methods are described in this format:
-
-#method(param1, param2) ⇒ Integer?
-Where ⇒ indicates a return from the method, followed by the most commonly returned type.
-
-void means that you should not expect a return value
-A question mark means that the type may be nil (NULL)
-An array is written as Array where the contents of the <> indicates the type of object the array will contain
-Naming Conventions
-PascalCase for Modules and Classes
-SCREAMING_SNAKE_CASE for constants
-snake_case for variables and methods
-Variables for workgroup objects are often abbreviated in examples, e.g. a WSRowObject will be ro, WSModelObject is mo
-Note that in the 2025.0 release, several methods which included capitalization were updated to be all lowercase. While the previous method names still work for backwards compatibility, we recommend using the newer method names for consistency.
-
-Options hashes will not follow these guidelines and may include spaces and punctuation.
-
-Other Conventions
-Two space width for indentation (either spaces or tabs)
-Use literal syntax to define arrays and hashes i.e. my_hash = {} instead of my_hash = Hash.new
-Tips
-You can check if an object (e.g. the value from a field) is nil with .nil?
-If you want to call a method but are unsure if the object is nil, use the safe navigator & i.e. array&.empty?
-For concise code, try the following:
-Ruby supports some opposite conditions / actions, e.g. if and unless, while and until
-To do one thing based on a condition, instead of writing a three line if statement, use (action) if (condition) i.e. puts 'Hi' if 5 > 2
-If you want to set a value conditionally, use the ternary operator (condition) ? (true) : (false) i.e. animal = (3 > 4) ? 'badger' : 'penguin'
-
----
-
-Introduction to Scripts
-This documentation describes the Ruby API for external scripts that run within the user interface and Exchange.
-
-For those of you who are not familiar with Ruby scripts, an Introduction to Ruby Scripting in InfoWorks topic is included in the product help.
-
-Scripts that run from the user interface are designed to work with the current network, including importing and exporting data, but have limited access to the database. Exchange is a command line application that can run scripts with far greater access to database objects, making it well suited to more complex automation.
-
-Task	User Interface	Exchange
-Add, Import, and Manipulate Network Data	✔	✔
-Commit and Revert Changes	✔	✔
-Display Dialogs and other UI Features	✔	❌
-Manipulate any other Database Objects	❌	✔
-Open or Close Databases	❌	✔
-Configure & Run Simulations	❌	✔
-Ruby scripts are only intended to manipulate data via the product's documented API. While you can use most features of the Ruby Standard Library, you cannot install and use external packages (gems).
-
-The application uses an embedded Ruby 2.4.0 interpreter.
+From version 2027.0 onwards, the application uses Ruby 3.4.6. Prior to 2027.0, the application uses an embedded Ruby 2.4.0 interpreter. Scripts created with earlier Ruby versions may not run as expected under 3.4.6 and may require updates.
 
 This example script displays the number of nodes in the network:
 
@@ -341,167 +286,6 @@ Simulations can use absolute or relative times, so the following convention is u
 
 Absolute times are represented as a Ruby DateTime object
 Relative times are represented as a negative double (time in seconds)
-
-ICM Exchange for Autodesk
-ICM Exchange is the IExchange implementation of InfoWorks ICM for our Autodesk products. It is only available for users with an Ultimate licence.
-
-Usage
-ICMExchange [options] [--] script [-login|-l] [args]
-
-Parameter	Description
-options	
-(Optional) These are any Ruby command line options. See Command Line Options.
-
---	(Optional) Separator for the Ruby command line options.
-script	
-The path of the Ruby script.
-
-Make sure to surround with "" if it contains spaces.
-
--login or -l	
-(Optional) When set, it displays the Autodesk Identity web page for users to log-in.
-
-If the user is already logged-in, it will proceed without showing the web page.
-
-If not set and the user is not logged-in, it will show the error:
-
-"Autodesk Licensing Error: The licence is not authorised (3).unable to initialise"
-
-args	(Optional) It is possible to provide more arguments to the script with the extra arguments.
-Note: Subscription overuse rules will apply.
-
-Command Line Options
-Ruby interpreter accepts following command-line options (switches). Basically they are quite similar to those of Perl.
-
--0digit
-
-Specifies the input record separator ($/) as an octal number. If no digits given, the null character is the separator. Other switches may follow the digits. -00 turns Ruby into paragraph mode. -0777 makes Ruby read whole file at once as a single string, since there is no legal character with that value.
-
--a
-
-Turns on auto-split mode when used with -n or -p. In auto-split mode, Ruby executes
-
-$F = $_.split
-at beginning of each loop.
-
--c
-
-Causes Ruby to check the syntax of the script and exit without executing. If there is no syntax error, Ruby will print "Syntax OK" to the standard output.
-
--Kc
-
-Specifies KANJI (Japanese character) code-set.
-
--d
-
---debug
-
-Turns on debug mode. $DEBUG will set true.
-
--e script
-
-Specifies script from command-line. if -e switch specified, Ruby will not look for a script filename in the arguments.
-
--F regexp
-
-Specifies input field separator ($;).
-
--h
-
---help
-
-Prints a summary of the options.
-
--i extension
-
-Specifies in-place-edit mode. The extension, if specified, is added to old filename to make a backup copy.
-
-Example:
-
-% echo matz > /tmp/junk	
-% cat /tmp/junk	
-matz
-% ruby -p -i.bak -e '$_.upcase!' /tmp/junk
-% cat /tmp/junk
-MATZ
-% cat /tmp/junk.bak
-matz
--I directory
-
-Used to tell Ruby where to load the library scripts. Directory path will be added to the load-path variable (`$:').
-
--l
-
-Enables automatic line-ending processing, which means firstly set $\ to the value of $/, and secondly chops every line read using chop!, when used with -n or -p.
-
--n
-
-Causes Ruby to assume the following loop around your script, which makes it iterate over filename arguments somewhat like sed -n or awk.
-
-while gets
-...
-end
--p
-
-Acts mostly same as -n switch, but print the value of variable $_ at the each end of the loop.
-
-Example:
-
-% echo matz | ruby -p -e '$_.tr! "a-z", "A-Z"'
-MATZ
--r filename
-
-Causes Ruby to load the file using require. It is useful with switches -n or -p.
-
--s
-
-Enables some switch parsing for switches after script name but before any filename arguments (or before a --). Any switches found there is removed from ARGV and set the corresponding variable in the script.
-
-Example:
-
-#! /usr/local/bin/ruby -s
-# prints "true" if invoked with `-xyz' switch.
-print "true\n" if $xyz
--S
-
-Makes Ruby uses the PATH environment variable to search for script, unless if its name begins with a slash. This is used to emulate #! on machines that don't support it, in the following manner:
-
-#!/bin/sh
-exec ruby -S -x $0 "$@"
-#! ruby
-On some systems $0 does not always contain the full pathname, so you need -S switch to tell Ruby to search for the script if necessary.
-
--T [level]
-
-Forces "taint" checks to be turned on so you can test them. If level is specified, $SAFE to be set to that level. It's a good idea to turn them on explicitly for programs run on another's behalf, such as CGI programs.
-
--v
-
---verbose
-
-Enables verbose mode. Ruby will prints its version at the beginning, and set the variable `$VERBOSE' to true. Some methods prints extra messages if this variable is true. If this switch is given, and no other switches present, Ruby quits after printing its version.
-
---version
-
-Prints the version of Ruby executable.
-
--w
-
-Enables verbose mode without printing version message at the beginning. It set the variable `$VERBOSE' to true.
-
--x[directory]
-
-Tells Ruby that the script is embedded in a message. Leading garbage will be discarded until the first that starts with "#!" and contains string "ruby". Any meaningful switches on that line will applied. The end of script must be specified with either EOF, ^D (control-D), ^Z (control-Z), or reserved word __END__.If the directory name is specified, Ruby will switch to that directory before executing script.
-
--X directory
-
-Causes Ruby to switch to the directory.
-
--y
-
---yydebug
-
-Turns on compiler debug mode. Ruby will print bunch of internal state messages during compiling scripts. You don't have to specify this switch, unless you are going to debug the Ruby interpreter itself.
 
 WSApplication
 The top-level of the application in scripts run from the User Interface and Exchange.
@@ -1287,6 +1071,17 @@ Data Export for GDB (Personal GeoDatabase)
 Data Export for FILEGDB (File GeoDatabase)
 Data Export for ORACLE (Oracle Database)
 Data Export for SQLSERVER (Microsoft SQL Server)
+odic_export_ex
+Data Export for CSV (Comma Separated Values)
+Data Export for TSV (Tab Separated Values)
+Data Export for XML (Extensible Markup Language)
+Data Export for MDB (Jet / Microsoft Access Database)
+Data Export for SHP (ESRI Shapefile)
+Data Export for TAB (MapInfo TAB)
+Data Export for GDB (Personal GeoDatabase)
+Data Export for FILEGDB (File GeoDatabase)
+Data Export for ORACLE (Oracle Database)
+Data Export for SQLSERVER (Microsoft SQL Server)
 odic_import_ex
 Data Import for CSV (Comma Separated Values)
 Data Import for TSV (Tab Separated Values)
@@ -1875,6 +1670,7 @@ file_root
 find_root_model_object
 guid
 list_read_write_run_fields
+merge_migration_file
 model_object
 model_object_collection
 model_object_from_type_and_guid
@@ -1944,6 +1740,19 @@ Parameters
 
 Name	Type(s)	Description
 Return	Array	
+merge_migration_file
+#merge_migration_file(file_name, log_file, import_type, mapping_file) ⇒ void
+EXCHANGE, UI
+
+Merges a migration file into the database.
+
+Parameters
+
+Name	Type(s)	Description
+file_name	String	Path to the input file.
+log_file	String	Path to the log file.
+import_type	Integer	Import type (0 = normal, 1 = tree only, 2 = contents only).
+mapping_file	String	Path to the mapping file.
 model_object
 #model_object(path) ⇒ WSModelObject?
 EXCHANGE, UI
@@ -2209,6 +2018,7 @@ delete
 delete_results
 export
 find_child_model_object
+generate_sim_stats
 id
 import_all_sw_model_objects
 import_data
@@ -2447,6 +2257,19 @@ Parameters
 Name	Type(s)	Description
 type	String	The type of the object.
 name	String	The name of the object.
+generate_sim_stats
+#generate_sim_stats(path, sims, skip_missing_results_sims) ⇒ Array
+EXCHANGE
+
+Generates statistical reports for a model object of type statistics template and one or more sims. This method exports report data in CSV format to a selected path.
+
+Parameters
+
+Name	Type(s)	Description
+path	String	Export path for report data.
+sims	Array	An array of simulations.
+skip_missing_results_sims	Boolean	Ignore sims with no results.
+Return	Array	Exported file names.
 id
 #id ⇒ Integer
 EXCHANGE, UI
@@ -3348,6 +3171,7 @@ Methods:
 
 add_scenario
 cancel_mesh_job
+clean_up_network
 clear_selection
 csv_export
 csv_import
@@ -3414,6 +3238,7 @@ transaction_begin
 transaction_commit
 transaction_rollback
 update_cctv_scores
+validate
 xprafts_import
 add_scenario
 #add_scenario(name, based_on, notes) ⇒ void
@@ -3438,6 +3263,35 @@ Parameters
 
 Name	Type(s)	Description
 job_id	Integer	The job id from the #mesh_async method.
+clean_up_network
+#clean_up_network(options) ⇒ void
+EXCHANGE, UI
+
+Cleans up a network.
+
+Parameters
+
+Name	Type(s)	Description
+options	Hash	Options hash
+Hash Options
+Key	Type	Default	Notes
+vertex_only	Boolean	true	Vertex only
+loop_clean	Boolean	true	Loop clean-up
+valve_check	Boolean	true	Valve check
+link_check	Boolean	true	Link check
+zerolen_check	Boolean	true	Zero length check
+multi_link	Boolean	true	Include multi-link nodes
+hidden_nodes	Boolean	true	Include hidden nodes
+use_digdef	Boolean	false	Use digitisation defaults
+connect_pipes_vertex	Boolean	true	Connect pipe vertices
+keep_isolated_assets	Boolean	false	Keep isolated assets
+proximity	Double	1.0	Pipe proximity
+vertex_proximity	Double	0.005	Pipe vertex proximity
+flag	String		Edit flag
+man_field	String		Manual update flag field
+man_val	String		Manual update flag value
+log_filename	String		Path to log file
+add_node_type	String		Add node type
 clear_selection
 #clear_selection ⇒ void
 EXCHANGE, UI
@@ -4272,6 +4126,21 @@ EXCHANGE, UI
 
 Calculates CCTV scores for all surveys in the network using the current standard.
 
+validate
+#validate(scenarios) ⇒ WSValidations
+EXCHANGE, UI
+
+Validates the scenario or scenarios given in the parameter, returning a WSValidations object.
+
+The parameter may be nil, in which case the Base scenario is validated, a string in which case the named scenario (which may be 'Base') will be validated, or an array of strings in which case all the named scenarios (which may include 'Base') will be validated.
+
+validation = network.validate(nil)
+validation.each { |v| puts v.message }
+Parameters
+
+Name	Type(s)	Description
+scenarios	String, Array, nil	Scenario name, array of scenario names, or nil for Base scenario.
+Return	WSValidations	
 xprafts_import
 #xprafts_import(file, use_large_size, split_on_lag_links, combine_subcatchments, log) ⇒ void
 EXCHANGE
@@ -4973,6 +4842,7 @@ Methods that return this type of object may actually return a derived class, for
 
 Methods:
 
+. (Get Field)
 [] (Get Field)
 []= (Set Field)
 _* (Get Tag)
@@ -4996,6 +4866,20 @@ selected?
 table
 table_info
 write
+. (Get Field)
+#.(field) ⇒ Any
+EXCHANGE, UI
+
+Returns the value of a field, using dot syntax. May return a simple value, or a WSStructure if the field is a structure blob.
+
+Note: When accessing the 'category' data field within the General Line table (hw_general_line) or General Point table (hw_general_point), you must use the [] operator, not dot syntax, as the method #category takes precedence over the field name.
+
+puts node.'node_id'
+⇒ 'Badger'
+Parameters
+
+Name	Type(s)	Description
+field	String	The name of the field.
 [] (Get Field)
 #[(field)] ⇒ Any
 EXCHANGE, UI
@@ -5640,6 +5524,65 @@ Name	Type(s)	Description
 field	String	The field name.
 value	Any	The value for the field, must be appropriate type to be stored in this field.
 
+WSStructure
+A structure blob field of a WSRowObject, i.e. a field that contains an array of structured data. It is a collection of WSStructureRow objects, each of which represents a single row / entry in the structure.
+
+The collection has a fixed length which can be updated with the length= method. You cannot dynamically insert or remove objects, you must first set the length and access objects by their index.
+
+If any changes are made to the length or the WSStructureRow objects, the write method must be used on both this object and the parent WSRowObject.
+
+Methods:
+
+[] (Get Index)
+each
+length
+length= (Set)
+write
+[] (Get Index)
+#[(index)] ⇒ WSStructureRow?
+EXCHANGE, UI
+
+Returns the object from the collection at the specified index.
+
+Parameters
+
+Name	Type(s)	Description
+index	Integer	The index requested (zero-based).
+Return	WSStructureRow, nil	The object found, or nil if there is no object at this index.
+each
+#each { |row| ... } ⇒ WSStructureRow
+EXCHANGE, UI
+
+Iterates through the collection, yielding a WSStructureRow object. This is similar to iterating through the rows of a table.
+
+struct.each { |row| puts row['date_time'] }
+struct.each do |row|
+  puts row['date_time']
+end
+length
+#length ⇒ Integer
+EXCHANGE, UI
+
+Returns the length of the structure, i.e. how many rows it contains. Each row is a WSStructureRow object.
+length= (Set)
+#length=(length) ⇒ void
+EXCHANGE, UI
+
+Sets the length of the structure, i.e. how many rows it contains. Each row is a WSStructureRow object.
+
+To add to the structure, you must first use this method to set the appropriate length. You can also reference the current length, e.g. to add one new row:
+
+structure.length = structure.length + 1
+Parameters
+
+Name	Type(s)	Description
+length	Integer	
+write
+#write ⇒ void
+EXCHANGE, UI
+
+Writes any changes to this object and the WSStructureRow objects it contains. The #write method on the parent WSRowObject must also be used.
+
 WSSWMMRunBuilder
 Used to create and modify SWMM runs. Runs can be created using an existing run as a template, or created from scratch by setting all of the required parameters.
 
@@ -5878,7 +5821,9 @@ Name	Type(s)	Description
 Return	String	One of error, warning, or information.
 
 WSValidations
-The results generated by the validation of a network, for example from the WSOpenNetwork.validate method.
+The results generated by the validation of a network using the WSOpenNetwork#validate method.
+
+Note: WSSWMMRunBuilder#validate is a separate method used to validate SWMM run parameters.
 
 It is a collection of WSValidation objects, which each represent a validation message that would appear in the user interface.
 
