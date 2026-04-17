@@ -92,13 +92,7 @@
 | 0084 | EX       | Export Import Rainfall Events via RED files                         | Database Data Export  |
 | 0085 | UI       | Graphs Syntax                                                       | Developer Tools       |
 | 0086 | EX       | Create a Mesh                                                       | Network Data Set      |
-| 0087 | UI       | Graph Subcatchment Results                                          | Simulations Data Get  |
-| 0088 | UI       | Clash Detection Between Networks                                    | Network Data Analysis |
-| 0089 | UI       | Check all Regulators are in RTC                                     | Network Data Analysis |
-| 0090 | UI & EX  | Export Network Schema to CSV                                        | Network Data Export   |
-| 0091 | EX       | Network Validation                                                  | Network Data Analysis |
-| 0092 | UI       | Compare Model Results to Sensor Data                                | Simulations Data Get  |
-| 0093 | EX       | Update Run to Latest Network Commit                                 | Simulations Run       |
+| 0087 | UI & EX  | Flow Survey Data Importer                                           | Database Data Import  |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions

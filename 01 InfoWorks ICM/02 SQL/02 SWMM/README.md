@@ -1,2 +1,2 @@
-# ICM SWMM Networks
-These SQLs are intended to work with ICM SWMM networks
+# InfoWorks SWMM Networks
+These SQLs are intended to work with the InfoWorks SWMM networks

@@ -18,10 +18,4 @@ V3 Adds in support for Flags.
 In the user's scenario, each Connection Pipe has the Asset_ID of the related Pipe it connects to.  Count the number of Connection Pipes per Pipe and write the count to the User_Text_5 field.  
 
 ## [UI-CountRepairs.rb](./UI-CountRepairs.rb)
-In the user's scenario, each Pipe Repair has a classification in User_Text_8 and the Asset ID of the related Pipe in User_Text_10. Count the number of 'reactive network' repairs to the User_Text_6 of the Pipe object.  
-
-## [UI-CopyGeneralSurveyAttachmentsToProperty.rb](./UI-CopyGeneralSurveyAttachmentsToProperty.rb)
-Copies all attachment details from General Survey (`cams_general_survey`) objects to their associated Property (`cams_property`) object.  
-The match is made by comparing the survey's `asset_id` field to the property's `id`.  
-All four attachment fields - `purpose`, `filename`, `description`, and `db_ref` - are copied.  
-Duplicate detection is performed using the `db_ref` value: if an attachment with the same `db_ref` already exists on the property, it is skipped, making the script safe to re-run.  
+In the user's scenario, each Pipe Repair has a classification in User_Text_8 and the Asset ID of the related Pipe in User_Text_10. Count the number of ‘reactive network’ repairs to the User_Text_6 of the Pipe object.  
