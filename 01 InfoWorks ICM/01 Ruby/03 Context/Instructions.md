@@ -38,6 +38,22 @@
 
 ---
 
+## Network Type Scope — CRITICAL
+
+This context folder covers **both InfoWorks (`hw_*`) and SWMM (`sw_*`) networks**.
+
+**Step 1 — Identify the network type before generating any code:**
+- If the user has not specified whether the network is InfoWorks or SWMM, **ask before proceeding**.
+- Do not assume a network type based on the question alone.
+
+**Step 2 — Stay within the correct scope once confirmed:**
+- InfoWorks network → use `hw_*` table names and examples from the `01 InfoWorks/` folder only.
+- SWMM network → use `sw_*` table names and examples from the `02 SWMM/` folder only.
+- **Never mix `hw_*` and `sw_*` table names in the same script.**
+- If information cannot be found for the confirmed network type, state that it is unknown — do NOT fall back to the other network type's data.
+
+---
+
 ## Cross-Reference Navigation
 
 Files use **PAT_XXX_NNN** pattern IDs for cross-linking:
