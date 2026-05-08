@@ -93,7 +93,8 @@ end
 val = WSApplication.prompt 'WGS84 -> UTM Coordinate Conversion',
   [
     ['Object type to convert', 'String', object_types.first, nil, 'LIST', object_types],
-    ['Convert all types with selected objects (ignores selection above)', 'Boolean', false]
+    ['Convert all types (ignores selection above)', 'Boolean', false],
+    ['Selected objects only are processed','Readonly','']
   ], false
 
 # nil is returned if the user cancels the dialog
