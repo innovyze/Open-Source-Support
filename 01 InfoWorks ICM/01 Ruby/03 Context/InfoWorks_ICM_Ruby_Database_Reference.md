@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby Database Reference Guide for LLM Agents
 
-**Last Updated:** January 16, 2026
+**Last Updated:** March 24, 2026
 
 **Load Priority:** LOOKUP - Load when querying table names or object types  
 **Load Condition:** CONDITIONAL - When script accesses row_objects() or model_object_from_type_and_id()
@@ -151,6 +151,8 @@ net.row_objects('hw_conduit')     # Works!
 - **InfoWorks Networks** - Table names start with `hw_` (e.g., `'hw_conduit'`)
 - **SWMM Networks** - Table names start with `sw_` (e.g., `'sw_conduit'`)
 
+> **SCOPE WARNING:** InfoWorks (`hw_*`) and SWMM (`sw_*`) are completely separate schemas. If the user's network type is unknown, ask first. Once confirmed, only use table names and examples from that network type — never substitute one for the other.
+
 ### Lookup Methodology
 
 **Step 1:** Identify object type from user query  
@@ -256,7 +258,7 @@ net.row_objects('hw_conduit')     # Works!
 | 2D boundary | `hw_2d_boundary_line` | 2D Boundary Line Data Fields |
 | Network results line (2D) | `hw_2d_results_line` | Network Results Line (2D) Data Fields |
 | 2D line source | `hw_2d_line_source` | 2D Line Source Data Fields |
-| 2D line connect | `hv_2d_line_connect` | 2D Line Connect Data Fields |
+| 2D line connect | `hw_2d_connect_line` | 2D Line Connect Data Fields |
 | Head unit flow | `hw_head_unit_discharge` | Head Unit Flow Data Fields |
 
 **Points Grid:**
@@ -274,51 +276,51 @@ net.row_objects('hw_conduit')     # Works!
 | Network Object | Database Table Name | Data Fields Topic |
 |----------------|---------------------|-------------------|
 | Node | `sw_node` | Node Data Fields (SWMM) |
-| Unit hydrograph group | `sw_unit_hydrograph_group` | Unit Hydrograph Group Data Fields (SWMM) |
-| Unit hydrograph | `sw_unit_hydrograph` | Unit Hydrograph Data Fields (SWMM) |
-| Storage curve | `sw_storage_curve` | Storage Curve Data Fields (SWMM) |
-| Tidal curve | `sw_tidal_curve` | Tidal Curve Data Fields (SWMM) |
+| Unit hydrograph group | `sw_uh_group` | Unit Hydrograph Group Data Fields (SWMM) |
+| Unit hydrograph | `sw_uh` | Unit Hydrograph Data Fields (SWMM) |
+| Storage curve | `sw_curve_storage` | Storage Curve Data Fields (SWMM) |
+| Tidal curve | `sw_curve_tidal` | Tidal Curve Data Fields (SWMM) |
 
 **Links Grid:**
 | Network Object | Database Table Name | Data Fields Topic |
 |----------------|---------------------|-------------------|
 | Conduit | `sw_conduit` | Conduit Data Fields (SWMM) |
-| Control curve | `sw_control_curve` | Control Curve Data Fields (SWMM) |
-| Shape curve | `sw_shape_curve` | Shape Curve Data Fields (SWMM) |
-| Orifice | `sw_orifice` | Orifice Curve Data Fields (SWMM) |
-| Outlet | `sw_outlet` | Outlet Curve Data Fields (SWMM) |
+| Shape curve | `sw_curve_shape` | Shape Curve Data Fields (SWMM) |
+| Orifice | `sw_orifice` | Orifice Data Fields (SWMM) |
 | Pump | `sw_pump` | Pump Data Fields (SWMM) |
-| Pump curve | `sw_pump_curve` | Pump Curve Data Fields (SWMM) |
-| Rating curve | `sw_rating_curve` | Rating Curve Data Fields (SWMM) |
-| Transect | `sw_transect` | Transect Data Fields (SWMM) |
-| Weir | `sw_weirs` | Weir Data Fields (SWMM) |
+| Pump curve | `sw_curve_pump` | Pump Curve Data Fields (SWMM) |
+| Weir | `sw_weir` | Weir Data Fields (SWMM) |
 | Weir curve | `sw_curve_weir` | Weir Curve Data Fields (SWMM) |
+| Outlet | `sw_outlet` | Outlet Data Fields (SWMM) |
+| Rating curve | `sw_curve_rating` | Rating Curve Data Fields (SWMM) |
+| Transect | `sw_transect` | Transect Data Fields (SWMM) |
+| Control curve | `sw_curve_control` | Control Curve Data Fields (SWMM) |
 
 **Subcatchments Grid:**
 | Network Object | Database Table Name | Data Fields Topic |
 |----------------|---------------------|-------------------|
 | Subcatchment | `sw_subcatchment` | Subcatchment Data Fields (SWMM) |
-| Land use | `sw_land_use` | Land Use Data Field (SWMM) |
+| Land use | `sw_land_use` | Land Use Data Fields (SWMM) |
 | Pollutant | `sw_pollutant` | Pollutant Data Fields (SWMM) |
 | Snow pack | `sw_snow_pack` | Snow Pack Data Fields (SWMM) |
 | LID control | `sw_suds_control` | LID Controls Data Fields (SWMM) |
 | Underdrain curve | `sw_curve_underdrain` | Underdrain Curve Data Fields (SWMM) |
-| Aquifier | `sw_aquifer` | Aquifer Data Fields (SWMM) |
+| Aquifer | `sw_aquifer` | Aquifer Data Fields (SWMM) |
 | Soil | `sw_soil` | Soil Data Fields (SWMM) |
 
 **Polygons Grid:**
 | Network Object | Database Table Name | Data Fields Topic |
 |----------------|---------------------|-------------------|
+| 2D zone | `sw_2d_zone` | 2D Zone Data Fields (SWMM) |
+| Mesh zone | `sw_mesh_zone` | Mesh Zone Data Fields (SWMM) |
+| Mesh level zone | `sw_mesh_level_zone` | Mesh Level Zone Data Fields (SWMM) |
+| Porous polygon | `sw_porous_polygon` | Porous Polygon Data Fields (SWMM) |
+| Roughness zone | `sw_roughness_zone` | Roughness Zone Data Fields (SWMM) |
+| Roughness definition | `sw_roughness_definition` | Roughness Definition Data Fields (SWMM) |
 | Polygon | `sw_polygon` | Polygon Data Fields (SWMM) |
 | TVD connector | `sw_tvd_connector` | TVD Connector Data Fields (SWMM) |
 | Spatial rain zone | `sw_spatial_rain_zone` | Spatial Rain Zone Data Fields (SWMM) |
 | Spatial rain source | `sw_spatial_rain_source` | Spatial Rain Source Data Fields (SWMM) |
-| 2D zone | `sw_2d_zone` | 2D Zone Data Fields (SWMM) |
-| Roughness zone | `sw_roughness_zone` | Roughness Zone Data Fields (SWMM) |
-| Roughness definitions | `sw_roughness_definition` | Roughness Definition Data Fields (SWMM) |
-| Mesh zone | `sw_mesh_zone` | Mesh Zone Data Fields SWMM) |
-| Mesh level zone | `sw_mesh_level_zone` | Mesh Level Zone Data Fields (SWMM) |
-| Porous polygon | `sw_porous_polygon` | Porous Polygon Data Fields (SWMM) |
 
 **Lines Grid:**
 | Network Object | Database Table Name | Data Fields Topic |
@@ -332,6 +334,45 @@ net.row_objects('hw_conduit')     # Works!
 | Network Object | Database Table Name | Data Fields Topic |
 |----------------|---------------------|-------------------|
 | Rain gage | `sw_raingage` | Rain Gage Data Fields (SWMM) |
+
+**Parameters / Configuration:**
+| Network Object | Database Table Name | Data Fields Topic |
+|----------------|---------------------|-------------------|
+| Options | `sw_options` | Options Data Fields (SWMM) |
+| Snow parameters | `sw_snow_parameters` | Snow Parameters Data Fields (SWMM) |
+
+### SWMM WSStructure (Blob / Nested) Fields
+
+These fields are accessed via row object sub-collections, not simple attribute accessors.
+
+| Main Table | Structure Name | Description |
+|------------|----------------|-------------|
+| `sw_subcatchment` | `coverages` | Land uses |
+| `sw_subcatchment` | `loadings` | Initial buildup |
+| `sw_subcatchment` | `soil` | Soils |
+| `sw_subcatchment` | `suds_controls` | LID controls |
+| `sw_node` | `treatment` | Treatment |
+| `sw_node` | `pollutant_inflows` | Pollutant inflow |
+| `sw_node` | `additional_dwf` | Additional DWF |
+| `sw_node` | `pollutant_dwf` | Pollutant DWF |
+| `sw_transect` | `profile` | Profile |
+| `sw_land_use` | `build_up` | Build-up |
+| `sw_land_use` | `washoff` | Washoff |
+| `sw_curve_control` | `data` | Control array |
+| `sw_curve_pump` | `pump1_data` | Inlet volume increment array |
+| `sw_curve_pump` | `pump2_data` | Inlet depth increment array |
+| `sw_curve_pump` | `pump3_data` | Head difference array |
+| `sw_curve_pump` | `pump4_data` | Continuous depth array |
+| `sw_curve_rating` | `data` | Rating array |
+| `sw_curve_shape` | `data` | Geometry |
+| `sw_curve_tidal` | `data` | Tidal array |
+| `sw_curve_storage` | `data` | Storage array |
+| `sw_suds_control` | `underdrain_poll_removal` | Underdrain pollutant removal |
+| `sw_curve_weir` | `data` | Weir array |
+| `sw_curve_weir` | `sideflow_data` | Sideflow array |
+| `sw_curve_underdrain` | `data` | Underdrain array |
+| `sw_mesh_level_zone` | `level_sections` | Vertices |
+| `sw_head_unit_discharge` | `HUDP_table` | Head unit flow table |
 
 ---
 

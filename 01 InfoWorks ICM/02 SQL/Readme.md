@@ -9,6 +9,10 @@ If you're new to using SQL in InfoWorks ICM, we recommend starting with our onli
 Go to [Using SQL](https://help.autodesk.com/view/IWICMS/2024/ENU/?guid=GUID-9C3E4534-B861-4525-920D-D59BE9FEDC6F) to get started.
 
 
+# AI / LLM Context Files
+
+The `03 Context/` folder contains curated context files optimized for AI code-generation assistants. These files provide structured SQL syntax, patterns, functions, error references, and tutorial examples that LLMs can load to produce accurate InfoWorks ICM SQL queries. See [03 Context/README.md](03%20Context/README.md) for details.
+
 # Resources
 
 For further learning, check out the following resources:
