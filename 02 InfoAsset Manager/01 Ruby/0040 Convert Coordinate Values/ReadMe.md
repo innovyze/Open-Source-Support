@@ -10,6 +10,17 @@ The conversion is calculated natively in Ruby using the standard Transverse Merc
 - Objects must be selected on the GeoPlan before running either script.
 - Scripts must be run from the InfoAsset Manager UI (filename prefix `UI-`).
 
+## WGS84 Validation
+
+Before converting, each object's coordinates are validated against the legal range for WGS84 decimal degrees:
+
+| Field | Valid range |
+|---|---|
+| `y` (latitude) | -90.0 to +90.0 |
+| `x` (longitude) | -180.0 to +180.0 |
+
+Objects whose coordinates fall outside these bounds are logged as `[INVALID]` and skipped without modification. This prevents double-conversion of objects that have already been projected to UTM (where easting values are typically 100,000–900,000 and northing values 0–10,000,000, both of which exceed the WGS84 longitude/latitude ranges).
+
 ## Scripts
 
 ### [UI-WGS84_NAD83.rb](./UI-WGS84_NAD83.rb)
@@ -42,19 +53,23 @@ Both scripts print a summary to the script output window on completion:
 Object type: cams_general_maintenance
 
 Updated (2):
-  [OK]     GM-001
-  [OK]     GM-002
+  [OK]      GM-001
+  [OK]      GM-002
 
 Skipped - nil coordinates (1):
-  [SKIP]   GM-003
+  [SKIP]    GM-003
 
-Complete. 2 updated, 1 skipped.
+Skipped - coordinates not in WGS84 range (1):
+  [INVALID] GM-004 (x=612345.0, y=4823456.0)
+
+Complete. 2 updated, 2 skipped.
 ```
 
 | Status | Meaning |
 |---|---|
 | `[OK]` | Object coordinates successfully converted and written. |
 | `[SKIP]` | Object was skipped because one or both coordinate values were `nil`. |
+| `[INVALID]` | Object was skipped because the coordinate values fall outside the valid WGS84 range — the current values are logged alongside the ID. |
 
 ## Conversion Reference
 

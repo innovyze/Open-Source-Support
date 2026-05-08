@@ -12,6 +12,15 @@ EQUATORIAL_RADIUS = 6378137.0
 POLAR_RADIUS = 6356752.314245
 ECC_SQUARE = (EQUATORIAL_RADIUS**2 - POLAR_RADIUS**2) / EQUATORIAL_RADIUS**2
 
+# Function to validate that coordinate values are plausible WGS84 decimal degrees.
+# Latitude must be within -90..90 and longitude within -180..180.
+# Values outside these ranges indicate the coordinates are already projected
+# (e.g. UTM easting/northing) or are otherwise not WGS84.
+def wgs84_valid?(latitude, longitude)
+  latitude  >= -90.0  && latitude  <= 90.0 &&
+  longitude >= -180.0 && longitude <= 180.0
+end
+
 # Function to calculate UTM zone
 def calc_utm_zone(longitude)
   (longitude / 6).floor + 31
@@ -66,7 +75,8 @@ end
 
 net = WSApplication.current_network
 updated_ids = []
-skipped_ids = []
+skipped_ids  = []
+invalid_ids  = []
 
 net.transaction_begin
 net.row_object_collection('cams_general_maintenance').each do |ro|
@@ -77,6 +87,11 @@ net.row_object_collection('cams_general_maintenance').each do |ro|
 
   if lat.nil? || lon.nil?
     skipped_ids << ro.id
+    next
+  end
+
+  unless wgs84_valid?(lat, lon)
+    invalid_ids << "#{ro.id} (x=#{lon}, y=#{lat})"
     next
   end
 
@@ -92,9 +107,12 @@ net.transaction_commit
 puts "=== Coordinate Conversion: WGS84 -> UTM (NAD83) ==="
 puts ""
 puts "Updated (#{updated_ids.size}):"
-updated_ids.each { |id| puts "  [OK]     #{id}" }
+updated_ids.each { |id| puts "  [OK]      #{id}" }
 puts ""
 puts "Skipped - nil coordinates (#{skipped_ids.size}):"
-skipped_ids.each { |id| puts "  [SKIP]   #{id}" }
+skipped_ids.each { |id| puts "  [SKIP]    #{id}" }
 puts ""
-puts "Complete. #{updated_ids.size} updated, #{skipped_ids.size} skipped."
+puts "Skipped - coordinates not in WGS84 range (#{invalid_ids.size}):"
+invalid_ids.each { |id| puts "  [INVALID] #{id}" }
+puts ""
+puts "Complete. #{updated_ids.size} updated, #{skipped_ids.size + invalid_ids.size} skipped."
