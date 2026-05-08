@@ -70,13 +70,29 @@ end
 
 net = WSApplication.current_network
 
-# Build a sorted list of all object type names from the open network
-object_types = net.tables.map { |t| t.name }.sort
+# Build a sorted list of only the object types that have at least one selected object
+object_types = []
+net.tables.each do |t|
+  has_selection = false
+  net.row_object_collection(t.name).each do |ro|
+    if ro.selected?
+      has_selection = true
+      break
+    end
+  end
+  object_types << t.name if has_selection
+end
+object_types.sort!
+
+if object_types.empty?
+  WSApplication.message_box 'No selected objects were found in the network. Select objects on the GeoPlan and run the script again.', nil, '!', nil
+  puts 'Conversion cancelled - no selected objects found.'
+  exit
+end
 
 val = WSApplication.prompt 'WGS84 -> UTM Coordinate Conversion',
   [
-    ['Object type to convert', 'String', object_types.first, nil, 'LIST', object_types],
-    ['Selected objects only are processed','Readonly','']
+    ['Object type to convert', 'String', object_types.first, nil, 'LIST', object_types]
   ], false
 
 # nil is returned if the user cancels the dialog
