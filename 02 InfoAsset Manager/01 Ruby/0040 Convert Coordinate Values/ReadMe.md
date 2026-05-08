@@ -33,6 +33,8 @@ The UTM zone is calculated automatically from the longitude of each object, and 
 
 Extends the behaviour of `UI-WGS84_NAD83.rb` by prompting the user at runtime to choose which object type to convert. Rather than listing every table in the network, only object types that have at least one selected object are included in the dropdown — keeping the list focused on what the user already has selected on the GeoPlan.
 
+The prompt also includes a **Convert all types** checkbox (off by default). When checked, the object type dropdown is ignored and all object types with selected objects are converted in a single pass. A Yes/No confirmation dialog listing the affected types is shown before any changes are made.
+
 If no selected objects are found in the network, a message box is shown and the script exits without making any changes. Selecting Cancel in the prompt dialog also exits without changes.
 
 ## Usage

@@ -92,7 +92,8 @@ end
 
 val = WSApplication.prompt 'WGS84 -> UTM Coordinate Conversion',
   [
-    ['Object type to convert', 'String', object_types.first, nil, 'LIST', object_types]
+    ['Object type to convert', 'String', object_types.first, nil, 'LIST', object_types],
+    ['Convert all types with selected objects (ignores selection above)', 'Boolean', false]
   ], false
 
 # nil is returned if the user cancels the dialog
@@ -100,49 +101,73 @@ if val.nil?
   puts 'Conversion cancelled by user.'
 else
   object_type = val[0].to_s
+  convert_all = val[1]
+
+  if convert_all
+    confirm = WSApplication.message_box(
+      "Convert all selected objects across #{object_types.size} object type(s)?\n\n#{object_types.join("\n")}",
+      'YesNo', '?', false
+    )
+    if confirm != 'Yes'
+      puts 'Conversion cancelled by user.'
+      exit
+    end
+    types_to_process = object_types
+  else
+    types_to_process = [object_type]
+  end
 
   puts "=== Coordinate Conversion: WGS84 -> UTM (NAD83) ==="
-  puts "Object type: #{object_type}"
   puts ""
 
-  updated_ids = []
-  skipped_ids  = []
-  invalid_ids  = []
+  total_updated = 0
+  total_skipped = 0
+  total_invalid = 0
 
   net.transaction_begin
-  net.row_object_collection(object_type).each do |ro|
-    next unless ro.selected?
+  types_to_process.each do |type|
+    updated_ids = []
+    skipped_ids = []
+    invalid_ids = []
 
-    lat = ro.y
-    lon = ro.x
+    net.row_object_collection(type).each do |ro|
+      next unless ro.selected?
 
-    if lat.nil? || lon.nil?
-      skipped_ids << ro.id
-      next
+      lat = ro.y
+      lon = ro.x
+
+      if lat.nil? || lon.nil?
+        skipped_ids << ro.id
+        next
+      end
+
+      unless wgs84_valid?(lat, lon)
+        invalid_ids << "#{ro.id} (x=#{lon}, y=#{lat})"
+        next
+      end
+
+      _zone, easting, northing = latlon_to_utm(lat, lon)
+
+      ro.x = easting
+      ro.y = northing
+      ro.write
+      updated_ids << ro.id
     end
 
-    unless wgs84_valid?(lat, lon)
-      invalid_ids << "#{ro.id} (x=#{lon}, y=#{lat})"
-      next
-    end
+    puts "--- #{type} ---"
+    puts "Updated (#{updated_ids.size}):"
+    updated_ids.each { |id| puts "  [OK]      #{id}" }
+    puts "Skipped - nil coordinates (#{skipped_ids.size}):"
+    skipped_ids.each { |id| puts "  [SKIP]    #{id}" }
+    puts "Skipped - coordinates not in WGS84 range (#{invalid_ids.size}):"
+    invalid_ids.each { |id| puts "  [INVALID] #{id}" }
+    puts ""
 
-    _zone, easting, northing = latlon_to_utm(lat, lon)
-
-    ro.x = easting
-    ro.y = northing
-    ro.write
-    updated_ids << ro.id
+    total_updated += updated_ids.size
+    total_skipped += skipped_ids.size
+    total_invalid += invalid_ids.size
   end
   net.transaction_commit
 
-  puts "Updated (#{updated_ids.size}):"
-  updated_ids.each { |id| puts "  [OK]      #{id}" }
-  puts ""
-  puts "Skipped - nil coordinates (#{skipped_ids.size}):"
-  skipped_ids.each { |id| puts "  [SKIP]    #{id}" }
-  puts ""
-  puts "Skipped - coordinates not in WGS84 range (#{invalid_ids.size}):"
-  invalid_ids.each { |id| puts "  [INVALID] #{id}" }
-  puts ""
-  puts "Complete. #{updated_ids.size} updated, #{skipped_ids.size + invalid_ids.size} skipped."
+  puts "=== Complete. #{total_updated} updated, #{total_skipped + total_invalid} skipped across #{types_to_process.size} object type(s). ==="
 end
