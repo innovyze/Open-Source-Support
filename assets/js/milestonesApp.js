@@ -231,9 +231,23 @@ function renderCards() {
 
         if (isTouchDevice.matches) {
             card.style.cursor = 'pointer';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-expanded', 'false');
+            const toggleExpanded = () => {
+                const expanded = card.classList.toggle('expanded');
+                card.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            };
             card.addEventListener('click', (e) => {
                 if (e.target.closest('a')) return;
-                card.classList.toggle('expanded');
+                toggleExpanded();
+            });
+            card.addEventListener('keydown', (e) => {
+                if (e.target.closest('a')) return;
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleExpanded();
+                }
             });
         }
 
