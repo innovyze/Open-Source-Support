@@ -24,6 +24,8 @@ Gems hosted here **must be 100% Ruby**. No C extensions, no native compiled code
 
 ## Contributing a gem
 
+**PRs are welcome — we'll do our best to nurse them through review and get them merged.** If something's unclear or your gem doesn't quite fit the requirements yet, open the PR anyway and we'll figure it out together.
+
 Open a PR adding your gem folder + a row to the catalog table above. Requirements:
 
 - ✅ **100% Ruby** — no C extensions, no `ext/` folder, no `extconf.rb`, no `s.extensions` in gemspec, every transitive dep also pure Ruby
