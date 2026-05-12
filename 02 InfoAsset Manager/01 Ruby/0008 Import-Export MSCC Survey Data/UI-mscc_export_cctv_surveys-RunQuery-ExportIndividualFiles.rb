@@ -3,7 +3,7 @@ exportloc ='C:\\Temp\\export\\'			## Export to folder
 file=exportloc+'MSCC_'					## Filename prefix or leave as just "exportloc" to not include a prefix
 
 nw.clear_selection						## Clear the current selection
-nw.run_stored_query_object(1215)		## Run a Stored SQL Query (ID) on the Master Database
+nw.run_stored_query_object(1215)		## Run a Stored SQL Query (ID) on the Database
 
 list=Array.new
 list=nw.row_objects_selection('cams_cctv_survey')

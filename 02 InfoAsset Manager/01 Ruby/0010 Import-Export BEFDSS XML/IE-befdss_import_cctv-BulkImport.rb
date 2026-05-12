@@ -1,5 +1,5 @@
 begin
-	db = WSApplication.open('//localhost:40000/MasterDatabase', false)
+	db = WSApplication.open('//localhost:40000/Database', false)
 	nw = db.model_object_from_type_and_id('Collection Network',123 )
 	net=nw.open
 

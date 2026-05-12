@@ -1,7 +1,7 @@
 # Renaming Exported Attachment Files
 Within the InfoAsset Manager you can export images and attachment files which are stored against an object using the standard export methods available.  
 
-When exporting these attachment files, they are exported with a GUID filename - which is what they are stored using within the Master Database.
+When exporting these attachment files, they are exported with a GUID filename - which is what they are stored using within the Database.
 Currently there is no built-in utility to rename/define a file's filename when exporting from the database.  
 
 The scripts here will resolve this, allowing bulk renaming of files using a simple CSV mapping file.  
