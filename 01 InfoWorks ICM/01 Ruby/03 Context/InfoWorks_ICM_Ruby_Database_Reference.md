@@ -93,7 +93,7 @@ parent_group.import_new_model_object('Rainfall Event', 'New Rainfall', '', 'C:/i
 |------|-----------|------|-----------|
 | Action List | ACTL | Manifest | MAN |
 | Alert Definition List | ADL | Manifest Deployment | MAND |
-| Alert Instance List | AIL | Master Group | MASG |
+| Alert Instance List | AIL | Group | MASG |
 | Asset Group | AG | Model Group | MODG |
 | Asset Network | ASSETNET | Model Inference | INFR |
 | Asset Network Template | ASSETTMP | Model Network | NNET |

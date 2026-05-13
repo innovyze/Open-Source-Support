@@ -4,7 +4,7 @@ set "fileCounter=1"
 set "lineCounter=0"
 set "maxLines=25000"
 
-if exist master_all_!fileCounter!.rb del master_all_!fileCounter!.rb
+if exist combined_all_!fileCounter!.rb del combined_all_!fileCounter!.rb
 
 for /R %%f in (*.rb) do (
     echo Processing "%%f"...
@@ -14,9 +14,9 @@ for /R %%f in (*.rb) do (
         set /a "fileCounter+=1"
         set "lineCounter=lines"
     )
-    echo # FILENAME: "%%f" >> master_all_!fileCounter!.rb
-    type "%%f" >> master_all_!fileCounter!.rb
-    echo. >> master_all_!fileCounter!.rb
+    echo # FILENAME: "%%f" >> combined_all_!fileCounter!.rb
+    type "%%f" >> combined_all_!fileCounter!.rb
+    echo. >> combined_all_!fileCounter!.rb
 )
 
 echo Done.

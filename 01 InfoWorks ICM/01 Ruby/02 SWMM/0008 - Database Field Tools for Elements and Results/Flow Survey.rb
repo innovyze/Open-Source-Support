@@ -32,8 +32,8 @@ val = WSApplication.prompt "Flow Monitor Input Dialog Box",
 [
   ['This tool traces upstream nodes and links from selected flow', 'String'], 
   ['monitors and saves the selection list in the specified group.', 'String'],
-  ['ID of Master Group or Model Group where selection list will be saved', 'String'],
-  ['Above ID is of Master Group/ Model Group?', 'String', 'Model group', nil, 'LIST', ['Model group', 'Master group']]
+  ['ID of Group or Model Group where selection list will be saved', 'String'],
+  ['Above ID is of Group/ Model Group?', 'String', 'Model group', nil, 'LIST', ['Model group', 'Group']]
 ], true
 
 db=WSApplication.current_database

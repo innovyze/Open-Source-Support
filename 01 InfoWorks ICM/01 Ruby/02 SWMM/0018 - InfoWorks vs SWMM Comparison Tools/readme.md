@@ -78,7 +78,7 @@ Has two optional actions via prompt:
 ### Full Parameter Comparison
 
 #### `Model_Evaluation_Logic.rb`
-The comprehensive v2.2 master comparison script. Structured into 12 sections covering InfoWorks subcatchment grid, land use hierarchy, runoff surface grid, SWMM physical properties, infiltration parameters, infiltration model detection, advanced parameter tracing (with `surface_type`-based pervious/impervious matching), area distribution analysis, extended parameter comparison, parameter mapping reference, mismatch summary, and CSV export.
+The comprehensive v2.2 comparison script. Structured into 12 sections covering InfoWorks subcatchment grid, land use hierarchy, runoff surface grid, SWMM physical properties, infiltration parameters, infiltration model detection, advanced parameter tracing (with `surface_type`-based pervious/impervious matching), area distribution analysis, extended parameter comparison, parameter mapping reference, mismatch summary, and CSV export.
 
 **Key v2.2 fix:** uses `hw_runoff_surface.surface_type` keyword patterns to correctly identify pervious/impervious surfaces rather than assuming slot order.
 

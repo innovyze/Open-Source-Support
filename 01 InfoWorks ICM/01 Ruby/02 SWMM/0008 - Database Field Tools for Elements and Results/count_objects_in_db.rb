@@ -36,8 +36,8 @@ end
 
 # Print the result
 counts.each do |table, count|
-  table_name_without_master = table.gsub('Master','Primary')
-  puts format("%s: %i object(s)", table_name_without_master, count)
+  display_name = table
+  puts format("%s: %i object(s)", display_name, count)
 end
 
 

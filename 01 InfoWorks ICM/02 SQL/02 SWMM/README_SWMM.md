@@ -47,7 +47,7 @@ In conclusion, while these SQL scripts are designed to work specifically with Au
 | 0032 | UI   | List Network Fields-Structure                           |
 | 0033 | UI   | Output the Array BLOB values as a clustered value       |
 | 0034 | UI   | Display Export geometries                               |
-| 0035 | UI   | List Master Database Objects Contents                   |
+| 0035 | UI   | List Database Objects Contents                          |
 | 0036 | UI   | Create Selection List                                   |
 | 0037 | UI   | Select Isolated Nodes                                   |
 | 0038 | UI   | Remove rows from a blob field                           |

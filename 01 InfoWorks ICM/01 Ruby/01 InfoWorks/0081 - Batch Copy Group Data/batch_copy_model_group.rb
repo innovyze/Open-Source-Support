@@ -18,7 +18,7 @@ DRY_RUN = false                               # Set to true to preview changes w
 VALID_GROUP_TYPES = ['MODG', 'MASG', 'AG'].freeze
 GROUP_TYPE_NAMES = {
   'MODG' => 'Model Group',
-  'MASG' => 'Master Group',
+  'MASG' => 'Group',
   'AG' => 'Asset Group'
 }.freeze
 

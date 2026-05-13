@@ -26,7 +26,7 @@ For each target database:
 Edit in script:
 ```ruby
 SOURCE_DB = 'cloud://user@id/region'
-GROUP_TYPE = 'MODG'       # 'MODG' (Model), 'MASG' (Master), 'AG' (Asset)
+GROUP_TYPE = 'MODG'       # 'MODG' (Model), 'MASG' (Group), 'AG' (Asset)
 GROUP_NAME = 'Automation'
 APPEND_DATE = true        # Appends date: Automation_20251212
 DRY_RUN = false           # Preview changes without executing

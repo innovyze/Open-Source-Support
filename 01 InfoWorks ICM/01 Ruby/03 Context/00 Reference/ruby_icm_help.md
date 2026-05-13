@@ -1709,7 +1709,7 @@ EXCHANGE, UI
 
 Returns the WSModelObject at the root (top level) of the database. Model objects at this level will have unique names.
 
-The valid types at this level are Asset Group, Model Group, and Master Group.
+The valid types at this level are Asset Group, Model Group, and Group.
 
 Parameters
 
@@ -1813,7 +1813,7 @@ EXCHANGE
 
 Creates a WSModelObject in the root of the database.
 
-The valid object types at this level are Asset Group, Model Group, or Master Group.
+The valid object types at this level are Asset Group, Model Group, or Group.
 
 Parameters
 
@@ -2793,7 +2793,7 @@ parent_type
 #parent_type ⇒ String
 EXCHANGE, UI
 
-Returns the type of this object's parent. This will be 'Master Database' if the object is in the root of the database.
+Returns the type of this object's parent. This will be 'Database' if the object is in the root of the database.
 
 path
 #path ⇒ String
@@ -5966,7 +5966,7 @@ Lifetime Estimator		LIFEE
 Live Group		LG
 Manifest		MAN
 Manifest Deployment		MAND
-Master Group		MASG
+Group		MASG
 Model Group		MODG
 Model Inference		INFR
 Model Network		NNET

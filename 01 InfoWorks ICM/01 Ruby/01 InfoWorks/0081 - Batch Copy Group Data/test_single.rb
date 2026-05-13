@@ -3,7 +3,7 @@
 
 SOURCE_DB = 'cloud://user@id/region'.freeze  # Edit: Source database
 TARGET_DB = 'cloud://user@id/test'.freeze    # Edit: Test database
-GROUP_TYPE = 'MODG'.freeze                   # Edit: 'MODG' (Model), 'MASG' (Master), 'AG' (Asset)
+GROUP_TYPE = 'MODG'.freeze                   # Edit: 'MODG' (Model), 'MASG' (Group), 'AG' (Asset)
 GROUP_NAME = 'Automation'.freeze             # Edit: Group name
 APPEND_DATE = true                           # Edit: Append date to copied group name
 DRY_RUN = false                              # Set to true to preview changes without executing
@@ -12,7 +12,7 @@ DRY_RUN = false                              # Set to true to preview changes wi
 VALID_GROUP_TYPES = ['MODG', 'MASG', 'AG'].freeze
 GROUP_TYPE_NAMES = {
   'MODG' => 'Model Group',
-  'MASG' => 'Master Group',
+  'MASG' => 'Group',
   'AG' => 'Asset Group'
 }.freeze
 

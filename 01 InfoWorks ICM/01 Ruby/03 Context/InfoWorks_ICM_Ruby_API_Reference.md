@@ -294,7 +294,7 @@ Displays file open/save dialog.
 
 ## WSDatabase
 
-**Purpose:** Represents master or transportable database.
+**Purpose:** Represents cloud, workgroup, standalone or transportable database.
 
 ### model_object
 **Availability:** Both  

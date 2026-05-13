@@ -1,4 +1,4 @@
-# List Master Database Objects  
+# List Database Objects  
 The scripts will run using the interface or IExchange.  
 IExchange will produce a .txt file in the same repository as the script, as names on line 3. Set the database to be queried on line 2.  
 The object types being queried for are configured on line 6, add/remove object types to this array to change what is outputted.  
@@ -33,10 +33,10 @@ Or, if using line 42 instead of 41:
 ```
     ...
 Collection Network(s)
-4	Croyde		>MASG~MasterGroup>AG~AssetGroup>CNN~Croyde
-6	SQL		>MASG~MasterGroup>AG~AssetGroup>CNN~SQL
-8	Fakenham		>MASG~MasterGroup>AG~AssetGroup>CNN~Fakenham
-10	Malden		>MASG~MasterGroup>AG~AssetGroup>AG~Archive>CNN~Malden
+4	Croyde		>MASG~Group>AG~AssetGroup>CNN~Croyde
+6	SQL		>MASG~Group>AG~AssetGroup>CNN~SQL
+8	Fakenham		>MASG~Group>AG~AssetGroup>CNN~Fakenham
+10	Malden		>MASG~Group>AG~AssetGroup>AG~Archive>CNN~Malden
     ...
 
 ```

@@ -8,33 +8,35 @@ In particular, the naming convention for tables in InfoWorks ICM is different. I
 
 This means that if you're trying to use these Ruby scripts with Autodesk Innovyze's InfoWorks ICM, you may need to modify the code to account for these differences in table and field names. Without such modifications, the scripts might not work as intended or might produce errors.
 
-## ICM SWMM Ruby Folders (Composite 2025)
+## ICM SWMM Ruby Folders (2026)
 
+- **0000 - PCSWMM Import to ICM SWMM**
 - **0001 - Element and Field Statistics**
 - **0002 - Tracing Tools**
 - **0003 - Scenario Tools**
 - **0004 - Scenario Sensitivity - InfoWorks**
 - **0005 - Import Export of Data Tables**
-- **0006 - ICM SWMM vs ICM InfoWorks All Tables**
+- **0006 - SWMM Network Overview**
 - **0007 - Hydraulic Comparison Tools for ICM InfoWorks and SWMM**
 - **0008 - Database Field Tools for Elements and Results**
 - **0009 - Polygon Subcatchment Boundary Tools**
 - **0010 - List all results fields with Stats**
 - **0011 - Get results from all timesteps in the IWR File**
 - **0012 - ICM InfoWorks Results to SWMM5 Summary Tables**
-- **0013 - SUDS or LID Tools**
+- **0013 - Copy Conduit Properties from InfoWorks to SWMM**
 - **0014 - InfoSewer to ICM Comparison Tools**
 - **0015 - Export SWMM5 Calibration Files**
 - **0016 - InfoSWMM and SWMM5 Tools in Ruby**
 - **0017 - Subcatchment Grid and Tabs Tools**
-- **0018 - Create Selection list using a SQL query**
-- **0019 - Node Connection Tools**
-- **0020 - All Node, Subs and Link IDs Tools**
-- **0021 - Change the Geometry or Rename IDs**
-- **0022 - TBA**
-- **0023 - TBA**
+- **0018 - InfoWorks vs SWMM Comparison Tools**
+- **0019 - Select Dry Pipes**
+- **0020 - Renumber All Node, Link and Subcatchment IDs**
+- **0021 - Change Subcatchment Boundary Shape**
+- **0022 - Hackathon AWI OffShoots**
+- **0023 - DWF Statistics for SWMM Nodes**
 - **0024 - Utilities**
 - **0025 - Miscellaneous**
+- **0026 - InfoSWMM Multi-Scenario Import**
 
 
 ## SWMM5 Versions

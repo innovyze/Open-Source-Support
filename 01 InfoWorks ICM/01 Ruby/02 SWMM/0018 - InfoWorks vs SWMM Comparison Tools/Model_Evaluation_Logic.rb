@@ -1,4 +1,4 @@
-# ICM InfoWorks vs ICM SWMM - COMPLETE MASTER SCRIPT (ENHANCED v2.2)
+# ICM InfoWorks vs ICM SWMM - COMPLETE SCRIPT (ENHANCED v2.2)
 # Version: 2.2 - FIXED: Uses surface_type field for proper Pervious/Impervious matching
 #
 # CRITICAL FIX: Previous versions assumed Slot 1 = Pervious, Slot 2 = Impervious
@@ -155,7 +155,7 @@ iw_net = !safe_rows(cn, 'hw_subcatchment').empty? ? cn : (!safe_rows(bn, 'hw_sub
 sw_net = !safe_rows(cn, 'sw_subcatchment').empty? ? cn : (!safe_rows(bn, 'sw_subcatchment').empty? ? bn : nil)
 
 puts "=" * PAGE_WIDTH
-puts "MASTER REPORT: InfoWorks vs SWMM Comparison (Enhanced v2.2)"
+puts "MAIN REPORT: InfoWorks vs SWMM Comparison (Enhanced v2.2)"
 puts "=" * PAGE_WIDTH
 puts "InfoWorks Source: #{iw_net ? iw_net.model_object.name : 'Not Found'}"
 puts "SWMM Source:      #{sw_net ? sw_net.model_object.name : 'Not Found'}"
@@ -939,7 +939,7 @@ end
 # =============================================================================
 puts ""
 puts "=" * PAGE_WIDTH
-puts "MASTER ANALYSIS COMPLETE (v2.2 - Surface Type Matching)"
+puts "MAIN ANALYSIS COMPLETE (v2.2 - Surface Type Matching)"
 puts "=" * PAGE_WIDTH
 puts ""
 puts "Key Findings:"
