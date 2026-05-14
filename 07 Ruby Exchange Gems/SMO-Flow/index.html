@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMOFlow — Ruby Hydraulic Modelling Library</title>
+  <meta name="description" content="SMOFlow is a Ruby library for subcatchment runoff and flow calculations, making hydraulic modelling simpler, clearer, and more accessible." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#ffffff;--bg2:#f4f7fb;--bg3:#eaf0f7;--surface:#ffffff;--border:#dde6f0;--text:#0a0a0a;--text2:#2d3748;--text3:#6b7280;--accent:#0077cc;--green:#00a99d;--nav-bg:rgba(255,255,255,0.95);}
+    [data-theme="dark"]{--bg:#080d12;--bg2:#0a0f16;--bg3:#0d1520;--surface:#0d1520;--border:#1a2d42;--text:#e2eaf4;--text2:#6b8fa8;--text3:#2d4a62;--accent:#00c6ff;--green:#10d4a0;--nav-bg:rgba(8,13,18,0.95);}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:18px;line-height:1.6;transition:background 0.3s,color 0.3s;}
+
+    /* ── LAYOUT HELPERS ── */
+    /* Centred content lane: full-width background, max-1200px interior */
+    .w{padding-left:max(20px, calc((100% - 1200px) / 2));padding-right:max(20px, calc((100% - 1200px) / 2));}
+
+    /* NAV */
+    nav{background:var(--nav-bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px max(20px, calc((100% - 1200px) / 2));gap:16px;flex-wrap:nowrap;}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);text-decoration:none;white-space:nowrap;flex-shrink:0;}
+    .logo span{color:var(--accent);}
+    .nav-links{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;}
+    .nav-links .nav-text{color:var(--text2);font-size:14px;text-decoration:none;font-weight:500;transition:color 0.2s;white-space:nowrap;}
+    .nav-links .nav-text:hover{color:var(--accent);}
+    .nav-btn{background:transparent;border:1px solid var(--accent);color:var(--accent)!important;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600!important;white-space:nowrap;}
+    .theme-toggle{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:12px;color:var(--text2);font-weight:500;user-select:none;white-space:nowrap;}
+    .toggle-icon{width:10px;height:10px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;}
+
+    /* HERO */
+    .hero{text-align:center;background:var(--bg);padding:12px max(20px, calc((100% - 1200px) / 2));}
+    .hero-img-box{background:url('hero.png') center center/cover no-repeat;border-radius:14px;overflow:hidden;position:relative;padding:clamp(60px,8vw,100px) 24px;}
+    .hero-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.52);pointer-events:none;}
+    .hero-content{position:relative;z-index:1;max-width:620px;margin:0 auto;}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4.5vw,3.25rem);font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin-bottom:16px;color:#fff;}
+    h1 .grad{background:linear-gradient(135deg,var(--accent),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero-sub{color:rgba(255,255,255,0.8);font-size:clamp(17px,2vw,21px);max-width:460px;margin:0 auto 28px;font-weight:300;line-height:1.7;}
+    .hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+    .btn-p{background:var(--accent);color:#fff;padding:12px 26px;border-radius:7px;font-size:16px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:opacity 0.2s;}
+    .btn-p:hover{opacity:0.85;}
+    .btn-s{background:var(--surface);color:var(--text);padding:12px 26px;border-radius:7px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;transition:border-color 0.2s;}
+    .btn-s:hover{border-color:var(--accent);}
+    .btn-icon{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+    .install{display:inline-flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-family:'DM Mono',monospace;font-size:15px;color:var(--text2);cursor:pointer;transition:border-color 0.2s;}
+    .install:hover{border-color:var(--accent);}
+    .install .prompt{color:var(--green);}
+    .install .cmd{color:var(--accent);}
+    .install .hint{margin-left:12px;font-size:12px;color:var(--text3);border-left:1px solid var(--border);padding-left:12px;}
+
+    /* STATS */
+    .stats{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);}
+    .stats-inner{max-width:1200px;margin:0 auto;display:flex;padding:0 max(20px, calc((100% - 1200px) / 2));}
+    .stat{flex:1;padding:22px 16px;text-align:center;border-right:1px solid var(--border);}
+    .stat:last-child{border-right:none;}
+    .stat-n{font-family:'Syne',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--accent);letter-spacing:-0.03em;}
+    .stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:3px;}
+
+    /* SECTIONS */
+    .section{padding:20px max(20px, calc((100% - 1200px) / 2));scroll-margin-top:60px;}
+    .section-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:10px;}
+    h2{font-family:'Syne',sans-serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:6px;color:var(--text);}
+    .section-sub{color:var(--text2);font-size:17px;line-height:1.7;font-weight:300;margin-bottom:14px;}
+
+    /* ABOUT */
+    .about{background:var(--bg);}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
+    .card-full{grid-column:1/-1;}
+    .card-inner-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;}
+    .card-icon{width:34px;height:34px;background:rgba(0,119,204,0.08);border:1px solid rgba(0,119,204,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+    [data-theme="dark"] .card-icon{background:rgba(0,198,255,0.08);border-color:rgba(0,198,255,0.15);}
+    .card-icon svg{width:15px;height:15px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;}
+    .card-t{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;color:var(--text);}
+    .card-d{color:var(--text2);font-size:16px;line-height:1.65;}
+    .author-link{display:inline-flex;align-items:center;gap:5px;color:var(--accent);text-decoration:none;font-size:15px;margin-top:10px;font-weight:500;}
+    .author-link svg{width:12px;height:12px;fill:var(--accent);}
+    .author-link:hover{opacity:0.8;}
+
+    /* FORMULAS */
+    .formulas{background:var(--bg2);}
+    .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;}
+    .f-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
+    .f-card.full{grid-column:1/-1;}
+    .f-card.al{border-left:3px solid var(--accent);}
+    .f-card.ag{border-left:3px solid var(--green);}
+    .f-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;}
+    .f-eq{font-family:'DM Mono',monospace;font-size:clamp(14px,1.5vw,18px);font-weight:500;color:var(--accent);margin-bottom:10px;}
+    .f-divider{border:none;border-top:1px solid var(--border);margin:10px 0;}
+    .f-vars{font-size:16px;color:var(--text2);line-height:2;}
+    .f-vars .v{color:var(--green);font-family:'DM Mono',monospace;font-weight:500;}
+    .f-note{font-size:16px;color:var(--text2);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.6;}
+    .f-note strong{color:var(--text);font-weight:500;}
+    .deriv{}
+    .deriv-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;}
+    .d-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+    .d-num{width:20px;height:20px;min-width:20px;background:rgba(0,119,204,0.08);border:1px solid rgba(0,119,204,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent);margin-top:1px;}
+    [data-theme="dark"] .d-num{background:rgba(0,198,255,0.08);border-color:rgba(0,198,255,0.2);}
+    .d-text{font-size:12px;color:var(--text2);line-height:1.6;}
+    .d-text .mono{font-family:'DM Mono',monospace;color:var(--accent);}
+    .d-text .result{font-family:'DM Mono',monospace;color:var(--green);font-weight:500;}
+
+    /* METHODS */
+    .methods{background:var(--bg);}
+    .methods-list{display:flex;flex-direction:column;gap:16px;margin-top:24px;}
+    .method-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .method-top{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+    .method-info{padding:20px;border-right:1px solid var(--border);}
+    .method-name{font-family:'DM Mono',monospace;font-size:clamp(10px,1.2vw,13px);font-weight:500;color:var(--accent);margin-bottom:4px;word-break:break-all;}
+    .method-returns{font-size:11px;color:var(--text3);margin-bottom:10px;}
+    .method-desc{font-size:16px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+    .param-row{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-bottom:4px;}
+    .param-name{font-family:'DM Mono',monospace;color:var(--green);min-width:90px;font-weight:500;}
+    .param-desc{color:var(--text2);line-height:1.5;}
+    .method-code{background:var(--bg2);}
+    .code-header{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--bg3);border-bottom:1px solid var(--border);}
+    .dot{width:8px;height:8px;border-radius:50%;}
+    .dot-r{background:#f43f5e;}.dot-y{background:#f59e0b;}.dot-g{background:#10d4a0;}
+    .code-title{margin-left:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);}
+    pre{padding:16px 18px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.8;color:var(--text);overflow-x:auto;}
+    .k{color:#8250df;}.s{color:#0a7a3c;}.n{color:#0550ae;}.c{color:var(--text3);font-style:italic;}.m{color:#953800;}
+    [data-theme="dark"] .k{color:#c792ea;}[data-theme="dark"] .s{color:#c3e88d;}[data-theme="dark"] .n{color:#82aaff;}[data-theme="dark"] .m{color:#f78c6c;}
+
+    /* TERMINAL */
+    .terminal{background:#0d1117;border:1px solid #30363d;border-radius:10px;overflow:hidden;margin-bottom:20px;}
+    .terminal-bar{display:flex;align-items:center;gap:6px;padding:9px 14px;background:#161b22;border-bottom:1px solid #30363d;}
+    .terminal-bar .code-title{margin-left:6px;color:#6e7681;}
+    .terminal-body{padding:18px 20px;min-height:160px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.9;}
+    .t-line{display:flex;gap:0;margin-bottom:0;}
+    .t-prompt{color:#10d4a0;white-space:pre;user-select:none;}
+    .t-code{color:#e6edf3;white-space:pre;}
+    .t-out{color:#6e7681;padding-left:0;white-space:pre;}
+    .t-cursor{display:inline-block;width:6px;height:13px;background:#10d4a0;vertical-align:middle;margin-left:1px;animation:blink 1s step-end infinite;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+    @keyframes ts-grow{0%{transform:scaleY(0);}100%{transform:scaleY(1);}}
+    .ts-bar{transform-box:fill-box;transform-origin:bottom;animation:ts-grow 1.2s ease-out forwards;}
+
+    /* IDEAS */
+    .ideas{background:var(--bg2);}
+    .done-strip{display:flex;align-items:center;gap:10px;background:rgba(0,169,157,0.06);border:1px solid rgba(0,169,157,0.2);border-radius:8px;padding:12px 16px;margin-bottom:28px;}
+    .done-icon{width:20px;height:20px;border-radius:50%;background:rgba(0,169,157,0.15);border:1px solid rgba(0,169,157,0.3);display:flex;align-items:center;justify-content:center;min-width:20px;}
+    .done-icon svg{width:10px;height:10px;fill:none;stroke:var(--green);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+    .done-text{font-size:12px;color:var(--text2);}
+    .done-text strong{color:var(--green);font-weight:500;}
+    .timeline{display:flex;flex-direction:column;}
+    .tl-item{display:flex;}
+    .tl-left{display:flex;flex-direction:column;align-items:center;width:44px;min-width:44px;}
+    .tl-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--bg2);margin-top:5px;z-index:1;}
+    .tl-dot.runoff{border-color:var(--accent);background:rgba(0,119,204,0.1);}
+    .tl-dot.dwf{border-color:var(--green);background:rgba(0,169,157,0.1);}
+    .tl-dot.ea{border-color:#8250df;background:rgba(130,80,223,0.1);}
+    .tl-dot.formula{border-color:#c05a00;background:rgba(192,90,0,0.1);}
+    [data-theme="dark"] .tl-dot.runoff{background:rgba(0,198,255,0.1);}
+    [data-theme="dark"] .tl-dot.ea{background:rgba(199,146,234,0.1);}
+    [data-theme="dark"] .tl-dot.formula{background:rgba(247,140,108,0.1);}
+    .tl-line{flex:1;width:2px;background:var(--border);margin:0 auto;}
+    .tl-item:last-child .tl-line{display:none;}
+    .tl-content{padding:0 0 28px 16px;flex:1;}
+    .tl-cat{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px;display:inline-block;margin-bottom:6px;margin-top:2px;}
+    .cat-runoff{color:var(--accent);background:rgba(0,119,204,0.08);border:1px solid rgba(0,119,204,0.15);}
+    .cat-dwf{color:var(--green);background:rgba(0,169,157,0.08);border:1px solid rgba(0,169,157,0.2);}
+    .cat-ea{color:#8250df;background:rgba(130,80,223,0.06);border:1px solid rgba(130,80,223,0.2);}
+    .cat-formula{color:#c05a00;background:rgba(192,90,0,0.06);border:1px solid rgba(192,90,0,0.2);}
+    [data-theme="dark"] .cat-ea{color:#c792ea;background:rgba(199,146,234,0.06);border-color:rgba(199,146,234,0.2);}
+    [data-theme="dark"] .cat-formula{color:#f78c6c;background:rgba(247,140,108,0.06);border-color:rgba(247,140,108,0.2);}
+    .tl-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px;}
+    .tl-desc{color:var(--text2);font-size:16px;line-height:1.65;margin-bottom:10px;}
+    .tl-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+    .tl-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);background:var(--surface);border:1px solid var(--border);padding:3px 8px;border-radius:4px;}
+    .dwf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+    .dwf-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;}
+    .dwf-card.bl{border-left:3px solid var(--accent);}
+    .dwf-card.bg{border-left:3px solid var(--green);}
+    .m-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;}
+    .m-eq{font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-bottom:6px;}
+    .m-vars{font-size:11px;color:var(--text2);line-height:1.9;}
+    .m-vars span{color:var(--green);font-family:'DM Mono',monospace;}
+    .m-note{font-size:11px;color:var(--text2);margin-top:7px;padding-top:7px;border-top:1px solid var(--border);line-height:1.5;}
+    .spill-threshold{display:inline-flex;align-items:center;gap:5px;background:rgba(130,80,223,0.06);border:1px solid rgba(130,80,223,0.15);border-radius:5px;padding:4px 10px;margin-bottom:10px;font-size:11px;color:var(--text2);}
+    .spill-threshold strong{color:#8250df;font-family:'DM Mono',monospace;}
+    [data-theme="dark"] .spill-threshold strong{color:#c792ea;}
+    .spill-steps{display:flex;flex-direction:column;gap:6px;}
+    .spill-step{display:flex;gap:8px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px;}
+    .spill-num{width:20px;height:20px;min-width:20px;border-radius:50%;background:rgba(130,80,223,0.08);border:1px solid rgba(130,80,223,0.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:#8250df;margin-top:1px;}
+    [data-theme="dark"] .spill-num{color:#c792ea;}
+    .spill-text{font-size:12px;color:var(--text2);line-height:1.5;}
+    .spill-text strong{color:var(--text);font-weight:500;}
+    .formula-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid #c05a00;border-radius:8px;padding:16px;margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;}
+    [data-theme="dark"] .formula-box{border-left-color:#f78c6c;}
+    .fb-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px;}
+    .fb-eq{color:#c05a00;font-size:13px;font-weight:500;margin-bottom:7px;}
+    [data-theme="dark"] .fb-eq{color:#f78c6c;}
+    .fb-vars{color:var(--text2);font-size:11px;line-height:1.9;}
+    .fb-vars span{color:var(--green);}
+    .fb-note{font-size:11px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.6;font-family:'DM Sans',sans-serif;}
+
+    /* SUPPORT */
+    .support{background:var(--bg);text-align:center;}
+    .coffee-btn{display:inline-flex;align-items:center;gap:8px;background:#FFDD00;color:#000;padding:13px 26px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;margin-top:20px;transition:opacity 0.2s;}
+    .coffee-btn:hover{opacity:0.9;}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--border);background:var(--bg);}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:22px max(20px, calc((100% - 1200px) / 2));}
+    .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--text);}
+    .footer-logo span{color:var(--accent);}
+    .footer-links{display:flex;gap:20px;}
+    .footer-links a{color:var(--text3);font-size:11px;text-decoration:none;transition:color 0.2s;}
+    .footer-links a:hover{color:var(--accent);}
+    .footer-text{color:var(--text3);font-size:11px;}
+
+    /* ── BREAKPOINTS ── */
+
+    /* Tablet: two-column grids collapse */
+    @media (max-width: 960px) {
+      .method-top{grid-template-columns:1fr;}
+      .method-info{border-right:none;border-bottom:1px solid var(--border);}
+    }
+
+    @media (max-width: 860px) {
+      .about-grid{grid-template-columns:1fr;}
+      .formula-grid{grid-template-columns:1fr;}
+      .f-card.full{grid-column:auto;}
+      .card-full{grid-column:auto;}
+      .card-inner-grid{grid-template-columns:1fr!important;}
+      .dwf-grid{grid-template-columns:1fr;}
+    }
+
+    /* Mobile */
+    @media (max-width: 1050px) {
+      .nav-links .nav-text{display:none;}
+    }
+    @media (max-width: 640px) {
+      .nav-inner{padding:12px 16px;}
+      .nav-links a:not(.nav-btn):not(.theme-toggle){display:none;}
+      .hero{padding:48px 16px 40px;}
+      .section{padding:36px 16px;}
+      .stats-inner{padding:0;}
+      .stats{flex-wrap:wrap;}
+      .stat{min-width:50%;padding:18px 12px;}
+      .footer-inner{flex-direction:column;gap:14px;text-align:center;padding:20px 16px;}
+      .footer-links{flex-wrap:wrap;justify-content:center;}
+      h1{font-size:clamp(1.75rem,9vw,2.5rem);}
+      .install{flex-wrap:wrap;}
+      .install .hint{border-left:none;padding-left:0;margin-left:0;}
+    }
+
+    @media (max-width: 400px) {
+      .stat{min-width:100%;}
+      .hero-btns{flex-direction:column;align-items:center;}
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">SMO<span>Flow</span></a>
+    <div class="nav-links">
+      <a href="#about" class="nav-text">About</a>
+      <a href="#formulas" class="nav-text">Formulas</a>
+      <a href="#methods" class="nav-text">Methods</a>
+      <a href="#ideas" class="nav-text">Ideas</a>
+      <a href="#support" class="nav-text">Support</a>
+      <div class="theme-toggle" onclick="toggleTheme()"><span id="toggle-label">Dark Mode</span></div>
+      <a href="https://rubygems.org/gems/smo_flow" class="nav-btn" style="background:#CC342D;border-color:#CC342D;color:#fff!important;" target="_blank" rel="noopener">RubyGems</a>
+      <a href="https://www.linkedin.com/in/sebastianmadridontiverosmx/" class="nav-btn" style="background:#0A66C2;border-color:#0A66C2;color:#fff!important;" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://buymeacoffee.com/smadrid" class="nav-btn" style="background:#FFDD00;border-color:#FFDD00;color:#000!important;" target="_blank" rel="noopener">Buy Me a Coffee</a>
+      <a href="https://github.com/Sebasmadridmx/SMO-Flow" class="nav-btn" style="background:#6e40c9;border-color:#6e40c9;color:#fff!important;" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-img-box">
+  <div class="hero-overlay"></div>
+  <span style="position:absolute;bottom:10px;right:14px;font-size:10px;color:rgba(255,255,255,0.35);z-index:2;font-family:'DM Mono',monospace;letter-spacing:0.05em;pointer-events:none;">AI generated image</span>
+  <div class="hero-content">
+    <h1>SMO<span class="grad">Flow</span></h1>
+    <p style="font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:4px;font-family:'DM Mono',monospace;letter-spacing:0.03em;">Subcatchment runoff and flow calculations for Ruby</p>
+    <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:28px;font-family:'DM Mono',monospace;letter-spacing:0.03em;">Developed by <a href="https://www.linkedin.com/in/sebastianmadridontiverosmx/" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.6);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.25);">Sebastian Madrid Ontiveros</a></p>
+    <div class="hero-btns">
+      <a href="https://rubygems.org/gems/smo_flow" class="btn-p" target="_blank" rel="noopener">
+        <svg class="btn-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>View on RubyGems
+      </a>
+      <a href="https://github.com/Sebasmadridmx/SMO-Flow" class="btn-s" target="_blank" rel="noopener">
+        <svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 2C4.7 2 2 4.7 2 8c0 2.7 1.7 4.9 4.1 5.7.3.1.4-.1.4-.3v-1c-1.7.4-2-.8-2-.8-.3-.7-.7-.9-.7-.9-.5-.4.1-.4.1-.4.6 0 .9.6.9.6.5.9 1.4.6 1.7.5.1-.4.2-.6.4-.8-1.3-.1-2.7-.7-2.7-3 0-.6.2-1.2.6-1.6-.1-.1-.3-.8.1-1.6 0 0 .5-.2 1.7.6.5-.1 1-.2 1.5-.2s1 .1 1.5.2c1.2-.8 1.7-.6 1.7-.6.4.8.2 1.5.1 1.6.4.4.6 1 .6 1.6 0 2.3-1.4 2.9-2.7 3 .2.2.4.6.4 1.1v1.6c0 .2.1.4.4.3C12.3 12.9 14 10.7 14 8c0-3.3-2.7-6-6-6z"/></svg>View on GitHub
+      </a>
+    </div>
+    <div class="install" onclick="copyInstall()">
+      <span class="prompt">$</span><span class="cmd">gem install smo_flow</span>
+      <span class="hint" id="copy-hint">click to copy</span>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+<!-- ABOUT -->
+<div class="section about" id="about">
+  <h2>Built for hydraulic modellers</h2>
+  <div class="about-grid">
+    <div class="card card-full">
+      <div class="card-t">What is SMOFlow?</div>
+      <p class="card-d">SMOFlow was created by Sebastian Madrid Ontiveros in response to the lack of hydraulic modelling libraries available for Ruby. It provides a developer-friendly way to estimate flow from roads, roofs, permeable areas, foul flow, and trade flow using the Rational Method and timestep-based calculations — helping with transparent calculations, quality checks, and understanding how each component contributes to total subcatchment output flow.</p>
+      <p style="margin-top:14px;font-size:13px;color:var(--text3);">Developer &amp; Author: <a href="https://www.linkedin.com/in/sebastianmadridontiverosmx/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:500;">Sebastian Madrid Ontiveros</a></p>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:14px;">Multiple surface types</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="card-icon" style="margin-bottom:0;flex-shrink:0;">
+            <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 15 L6.5 2 L9.5 2 L14 15"/>
+              <line x1="8" y1="14" x2="8" y2="10" stroke-dasharray="2,1.5"/>
+              <line x1="8" y1="8" x2="8" y2="4" stroke-dasharray="2,1.5"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);">Roads</div>
+            <div class="card-d" style="margin:0;">Hard impermeable surfaces with high runoff coefficients.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="card-icon" style="margin-bottom:0;flex-shrink:0;">
+            <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,8 8,2 15,8"/><rect x="3" y="8" width="10" height="6" rx="1"/></svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);">Roofs</div>
+            <div class="card-d" style="margin:0;">Pitched and flat roof areas directing rainfall to drainage.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="card-icon" style="margin-bottom:0;flex-shrink:0;">
+            <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- grass blades -->
+              <path d="M2 12 C2 9 4 7 3 5"/>
+              <path d="M5 12 C5 8 7 6 6 3"/>
+              <path d="M8 12 C8 9 10 7 9 5"/>
+              <path d="M11 12 C11 8 13 6 12 3"/>
+              <path d="M14 12 C14 9 12 7 13 5"/>
+              <!-- ground line -->
+              <line x1="0" y1="12" x2="16" y2="12"/>
+              <!-- water drop absorbing into ground -->
+              <path d="M8 16 L8 13"/>
+              <path d="M6.5 15 L8 16.5 L9.5 15"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);">Permeable areas</div>
+            <div class="card-d" style="margin:0;">Grass and landscaped areas absorbing a portion of rainfall.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">Timestep calculations</div>
+      <p class="card-d">Works with storm profiles and rainfall depths across any timestep from 1 second to 86,400 seconds.</p>
+      <svg viewBox="0 0 130 54" style="width:100%;height:135px;margin-top:14px;" xmlns="http://www.w3.org/2000/svg">
+        <!-- axes -->
+        <line x1="10" y1="2" x2="10" y2="44" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="44" x2="126" y2="44" stroke="var(--border)" stroke-width="1"/>
+        <!-- bars: storm profile heights 5,10,18,30,38,36,24,13,6 -->
+        <rect class="ts-bar" x="13"  y="39" width="11" height="5"  fill="var(--accent)" opacity="0.6" rx="1.5" style="animation-delay:0s"/>
+        <rect class="ts-bar" x="26"  y="34" width="11" height="10" fill="var(--accent)" opacity="0.68" rx="1.5" style="animation-delay:0.2s"/>
+        <rect class="ts-bar" x="39"  y="26" width="11" height="18" fill="var(--accent)" opacity="0.76" rx="1.5" style="animation-delay:0.4s"/>
+        <rect class="ts-bar" x="52"  y="14" width="11" height="30" fill="var(--accent)" opacity="0.84" rx="1.5" style="animation-delay:0.6s"/>
+        <rect class="ts-bar" x="65"  y="6"  width="11" height="38" fill="var(--accent)" opacity="1"    rx="1.5" style="animation-delay:0.8s"/>
+        <rect class="ts-bar" x="78"  y="8"  width="11" height="36" fill="var(--accent)" opacity="0.9"  rx="1.5" style="animation-delay:1.0s"/>
+        <rect class="ts-bar" x="91"  y="20" width="11" height="24" fill="var(--accent)" opacity="0.76" rx="1.5" style="animation-delay:1.2s"/>
+        <rect class="ts-bar" x="104" y="31" width="11" height="13" fill="var(--accent)" opacity="0.65" rx="1.5" style="animation-delay:1.4s"/>
+        <rect class="ts-bar" x="117" y="38" width="6"  height="6"  fill="var(--accent)" opacity="0.55" rx="1.5" style="animation-delay:1.6s"/>
+        <!-- labels -->
+        <text x="10" y="51" font-size="7" fill="var(--text3)" font-family="DM Mono,monospace">0</text>
+        <text x="55" y="51" font-size="7" fill="var(--text3)" font-family="DM Mono,monospace" text-anchor="middle">Δt →</text>
+        <text x="5" y="8"  font-size="7" fill="var(--text3)" font-family="DM Mono,monospace" text-anchor="end">Q</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- FORMULAS -->
+<div class="section formulas" id="formulas">
+  <h2>Formulas used in SMOFlow</h2>
+  <p class="section-sub">The Rational Method was first published by Mulvaney (1850) and later by Lloyd-Davies (1906) for UK practice. SMOFlow implements it with standard SI unit conversions.</p>
+  <div class="formula-grid">
+    <div class="f-card al">
+      <div class="f-label">Original formula &mdash; dimensionless</div>
+      <div class="f-eq">Q = C &times; i &times; A</div>
+      <hr class="f-divider">
+      <div class="f-vars"><span class="v">Q</span> = flow rate<br><span class="v">C</span> = runoff coefficient (0 to 1)<br><span class="v">i</span> = rainfall intensity<br><span class="v">A</span> = catchment area</div>
+      <div class="f-note">Pure dimensionless form. In practice, engineers use mixed units which requires a conversion factor.</div>
+    </div>
+    <div class="f-card ag">
+      <div class="f-label">UK practice &mdash; flow in m&#179;/s</div>
+      <div class="f-eq">Q = C &times; i &times; A / 360</div>
+      <hr class="f-divider">
+      <div class="f-vars"><span class="v">Q</span> = flow in m&#179;/s<br><span class="v">C</span> = runoff coefficient (0 to 1)<br><span class="v">i</span> = rainfall intensity in mm/hr<br><span class="v">A</span> = catchment area in hectares</div>
+      <div class="f-note">The form used in SMOFlow. The <strong>360</strong> is a unit conversion constant &mdash; see derivation below.</div>
+    </div>
+    <div class="f-card full al">
+      <div class="f-label">Timestep-based formula &mdash; flow from depth</div>
+      <div class="f-eq">Q = 10 &times; C &times; A &times; d / &Delta;t</div>
+      <hr class="f-divider">
+      <div class="f-vars" style="display:flex;flex-wrap:wrap;gap:0 24px;">
+        <span><span class="v">Q</span> = flow in m&#179;/s</span>
+        <span><span class="v">C</span> = runoff coefficient</span>
+        <span><span class="v">A</span> = area in hectares</span>
+        <span><span class="v">d</span> = rainfall depth in mm</span>
+        <span><span class="v">&Delta;t</span> = timestep in seconds</span>
+      </div>
+      <div class="f-note">The <strong>10</strong> comes from converting hectares &times; mm into m&#179;: 1 hectare = 10,000 m&#178; and 1 mm = 0.001 m, so 10,000 &times; 0.001 = <strong>10</strong>. This means 1 hectare receiving 1 mm of rain produces exactly 10 m&#179; of water.</div>
+    </div>
+<div class="deriv f-card full">
+      <div class="deriv-title">Where does the 360 come from?</div>
+      <div class="d-step"><div class="d-num">1</div><div class="d-text">We want Q in <span class="mono">m&#179;/s</span>, but intensity is in <span class="mono">mm/hr</span> and area is in <span class="mono">hectares</span></div></div>
+      <div class="d-step"><div class="d-num">2</div><div class="d-text">Convert area: <span class="mono">1 hectare = 10,000 m&#178;</span></div></div>
+      <div class="d-step"><div class="d-num">3</div><div class="d-text">Convert intensity: <span class="mono">1 mm/hr = 1/3,600,000 m/s</span></div></div>
+      <div class="d-step"><div class="d-num">4</div><div class="d-text">Combined factor: <span class="mono">10,000 / 3,600,000 = 1/360</span></div></div>
+      <div class="d-step"><div class="d-num">5</div><div class="d-text">So: <span class="mono">Q = C &times; i &times; A / 360</span> gives Q in <span class="result">m&#179;/s</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODS -->
+<div class="section methods" id="methods">
+  <h2>Simple, readable code</h2>
+  <p class="section-sub">All methods are available on a <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);">SmoFlow::RationalMethod</code> instance. Create one with a coefficient and area, then call any method.</p>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">irb session</span></div>
+    <div class="terminal-body" id="terminal-body"></div>
+  </div>
+  <div class="methods-list">
+
+    <div class="method-item">
+      <div class="method-top">
+        <div class="method-info">
+          <div class="method-name">SmoFlow::RationalMethod.new(coefficient:, area:)</div>
+          <div class="method-returns">Creates a new calculator instance</div>
+          <div class="method-desc">The starting point for all calculations. Takes a runoff coefficient and a catchment area and returns a calculator object you can call methods on.</div>
+          <div class="param-row"><span class="param-name">coefficient:</span><span class="param-desc">Runoff coefficient 0.0&ndash;1.0. Roads 0.85&ndash;0.95, roofs 0.9&ndash;0.95, grass 0.2&ndash;0.4.</span></div>
+          <div class="param-row"><span class="param-name">area:</span><span class="param-desc">Catchment area in hectares.</span></div>
+        </div>
+        <div class="method-code">
+          <div class="code-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">example.rb</span></div>
+          <pre><span class="k">require</span> <span class="s">"smo_flow"</span>
+
+calc = <span class="n">SmoFlow</span>::<span class="n">RationalMethod</span>.<span class="n">new</span>(
+  coefficient: <span class="m">0.9</span>,
+  area: <span class="m">2.5</span>  <span class="c"># hectares</span>
+)</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-item">
+      <div class="method-top">
+        <div class="method-info">
+          <div class="method-name">flow_from_intensity(intensity)</div>
+          <div class="method-returns">Returns flow in m&#179;/s</div>
+          <div class="method-desc">Calculates peak flow using Q = C &times; i &times; A / 360. Use when you have a rainfall intensity in mm/hr &mdash; for example from an IDF curve or a design storm.</div>
+          <div class="param-row"><span class="param-name">intensity:</span><span class="param-desc">Rainfall intensity in mm/hr. Must be greater than zero.</span></div>
+        </div>
+        <div class="method-code">
+          <div class="code-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">example.rb</span></div>
+          <pre>calc.<span class="n">flow_from_intensity</span>(<span class="m">50.0</span>)
+<span class="c"># => 0.3125 m&#179;/s</span>
+<span class="c"># Q = 0.9 &times; 50 &times; 2.5 / 360</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-item">
+      <div class="method-top">
+        <div class="method-info">
+          <div class="method-name">flow_ls_from_intensity(intensity)</div>
+          <div class="method-returns">Returns flow in L/s</div>
+          <div class="method-desc">Same as flow_from_intensity but returns litres per second instead of m&#179;/s. Equivalent to multiplying the m&#179;/s result by 1000. Common in UK drainage practice.</div>
+          <div class="param-row"><span class="param-name">intensity:</span><span class="param-desc">Rainfall intensity in mm/hr. Must be greater than zero.</span></div>
+        </div>
+        <div class="method-code">
+          <div class="code-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">example.rb</span></div>
+          <pre>calc.<span class="n">flow_ls_from_intensity</span>(<span class="m">50.0</span>)
+<span class="c"># => 312.5 L/s</span>
+<span class="c"># equivalent to 0.3125 &times; 1000</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-item">
+      <div class="method-top">
+        <div class="method-info">
+          <div class="method-name">flow_from_depth(depth:, timestep:)</div>
+          <div class="method-returns">Returns flow in m&#179;/s</div>
+          <div class="method-desc">Calculates flow using Q = 10 &times; C &times; A &times; d / &Delta;t. Use when you have a rainfall profile with a depth at each timestep rather than a constant intensity.</div>
+          <div class="param-row"><span class="param-name">depth:</span><span class="param-desc">Rainfall depth during the timestep in mm. Must be greater than zero.</span></div>
+          <div class="param-row"><span class="param-name">timestep:</span><span class="param-desc">Duration in seconds. Pass 300 for 5-min, 3600 for 1-hour.</span></div>
+        </div>
+        <div class="method-code">
+          <div class="code-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">example.rb</span></div>
+          <pre>calc.<span class="n">flow_from_depth</span>(
+  depth: <span class="m">5.0</span>,
+  timestep: <span class="m">3600.0</span>
+)
+<span class="c"># => 0.03125 m&#179;/s</span>
+<span class="c"># Q = 10 &times; 0.9 &times; 2.5 &times; 5.0 / 3600</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-item">
+      <div class="method-top">
+        <div class="method-info">
+          <div class="method-name">depth_to_intensity(depth:, timestep:)</div>
+          <div class="method-returns">Returns intensity in mm/hr</div>
+          <div class="method-desc">Converts a rainfall depth over a timestep into an equivalent intensity in mm/hr. Useful for comparing against IDF curves or design storm intensities.</div>
+          <div class="param-row"><span class="param-name">depth:</span><span class="param-desc">Rainfall depth in mm during the timestep.</span></div>
+          <div class="param-row"><span class="param-name">timestep:</span><span class="param-desc">Timestep duration in seconds.</span></div>
+        </div>
+        <div class="method-code">
+          <div class="code-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">example.rb</span></div>
+          <pre>calc.<span class="n">depth_to_intensity</span>(
+  depth: <span class="m">5.0</span>,
+  timestep: <span class="m">3600.0</span>
+)
+<span class="c"># => 5.0 mm/hr</span>
+<span class="c"># 5mm over 1 hour = 5mm/hr</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-item">
+      <div class="method-top">
+        <div class="method-info">
+          <div class="method-name">volume(depth:)</div>
+          <div class="method-returns">Returns volume in m&#179;</div>
+          <div class="method-desc">Calculates total runoff volume using V = 10 &times; C &times; A &times; d. Useful for storage calculations and cumulative volume tracking across multiple timesteps.</div>
+          <div class="param-row"><span class="param-name">depth:</span><span class="param-desc">Total rainfall depth in mm. Must be greater than zero.</span></div>
+        </div>
+        <div class="method-code">
+          <div class="code-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-title">example.rb</span></div>
+          <pre>calc.<span class="n">volume</span>(depth: <span class="m">5.0</span>)
+<span class="c"># => 112.5 m&#179;</span>
+<span class="c"># V = 10 &times; 0.9 &times; 2.5 &times; 5.0</span></pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- IDEAS -->
+<div class="section ideas" id="ideas">
+  <h2>Where SMOFlow could go</h2>
+  <p class="section-sub">These are ideas for future development &mdash; not a fixed plan. Contributions and suggestions are always welcome on GitHub.</p>
+  <div class="done-strip">
+    <div class="done-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="done-text"><strong>Currently available:</strong> Rational Method &mdash; flow from intensity, depth, volume, and unit conversion. Published on RubyGems as v0.1.1.</div>
+  </div>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-dot runoff"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-cat cat-runoff">Runoff</div>
+        <div class="tl-title">Surface-Based Runoff</div>
+        <div class="tl-desc">Separate surface classes for roads, roofs, and permeable areas &mdash; allowing a surface-by-surface flow breakdown per subcatchment.</div>
+        <div class="tl-tags"><span class="tl-tag">Road runoff</span><span class="tl-tag">Roof runoff</span><span class="tl-tag">Permeable areas</span><span class="tl-tag">Surface breakdown</span><span class="tl-tag">Total subcatchment flow</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-dot dwf"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-cat cat-dwf">DWF</div>
+        <div class="tl-title">Dry Weather Flow</div>
+        <div class="tl-desc">Population-based DWF calculations per subcatchment following EA guidance. Supports both the DWF formula and the Q80 nonparametric method for existing and new discharges.</div>
+        <div class="tl-tags" style="margin-bottom:10px;"><span class="tl-tag">EA DWF guidance</span><span class="tl-tag">DWF formula</span><span class="tl-tag">Q80 method</span><span class="tl-tag">Foul flow</span><span class="tl-tag">Trade flow</span><span class="tl-tag">Infiltration</span></div>
+        <div class="dwf-grid">
+          <div class="dwf-card bl">
+            <div class="m-label">Method 1 &mdash; DWF Formula</div>
+            <div class="m-eq">DWF = PG + IDWF + E</div>
+            <div class="m-vars"><span>P</span> = population &nbsp;<span>G</span> = per capita flow<br><span>IDWF</span> = dry weather infiltration<br><span>E</span> = trade effluent</div>
+            <div class="m-note">For new discharges and future design horizon calculations.</div>
+          </div>
+          <div class="dwf-card bg">
+            <div class="m-label">Method 2 &mdash; Nonparametric Q80</div>
+            <div class="m-eq">n = integer(0.2 &times; N)</div>
+            <div class="m-vars"><span>Q80</span> = 20th percentile of daily flow<br><span>N</span> = number of valid measurements<br><br>73rd value in a ranked set of 365.</div>
+            <div class="m-note">For existing discharges with measured flow data.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-dot ea"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-cat cat-ea">EA Regulatory</div>
+        <div class="tl-title">Spill Count Analysis &mdash; EA 12/24 Method</div>
+        <div class="tl-desc">Automated spill counting for bathing and shellfish waters using the EA 12/24 counting method. Spill significance and counting method agreed on a site-specific basis at the scoping stage.</div>
+        <div class="tl-tags" style="margin-bottom:10px;"><span class="tl-tag">EA 12/24 method</span><span class="tl-tag">Bathing waters</span><span class="tl-tag">Shellfish waters</span><span class="tl-tag">Annual spill count</span><span class="tl-tag">CSO analysis</span></div>
+        <div class="spill-threshold">Significant spill threshold: <strong>&gt; 50 m&#179;</strong></div>
+        <div class="spill-steps">
+          <div class="spill-step"><div class="spill-num">1</div><div class="spill-text"><strong>Start counting</strong> when the first discharge occurs.</div></div>
+          <div class="spill-step"><div class="spill-num">2</div><div class="spill-text">Any discharge in the <strong>first 12-hour block</strong> counts as <strong>one spill</strong>.</div></div>
+          <div class="spill-step"><div class="spill-num">3</div><div class="spill-text">Each subsequent <strong>24-hour block</strong> with discharge counts as <strong>one additional spill</strong>.</div></div>
+          <div class="spill-step"><div class="spill-num">4</div><div class="spill-text">A <strong>24-hour block with no discharge</strong> ends the sequence. The next discharge restarts from step 1.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-dot formula"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-cat cat-formula">UK Regulatory</div>
+        <div class="tl-title">Formula A &mdash; Storm Overflow Compliance</div>
+        <div class="tl-desc">The minimum retained continuation flow at storm overflows and at the inlet to wastewater treatment works, calculated using the UK regulatory Formula A. Must be maintained during the full duration of a spill.</div>
+        <div class="tl-tags" style="margin-bottom:0;"><span class="tl-tag">CSO pass forward flow</span><span class="tl-tag">Separately drained areas</span><span class="tl-tag">Combined catchments</span><span class="tl-tag">WWTW inlet flow</span></div>
+        <div class="formula-box">
+          <div class="fb-label">Formula A &mdash; standard combined catchment</div>
+          <div class="fb-eq">Formula A (l/d) = DWF + 1360P + 2E</div>
+          <div class="fb-vars"><span>DWF</span> = PG + I + E &nbsp;&nbsp; <span>P</span> = population &nbsp;&nbsp; <span>G</span> = per capita flow (l/head/d) &nbsp;&nbsp; <span>I</span> = infiltration (l/d) &nbsp;&nbsp; <span>E</span> = trade effluent (l/d)</div>
+          <div class="fb-note">Where separately drained areas are present: Formula A (l/d) = DWF + 2PsG + 1360Pc + 2Et. The Formula A value must be maintained in the downstream sewer during the full duration of a spill.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUPPORT -->
+<div class="section support" id="support">
+  <h2>Support the project</h2>
+  <p class="section-sub" style="margin:10px 0 0;">SMOFlow is free and open source. If you find it useful and would like to support its continued development, please consider buying me a coffee.</p>
+  <a href="https://buymeacoffee.com/smadrid" target="_blank" rel="noopener">
+    <img src="qr-coffee.png" alt="Buy Me a Coffee QR code" style="width:180px;height:180px;border-radius:12px;display:block;margin:20px auto 0;" />
+  </a>
+  <a href="https://buymeacoffee.com/smadrid" class="coffee-btn" target="_blank" rel="noopener">Buy Me a Coffee</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">SMO<span>Flow</span></div>
+    <div class="footer-links">
+      <a href="https://rubygems.org/gems/smo_flow" target="_blank" rel="noopener">RubyGems</a>
+      <a href="https://github.com/Sebasmadridmx/SMO-Flow" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/sebastianmadridontiverosmx/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://buymeacoffee.com/smadrid" target="_blank" rel="noopener">Support</a>
+    </div>
+    <div class="footer-text">&copy; 2026 Sebastian Madrid Ontiveros &mdash; MIT Licence</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const label = document.getElementById('toggle-label');
+    if (body.dataset.theme === 'dark') {
+      body.dataset.theme = 'light';
+      label.textContent = 'Dark Mode';
+    } else {
+      body.dataset.theme = 'dark';
+      label.textContent = 'Light Mode';
+    }
+  }
+
+  (function() {
+    const LINES = [
+      {
+        code: 'require "smo_flow"',
+        out:  [{ t: 'arrow', v: '=>' }, { t: 'bool', v: ' true' }]
+      },
+      {
+        code: 'calc = SmoFlow::RationalMethod.new(coefficient: 0.9, area: 2.5)',
+        out:  [{ t: 'arrow', v: '=>' }, { t: 'obj', v: ' #<SmoFlow::RationalMethod' }, { t: 'key', v: ' @coefficient=' }, { t: 'num', v: '0.9' }, { t: 'key', v: ', @area=' }, { t: 'num', v: '2.5' }, { t: 'obj', v: '>' }]
+      },
+      {
+        code: 'calc.flow_from_intensity(50.0)',
+        out:  [{ t: 'arrow', v: '=>' }, { t: 'num', v: ' 0.3125' }, { t: 'comment', v: '  # m³/s  — Q = 0.9 × 50.0 × 2.5 / 360' }]
+      },
+      {
+        code: 'calc.flow_ls_from_intensity(50.0)',
+        out:  [{ t: 'arrow', v: '=>' }, { t: 'num', v: ' 312.5' }, { t: 'comment', v: '    # L/s  — equivalent to 0.3125 × 1000' }]
+      },
+      {
+        code: 'calc.flow_from_depth(depth: 5.0, timestep: 3600.0)',
+        out:  [{ t: 'arrow', v: '=>' }, { t: 'num', v: ' 0.03125' }, { t: 'comment', v: ' # m³/s  — Q = 10 × 0.9 × 2.5 × 5.0 / 3600' }]
+      },
+      {
+        code: 'calc.volume(depth: 5.0)',
+        out:  [{ t: 'arrow', v: '=>' }, { t: 'num', v: ' 112.5' }, { t: 'comment', v: '   # m³  — V = 10 × 0.9 × 2.5 × 5.0' }]
+      },
+    ];
+
+    const COLORS = {
+      arrow:   '#6e7681',
+      num:     '#10d4a0',
+      bool:    '#f78c6c',
+      obj:     '#8fa8bf',
+      key:     '#6e7681',
+      comment: '#3d5166',
+    };
+
+    function highlight(raw) {
+      return raw
+        .replace(/(&lt;|<)/g, '&lt;')
+        .replace(/("smo_flow")/g, '<span style="color:#a5d6ff">$1</span>')
+        .replace(/\b(require)\b/g,  '<span style="color:#c792ea">$1</span>')
+        .replace(/\b(SmoFlow|RationalMethod)\b/g, '<span style="color:#82aaff">$1</span>')
+        .replace(/\b(calc)\b/g, '<span style="color:#e6edf3">$1</span>')
+        .replace(/(flow_from_intensity|flow_ls_from_intensity|flow_from_depth|depth_to_intensity|volume|new)\b/g, '<span style="color:#89ddff">$1</span>')
+        .replace(/\b(\d+\.?\d*)\b/g, '<span style="color:#f78c6c">$1</span>')
+        .replace(/\b(coefficient|area|depth|timestep):/g, '<span style="color:#c792ea">$1:</span>');
+    }
+
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    async function runDemo() {
+      const body = document.getElementById('terminal-body');
+      body.innerHTML = '';
+      for (const line of LINES) {
+        // Input row
+        const row = document.createElement('div');
+        row.className = 't-line';
+        const prompt = document.createElement('span');
+        prompt.className = 't-prompt'; prompt.textContent = 'irb> ';
+        const code = document.createElement('span');
+        code.className = 't-code';
+        const cur = document.createElement('span');
+        cur.className = 't-cursor';
+        row.append(prompt, code, cur);
+        body.appendChild(row);
+
+        // Type characters, then apply highlight when done
+        let typed = '';
+        for (const ch of line.code) {
+          typed += ch;
+          code.textContent = typed;
+          await sleep(28);
+        }
+        cur.remove();
+        code.innerHTML = highlight(line.code);
+        await sleep(380);
+
+        // Output row
+        const out = document.createElement('div');
+        out.className = 't-out';
+        out.style.cssText = 'opacity:0;transition:opacity 0.3s;padding-left:0;display:flex;flex-wrap:wrap;align-items:baseline;';
+        out.innerHTML = '     ' + line.out.map(p =>
+          `<span style="color:${COLORS[p.t]};font-weight:${p.t==='num'?'600':'400'}">${p.v}</span>`
+        ).join('');
+        body.appendChild(out);
+        requestAnimationFrame(() => requestAnimationFrame(() => out.style.opacity = '1'));
+        await sleep(750);
+      }
+
+      // Blinking cursor at end
+      const endRow = document.createElement('div');
+      endRow.className = 't-line';
+      const ep = document.createElement('span'); ep.className = 't-prompt'; ep.textContent = 'irb> ';
+      const ec = document.createElement('span'); ec.className = 't-cursor';
+      endRow.append(ep, ec);
+      body.appendChild(endRow);
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { obs.disconnect(); runDemo(); }
+    }, { threshold: 0.2 });
+    obs.observe(document.getElementById('terminal-body'));
+  })();
+
+  function copyInstall() {
+    navigator.clipboard.writeText('gem install smo_flow').then(() => {
+      const hint = document.getElementById('copy-hint');
+      hint.textContent = 'copied!';
+      setTimeout(() => { hint.textContent = 'click to copy'; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
