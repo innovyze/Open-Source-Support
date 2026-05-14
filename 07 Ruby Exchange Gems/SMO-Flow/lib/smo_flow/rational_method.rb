@@ -4,6 +4,9 @@ module SmoFlow
   # Calculates surface runoff flow using the Rational Method.
   # Supports flow from rainfall intensity, rainfall depth, and timestep-based calculations.
   class RationalMethod
+    DEPTH_MUST_BE_POSITIVE    = "Depth must be positive"
+    TIMESTEP_MUST_BE_POSITIVE = "Timestep must be positive"
+
     attr_reader :coefficient, :area
 
     def initialize(coefficient:, area:)
@@ -21,23 +24,23 @@ module SmoFlow
 
     # Q = 10 × C × A × d / Δt  →  returns m³/s
     def flow_from_depth(depth:, timestep:)
-      raise InvalidInput, "Depth must be positive"    unless depth.positive?
-      raise InvalidInput, "Timestep must be positive" unless timestep.positive?
+      raise InvalidInput, DEPTH_MUST_BE_POSITIVE    unless depth.positive?
+      raise InvalidInput, TIMESTEP_MUST_BE_POSITIVE unless timestep.positive?
 
       (10.0 * coefficient * area * depth) / timestep
     end
 
     # Convert depth (mm) over a timestep (s) to intensity (mm/hr)
     def depth_to_intensity(depth:, timestep:)
-      raise InvalidInput, "Depth must be positive"    unless depth.positive?
-      raise InvalidInput, "Timestep must be positive" unless timestep.positive?
+      raise InvalidInput, DEPTH_MUST_BE_POSITIVE    unless depth.positive?
+      raise InvalidInput, TIMESTEP_MUST_BE_POSITIVE unless timestep.positive?
 
       (depth / timestep) * 3600.0
     end
 
     # Runoff volume for a timestep in m³
     def volume(depth:)
-      raise InvalidInput, "Depth must be positive" unless depth.positive?
+      raise InvalidInput, DEPTH_MUST_BE_POSITIVE unless depth.positive?
 
       10.0 * coefficient * area * depth
     end
