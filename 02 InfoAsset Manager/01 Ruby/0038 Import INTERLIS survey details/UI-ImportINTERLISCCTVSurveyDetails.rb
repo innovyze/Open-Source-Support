@@ -29,7 +29,7 @@ def process_xml(file_path)
   video_bezeichnung_by_objekt = {}
 
   ## Iterate through each 'Datei' element to extract Bezeichnung values
- # XPath.each(xml_doc, '//VSA_KEK_2020_LV95.KEK.Datei') do |node|
+  #XPath.each(xml_doc, '//VSA_KEK_2020_LV95.KEK.Datei') do |node|
   XPath.each(xml_doc, '//*[contains(local-name(), ".KEK.Datei")]') do |node|
     art = XPath.first(node, 'Art')&.text
     objekt = XPath.first(node, 'Objekt')&.text
