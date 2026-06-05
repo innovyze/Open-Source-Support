@@ -87,7 +87,7 @@ The survey table must include `id` and `date_completed` fields; the script exits
 - All **WSStructure** (blob) fields are copied row-by-row. **Resource** and **materials** blobs are then adjusted on each row: matching `actual*` values are copied to their `estimated*` counterparts and **all `actual*` fields** are left blank.
 - On the main survey object, `estimated_duration` and `estimated_cost` are set from the source survey’s `actual_duration` and `actual_cost` when those fields exist.
 - `date_planned` on the new survey is set to the prompted value.
-- If a survey with the target ID already exists, that asset is skipped.
+- If one or more target IDs already exist, an upfront **Duplicate Survey IDs** prompt shows how many are affected and offers three choices: **skip all duplicates**, **create suffixed IDs for all** (`_1`, `_2`, … — first free suffix per asset), or **ask for each duplicate** individually. Assets whose base ID is free are unaffected and still use `{asset_id}-{date_planned}`.
 
 ### Fields left blank on the new survey
 

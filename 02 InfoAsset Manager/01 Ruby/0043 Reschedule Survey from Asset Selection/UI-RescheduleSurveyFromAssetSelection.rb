@@ -321,6 +321,85 @@ def format_date_for_id(date_value)
   end
 end
 
+def survey_row_exists?(net, survey_table, survey_id)
+  !net.row_object(survey_table, survey_id).nil?
+end
+
+def next_suffixed_survey_id(net, survey_table, base_id)
+  suffix = 1
+  loop do
+    candidate = "#{base_id}_#{suffix}"
+    return candidate unless survey_row_exists?(net, survey_table, candidate)
+
+    suffix += 1
+    if suffix > 999
+      raise "Could not find a free survey ID for '#{base_id}' (checked _1 to _999)."
+    end
+  end
+end
+
+DUPLICATE_ID_POLICY_LABELS = [
+  'Skip all duplicates',
+  'Create with suffix (_1, _2, ...) for all duplicates',
+  'Ask for each duplicate'
+].freeze
+
+DUPLICATE_ID_POLICIES = {
+  'Skip all duplicates' => :skip_all,
+  'Create with suffix (_1, _2, ...) for all duplicates' => :suffix_all,
+  'Ask for each duplicate' => :ask_each
+}.freeze
+
+def duplicate_id_policy_description(policy)
+  case policy
+  when :skip_all then 'skip all duplicates'
+  when :suffix_all then 'create suffixed IDs for all duplicates'
+  when :ask_each then 'ask for each duplicate'
+  else 'use base ID'
+  end
+end
+
+def prompt_duplicate_id_policy(duplicate_count, create_count, date_planned_id)
+  summary = "#{duplicate_count} of #{create_count} planned survey(s) already have the target ID " 
+  detail = "{asset_id}-#{date_planned_id}."
+
+  val = WSApplication.prompt(
+    'Duplicate Survey IDs',
+    [
+      [summary, 'Readonly', detail],
+      ['How should duplicates be handled?', 'String',
+       'Create with suffix (_1, _2, ...) for all duplicates', nil, 'LIST',
+       DUPLICATE_ID_POLICY_LABELS]
+    ],
+    false
+  )
+  return nil if val.nil?
+
+  DUPLICATE_ID_POLICIES[val[1].to_s]
+end
+
+def resolve_new_survey_id_with_policy(net, survey_table, base_id, asset_table, asset_id, duplicate_policy)
+  return base_id unless survey_row_exists?(net, survey_table, base_id)
+
+  case duplicate_policy
+  when :skip_all
+    nil
+  when :suffix_all
+    next_suffixed_survey_id(net, survey_table, base_id)
+  when :ask_each
+    confirm = WSApplication.message_box(
+      "Survey '#{base_id}' already exists for #{asset_table} '#{asset_id}'.\n\n" \
+      "Create another survey using the next available ID (#{base_id}_1, #{base_id}_2, ...)?",
+      'YesNo', '?', false
+    )
+    return nil unless confirm == 'Yes'
+
+    next_suffixed_survey_id(net, survey_table, base_id)
+  else
+    nil
+  end
+end
+
 def normalize_prompt_date(date_value)
   case date_value
   when DateTime
@@ -903,6 +982,35 @@ end.map(&:name)
 #end
 #puts ''
 
+assets_to_create = selected_assets.select do |asset|
+  asset_id = asset_row_id(asset)
+  source = latest_completed_by_asset[asset_id]
+  next false unless source
+
+  has_incomplete = incomplete_by_asset[asset_id].any?
+  !(has_incomplete && !create_when_incomplete)
+end
+
+duplicate_id_assets = assets_to_create.select do |asset|
+  base_id = "#{asset_row_id(asset)}-#{date_planned_id}"
+  survey_row_exists?(net, survey_table, base_id)
+end
+
+duplicate_id_policy = nil
+unless duplicate_id_assets.empty?
+  duplicate_id_policy = prompt_duplicate_id_policy(
+    duplicate_id_assets.size, assets_to_create.size, date_planned_id
+  )
+  if duplicate_id_policy.nil?
+    puts 'Script cancelled - duplicate ID policy not chosen.'
+    exit
+  end
+
+  puts "Duplicate ID policy: #{duplicate_id_policy_description(duplicate_id_policy)} " \
+       "(#{duplicate_id_assets.size} asset(s))"
+  puts ''
+end
+
 net.transaction_begin
 
 selected_assets.each do |asset|
@@ -926,10 +1034,17 @@ selected_assets.each do |asset|
     next
   end
 
-  new_id = "#{asset_id}-#{date_planned_id}"
+  base_id = "#{asset_id}-#{date_planned_id}"
+  new_id  = if survey_row_exists?(net, survey_table, base_id)
+              resolve_new_survey_id_with_policy(
+                net, survey_table, base_id, asset_table, asset_id, duplicate_id_policy
+              )
+            else
+              base_id
+            end
 
-  if net.row_object(survey_table, new_id)
-    puts "SKIP: #{asset_table} '#{asset_id}' - survey '#{new_id}' already exists."
+  if new_id.nil?
+    puts "SKIP: #{asset_table} '#{asset_id}' - survey '#{base_id}' already exists."
     skipped_exists += 1
     next
   end
@@ -948,7 +1063,8 @@ selected_assets.each do |asset|
 
     new_survey.write
 
-    puts "OK: #{asset_id} - copied completed survey '#{source.id}' (#{survey_recency_label(source, recency_fields, survey_field_defs)}) -> '#{new_id}'"
+    id_note = new_id == base_id ? '' : " [requested ID '#{base_id}' already existed]"
+    puts "OK: #{asset_id} - copied completed survey '#{source.id}' (#{survey_recency_label(source, recency_fields, survey_field_defs)}) -> '#{new_id}'#{id_note}"
     created += 1
   rescue StandardError => e
     puts "ERROR: #{asset_id} - #{e.message}"
@@ -963,5 +1079,5 @@ elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
 puts ''
 puts "Done. #{created} survey(s) created, #{skipped_no_source} asset(s) without a completed source survey, " \
      "#{skipped_incomplete} skipped (incomplete related survey(s), user declined), " \
-     "#{skipped_exists} skipped (ID already exists), #{errors} error(s)."
+     "#{skipped_exists} skipped (duplicate ID), #{errors} error(s)."
 puts "Time taken: #{Time.at(elapsed).utc.strftime('%H:%M:%S')}"
