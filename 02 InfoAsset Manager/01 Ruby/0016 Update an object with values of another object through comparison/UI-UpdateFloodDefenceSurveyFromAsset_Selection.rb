@@ -116,7 +116,7 @@ else
     survey.user_text_15 = asset.user_text_12
     survey.priority     = asset.user_text_16
     survey.user_text_14 = asset.owner
-    survey.user_text_7  = asset.maintained_by
+    survey.user_text_7  = asset.user_text_4
 
     survey.write
 

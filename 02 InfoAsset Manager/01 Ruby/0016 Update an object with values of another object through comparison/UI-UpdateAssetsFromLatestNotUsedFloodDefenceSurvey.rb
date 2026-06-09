@@ -127,13 +127,13 @@ else
 
       # -- Copy survey fields to asset -----------------------------------------
       asset.survey_date     = survey.survey_date
-      asset.material        = survey.user_text_4
+      asset.user_text_9     = survey.user_text_4
       asset.user_text_5     = survey.user_text_5
       asset.user_text_6     = survey.user_text_6
       asset.user_text_7     = survey.user_text_3
       asset.user_number_1   = survey.user_number_1
-      asset.location        = survey.location
-      asset.name            = survey.user_text_8
+      asset.user_text_3     = survey.location
+      asset.user_text_8     = survey.user_text_8
       asset.user_text_4     = survey.repeat_period
       asset.user_text_1     = survey.user_text_1
       asset.user_text_9     = survey.user_text_9
