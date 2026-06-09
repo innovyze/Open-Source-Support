@@ -486,9 +486,11 @@ def apply_actual_to_estimated_on_main(source, target, survey_field_map)
   MAIN_ESTIMATED_FROM_ACTUAL.each do |actual, estimated|
     next unless survey_field_map.key?(actual) && survey_field_map.key?(estimated)
 
-    target[estimated] = source[actual]
-  rescue StandardError => e
-    puts "  WARNING: could not set #{estimated} from #{actual}: #{e.message}"
+    begin
+      target[estimated] = source[actual]
+    rescue StandardError => e
+      puts "  WARNING: could not set #{estimated} from #{actual}: #{e.message}"
+    end
   end
 end
 
@@ -534,9 +536,11 @@ def transform_resource_materials_blobs(survey, survey_field_defs)
       end
     end
 
-    blob.write
-  rescue StandardError => e
-    puts "  WARNING: could not transform blob '#{field_def.name}': #{e.message}"
+    begin
+      blob.write
+    rescue StandardError => e
+      puts "  WARNING: could not transform blob '#{field_def.name}': #{e.message}"
+    end
   end
 end
 
@@ -545,9 +549,11 @@ def apply_cleared_fields_on_new(survey, survey_field_map)
     field_def = survey_field_map[field_name]
     next unless field_def
 
-    survey[field_name] = blank_value_for_field(field_def)
-  rescue StandardError => e
-    puts "  WARNING: could not clear '#{field_name}' on new survey: #{e.message}"
+    begin
+      survey[field_name] = blank_value_for_field(field_def)
+    rescue StandardError => e
+      puts "  WARNING: could not clear '#{field_name}' on new survey: #{e.message}"
+    end
   end
 end
 
