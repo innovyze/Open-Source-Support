@@ -29,6 +29,10 @@ Some scripts in this repository might have `UIIE` at the start of the filename, 
 ### IExchange in the InfoAsset Manager Help
 More information can be found in the online InfoAsset Manager Help [https://help.autodesk.com/view/INFOAMAN/2026/ENU/](https://help.autodesk.com/view/INFOAMAN/2026/ENU/?guid=GUID-07343E64-0B0E-4307-A2C0-1AB967D516C0).  
 
+## AI-assisted scripting context
+
+The [`03 Context/`](../03%20Context/) folder contains LLM-oriented reference files for IAM Ruby scripting — API class reference, schema tables, production patterns, error reference, and load-order instructions. Load `Instructions.md` first when using an AI coding assistant for IAM Ruby work.
+
 ## Note
 See the README in the top-level of the [Innovyze/Open-Source-Support repository](https://github.com/innovyze/Open-Source-Support/tree/main) for more information.  
 † Third-party application, this is not an endorsement.  
