@@ -1,35 +1,7 @@
-# Select objects from multiple CAMS asset tables where a field matches a value.
+# Select objects from any object table in the open network where a field matches a value.
 # Run from InfoAsset Manager: Network -> Run Ruby Script...
 
 net = WSApplication.current_network
-
-ASSET_TABLES = %w[
-  cams_channel
-  cams_connection_node
-  cams_connection_pipe
-  cams_data_logger
-  cams_defence_area
-  cams_defence_structure
-  cams_flume
-  cams_general_asset
-  cams_general_line
-  cams_generator
-  cams_manhole
-  cams_orifice
-  cams_outlet
-  cams_pipe
-  cams_pump
-  cams_pump_station
-  cams_screen
-  cams_siphon
-  cams_sluice
-  cams_storage
-  cams_wtw
-  cams_ancillary
-  cams_valve
-  cams_vortex
-  cams_weir
-].freeze
 
 def prompt_true?(value)
   value == true || value.to_s.downcase == 'true'
@@ -70,49 +42,40 @@ def value_matches?(actual, search_value, field: nil, wildcard: false)
   end
 end
 
-def table_display_name(net, table_name)
-  net.table(table_name).description.to_s.strip
+def table_display_name(table)
+  table.description.to_s.strip
 end
 
-def table_prompt_label(net, table_name)
-  description = table_display_name(net, table_name)
-  description.empty? ? table_name : "#{description} (#{table_name})"
+def table_prompt_label(table)
+  description = table_display_name(table)
+  description.empty? ? table.name : "#{description} (#{table.name})"
 end
 
-def table_sort_key(net, table_name)
-  description = table_display_name(net, table_name)
-  (description.empty? ? table_name : description).downcase
+def table_sort_key(table)
+  description = table_display_name(table)
+  (description.empty? ? table.name : description).downcase
 end
 
-network_table_names = {}
-net.tables.each { |t| network_table_names[t.name] = true }
-
-present_tables = ASSET_TABLES
-  .select { |name| network_table_names.key?(name) }
-  .sort_by { |name| table_sort_key(net, name) }
-missing_tables = ASSET_TABLES - present_tables
-
-unless missing_tables.empty?
-  puts "Note: #{missing_tables.size} asset table(s) are not present in this network:"
-  missing_tables.each { |t| puts "  #{t}" }
-  puts ''
-end
+present_tables = net.tables.sort_by { |t| table_sort_key(t) }
 
 if present_tables.empty?
   WSApplication.message_box(
-    'No CAMS asset tables were found in the current network.',
+    'No object tables were found in the current network.',
     'OK', '!', false
   )
   exit
 end
 
-# ---------------------------------------------------------------------------
-# Prompt 1: select asset tables to search
-# ---------------------------------------------------------------------------
-table_prompt = [['Select / deselect all asset tables', 'Boolean', false]]
-present_tables.each { |table| table_prompt << [table_prompt_label(net, table), 'Boolean', false] }
+puts "#{present_tables.size} object table(s) available in this network."
+puts ''
 
-table_val = WSApplication.prompt('Select Asset Tables', table_prompt, false)
+# ---------------------------------------------------------------------------
+# Prompt 1: select object tables to search
+# ---------------------------------------------------------------------------
+table_prompt = [['Select / deselect all object tables', 'Boolean', false]]
+present_tables.each { |table| table_prompt << [table_prompt_label(table), 'Boolean', false] }
+
+table_val = WSApplication.prompt('Select Object Tables', table_prompt, false)
 
 if table_val.nil?
   puts 'Script cancelled by user (table selection).'
@@ -122,16 +85,16 @@ end
 select_all = table_val[0]
 selected_tables = []
 present_tables.each_with_index do |table, idx|
-  selected_tables << table if prompt_true?(select_all) || prompt_true?(table_val[idx + 1])
+  selected_tables << table.name if prompt_true?(select_all) || prompt_true?(table_val[idx + 1])
 end
 
 if selected_tables.empty?
-  WSApplication.message_box('No asset tables were selected.', 'OK', '!', false)
+  WSApplication.message_box('No object tables were selected.', 'OK', '!', false)
   puts 'Script cancelled - no tables selected.'
   exit
 end
 
-puts "Selected #{selected_tables.size} asset table(s): #{selected_tables.join(', ')}"
+puts "Selected #{selected_tables.size} object table(s): #{selected_tables.join(', ')}"
 puts ''
 
 # ---------------------------------------------------------------------------
