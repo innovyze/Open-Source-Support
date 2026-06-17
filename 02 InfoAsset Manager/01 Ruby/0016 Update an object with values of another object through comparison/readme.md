@@ -42,7 +42,7 @@ The link between survey and asset is stored on the survey itself: `user_text_39`
 | `location` | `location` |
 | `name` | `user_text_8` |
 | `condition_grade` | `condition_grading_score` |
-| `notes` | Appended: existing notes + survey date (yyyy-mm-dd hh:mm) + survey notes |
+| `notes` | Appended: existing notes + survey date (yyyy-mm-dd hh:mm) + survey notes. Skipped entirely if the survey notes field is blank. |
 
 **Fields updated on the survey itself:**
 

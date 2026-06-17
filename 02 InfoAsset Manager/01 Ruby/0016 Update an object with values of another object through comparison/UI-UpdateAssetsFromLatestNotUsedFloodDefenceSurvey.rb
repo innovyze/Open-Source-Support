@@ -9,6 +9,8 @@
 # Run from: Network > Run Ruby Script (with a Collection Network open)
 # ============================================================================
 
+require 'date'
+
 startingTime = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
 net = WSApplication.current_network
@@ -140,11 +142,13 @@ else
       asset.user_text_10    = survey.user_text_11
       asset.condition_grade = survey.condition_grading_score
 
-      # Append survey date and notes to existing asset notes, mirroring:
-      # notes = notes + nl() + survey_date + nl() + survey.notes
-      existing_notes = asset.notes.to_s
-      survey_notes   = survey.notes.to_s
-      asset.notes    = existing_notes.empty? ? "#{date_str}\r\n#{survey_notes}" : "#{existing_notes}\r\n#{date_str}\r\n#{survey_notes}"
+      # Append survey date and notes to existing asset notes only when the
+      # survey has notes to contribute — skipped entirely if survey notes blank.
+      survey_notes = survey.notes.to_s.strip
+      unless survey_notes.empty?
+        existing_notes = asset.notes.to_s
+        asset.notes    = existing_notes.empty? ? "#{date_str}\r\n#{survey_notes}" : "#{existing_notes}\r\n#{date_str}\r\n#{survey_notes}"
+      end
 
       asset.write
 
