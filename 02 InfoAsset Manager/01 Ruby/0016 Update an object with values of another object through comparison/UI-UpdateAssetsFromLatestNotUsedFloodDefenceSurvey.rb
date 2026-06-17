@@ -43,7 +43,7 @@ ASSET_TYPE_MAP = {
 }.freeze
 
 # ---------------------------------------------------------------------------
-# Pass 1: scan ALL flood defence surveys (processed or not) and track the
+# Pass 1: scan selected flood defence surveys (processed or not) and track the
 # single latest survey per (cams_table, asset_id) by survey_date, regardless
 # of used_in_network status.  A separate hash records whether that latest
 # survey is still unprocessed — only those assets will be updated.
@@ -54,7 +54,7 @@ ASSET_TYPE_MAP = {
 all_latest   = Hash.new { |h, k| h[k] = {} }
 skipped_type = []
 
-net.row_objects('cams_flood_defence_survey').each do |survey|
+net.row_objects_selection('cams_flood_defence_survey').each do |survey|
   raw_type = survey.user_text_40
   asset_id = survey.user_text_39
   next if raw_type.nil? || raw_type.strip.empty?
