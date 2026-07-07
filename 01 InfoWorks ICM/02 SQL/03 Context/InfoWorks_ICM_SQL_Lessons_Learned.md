@@ -3,23 +3,25 @@
 **Purpose:** High-priority warnings about InfoWorks ICM SQL behavior that differs from standard SQL. Load this FIRST before generating any query.
 
 **Load Priority:** CRITICAL - Always load FIRST before any code generation
-**Last Updated:** March 18, 2026
+**Last Updated:** July 7, 2026
 
 ## How to Use This File
 
-**For LLMs:** Read this file FIRST before generating any InfoWorks ICM SQL query. It contains critical anti-patterns and gotchas that will cause queries to fail. After reading this file, proceed to:
-1. `InfoWorks_ICM_SQL_Function_Reference.md` - For function signatures and aggregates
-2. `InfoWorks_ICM_SQL_Pattern_Reference.md` - For working code templates
-3. `InfoWorks_ICM_SQL_Syntax_Reference.md` - For language syntax and data types
-4. `InfoWorks_ICM_SQL_Schema_Common.md` - For correct database field names, IW vs SWMM differences, and Autodesk Help lookup workflow
-5. `InfoWorks_ICM_SQL_Tutorial_Context.md` - For complete examples and workflows
-6. `InfoWorks_ICM_SQL_Error_Reference.md` - When debugging errors
-7. `InfoWorks_ICM_SQL_Glossary.md` - For terminology clarification
+**For LLMs:** Read this file FIRST before generating any InfoWorks ICM SQL query. It contains critical anti-patterns and gotchas that will cause queries to fail. After reading this file, load additional files per `Instructions.md`. Typical follow-on files:
+1. `InfoWorks_ICM_SQL_Pattern_Reference.md` - For working code templates
+2. `InfoWorks_ICM_SQL_Schema_InfoWorks.md` or `InfoWorks_ICM_SQL_Schema_SWMM.md` - Network-specific field tables (assume InfoWorks when unspecified)
+3. `InfoWorks_ICM_SQL_Schema_Common.md` - Always paired with the network schema file
+4. `InfoWorks_ICM_SQL_Syntax_Reference.md` - For language syntax and data types
+5. `InfoWorks_ICM_SQL_Function_Reference.md` - For function signatures and aggregates
+6. `InfoWorks_ICM_Database_Fields_Guide.md` - MCP Help lookup when field not in schema files
+7. `InfoWorks_ICM_SQL_Tutorial_Context.md` - For complete examples and workflows
+8. `InfoWorks_ICM_SQL_Error_Reference.md` - When debugging errors
+9. `InfoWorks_ICM_SQL_Glossary.md` - For terminology clarification
 
 **Cross-References:**
-- See `Function_Reference.md` for complete function signatures
-- See `Pattern_Reference.md` for PAT_SQL_INIT_001, PAT_SQL_SEL_004 examples
-- See `Error_Reference.md` for detailed error message diagnosis
+- See `InfoWorks_ICM_SQL_Function_Reference.md` for complete function signatures
+- See `InfoWorks_ICM_SQL_Pattern_Reference.md` for PAT_SQL_INIT_001, PAT_SQL_SEL_004 examples
+- See `InfoWorks_ICM_SQL_Error_Reference.md` for detailed error message diagnosis
 
 ---
 
@@ -61,12 +63,12 @@ CREATE FUNCTION my_func(x REAL) RETURNS REAL
 
 ### LLM Agent Rules
 
-1. **NEVER use** CASE WHEN - use `IF/ELSEIF/ELSE/ENDIF` or `IIF()` instead
+1. **NEVER use** CASE WHEN — use `IIF()` for field conditionals; `IF/ELSEIF/ELSE/ENDIF` only with scalar conditions (`$x`)
 2. **NEVER use** JOIN - use dot notation navigation instead (e.g., `us_node.ground_level`)
 3. **NEVER use** subqueries - use variables and multiple clauses instead
 4. **NEVER use** UNION, INTERSECT, EXCEPT, window functions, CREATE TABLE, ALTER TABLE
 5. **NEVER use** BEGIN/COMMIT/ROLLBACK transactions
-6. **NEVER use** IS NULL / IS NOT NULL for comparisons (use `= NULL` / `<> NULL`) — but note `IS NULL` and `IS NOT NULL` do work as unary operators for testing
+6. For NULL tests, use `IS NULL` / `IS NOT NULL` (unary) or `= NULL` / `<> NULL` (equality) — both are supported; see NULL Comparison Behavior below
 
 ---
 
@@ -95,22 +97,27 @@ SET user_text_1 = IIF(conduit_width >= 600, 'Large',
                   IIF(conduit_width >= 300, 'Medium', 'Small'));
 ```
 
-**What WORKS - For procedural logic, use IF blocks:**
+**What WORKS - Procedural IF (scalar conditions only; see PAT_SQL_MOD_013 for full loop):**
 ```sql
-// CORRECT - IF/ELSEIF/ELSE/ENDIF
-IF conduit_width >= 600;
-    SET user_text_1 = 'Large';
-ELSEIF conduit_width >= 300;
-    SET user_text_1 = 'Medium';
-ELSE;
-    SET user_text_1 = 'Small';
+SELECT conduit_width INTO $width WHERE oid = $current_oid;
+IF $width >= 600;
+    SET user_text_1 = 'Large' WHERE oid = $current_oid;
 ENDIF;
+```
+
+**What FAILS - Fields in IF/ELSEIF/WHILE** (runtime error: *Fields may not be used in IF, ELSEIF or WHILE clauses*):
+```sql
+// WRONG
+IF user_number_1 IS NULL; SET user_number_1 = 0; ELSE; SET user_number_1 = user_number_1 + 1; ENDIF;
+
+// CORRECT — use IIF in SET
+SET user_number_1 = IIF(user_number_1 IS NULL, 0, user_number_1 + 1);
 ```
 
 ### LLM Agent Rules
 
-1. **Use `IIF(condition, true_value, false_value)`** for inline conditionals
-2. **Use `IF condition; ... ELSEIF condition; ... ELSE; ... ENDIF;`** for procedural logic
+1. **Use `IIF()`** for field-based conditionals in `SET` or `SELECT`
+2. **`IF` / `ELSEIF` / `WHILE` conditions: scalars only** (`$x`) — never object fields; use `SELECT ... INTO $var` first if needed
 3. **Semicolons are required** after IF, ELSEIF, ELSE, and ENDIF
 
 ---
@@ -313,7 +320,7 @@ LIST $empty_list STRING;           // Empty string list for later population
 2. **LIST** for list variables: `LIST $name = val1, val2, val3;` or `LIST $name STRING;`
 3. **Object variables** (per-object) are auto-created: `SET $my_flag = 1;` creates `$my_flag` for each object
 4. **LET can only assign constant values** — `LET $x = $y + 1;` works only with scalar expressions of already-defined scalars, not field values
-5. **SELECT INTO** assigns query results to scalars: `SELECT COUNT(*) INTO $n;`
+5. **SELECT INTO** assigns results to scalars or lists: `SELECT COUNT(*) INTO $n;`, `SELECT DISTINCT oid INTO $oids;`
 
 ---
 
@@ -360,9 +367,9 @@ SELECT us_node_id, ds_node_id, conduit_width, length FROM Conduit;
 
 ### LLM Agent Rules
 
-1. **ALWAYS ask** if the user is working with InfoWorks or SWMM network type
-2. **ALWAYS use** the "Database field" name, not the "Field Name" from the UI
-3. See `InfoWorks_ICM_SQL_Schema_Common.md` for the workflow to find correct field names
+1. **Assume InfoWorks** when network type is unspecified (`Instructions.md`); ask only if context is mixed or ambiguous
+2. **ALWAYS use** the "Database field" name, not the UI "Field Name"
+3. Field lookup: network schema + `InfoWorks_ICM_SQL_Schema_Common.md`; unknown fields → `InfoWorks_ICM_Database_Fields_Guide.md`
 
 ---
 
@@ -425,7 +432,7 @@ SELECT WHERE ground_level <> NULL;    // True only if ground_level IS NOT NULL
 
 ### LLM Agent Rules
 
-1. **Both `IS NULL` and `= NULL` work** for testing NULL values
+1. **Both `IS NULL` and `= NULL` work** for testing NULL values — including in compound WHERE expressions with `AND` / `OR`
 2. **Any operation with NULL returns NULL** (3-valued logic) except the special cases above
 3. **Boolean fields are NEVER NULL** from SQL's perspective — NULL Booleans are treated as `false`
 4. **Empty strings are different from NULL** — a text field can be `''` (empty) or NULL (blank/absent)

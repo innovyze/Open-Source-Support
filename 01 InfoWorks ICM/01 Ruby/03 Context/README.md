@@ -4,23 +4,32 @@ This folder contains LLM-optimized context files for InfoWorks ICM Ruby scriptin
 
 ## For LLMs/AI Systems
 
-**Start with:** `Instructions.md` - Contains file loading priorities, decision trees, and token budget guidance.
+**Start with:** `Instructions.md` - Contains file loading priorities, query-type routing, and token budget guidance.
 
 ## For Human Developers
 
 **Learning Ruby for InfoWorks?** See `00 Reference/Ruby_Fundamentals.md` for Ruby basics.
 
-**Need full API documentation?** See `00 Reference/Exchange.pdf` for complete reference.
+**Need full API documentation?** See `00 Reference/ruby_icm_help.md` for the complete Ruby API reference.
+
+**Need table names for a network?** Load `InfoWorks_ICM_Ruby_Database_Reference.md` (InfoWorks or SWMM section only).
+
+**Need field names for a network object?** Use `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` for MCP Help lookup; table names and Data Fields Topics are in `InfoWorks_ICM_Ruby_Database_Reference.md`.
+
+**Looking for working examples?** Browse the example scripts in:
+- `../01 InfoWorks/` - InfoWorks network Ruby scripts
+- `../02 SWMM/` - SWMM network Ruby scripts
 
 ## File Overview
 
 | File | Purpose |
 |------|---------|
-| `Instructions.md` | LLM loading guide, token budgets, decision trees |
+| `Instructions.md` | LLM loading guide, token budgets, query-type routing |
 | `InfoWorks_ICM_Ruby_Lessons_Learned.md` | Critical anti-patterns and gotchas |
 | `InfoWorks_ICM_Ruby_API_Reference.md` | Method signatures and parameters |
-| `InfoWorks_ICM_Ruby_Pattern_Reference.md` | 57 reusable code templates |
+| `InfoWorks_ICM_Ruby_Pattern_Reference.md` | 61 reusable code templates (PAT_XXX_NNN, gap at 045) |
 | `InfoWorks_ICM_Ruby_Database_Reference.md` | Table names and Model Object Types |
+| `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` | MCP Help lookup for field names; UI label vs database field |
 | `InfoWorks_ICM_Ruby_Tutorial_Context.md` | Complete workflow examples |
 | `InfoWorks_ICM_Ruby_Error_Reference.md` | Error diagnosis and solutions |
 | `InfoWorks_ICM_Ruby_Glossary.md` | InfoWorks terminology definitions |
@@ -59,4 +68,4 @@ This documentation exists because **John Styles** and team built something remar
 
 Every script you write using `WSApplication`, `WSStructure`, or row object iteration stands on that foundation. If the examples make you smile, that's John's legacy.
 
-**Last Updated:** January 16, 2026
+**Last Updated:** July 7, 2026

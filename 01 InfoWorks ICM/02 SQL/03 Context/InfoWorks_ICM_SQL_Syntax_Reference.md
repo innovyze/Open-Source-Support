@@ -1,7 +1,7 @@
 # InfoWorks ICM SQL Syntax & Language Reference for LLM Agents
 
 **Source:** SQL Combined Help Documentation
-**Last Updated:** March 18, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** CORE - Load for syntax questions, data type behavior, and join navigation
 **Load Condition:** CONDITIONAL - When query involves syntax details, data types, implicit joins, operators, or advanced clause structure
@@ -19,13 +19,16 @@ This guide provides **language syntax and data model reference** for InfoWorks I
 - Understand bare array field vs. aggregate function interaction rules
 - Reference SELECT clause types (explicit, GROUP BY, implicit GROUP BY)
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_SQL_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_SQL_Lessons_Learned.md` - Read FIRST - Critical gotchas
 - `InfoWorks_ICM_SQL_Function_Reference.md` - Function signatures and aggregates
 - `InfoWorks_ICM_SQL_Pattern_Reference.md` - Working code templates
-- `InfoWorks_ICM_SQL_Schema_Common.md` - Database field name lookups, IW vs SWMM differences, Autodesk Help workflow
+- `InfoWorks_ICM_SQL_Schema_InfoWorks.md` - InfoWorks network field tables (with `InfoWorks_ICM_SQL_Schema_Common.md`)
+- `InfoWorks_ICM_SQL_Schema_SWMM.md` - SWMM network field tables (with `InfoWorks_ICM_SQL_Schema_Common.md`)
+- `InfoWorks_ICM_SQL_Schema_Common.md` - Common fields, results rules, IW vs SWMM differences
+- `InfoWorks_ICM_Database_Fields_Guide.md` - MCP Help lookup when field not in schema files
 - `InfoWorks_ICM_SQL_Error_Reference.md` - Error message diagnosis
 
 ---
@@ -473,37 +476,15 @@ Queries are typically developed on a single network then run cross-network.
 
 ---
 
-## Common Field Names - Quick Reference
+## Field Name Lookups
 
-**IMPORTANT:** InfoWorks and SWMM networks use **different field names**. See `InfoWorks_ICM_SQL_Schema_Common.md` for the complete workflow to find correct field names.
+InfoWorks and SWMM networks use **different field names**. Do not duplicate field lists here — use the schema files:
 
-### Universal Fields (All Objects)
-- `oid` — Unique object identifier (read-only)
-- `user_text_1` through `user_text_10` — Custom text fields
-- `user_number_1` through `user_number_10` — Custom numeric fields
+| Need | File |
+|------|------|
+| Universal/common fields (`user_text_*`, `user_number_*`, navigation paths) | `InfoWorks_ICM_SQL_Schema_Common.md` |
+| InfoWorks object fields (`hw_*`) | `InfoWorks_ICM_SQL_Schema_InfoWorks.md` + `InfoWorks_ICM_SQL_Schema_Common.md` |
+| SWMM object fields (`sw_*`) | `InfoWorks_ICM_SQL_Schema_SWMM.md` + `InfoWorks_ICM_SQL_Schema_Common.md` |
+| Field not indexed locally | `InfoWorks_ICM_Database_Fields_Guide.md` Step 2 (MCP Help) |
 
-### InfoWorks Node
-`node_id`, `x`, `y`, `ground_level`, `node_type`, `flood_type`, `chamber_floor_level`, `shaft_area`
-
-### SWMM Node
-`node_id`, `x`, `y`, `ground_level`, `maximum_depth`, `initial_depth`, `surcharge_depth`
-
-### InfoWorks Conduit
-`us_node_id`, `ds_node_id`, `link_suffix`, `conduit_length`, `conduit_width`, `conduit_height`, `shape`, `conduit_material`, `system_type`, `us_invert`, `ds_invert`
-
-### SWMM Conduit
-`id`, `us_node_id`, `ds_node_id`, `length`, `conduit_width`, `conduit_height`, `shape`, `number_of_barrels`, `Mannings_N`, `us_invert`, `ds_invert`
-
-### InfoWorks Subcatchment
-`subcatchment_id`, `node_id`, `contributing_area`, `area_measurement_type`, `runoff_index`
-
-### SWMM Subcatchment
-`subcatchment_id`, `outlet_id`, `raingauge_id`, `sw_drains_to`, `area`, `width`, `catchment_slope`, `percent_impervious`
-
-### Results Fields
-- **Summary:** `sim.max_depth`, `sim.max_flow`, `sim.max_Surcharge`
-- **Time Series:** `tsr.ds_depth`, `tsr.us_depth`, `tsr.ds_flow`, `tsr.us_flow`, `tsr.us_vel`, `tsr.ds_vel`
-- **Time Series Meta:** `tsr.timestep_no`, `tsr.timesteps`, `tsr.timestep_start`, `tsr.timestep_duration`
-
-### InfoAsset Manager
-`pipe_material`, `asset_id`, `cctv_surveys.structural_grade`, `details.code`
+See `Instructions.md` for loading priorities and network-type rules (InfoWorks default when unspecified).

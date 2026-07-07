@@ -1,6 +1,6 @@
 # InfoWorks ICM SQL Pattern Reference for LLM Code Generation
 
-**Last Updated:** March 17, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** CORE - Load for code template lookup
 **Load Condition:** ALWAYS when implementing specific functionality
@@ -13,7 +13,7 @@ This is a **pattern reference guide** for LLM-assisted SQL scripting in InfoWork
 - Look up pattern IDs (PAT_SQL_XXX_NNN) referenced in other files
 - Get intent, context, and related patterns for each code template
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_SQL_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_SQL_Lessons_Learned.md` - **CRITICAL** Read FIRST
@@ -21,7 +21,7 @@ This is a **pattern reference guide** for LLM-assisted SQL scripting in InfoWork
 - `InfoWorks_ICM_SQL_Syntax_Reference.md` - Complete syntax rules
 - `InfoWorks_ICM_SQL_Schema_Common.md` - Field names used in patterns, IW vs SWMM differences
 - `InfoWorks_ICM_SQL_Tutorial_Context.md` - Complete workflow examples using these patterns
-- `InfoWorks_ICM_SQL_Error_Reference.md` - References patterns for error solutions
+- `InfoWorks_ICM_SQL_Error_Reference.md` - References patterns where applicable
 
 ## Pattern Index
 
@@ -967,7 +967,7 @@ SELECT WHERE $base_value <> user_number_1;
 ### PAT_SQL_SCENARIO_047 - Add/Drop Scenarios
 **Intent:** Create or remove scenarios programmatically.
 
-> **WARNING:** `ADD SCENARIO` and `IN SCENARIO 'name'` (for the same name) cannot appear in the same SQL block — ICM validates all scenario references before executing any statements. Split into separate, ordered scripts. See Lessons_Learned.
+> **WARNING:** `ADD SCENARIO` and `IN SCENARIO 'name'` (for the same name) cannot appear in the same SQL block — ICM validates all scenario references before executing any statements. Split into separate, ordered scripts. See `InfoWorks_ICM_SQL_Lessons_Learned.md`.
 
 ```sql
 // Add scenarios

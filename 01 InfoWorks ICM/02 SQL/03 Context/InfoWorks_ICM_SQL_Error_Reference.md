@@ -6,22 +6,22 @@
 **Load Condition:** CONDITIONAL - When query contains error/debugging keywords
 **Keywords:** error, exception, fails, broken, debugging, invalid, unrecognised, cannot
 
-**Last Updated:** March 18, 2026
+**Last Updated:** July 7, 2026
 
 ## How to Use This File
 
 **For LLMs:** Use this file to:
 - Diagnose error messages by matching symptom to cause
 - Find quick fixes for common errors
-- Identify which pattern (PAT_SQL_XXX_NNN) provides correct solution
+- Follow PAT_SQL links where provided; otherwise use inline Quick Fix or Function/Syntax references
 - Understand root causes to prevent similar errors
 
-**Prerequisite:** Many errors are prevented by reading `Lessons_Learned.md` FIRST
+**Prerequisite:** Many errors are prevented by reading `InfoWorks_ICM_SQL_Lessons_Learned.md` FIRST
 
 **Related Files:**
 - `InfoWorks_ICM_SQL_Lessons_Learned.md` - PREVENTS most errors listed here
 - `InfoWorks_ICM_SQL_Function_Reference.md` - Function signatures to verify correct usage
-- `InfoWorks_ICM_SQL_Pattern_Reference.md` - Pattern IDs referenced in solutions
+- `InfoWorks_ICM_SQL_Pattern_Reference.md` - Pattern IDs referenced in solutions where applicable
 - `InfoWorks_ICM_SQL_Syntax_Reference.md` - Correct syntax for all clause types
 
 ---
@@ -104,7 +104,7 @@ SELECT ALL FROM Node WHERE x > 0;
 
 **Symptom:** SET mixed with selection or grouping keywords
 **Cause:** Trying to combine assignment with selection in one clause
-**Solution:** Use separate clauses
+**Solution:** Use separate clauses. See PAT_SQL_MOD_009.
 
 **Quick Fix:**
 ```sql
@@ -122,7 +122,7 @@ SELECT WHERE user_number_1 = 1;
 
 **Symptom:** GROUP BY without SELECT
 **Cause:** Missing SELECT keyword before GROUP BY
-**Solution:** Add SELECT with the expressions to aggregate
+**Solution:** Add SELECT with the expressions to aggregate. See PAT_SQL_REPORT_048.
 
 ---
 
@@ -130,7 +130,7 @@ SELECT WHERE user_number_1 = 1;
 
 **Symptom:** Ordering error in GROUP BY query
 **Cause:** WHERE must come before GROUP BY
-**Solution:** Reorder: `SELECT ... WHERE ... GROUP BY ... HAVING ... ORDER BY ...`
+**Solution:** Reorder: `SELECT ... WHERE ... GROUP BY ... HAVING ... ORDER BY ...`. See PAT_SQL_REPORT_048.
 
 **Quick Fix:**
 ```sql
@@ -147,7 +147,7 @@ SELECT COUNT(*) WHERE node_type = 'manhole' GROUP BY system_type;
 
 **Symptom:** HAVING before GROUP BY
 **Cause:** HAVING must come after GROUP BY
-**Solution:** Reorder clauses
+**Solution:** Reorder clauses. See PAT_SQL_REPORT_048.
 
 ---
 
@@ -272,7 +272,7 @@ LIST $strings = '1', '2', '3';
 
 **Symptom:** LET clause rejected
 **Cause:** Trying to assign an expression involving field values or complex calculations in a LET clause
-**Solution:** LET can only assign scalar expressions (constants, other scalars). For field-based calculations, use SET or SELECT INTO.
+**Solution:** LET can only assign scalar expressions (constants, other scalars). For field-based calculations, use SET or SELECT INTO. See PAT_SQL_MOD_009.
 
 **Quick Fix:**
 ```sql
@@ -313,7 +313,7 @@ SET user_number_1 = 23;
 
 **Symptom:** Wrong number of arguments to a function
 **Cause:** Passing incorrect number of parameters
-**Solution:** Check `Function_Reference.md` for correct parameter count
+**Solution:** Check `InfoWorks_ICM_SQL_Function_Reference.md` for correct parameter count
 
 **Quick Fix:**
 ```sql
@@ -367,7 +367,7 @@ SELECT SUM(COUNT(details.*)) GROUP BY direction;
 
 **Symptom:** Function name not found
 **Cause:** Misspelled function or using a function that doesn't exist
-**Solution:** Check `Function_Reference.md` for available functions. Common mistakes: `LENGTH` (should be `LEN`), `SUBSTR` (should be `MID`), `CONCAT` (use `+`)
+**Solution:** Check `InfoWorks_ICM_SQL_Function_Reference.md` for available functions. Common mistakes: `LENGTH` (should be `LEN`), `SUBSTR` (should be `MID`), `CONCAT` (use `+`)
 
 ---
 
@@ -427,7 +427,7 @@ SELECT COUNT(*) AS [Count] GROUP BY status;
 
 **Symptom:** Field name not found
 **Cause:** Wrong field name for the current table, or using a display name instead of database field name
-**Solution:** See `InfoWorks_ICM_SQL_Schema_Common.md` for the Autodesk Help workflow. Ensure you use the correct **database field name**, not the UI display name.
+**Solution:** See `InfoWorks_ICM_Database_Fields_Guide.md` Step 2 (MCP lookup). Ensure you use the correct **database field name**, not the UI display name. See PAT_SQL_SEL_004.
 
 **Quick Fix:**
 ```sql
@@ -444,7 +444,7 @@ SELECT conduit_width FROM Conduit;
 
 **Symptom:** Asterisk used incorrectly
 **Cause:** Using `*` outside the valid aggregate contexts
-**Solution:** `*` is only valid in: `COUNT(*)`, `ANY(something.*)`, `COUNT(something.*)`
+**Solution:** `*` is only valid in: `COUNT(*)`, `ANY(something.*)`, `COUNT(something.*)`. See PAT_SQL_REPORT_048, PAT_SQL_BLOB_024.
 
 **Quick Fix:**
 ```sql
@@ -463,7 +463,7 @@ SELECT COUNT(details.*) FROM [CCTV Survey];
 
 **Symptom:** Non-list variable used where list expected
 **Cause:** Passing a scalar variable to AREF, MEMBER, RINDEX, etc.
-**Solution:** Define the variable with LIST, not LET
+**Solution:** Define the variable with LIST, not LET. See PAT_SQL_INIT_002, PAT_SQL_SEL_007.
 
 **Quick Fix:**
 ```sql
@@ -509,6 +509,8 @@ SELECT WHERE MEMBER(details.code, $codes);
 2. "Apply to current selection" is checked but target objects aren't selected
 3. Setting values in wrong scenario (add `IN CURRENT SCENARIO` or `IN BASE SCENARIO`)
 
+**Solution:** See PAT_SQL_MOD_009. Verify you are setting actual fields on selected objects in the correct scenario.
+
 ---
 
 ### Wrong Results from AVG on Time Series
@@ -523,7 +525,7 @@ SELECT WHERE MEMBER(details.code, $codes);
 
 **Symptom:** LIKE query returns unexpected results
 **Cause:** Using `%` (standard SQL) instead of `*` (InfoWorks), or trying to use `*` at the beginning
-**Solution:** See Lessons_Learned. Use `?` for single char, `*` only at the end.
+**Solution:** See `InfoWorks_ICM_SQL_Lessons_Learned.md` and PAT_SQL_SEL_008. Use `?` for single char, `*` only at the end.
 
 **Quick Fix:**
 ```sql
@@ -543,7 +545,7 @@ SELECT WHERE node_id MATCHES '.*MH.*';
 
 **Symptom:** Dialog box appears at runtime: *"The following scenarios are used in this SQL query but are currently invalid: &lt;scenario_name&gt;"*
 **Cause:** `ADD SCENARIO` and `IN SCENARIO 'name'` (for the same name) are in the **same SQL block**. ICM validates all scenario references before executing any statements, so the new scenario is not yet recognised.
-**Solution:** Split into separate, ordered SQL scripts. See PAT_SQL_SCENARIO_047 and Lessons_Learned.
+**Solution:** Split into separate, ordered SQL scripts. See PAT_SQL_SCENARIO_047 and `InfoWorks_ICM_SQL_Lessons_Learned.md`.
 
 ---
 

@@ -3,7 +3,7 @@
 **Purpose:** High-priority warnings about InfoWorks Ruby behavior that differs from standard Ruby. Load this FIRST before generating any code.
 
 **Load Priority:** CRITICAL - Always load FIRST before any code generation  
-**Last Updated:** February 20, 2026
+**Last Updated:** July 7, 2026
 
 ## How to Use This File
 
@@ -11,61 +11,56 @@
 1. `InfoWorks_ICM_Ruby_API_Reference.md` - For method signatures and parameters
 2. `InfoWorks_ICM_Ruby_Pattern_Reference.md` - For working code templates
 3. `InfoWorks_ICM_Ruby_Database_Reference.md` - For table names and object types
-4. `InfoWorks_ICM_Ruby_Tutorial_Context.md` - For complete examples and workflows
-5. `InfoWorks_ICM_Ruby_Error_Reference.md` - When debugging errors
-6. `InfoWorks_ICM_Ruby_Glossary.md` - For terminology clarification
+4. `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` - For field name lookup (when field names unknown)
+5. `InfoWorks_ICM_Ruby_Tutorial_Context.md` - For complete examples and workflows
+6. `InfoWorks_ICM_Ruby_Error_Reference.md` - When debugging errors
+7. `InfoWorks_ICM_Ruby_Glossary.md` - For terminology clarification
 
 **Cross-References:**
-- See `API_Reference.md` for WSCommits, WSModelObjectCollection, WSRowObjectCollection class documentation
-- See `Pattern_Reference.md` for PAT_TRANSACTION_010, PAT_TRACE_BASIC_014 examples
-- See `Error_Reference.md` for "NoMethodError: undefined method 'find'" solutions
+- See `InfoWorks_ICM_Ruby_API_Reference.md` for WSCommits, WSModelObjectCollection, WSRowObjectCollection class documentation
+- See `InfoWorks_ICM_Ruby_Pattern_Reference.md` for PAT_TRANSACTION_010, PAT_TRACE_BASIC_014 examples
+- See `InfoWorks_ICM_Ruby_Error_Reference.md` for "NoMethodError: undefined method 'find'" solutions
 
 ---
 
-## CRITICAL: Collection Objects Are NOT Ruby Arrays
+## CRITICAL: Collection Return Types (Array vs Custom)
 
 ### The Problem
 
-InfoWorks custom collection classes look like Ruby arrays but **DO NOT** support standard Ruby Enumerable methods.
+Some ICM methods return **real Ruby Arrays**; others return **custom collection classes** that only partially mimic Arrays.
 
-**Custom Collections:**
-- `WSCommits`
-- `WSModelObjectCollection` (returned by `.children`)
-- `WSRowObjectCollection` (returned by `.row_objects`)
+**Ruby Arrays** (full Enumerable — `.find`, `.select`, `.empty?`, etc.):
+- `net.row_objects(table_name)`
+- `net.row_objects_selection(table_name)`
+
+**Custom collections** (`each`, `length`, `[]` only — no `.find`/`.map`/`.select` without `.to_a`):
+- `WSCommits` (`.commits`)
+- `WSModelObjectCollection` (`.children`)
+- `WSRowObjectCollection` (`row_object_collection`, `node.us_links`, `node.ds_links`)
 
 **What Works:**
 ```ruby
-# ONLY .each is supported
-commits.each do |c|
-  puts c.commit_id
-end
+# Custom collection — iterate or convert
+commits.each { |c| puts c.commit_id }
+found = parent_group.children.to_a.find { |c| c.name == "MyNetwork" }
 
-# Convert to array first if needed
-children_array = parent_group.children.to_a
-found = children_array.find { |c| c.name == "MyNetwork" }
+# Ruby Array — full Enumerable
+net.row_objects('hw_node').select(&:selected?)
+net.row_objects_selection('hw_conduit').empty?
 ```
 
 **What FAILS:**
 ```ruby
-# NoMethodError: undefined method 'find'
-commit = commits.find { |c| c.commit_id == 123 }
-
-# NoMethodError: undefined method 'select'
-networks = children.select { |c| c.type == 'Model Network' }
-
-# NoMethodError: undefined method 'map'
-names = children.map(&:name)
-
-# All other Enumerable methods fail
-.any?, .all?, .first, .last, .count, .filter, .reject, etc.
+# NoMethodError on custom collections
+commits.find { |c| c.commit_id == 123 }
+children.select { |c| c.type == 'Model Network' }
 ```
 
 ### LLM Agent Rules
 
-1. **ALWAYS use `.each` loops** for InfoWorks collections
-2. **NEVER use** `.find`, `.select`, `.map`, `.any?`, `.all?`, etc.
-3. **Convert to array** with `.to_a` if you need enumerable methods
-4. **Don't trust API docs** that say "Returns: Array" - assume custom collection
+1. **`row_objects` / `row_objects_selection`** — treat as Ruby Array
+2. **Custom collections** — use `.each`, `.length`, `[]`; call `.to_a` before `.find`/`.map`/`.select`
+3. **Never assume** all ICM "collections" behave the same — check the return type
 
 ### Code Pattern
 
@@ -88,40 +83,38 @@ end
 
 ---
 
-## CRITICAL: DateTime Class Not Available
+## CRITICAL: require 'date' Before DateTime Usage
 
 ### The Problem
 
-Commit objects have a `.date` field documented as returning `DateTime`, but accessing it causes:
+`DateTime` and `commit.date` are valid in ICM Ruby, but **`require 'date'` must load first** or you get:
 ```
 undefined class/module DateTime
 ```
 
 **What FAILS:**
 ```ruby
-# Causes DateTime class error
-commit.date
-
-# Even .to_s doesn't help
-commit.date.to_s
+commit.date                    # without require 'date'
+DateTime.new(2024, 1, 1)       # without require 'date'
 ```
 
 ### LLM Agent Rules
 
-1. **AVOID** accessing `.date` fields on commit objects
-2. **AVOID** any code that would instantiate DateTime
-3. Use only `Time` class methods (Time.now works fine)
+1. **`require 'date'`** before `DateTime.new`, `commit.date`, or simulation absolute times
+2. **Relative simulation timesteps** are negative doubles, not DateTime — see PAT_DATETIME_SIM_047
+3. If error persists after `require 'date'`, use `Time` or rescue — the field is not invalid
 
 ### Code Pattern
 
 ```ruby
-# Safe - use only commit_id and user
+require 'date'
+
 commits.each do |c|
-  puts "Commit #{c.commit_id} by #{c.user}"  # No .date
+  puts "Commit #{c.commit_id} by #{c.user} at #{c.date}"
 end
 
-# For timestamps, use Time.now
-timestamp = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+# Simulation absolute time
+start = DateTime.new(2024, 1, 1, 0, 0, 0)
 ```
 
 ---
@@ -178,7 +171,7 @@ begin
 ensure
   net.transaction_commit
 end
-net.commit('Updated ground levels')  # Database commit (Exchange only)
+net.commit('Updated ground levels')  # Database commit (Both — UI and Exchange)
 ```
 
 ---
@@ -194,13 +187,12 @@ Reality: Returns WSModelObjectCollection (not Array)
 Method: .children
 ```
 
-**Issue 2: Collection methods not explicit**
-- Docs don't clearly state that collections only support `.each`
-- Must infer from code examples that `.find`, `.map`, etc. don't work
+**Issue 2: `row_objects` return type was mislabeled**
+- Was documented as `WSRowObjectCollection`; actually returns Ruby Array
+- Custom collections (`.children`, `row_object_collection`) still limited — see Collection section above
 
-**Issue 3: DateTime limitation undocumented**
-- No warning that DateTime class causes errors
-- Commit.date field listed without caveat
+**Issue 3: DateTime requires `require 'date'`**
+- Not a blanket ban — load the stdlib before `DateTime` or `commit.date`
 
 ### LLM Agent Rules
 
@@ -267,7 +259,7 @@ end
 obj = db.model_object_from_type_and_id('Model Network', id)
 if obj.nil?
   puts "ERROR: Object not found"
-  exit 1
+  exit 1  # Exchange script — use return/throw :stop in UI scripts
 end
 ```
 
@@ -277,8 +269,8 @@ end
 
 Before generating InfoWorks Ruby code, verify:
 
-- [ ] All collection iterations use `.each` (not `.find`, `.map`, etc.)
-- [ ] No access to `.date` fields on commits
+- [ ] Collection type checked: `row_objects` is Array; custom collections need `.to_a` for `.find`/`.map`
+- [ ] `require 'date'` before `DateTime` or `commit.date`
 - [ ] All object lookups checked for nil before use
 - [ ] Risky operations wrapped in rescue blocks
 - [ ] No assumptions about Ruby stdlib working on custom classes
@@ -289,7 +281,8 @@ Before generating InfoWorks Ruby code, verify:
 - [ ] **Edge cases handled** (empty results, naming conflicts, nil checks)
 - [ ] **Two-level commits** understood (transaction_commit vs database commit)
 - [ ] **mo.path parsing** extracts ALL container types, not just MODG~ (See API_Reference → children)
-- [ ] **children staleness** tracked locally after import operations (See PAT_HIERARCHY_IMPORT_060)
+- [ ] **children staleness** tracked locally after `new_model_object` / `import_new_model_object` (PAT_HIERARCHY_IMPORT_060)
+- [ ] **`_seen` flags reset** after tracing (PAT_TRACE_RESET_016)
 - [ ] **Windows file paths** tracked case-insensitively with `.downcase` (See PAT_FILE_PATH_044)
 
 ---
@@ -304,21 +297,21 @@ Before generating InfoWorks Ruby code, verify:
 
 1. **Extract ALL non-leaf segments** — don't assume only MODG~
 2. **Use generic regex** `/^(\w+)~(.+)$/` and skip only the leaf type
-3. **See:** `API_Reference.md` → `children` for container type codes, PAT_HIERARCHY_EXPORT_059
+3. **See:** `InfoWorks_ICM_Ruby_API_Reference.md` → `children` for container type codes, PAT_HIERARCHY_EXPORT_059
 
 ---
 
-## CRITICAL: parent.children Stale After Import
+## CRITICAL: parent.children Stale After Create/Import
 
 ### The Problem
 
-`.children` does NOT refresh after `import_new_model_object()`. Checking for name conflicts via `.children` will miss just-imported objects, causing silent "name already in use" failures.
+`.children` does NOT refresh after `new_model_object()` or `import_new_model_object()`. Re-querying `.children` for name conflicts will miss just-created objects, causing silent "name already in use" failures.
 
 ### LLM Agent Rules
 
-1. **Track names locally** in a Hash after each import
-2. **Don't re-query `.children`** to check for recently imported items
-3. **See:** `API_Reference.md` → `children`, PAT_HIERARCHY_IMPORT_060
+1. **Track names locally** in a Hash after each create/import
+2. **Don't re-query `.children`** to check for recently added items
+3. **See:** `InfoWorks_ICM_Ruby_API_Reference.md` → `children`, PAT_HIERARCHY_IMPORT_060
 
 ---
 
@@ -505,16 +498,15 @@ end
 
 ---
 
-## LLM Agent Checklist
-
 ## Related Context Files
 
 Load in this order:
-1. **This file** (Lessons_Learned.md) - FIRST, ALWAYS
-2. Error_Reference.md - When debugging
-3. API_Reference.md - For method signatures
-4. Pattern_Reference.md - For code examples
-5. Database_Reference.md - For table/type names
+1. **This file** (`InfoWorks_ICM_Ruby_Lessons_Learned.md`) - FIRST, ALWAYS
+2. `InfoWorks_ICM_Ruby_Error_Reference.md` - When debugging
+3. `InfoWorks_ICM_Ruby_API_Reference.md` - For method signatures
+4. `InfoWorks_ICM_Ruby_Pattern_Reference.md` - For code examples
+5. `InfoWorks_ICM_Ruby_Database_Reference.md` - For table/type names
+6. `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` - When field names unknown
 
 ---
 
@@ -534,6 +526,8 @@ Load in this order:
 | 2026-02-20 | Added children staleness after import | parent.children doesn't refresh after import_new_model_object |
 | 2026-02-20 | Added Windows case-insensitive paths | Ruby case-sensitive vs Windows case-insensitive causes file overwrites |
 | 2026-03-13 | Added UI `exit` guidance | `exit` in UI scripts can raise SystemExit popups; prefer `catch`/`throw` for graceful stop |
+| 2026-07-02 | MCP-verified corrections | Collection return types, DateTime scope, commit availability, children staleness, _seen reset |
+| 2026-07-07 | Context alignment pass | API_Reference canonical PAT IDs, validate/import/update class placement, Database_Fields_Guide integration |
 
 ---
 
@@ -563,6 +557,7 @@ end
 1. **ALWAYS use `_seen` flag** for network traversal
 2. **Set flag before adding** to unprocessed queue
 3. **Check flag before processing** to skip already-seen objects
+4. **Reset `_seen` after tracing** — see PAT_TRACE_RESET_016
 
 ### Code Pattern - Downstream Trace
 
@@ -733,7 +728,7 @@ puts "Done"  # Wrong - sims still running!
 
 ### LLM Agent Rules
 
-1. **Connect agent first** with `connect_local_agent(1)`
+1. **Connect agent first** with `connect_local_agent(1000)` (timeout in ms)
 2. **Monitor status** with while loop checking `status == 'None'`  
 3. **Use sleep** to avoid busy-waiting
 
@@ -745,7 +740,7 @@ sims_array = []
 run.children.each { |sim| sims_array << sim }
 
 # Connect to local agent
-WSApplication.connect_local_agent(1)
+WSApplication.connect_local_agent(1000)
 
 # Launch simulations
 WSApplication.launch_sims(sims_array, '.', false, 0, 0)
@@ -953,8 +948,7 @@ result = WSApplication.message_box('Continue?', 'OKCancel', '?', nil)
 result = WSApplication.message_box('Continue?', 'OKCancel', '?', false)
 if result == 'cancel' || result.nil?
   puts "User cancelled - cleaning up..."
-  # Cleanup code runs
-  exit
+  return  # UI script — avoid exit (see section below)
 end
 ```
 
@@ -1015,16 +1009,14 @@ table_info.fields.each { |f| puts "#{f.name} (#{f.type})" }
 
 ---
 
-## Update Log
-
 ## Key Insight for LLMs
 
 **InfoWorks Ruby is NOT standard Ruby**
 
-Think of it as "Ruby syntax with custom API" rather than "Ruby with InfoWorks libraries". The custom collection classes deliberately limit functionality - they are NOT drop-in replacements for Ruby Arrays despite similar syntax.
+Think of it as "Ruby syntax with custom API" rather than "Ruby with InfoWorks libraries". Some methods return real Arrays; custom collection classes deliberately limit Enumerable methods.
 
 **When in doubt:**
-- Use `.each` loops exclusively
+- Check return type: `row_objects` = Array; `.children` / `row_object_collection` = custom
+- Use `.each` on custom collections; `.to_a` before `.find`/`.map`
 - Check for nil explicitly
 - Wrap in rescue blocks
-- Convert to `.to_a` if you need enumerable methods

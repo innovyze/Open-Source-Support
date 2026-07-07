@@ -3,7 +3,7 @@
 **Purpose:** Define InfoWorks SQL-specific terms, operators, and concepts. Standard SQL terms with identical meanings in InfoWorks are NOT included.
 
 **Load Priority:** REFERENCE - Load for terminology clarification
-**Last Updated:** March 17, 2026
+**Last Updated:** July 7, 2026
 
 ---
 
@@ -48,7 +48,7 @@
 
 ## Network Navigation Keywords
 
-*Quick-lookup summary. See `Syntax_Reference.md` → "Implicit Joins" for complete From→To relationship tables including asset and distribution networks.*
+*Quick-lookup summary. See `InfoWorks_ICM_SQL_Syntax_Reference.md` → "Implicit Joins" for complete From→To relationship tables including asset and distribution networks.*
 
 | Keyword | Direction | Context | Description |
 |---------|-----------|---------|-------------|
@@ -82,7 +82,7 @@
 
 ## Data Types
 
-*Quick-lookup summary. See `Syntax_Reference.md` → "Data Types" for full type conversion rules and NULL handling.*
+*Quick-lookup summary. See `InfoWorks_ICM_SQL_Syntax_Reference.md` → "Data Types" for full type conversion rules and NULL handling.*
 
 | Type | Description | Example Constants |
 |------|-------------|-------------------|
@@ -96,7 +96,7 @@
 
 ## Operators
 
-*Quick-lookup summary. See `Syntax_Reference.md` → "Arithmetic & Comparison Operators" for precedence rules.*
+*Quick-lookup summary. See `InfoWorks_ICM_SQL_Syntax_Reference.md` → "Arithmetic & Comparison Operators" for precedence rules.*
 
 | Operator | Type | Description |
 |----------|------|-------------|

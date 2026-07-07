@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby Tutorial Context for AI/LLM Code Generation
 
-**Last Updated:** January 16, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** LEARNING - Load for complete examples and workflows  
 **Load Condition:** CONDITIONAL - When user asks "how to" or requests complete script
@@ -15,13 +15,14 @@ This is a **tutorial-style context guide** for learning InfoWorks ICM Ruby scrip
 - Learn InfoWorks concepts (transactions, version control, tracing)
 - Find Exchange-specific workflows (database operations, simulation launching)
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_Ruby_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_Ruby_Lessons_Learned.md` - **CRITICAL** Read FIRST - Critical gotchas
 - `InfoWorks_ICM_Ruby_API_Reference.md` - Method documentation
 - `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Code templates used in examples
 - `InfoWorks_ICM_Ruby_Database_Reference.md` - Table names and types referenced here
+- `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` - Field name lookup workflow
 - `InfoWorks_ICM_Ruby_Glossary.md` - Terminology used in workflows
 
 ---
@@ -474,7 +475,7 @@ run = group.new_run(
 
 # Launch simulation
 sim = run.children[0]
-WSApplication.connect_local_agent(1)
+WSApplication.connect_local_agent(1000)
 handles = WSApplication.launch_sims([sim], '.', false, 0, 0)
 
 # Wait for completion

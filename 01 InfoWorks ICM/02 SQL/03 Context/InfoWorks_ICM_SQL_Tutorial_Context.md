@@ -1,6 +1,6 @@
 # InfoWorks ICM SQL Tutorial Context for AI/LLM Code Generation
 
-**Last Updated:** March 17, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** LEARNING - Load for complete examples and workflows
 **Load Condition:** CONDITIONAL - When user asks "how to" or requests a complete script
@@ -14,14 +14,16 @@ This is a **tutorial-style context guide** for InfoWorks ICM SQL scripting.
 - See how multiple patterns combine to solve real problems
 - Learn InfoWorks SQL concepts (variables, navigation, results, blobs, spatial)
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_SQL_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_SQL_Lessons_Learned.md` - **CRITICAL** Read FIRST
 - `InfoWorks_ICM_SQL_Function_Reference.md` - Function signatures
 - `InfoWorks_ICM_SQL_Pattern_Reference.md` - Code templates used in these examples
 - `InfoWorks_ICM_SQL_Syntax_Reference.md` - Complete syntax rules
-- `InfoWorks_ICM_SQL_Schema_Common.md` - Field name lookups, IW vs SWMM differences
+- `InfoWorks_ICM_SQL_Schema_InfoWorks.md` - InfoWorks network field tables
+- `InfoWorks_ICM_SQL_Schema_SWMM.md` - SWMM network field tables
+- `InfoWorks_ICM_SQL_Schema_Common.md` - Common fields, results rules, IW vs SWMM differences
 
 ---
 

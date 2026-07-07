@@ -99,7 +99,7 @@ script	The path of the ruby script. Make sure to surround with "" if it contains
 product	The product code - either ICM, IA, or WS
 args	(Optional) It is possible to provide extra arguments to the script. Make sure to surround them with "" if they contain spaces.
 Additional Arguments
-It is possible to provide more arguments to the script to custodies it's behavior, such as which database or network it should work with.
+It is possible to provide more arguments to the script to customise it's behavior, such as which database or network it should work with.
 
 ICMExchange.exe "C:/Badger/my_script.rb" one two
 
@@ -434,8 +434,8 @@ Creates a transportable database.
 Note: it is important to use an absolute path when creating the database.
 Examples
 
-WSApplication.create('C:/Temp/Badger.wspt')
-WSApplication.create('C:/Temp/Badger.wspt', "2024.0")
+WSApplication.create_transportable('C:/Temp/Badger.icmt')
+WSApplication.create_transportable('C:/Temp/Badger.icmt', "2024.0")
 Parameters
 
 Name	Type(s)	Description
@@ -5233,7 +5233,7 @@ Parameters
 Name	Type(s)	Description
 Return	Array	
 list_results_gis_export_tables
-#list_results_gis export_tables ⇒ Array
+#list_results_gis_export_tables ⇒ Array
 EXCHANGE
 
 Supported Types: ICM Sim, Risk Analysis Results, Risk Analysis Sim
@@ -5383,7 +5383,7 @@ The simple names are _ with the timesteps numbered from zero as with the timeste
 The default is to use the same naming convention as the UI.
 ExportMaxima	Boolean	false	If this is set to true the maximum results are exported.
 Feature Dataset	String	''	For GeoDatabases, the name of the feature dataset.
-Tables	Array		Array of table names from #list_results_gis_exports_table. Must all be valid, and cannot contain duplicates.
+Tables	Array		Array of table names from #list_results_gis_export_tables. Must all be valid, and cannot contain duplicates.
 Threshold	Float		The depth threshold below which a 2D element is not exported. This is the equivalent of checking the check-box in the UI and entering a value.
 
 The default is to behave as though the check-box is unchecked i.e. all elements are exported.

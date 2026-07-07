@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby Pattern Reference for LLM Code Generation
 
-**Last Updated:** January 16, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** CORE - Load for code template lookup  
 **Load Condition:** ALWAYS when implementing specific functionality
@@ -13,7 +13,7 @@ This is a **pattern reference guide** for LLM-assisted Ruby scripting in InfoWor
 - Look up pattern IDs (PAT_XXX_NNN) referenced in other files
 - Get intent, context, and related patterns for each code template
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_Ruby_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_Ruby_Lessons_Learned.md` - **CRITICAL** Read FIRST - Critical gotchas (explains why .each not .find)
@@ -32,9 +32,10 @@ This is a **pattern reference guide** for LLM-assisted Ruby scripting in InfoWor
 5. **Tracing & Navigation** (014-017): Network traversal
 6. **Results** (018-020): Simulation output access
 7. **Simulation** (021): Running simulations
-8. **Import/Export** (022-024): Data exchange
+8. **Import/Export** (022-024, 059-062): Data exchange and hierarchy import/export
 9. **Spatial** (025-026): Geometry operations
-10. **Utilities** (027-051): Helper patterns and performance
+10. **Utilities** (027-044, 046-051, 057-058): Helper patterns and performance — PAT_045 intentionally unused
+11. **Exchange** (052-056): Exchange-specific database and import/export patterns
 
 | Pattern ID | Category | Use When | Tags |
 |------------|----------|----------|------|
@@ -97,13 +98,13 @@ This is a **pattern reference guide** for LLM-assisted Ruby scripting in InfoWor
 | PAT_USER_INPUT_043 | Utilities | Get user input (UI only) | ui, dialog, input |
 | PAT_FILE_PATH_044 | Utilities | Script file path handling | path, files, compat |
 | PAT_STANDARD_LIBRARIES_046 | Utilities | Safe Ruby libraries | require, libraries |
-| PAT_USER_MSGBOX_057 | Utilities | Display message boxes (UI only) | ui, dialog, msgbox |
-| PAT_USER_INPUTBOX_058 | Utilities | Get text input from user (UI only) | ui, dialog, input |
 | PAT_DATETIME_SIM_047 | Utilities | DateTime vs relative time | simulation, time |
 | PAT_RESULTS_FIELD_048 | Results | Results field code reference | results, fields |
 | PAT_ODIC_OPTIONS_049 | Import/Export | ODIC/ODEC option hashes | import, export, options |
 | PAT_LAUNCH_SIM_050 | Simulation | Launch sims with agent | simulation, exchange |
 | PAT_RESULTS_PATH_051 | Utilities | Handle results_path file path | results, sim, path |
+| PAT_USER_MSGBOX_057 | Utilities | Display message boxes (UI only) | ui, dialog, msgbox |
+| PAT_USER_INPUTBOX_058 | Utilities | Get text input from user (UI only) | ui, dialog, input |
 | **Exchange-Specific Patterns** |
 | PAT_EXC_DB_OPEN_052 | Exchange | Open database (standalone/workgroup) | exchange, database |
 | PAT_EXC_RUN_SETUP_053 | Exchange | Create InfoWorks run with new_run | exchange, run, iw |
@@ -463,7 +464,7 @@ end
 run = group.new_run('Run Name', 'MODG~Group>NNET~Network', nil, 1, nil, 
   {'Duration'=>1440, 'DurationUnit'=>'Minutes', 'TimeStep'=>1})
 sim = run.children[0]
-WSApplication.connect_local_agent(1)
+WSApplication.connect_local_agent(1000)
 WSApplication.launch_sims([sim], '.', false, 0, 0)
 ```
 
@@ -1431,7 +1432,7 @@ else
   puts "All imports completed successfully"
 end
 
-# Commit changes (Exchange only)
+# Commit changes (Both — guard Exchange-only cleanup if needed)
 unless WSApplication.ui?
   net.commit('Imported external data via ODIC')
   net.close
@@ -1497,6 +1498,7 @@ puts "Export completed. Check error file if exists."
 ## See Also
 
 - **Database Reference**: `InfoWorks_ICM_Ruby_Database_Reference.md` - Complete table name lookup for InfoWorks and SWMM
+- **Database Fields Guide**: `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` - MCP field lookup workflow
 - **Tutorial Context**: `InfoWorks_ICM_Ruby_Tutorial_Context.md` - Learning guide with complete examples
 
 ---

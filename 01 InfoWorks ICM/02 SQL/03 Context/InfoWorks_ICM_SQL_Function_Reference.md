@@ -1,7 +1,7 @@
 # InfoWorks ICM SQL Function Reference for LLM Agents
 
 **Source:** SQL Combined Help Documentation and ICM Time Varying SQL Documentation
-**Last Updated:** March 17, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** CORE - Load for function lookup and time-series results queries
 **Load Condition:** ALWAYS when writing queries with functions or simulation results
@@ -16,12 +16,15 @@ This guide provides **function reference** for InfoWorks ICM SQL scripting.
 - Find aggregate function behavior in different contexts (arrays, GROUP BY, time series)
 - Understand WHEN clause usage for time-varying results
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_SQL_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_SQL_Lessons_Learned.md` - Read FIRST - Critical gotchas and anti-patterns
 - `InfoWorks_ICM_SQL_Pattern_Reference.md` - Working code templates using these functions
 - `InfoWorks_ICM_SQL_Syntax_Reference.md` - Language syntax, data types, operators
+- `InfoWorks_ICM_SQL_Schema_InfoWorks.md` - InfoWorks network field names
+- `InfoWorks_ICM_SQL_Schema_SWMM.md` - SWMM network field names
+- `InfoWorks_ICM_SQL_Schema_Common.md` - Common fields, `tsr.*` metadata, results rules
 - `InfoWorks_ICM_SQL_Error_Reference.md` - Debugging function-related errors
 
 ---

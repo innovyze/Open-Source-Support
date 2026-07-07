@@ -1,12 +1,14 @@
 # InfoWorks ICM SQL Schema — SWMM Networks
 
-**Last Updated:** March 25, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** LOOKUP — Load for any SWMM network SQL query requiring field names
 **Load Condition:** CONDITIONAL — When user asks about SWMM fields, schemas, or object inventory
 
 **Related Files:**
-- `InfoWorks_ICM_SQL_Schema_Common.md` — Common fields (`user_text_*`, `user_number_*`), results schema (`sim.*`, `tsr.*`), relationship paths, Autodesk Help workflow
+- `Instructions.md` — Loading priorities and network-type policy
+- `InfoWorks_ICM_SQL_Schema_Common.md` — Common fields (`user_text_*`, `user_number_*`), results schema (`sim.*`, `tsr.*`), relationship paths
+- `InfoWorks_ICM_Database_Fields_Guide.md` — MCP Help lookup when field not in schema files
 - `InfoWorks_ICM_SQL_Schema_InfoWorks.md` — InfoWorks network field names (separate file; do NOT mix with SWMM fields)
 - `InfoWorks_ICM_SQL_Lessons_Learned.md` — Read FIRST — Critical field name gotchas
 
@@ -15,28 +17,31 @@
 This file is the **authoritative field-name and object-manifest reference for SWMM networks**.
 
 Use it when:
-- A user is working with a SWMM network (indicated by `(SWMM)` in the context or query)
+- A user is working with a SWMM network (when specified or clearly indicated by context)
 - The query involves field names from `sw_*` tables
 - An object manifest or coverage check is needed for SWMM objects
+
+See `Instructions.md` for full network-type policy (InfoWorks default when unspecified).
+
+## Retrieval Rules for LLMs
+
+1. Load this file only when network type is **SWMM** or the user explicitly requests SWMM fields.
+2. Always load with `InfoWorks_ICM_SQL_Schema_Common.md` (see `Instructions.md`).
+3. Match the **object type** (Node, Conduit, Subcatchment, etc.).
+4. Use exact strings from the `Database Field` column.
+5. If a user gives a UI label, check the `UI Label` column.
+6. If a field is not listed here, check `InfoWorks_ICM_SQL_Schema_Common.md` for common/results fields.
+7. Do not invent field names.
 
 **InfoWorks fields are in `InfoWorks_ICM_SQL_Schema_InfoWorks.md`. Do not mix field sets.**
 
 Key distinction: SWMM uses `length` for conduit length while InfoWorks uses `conduit_length`. Conduit dimensions (`conduit_width`/`conduit_height`) are the same in both networks.
 
-## Retrieval Rules for LLMs
-
-1. Confirm the network type is **SWMM** before using this file.
-2. Match the **object type** (Node, Conduit, Subcatchment, etc.).
-3. Use exact strings from the `Database Field` column.
-4. If a user gives a UI label, check the `UI Label` column.
-5. If a field is not listed here, check `InfoWorks_ICM_SQL_Schema_Common.md` for common/results fields.
-6. Do not invent field names.
-
 ## Critical SQL Reminders
 
-InfoWorks ICM SQL is **not standard ANSI SQL**. Even if `Lessons_Learned.md` was not loaded, these rules are mandatory:
+InfoWorks ICM SQL is **not standard ANSI SQL**. Even if `InfoWorks_ICM_SQL_Lessons_Learned.md` was not loaded, these rules are mandatory:
 
-- **No CASE WHEN** — use `IIF(condition, true_val, false_val)` or `IF condition; ... ELSEIF ...; ELSE; ... ENDIF;`
+- **No CASE WHEN** — use `IIF()` for field conditionals; `IF`/`WHILE` conditions: scalars (`$x`) only
 - **No JOINs** — use dot-notation navigation (e.g., `us_node.ground_level`, `ds_links.width`)
 - **Semicolons required** after every statement, including control flow (`IF;`, `ELSE;`, `ENDIF;`, `WEND;`)
 - **LIKE uses `?` and `*`** — not `%` and `_` (e.g., `LIKE 'MH*'` not `LIKE 'MH%'`)
@@ -122,7 +127,7 @@ Source: Autodesk Help `Network Data Fields` index page.
 
 ## SWMM Field Tables
 
-All SWMM field tables are indexed here. For results fields (`sim.*`, `tsr.*`) and shared metadata, see `InfoWorks_ICM_SQL_Schema_Common.md`.
+All SWMM field tables are indexed here. For results rules/metadata and shared fields, see `InfoWorks_ICM_SQL_Schema_Common.md`. Object-specific `sim.*`/`tsr.*` field tables are in this file.
 
 Unless stated otherwise for a specific object, every `sw_*` network object in this file also exposes `user_text_1`–`user_text_10`, `user_number_1`–`user_number_10`, `notes`, and `hyperlinks` (see `InfoWorks_ICM_SQL_Schema_Common.md`).
 
@@ -846,7 +851,7 @@ The `sim.*` prefix returns summary results at the current timestep or maximum. N
 | Maximum Depth | `sim.max_depth` | result | SWMM node/conduit result |
 | Maximum Flow | `sim.max_flow` | result | SWMM link result |
 
-**Do not assume a `sim.*` suffix from one network type will work in the other.** InfoWorks-specific `sim.*` fields are in `Schema_InfoWorks.md`.
+**Do not assume a `sim.*` suffix from one network type will work in the other.** InfoWorks-specific `sim.*` fields are in `InfoWorks_ICM_SQL_Schema_InfoWorks.md`.
 
 ### Node Results (`sw_node`, `sw_outfall`, `sw_storage_node`)
 

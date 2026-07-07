@@ -3,7 +3,7 @@
 **Purpose:** Define InfoWorks-specific terms, acronyms, and API classes. Standard Ruby terms are NOT included.
 
 **Load Priority:** REFERENCE - Load for terminology clarification  
-**Last Updated:** January 16, 2026
+**Last Updated:** July 7, 2026
 
 ---
 
@@ -37,8 +37,9 @@
 | **WSRun** | Simulation run configuration |
 | **WSSimObject** | Individual simulation within a run |
 | **WSCommit** | Version control commit entry |
-| **WSModelObjectCollection** | Collection from queries (use `.each` only) |
-| **WSRowObjectCollection** | Collection of row objects (use `.each` only) |
+| **row_objects result** | Ruby Array of WSRowObject — full Enumerable |
+| **WSModelObjectCollection** | Custom collection (`.children`) — `each`, `length`, `[]`; `.to_a` for `.find`/`.map` |
+| **WSRowObjectCollection** | Custom collection — `each`, `length`, `[]`; `.to_a` for `.find`/`.map` |
 
 ---
 
@@ -126,6 +127,6 @@
 ---
 
 **Cross-References:**
-- `Pattern_Reference.md` - Code using these APIs
-- `Database_Reference.md` - Table and type lookups
-- `API_Reference.md` - Method signatures
+- `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Code using these APIs
+- `InfoWorks_ICM_Ruby_Database_Reference.md` - Table and type lookups
+- `InfoWorks_ICM_Ruby_API_Reference.md` - Method signatures

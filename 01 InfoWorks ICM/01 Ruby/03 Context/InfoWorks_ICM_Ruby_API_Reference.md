@@ -1,8 +1,8 @@
 # InfoWorks ICM Ruby API Reference for LLM Agents
 
-**Source:** Exchange.pdf Version 2024.2 | **Last Updated:** January 16, 2026
+**Source:** Exchange.pdf Version 2024.2 (runtime-verified against ICM 2027, July 2026) | **Last Updated:** July 7, 2026
 
-**Load Priority:** CORE - Load after Lessons_Learned.md for code generation  
+**Load Priority:** CORE - Load after InfoWorks_ICM_Ruby_Lessons_Learned.md for code generation  
 **Load Condition:** ALWAYS for Exchange scripts, CONDITIONAL for UI scripts
 
 ## Purpose
@@ -14,7 +14,7 @@ This guide provides **API method reference** for InfoWorks ICM Ruby scripting.
 - Verify method availability in Exchange vs UI contexts
 - Find pattern references (PAT_XXX_NNN) for implementation examples
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_Ruby_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_Ruby_Lessons_Learned.md` - Read FIRST - Critical gotchas and anti-patterns
@@ -33,12 +33,14 @@ This guide provides **API method reference** for InfoWorks ICM Ruby scripting.
 | Class | Method | Avail | Returns | Intent | Pattern Ref |
 |-------|--------|-------|---------|--------|-------------|
 | **WSApplication** |
-| WSApplication | open | Exch | WSDatabase | Open database | PAT_EXC_052 |
-| WSApplication | create | Exch | WSDatabase | Create new database | PAT_EXC_052 |
+| WSApplication | open | Exch | WSDatabase | Open database | PAT_EXC_DB_OPEN_052 |
+| WSApplication | create | Exch | WSDatabase | Create standalone database (.icmm) | PAT_EXC_DB_OPEN_052 |
+| WSApplication | create_transportable | Exch | nil | Create transportable database (.icmt) | PAT_EXC_DB_OPEN_052 |
 | WSApplication | current_network | UI | WSOpenNetwork | Get active network | PAT_APP_ACCESS_001 |
 | WSApplication | ui? | Both | Boolean | Check if running in UI | PAT_UNIVERSAL_MODE_002 |
 | WSApplication | open_net | UI | WSOpenNetwork | Open network in UI | - |
 | WSApplication | launch_sims | Exch | Array | Launch sims via agent | PAT_LAUNCH_SIM_050 |
+| WSApplication | connect_local_agent | Exch | nil | Connect to local sim agent | PAT_LAUNCH_SIM_050 |
 | WSApplication | message_box | UI | String | Show message dialog | PAT_USER_MSGBOX_057 |
 | WSApplication | prompt | UI | Array | Multi-field input dialog | PAT_USER_INPUT_043 |
 | WSApplication | input_box | UI | String | Single text input | PAT_USER_INPUTBOX_058 |
@@ -49,15 +51,15 @@ This guide provides **API method reference** for InfoWorks ICM Ruby scripting.
 | WSDatabase | model_object_from_type_and_id | Both | WSModelObject | Get object by type/ID | PAT_DATA_FETCH_004 |
 | WSDatabase | list_read_write_run_fields | Exch (ICM) | Array | List custom run fields | - |
 | WSDatabase | path | Both | String | Database file path | - |
-| WSDatabase | close | Exch | nil | Close database | PAT_EXC_052 |
+| WSDatabase | close | Exch | nil | Close database | PAT_EXC_DB_OPEN_052 |
 | **WSModelObject** |
 | WSModelObject | [] | Exch (ICM) | Various | Get field value | - |
 | WSModelObject | []= | Exch (ICM) | nil | Set field value | - |
-| WSModelObject | open | Exch | WSOpenNetwork | Open network | PAT_EXC_052 |
+| WSModelObject | open | Exch | WSOpenNetwork | Open network | PAT_EXC_DB_OPEN_052 |
 | WSModelObject | delete | Exch | nil | Delete object | - |
 | WSModelObject | deletable? | Exch | Boolean | Check if deletable | - |
 | WSModelObject | export | Both | nil | Export via ODEC | PAT_EXPORT_ODEC_022 |
-| WSModelObject | import | Both | nil | Import via ODIC | PAT_EXC_055 |
+| WSModelObject | import | Both | nil | Import via ODIC | PAT_EXC_ODIC_IMPORT_055 |
 | WSModelObject | run | Exch (ICM) | WSSimObject | Create/run simulation | PAT_SIM_RUN_021 |
 | WSModelObject | name | Both | String | Object name | - |
 | WSModelObject | id | Both | Integer | Object ID | - |
@@ -65,31 +67,31 @@ This guide provides **API method reference** for InfoWorks ICM Ruby scripting.
 | WSModelObject | parent_type | Both | String | Parent type | - |
 | WSModelObject | parent_id | Both | Integer | Parent ID | - |
 | **WSNumbatNetworkObject (ICM/InfoAsset)** |
-| WSNumbatNetworkObject | open | Exch | WSOpenNetwork | Open for editing | PAT_EXC_052 |
+| WSNumbatNetworkObject | open | Exch | WSOpenNetwork | Open for editing | PAT_EXC_DB_OPEN_052 |
 | WSNumbatNetworkObject | branch | Exch | WSNumbatNetworkObject | Branch from commit | - |
 | WSNumbatNetworkObject | commits | Exch | WSCommits | Get commit history | - |
 | WSNumbatNetworkObject | latest_commit_id | Exch | Integer | Latest commit ID | - |
-| WSNumbatNetworkObject | update_current | Exch | nil | Update local copy | - |
-| WSNumbatNetworkObject | validate | Both | WSValidations | Validate network | - |
+| WSNumbatNetworkObject | update | Exch | Boolean | Update local copy | - |
 | **WSOpenNetwork** |
-| WSOpenNetwork | row_objects | Both | WSRowObjectCollection | Get objects by table | PAT_DATA_FETCH_004 |
+| WSOpenNetwork | row_objects | Both | Array | Get objects by table | PAT_DATA_FETCH_004 |
 | WSOpenNetwork | row_object | Both | WSRowObject | Get single object | PAT_DATA_FETCH_004 |
 | WSOpenNetwork | row_object_collection | Both | WSRowObjectCollection | Filtered collection | PAT_SELECTION_FALLBACK_007 |
 | WSOpenNetwork | transaction_begin | Both | nil | Start transaction | PAT_TRANSACTION_010 |
 | WSOpenNetwork | transaction_commit | Both | nil | Commit transaction | PAT_TRANSACTION_010 |
 | WSOpenNetwork | transaction_rollback | Both | nil | Rollback transaction | PAT_TRANSACTION_010 |
-| WSOpenNetwork | commit | Exch | nil | Commit to database | - |
+| WSOpenNetwork | commit | Both | nil | Commit to database | - |
 | WSOpenNetwork | revert | Exch | nil | Revert changes | - |
 | WSOpenNetwork | clear_selection | Both | nil | Clear all selections | PAT_SELECTION_CLEAR_008 |
 | WSOpenNetwork | table_info | Both | WSTableInfo | Get table metadata | PAT_FIELD_DISCOVERY_005 |
 | WSOpenNetwork | tables | Both | Array | List all tables | PAT_FIELD_DISCOVERY_005 |
 | WSOpenNetwork | scenarios | Both | Array | List scenarios | PAT_SCENARIO_SWITCH_006 |
-| WSOpenNetwork | current_scenario | Both | String | Get active scenario | PAT_SCENARIO_SWITCH_006 |
-| WSOpenNetwork | set_scenario | Both | nil | Switch scenario | PAT_SCENARIO_SWITCH_006 |
+| WSOpenNetwork | current_scenario | Both | String | Get/set active scenario | PAT_SCENARIO_SWITCH_006 |
+| WSOpenNetwork | validate | Both | WSValidations | Validate network | - |
 | **WSSimObject (ICM)** |
 | WSSimObject | run | Exch | nil | Run simulation | PAT_SIM_RUN_021 |
 | WSSimObject | run_ex | Exch (ICM) | nil | Run with options | PAT_LAUNCH_SIM_050 |
 | WSSimObject | results_fields | Both | Array | List results fields | PAT_RESULTS_FIELDS_ENUM_019 |
+| WSSimObject | list_results_gis_export_tables | Exch (ICM) | Array | List GIS-exportable result tables | - |
 | WSSimObject | [] | Both | Various | Get field value | - |
 | **WSRowObject** |
 | WSRowObject | [] | Both | Various | Get field value | PAT_DATA_FETCH_004 |
@@ -124,7 +126,7 @@ Opens existing database (local or cloud).
 - `path` (String) - Database path (e.g., 'C:\db.icmm' or 'cloud://...')
 - `read_only` (Boolean) - Open in read-only mode (default: false)
 
-**See:** PAT_EXC_052, PAT_UNIVERSAL_MODE_002
+**See:** PAT_EXC_DB_OPEN_052, PAT_UNIVERSAL_MODE_002
 
 ---
 
@@ -133,13 +135,33 @@ Opens existing database (local or cloud).
 **Returns:** WSDatabase  
 **Signature:** `WSApplication.create(path, version=nil)`
 
-Creates new database.
+Creates new database. Not for transportable databases — use `create_transportable`.
 
 **Parameters:**
-- `path` (String) - Database path
+- `path` (String) - database file path
 - `version` (String, optional) - Database version (e.g., '2024.0')
 
-**See:** PAT_EXC_052
+**See:** PAT_EXC_DB_OPEN_052
+
+---
+
+### create_transportable
+**Availability:** Exchange only  
+**Returns:** nil  
+**Signature:** `WSApplication.create_transportable(path, version=nil)`
+
+Creates transportable database. Open the file with `WSApplication.open` afterward.
+
+```ruby
+WSApplication.create_transportable('C:/Temp/MyDatabase.icmt')
+db = WSApplication.open('C:/Temp/MyDatabase.icmt', false)
+```
+
+**Parameters:**
+- `path` (String) - Absolute path including `.icmt` extension
+- `version` (String, optional) - Database version (e.g., '2027.0')
+
+**See:** PAT_EXC_DB_OPEN_052
 
 ---
 
@@ -180,13 +202,30 @@ Opens network in UI by scripting path.
 ### launch_sims
 **Availability:** Exchange only  
 **Returns:** Array of job IDs  
-**Signature:** `WSApplication.launch_sims(array_of_sims, server=nil)`
+**Signature:** `WSApplication.launch_sims(sims, server, results_on_server, max_threads, after)`
 
 Launches simulations via simulation agent.
 
 **Parameters:**
-- `array_of_sims` (Array) - Array of WSSimObject
-- `server` (String, optional) - Agent server address
+- `sims` (Array) - Array of WSSimObject
+- `server` (String) - Agent server address (use `'.'` for local)
+- `results_on_server` (Boolean) - Store results on agent server
+- `max_threads` (Integer) - Max parallel threads
+- `after` (Integer) - Delay before launch (seconds)
+
+**See:** PAT_LAUNCH_SIM_050
+
+---
+
+### connect_local_agent
+**Availability:** Exchange only  
+**Returns:** nil  
+**Signature:** `WSApplication.connect_local_agent(timeout_ms)`
+
+Connects to local simulation agent before `launch_sims`.
+
+**Parameters:**
+- `timeout_ms` (Integer) - Connection timeout in milliseconds (e.g. `1000`)
 
 **See:** PAT_LAUNCH_SIM_050
 
@@ -354,7 +393,7 @@ Returns database file path.
 
 Closes database connection.
 
-**See:** PAT_EXC_052
+**See:** PAT_EXC_DB_OPEN_052
 
 ---
 
@@ -405,7 +444,7 @@ Sets field value in model object.
 
 Opens network for editing (networks only).
 
-**See:** PAT_EXC_052
+**See:** PAT_EXC_DB_OPEN_052
 
 ---
 
@@ -455,7 +494,7 @@ Imports via ODIC.
 - `format` (String) - Format ('CSV', 'SHP', etc.)
 - `options_hash` (Hash) - ODIC options
 
-**See:** PAT_EXC_055, PAT_ODIC_OPTIONS_049
+**See:** PAT_EXC_ODIC_IMPORT_055, PAT_ODIC_OPTIONS_049
 
 ---
 
@@ -469,7 +508,7 @@ Creates and optionally runs simulation.
 **Parameters:**
 - `params_hash` (Hash) - Run parameters (see Tutorial for key params)
 
-**See:** PAT_SIM_RUN_021, PAT_EXC_053, PAT_EXC_054
+**See:** PAT_SIM_RUN_021, PAT_EXC_RUN_SETUP_053, PAT_EXC_RUN_SETUP_SWMM_054
 
 ---
 
@@ -552,6 +591,21 @@ Copies object to this location.
 
 ---
 
+### import_new_model_object
+**Availability:** Exchange only  
+**Returns:** WSModelObject  
+**Signature:** `parent.import_new_model_object(type, name, comment, file_path)`
+
+Imports object as child.
+
+**Parameters:**
+- `type` (String) - Object type (e.g., 'Rainfall Event')
+- `name` (String) - Name for new object
+- `comment` (String) - Comment
+- `file_path` (String) - Import file path
+
+---
+
 ## WSNumbatNetworkObject
 
 **Purpose:** Network objects in ICM/InfoAsset (subclass of WSModelObject).  
@@ -564,7 +618,7 @@ Copies object to this location.
 
 Opens network for editing.
 
-**See:** PAT_EXC_052
+**See:** PAT_EXC_DB_OPEN_052
 
 ---
 
@@ -599,39 +653,12 @@ Returns ID of latest commit.
 
 ---
 
-### update_current
+### update
 **Availability:** Exchange only  
-**Returns:** nil  
-**Signature:** `net.update_current`
+**Returns:** Boolean  
+**Signature:** `net.update`
 
-Updates local copy from server.
-
----
-
-### validate
-**Availability:** Both  
-**Returns:** WSValidations  
-**Signature:** `net.validate(scenarios=[])`
-
-Validates network.
-
-**Parameters:**
-- `scenarios` (Array, optional) - Scenarios to validate
-
----
-
-### import_new_model_object
-**Availability:** Exchange only  
-**Returns:** WSModelObject  
-**Signature:** `parent.import_new_model_object(type, name, comment, file_path)`
-
-Imports object as child.
-
-**Parameters:**
-- `type` (String) - Object type (e.g., 'Rainfall Event')
-- `name` (String) - Name for new object
-- `comment` (String) - Comment
-- `file_path` (String) - Import file path
+Updates local copy of the network to the latest version from the server. Not relevant for standalone databases. Returns true if successful, false if there are conflicts.
 
 ---
 
@@ -641,10 +668,10 @@ Imports object as child.
 
 ### row_objects
 **Availability:** Both  
-**Returns:** WSRowObjectCollection  
+**Returns:** Array of WSRowObject  
 **Signature:** `net.row_objects(table_name)`
 
-Gets all objects in table.
+Gets all objects in table. Returns a Ruby Array (full Enumerable). For filtered custom collections use `row_object_collection`.
 
 **Parameters:**
 - `table_name` (String) - Table name (see Database Reference)
@@ -716,7 +743,7 @@ Rolls back transaction.
 ---
 
 ### commit
-**Availability:** Exchange only  
+**Availability:** Both  
 **Returns:** nil  
 **Signature:** `net.commit('Commit message')`
 
@@ -786,25 +813,23 @@ Lists scenario names.
 ### current_scenario
 **Availability:** Both  
 **Returns:** String  
-**Signature:** `net.current_scenario`
+**Signature:** `net.current_scenario` / `net.current_scenario = name`
 
-Gets active scenario name.
+Gets or sets active scenario name. Use assignment to switch — not `set_scenario` (undocumented in Help).
 
 **See:** PAT_SCENARIO_SWITCH_006
 
 ---
 
-### set_scenario
+### validate
 **Availability:** Both  
-**Returns:** nil  
-**Signature:** `net.set_scenario(scenario_name)`
+**Returns:** WSValidations  
+**Signature:** `net.validate(scenarios=[])`
 
-Switches active scenario.
+Validates network scenario(s), returning a WSValidations collection.
 
 **Parameters:**
-- `scenario_name` (String) - Scenario name
-
-**See:** PAT_SCENARIO_SWITCH_006
+- `scenarios` (String, Array, nil, optional) - Scenario name, array of names, or nil for Base scenario
 
 ---
 
@@ -868,6 +893,15 @@ Runs simulation with options.
 Lists available results field codes.
 
 **See:** PAT_RESULTS_FIELDS_ENUM_019, PAT_RESULTS_FIELD_048
+
+---
+
+### list_results_gis_export_tables
+**Availability:** Exchange only (ICM Sim, Risk Analysis Results/Sim)  
+**Returns:** Array of Strings  
+**Signature:** `sim.list_results_gis_export_tables`
+
+Returns table names that may be exported to GIS via `results_gis_export`.
 
 ---
 

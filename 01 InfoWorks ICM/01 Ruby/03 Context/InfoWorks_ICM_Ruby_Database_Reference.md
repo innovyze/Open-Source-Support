@@ -1,6 +1,6 @@
 # InfoWorks ICM Ruby Database Reference Guide for LLM Agents
 
-**Last Updated:** March 24, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** LOOKUP - Load when querying table names or object types  
 **Load Condition:** CONDITIONAL - When script accesses row_objects() or model_object_from_type_and_id()
@@ -15,10 +15,11 @@ This guide provides **database and network object reference** for InfoWorks ICM 
 - Distinguish between InfoWorks (hw_*) and SWMM (sw_*) table names
 - Understand ShortCode notation used in scripting paths
 
-**Prerequisite:** Read `Lessons_Learned.md` FIRST to avoid critical mistakes
+**Prerequisite:** Read `InfoWorks_ICM_Ruby_Lessons_Learned.md` FIRST to avoid critical mistakes
 
 **Related Files:**
 - `InfoWorks_ICM_Ruby_Lessons_Learned.md` - Read FIRST - Critical gotchas
+- `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` - MCP field lookup using Data Fields Topic from this file
 - `InfoWorks_ICM_Ruby_API_Reference.md` - WSModelObject, WSOpenNetwork methods
 - `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Patterns using table names (PAT_DATA_FETCH_004, etc.)
 - `InfoWorks_ICM_Ruby_Tutorial_Context.md` - Complete examples using database objects
@@ -155,14 +156,10 @@ net.row_objects('hw_conduit')     # Works!
 
 ### Lookup Methodology
 
-**Step 1:** Identify object type from user query  
-**Step 2:** Find **Database Table Name** in tables below  
-**Step 3:** Search Help for "Data Fields Topic" to find field names  
-**Step 4:** Use "Database field" column (NOT "Field Name") from Help
+**Step 1:** Identify object type and network type from user query  
+**Step 2:** Find **Database Table Name** and **Data Fields Topic** in the matching network section below  
 
-**Help Base URL:** https://help.autodesk.com/view/IWICMS/2026/ENU/
-
-**Source:** https://help.autodesk.com/view/IWICMS/2026/ENU/?guid=GUID-8F131349-1247-477B-97A5-62B9AF41D9E4
+For field names, see `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` (MCP lookup using the Data Fields Topic from Step 2).
 
 ### InfoWorks Network (`hw_*` tables)
 
@@ -438,8 +435,8 @@ result_fields = net.list_result_field_names
 result_fields.each { |name| puts name }
 ```
 
-**See:** Autodesk Help > Results Field Reference for complete listings
+**See:** Autodesk Help MCP — query `Results Field Reference InfoWorks ICM` (`product_code=IWICMS`). If MCP is unavailable, use `list_result_field_names` or state unknown.
 
 ---
 
-**Note:** Always verify table and field names against latest Autodesk Help documentation.
+**Note:** For table and field names not indexed here, use Help MCP (latest release) or state unknown if MCP is unavailable.

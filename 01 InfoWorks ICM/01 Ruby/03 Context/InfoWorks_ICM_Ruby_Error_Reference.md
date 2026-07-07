@@ -6,7 +6,7 @@
 **Load Condition:** CONDITIONAL - When query contains error/debugging keywords  
 **Keywords:** error, exception, fails, broken, debugging, NoMethodError, NilClass, undefined method
 
-**Last Updated:** January 16, 2026
+**Last Updated:** July 7, 2026
 
 ## How to Use This File
 
@@ -16,13 +16,14 @@
 - Identify which pattern (PAT_XXX_NNN) provides correct solution
 - Understand root causes to prevent similar errors
 
-**Prerequisite:** Many errors are prevented by reading `Lessons_Learned.md` FIRST
+**Prerequisite:** Many errors are prevented by reading `InfoWorks_ICM_Ruby_Lessons_Learned.md` FIRST
 
 **Related Files:**
 - `InfoWorks_ICM_Ruby_Lessons_Learned.md` - PREVENTS most errors listed here
 - `InfoWorks_ICM_Ruby_API_Reference.md` - Method signatures to verify correct usage
 - `InfoWorks_ICM_Ruby_Pattern_Reference.md` - Pattern IDs referenced in solutions
 - `InfoWorks_ICM_Ruby_Database_Reference.md` - Correct table names and types
+- `InfoWorks_ICM_Ruby_Database_Fields_Guide.md` - Field name lookup workflow
 
 ---
 
@@ -43,6 +44,25 @@ net = WSApplication.current_network
 db = WSApplication.open('path/to/database.icmm', false)
 net = db.model_object('>MODG~Group>NNET~Network').open
 ```
+
+---
+
+### "NoMethodError: undefined method 'find' for WSModelObjectCollection"
+
+**Symptom:** Script crashes when calling `.find`, `.map`, or `.select` on a collection  
+**Cause:** Custom ICM collections only support `each`, `length`, and `[]`  
+**Solution:** Use `.each` with manual search, or `.to_a.find { ... }`
+
+**Quick Fix:**
+```ruby
+# WRONG:
+found = parent.children.find { |c| c.name == 'MyNetwork' }
+
+# CORRECT:
+found = parent.children.to_a.find { |c| c.name == 'MyNetwork' }
+```
+
+**See:** InfoWorks_ICM_Ruby_Lessons_Learned.md → Collection Return Types; PAT_DATA_FETCH_004
 
 ---
 
@@ -500,10 +520,10 @@ end
 ## Cross-References
 
 For correct usage patterns, see:
-- **Pattern_Reference.md** - Pattern IDs referenced above
-- **Tutorial_Context.md** - Complete working examples
-- **Database_Reference.md** - Table names and object types
-- **Glossary.md** - Term definitions
+- **InfoWorks_ICM_Ruby_Pattern_Reference.md** - Pattern IDs referenced above
+- **InfoWorks_ICM_Ruby_Tutorial_Context.md** - Complete working examples
+- **InfoWorks_ICM_Ruby_Database_Reference.md** - Table names and object types
+- **InfoWorks_ICM_Ruby_Glossary.md** - Term definitions
 
 ---
 

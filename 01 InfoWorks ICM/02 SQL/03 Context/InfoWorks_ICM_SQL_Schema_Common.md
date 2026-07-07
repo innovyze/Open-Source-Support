@@ -1,9 +1,9 @@
 ﻿# InfoWorks ICM SQL Schema — Common Fields, Results, and Workflow
 
-**Last Updated:** March 25, 2026
+**Last Updated:** July 7, 2026
 
 **Load Priority:** LOOKUP — Load alongside a network-type schema file for complete field coverage
-**Load Condition:** ALWAYS load with `Schema_InfoWorks.md` or `Schema_SWMM.md` for field lookups
+**Load Condition:** ALWAYS load with `InfoWorks_ICM_SQL_Schema_InfoWorks.md` or `InfoWorks_ICM_SQL_Schema_SWMM.md` for field lookups
 
 **Related Files:**
 - `InfoWorks_ICM_SQL_Schema_InfoWorks.md` — InfoWorks network object manifests and field tables
@@ -15,11 +15,10 @@
 This file consolidates schema content that applies to **both InfoWorks and SWMM networks** or that supports retrieval across general topics:
 
 - **Common data fields** present on all objects (`user_text_*`, `user_number_*`, etc.)
-- **Simulation results fields** (`sim.*`, `tsr.*`) — identical prefix/suffix across network types
+- **Simulation results fields** (`sim.*`, `tsr.*`) — identical `sim.*`/`tsr.*` prefix syntax; suffix names are network-specific
 - **Relationship-style navigation field paths** (`us_node.*`, `ds_node.*`, `spatial.*`, etc.)
 - **InfoAsset and high-risk nested/blob structures** shared across contexts
 - **InfoWorks vs SWMM key differences** — quick reference to prevent the most common field-name errors
-- **Autodesk Help lookup workflow** — fallback when a field is not indexed here
 - **Authoring and coverage governance** for maintaining the schema suite
 
 ---
@@ -52,12 +51,12 @@ This is the **primary source of hallucination errors**. Always verify network ty
 | Pipe width/diameter | `conduit_width` | `conduit_width` | Same in both networks |
 | Pipe height | `conduit_height` | `conduit_height` | Same in both networks |
 | Pipe length | `conduit_length` | `length` | Key difference |
-| Node depth/invert | `chamber_floor_level` | `maximum_depth` | |
+| Node invert | `chamber_floor` | `invert_elevation` | InfoWorks UI label: "Chamber Floor Level" |
 | Catchment area | `contributing_area` | `area` | |
-| Imperviousness | `runoff_index` | `percent_impervious` | CORRECTED: `percent_imperv` is wrong |
+| Imperviousness (subcatchment) | `area_percent_1`–`area_percent_12` / land use `p_area_1`–`p_area_12` | `percent_impervious` | `runoff_index` is a runoff surface ID, not imperviousness |
 | Node table | `hw_node` | `sw_node` | |
 | Conduit table | `hw_conduit` | `sw_conduit` | |
-| Subcatchment table | `hw_subcatchment` | `sw_subcatchment` |
+| Subcatchment table | `hw_subcatchment` | `sw_subcatchment` | |
 | Conduit/Link identifier | `link_suffix` | `id` | Key difference — most common identifier field |
 
 **Rules:**
@@ -67,37 +66,7 @@ This is the **primary source of hallucination errors**. Always verify network ty
 
 ---
 
-## Autodesk Help Lookup Workflow
-
-Use this workflow when a field is **not indexed in the network-type schema files**.
-
-### Step 1: Determine Object and Network Type
-- Object type: Conduit, Node, Subcatchment, Pump, etc.
-- Network type: InfoWorks (default) or SWMM (if specified)
-
-### Step 2: Search Autodesk Help
-Search pattern: `{Object Type} Data Fields` at https://help.autodesk.com/view/IWICMS/2026/ENU/
-
-Examples:
-- `Conduit Data Fields (InfoWorks)` → InfoWorks Conduit
-- `Conduit Data Fields (SWMM)` → SWMM Conduit
-- `Node Data Fields (InfoWorks)` → InfoWorks Node
-
-### Step 3: Use the "Database field" Column
-Each Help page has a table with:
-1. **Field Name** — UI display name
-2. **Database field** — ← use this in SQL
-3. **Data Type** — TEXT, REAL, INTEGER, BLOB, etc.
-4. **Description** — explanation
-
-Always use the **Database field** column value, not the Field Name.
-
-**Example:** For "Width" on the InfoWorks Conduit page, the Database field is `conduit_width`.
-
-### Critical Reminders
-- Use underscores: `conduit_width` not `conduitwidth`
-- Verify network type: the same UI label often maps to different Database fields
-- Blob tables have their own Database field columns: search for the blob table section within the parent object's page
+Field not indexed here → see `InfoWorks_ICM_Database_Fields_Guide.md` Step 2 (MCP lookup).
 
 ---
 
@@ -109,7 +78,7 @@ Result fields are accessed through `sim.*` (summary results) and `tsr.*` (time-s
 
 The `sim.*` prefix syntax is common to both network types. However, the suffix names are **network-type specific** — InfoWorks and SWMM use different field codes for the same hydraulic concepts.
 
-**Do not assume a `sim.*` suffix from one network type will work in the other.** Object- and network-specific `sim.*` field names are listed in the network-type schema files (`Schema_InfoWorks.md` and `Schema_SWMM.md`) alongside `tsr.*` fields.
+**Do not assume a `sim.*` suffix from one network type will work in the other.** Object- and network-specific `sim.*` field names are listed in the network-type schema files (`InfoWorks_ICM_SQL_Schema_InfoWorks.md` and `InfoWorks_ICM_SQL_Schema_SWMM.md`) alongside `tsr.*` fields.
 
 ### Time Series Metadata (`tsr.*`)
 
@@ -262,7 +231,7 @@ These are valid SQL field paths created by InfoWorks navigation, not flat databa
 - Keep one object per section.
 - Repeat exact field strings verbatim.
 - Prefer short rows over prose.
-- Include both InfoWorks and SWMM where names differ; put InfoWorks in `Schema_InfoWorks.md` and SWMM in `Schema_SWMM.md`.
+- Include both InfoWorks and SWMM where names differ; put InfoWorks in `InfoWorks_ICM_SQL_Schema_InfoWorks.md` and SWMM in `InfoWorks_ICM_SQL_Schema_SWMM.md`.
 - Mark nested fields explicitly in `Type` as `blob` or `nested`.
 - If a field is user-confirmed but not yet documented from Autodesk Help, label it in `Notes`.
 - If uncertain, omit it rather than guessing.
