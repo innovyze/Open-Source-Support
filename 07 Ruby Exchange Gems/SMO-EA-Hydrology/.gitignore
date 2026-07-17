@@ -1,0 +1,6 @@
+*.gem
+batch_rainfall/
+*.csv
+.DS_Store
+.ruby-lsp/
+Gemfile.lock
