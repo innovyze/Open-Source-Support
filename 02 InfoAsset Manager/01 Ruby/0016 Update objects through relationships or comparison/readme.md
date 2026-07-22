@@ -68,4 +68,11 @@ The reverse of `UI-UpdateAssetsFromLatestNotUsedFloodDefenceSurvey.rb`. For each
 Surveys with a blank `user_text_39` or `user_text_40`, or an unrecognised asset type, are skipped with a warning. The script exits early if no surveys are selected.
 
 ## [UI-CopyGeneralSurveyAttachmentsToProperty.rb](./UI-CopyGeneralSurveyAttachmentsToProperty.rb)
-Copies attachments from General Surveys (where `asset_type = cams_property`) to their linked Property objects, matching on `asset_id`. Skips attachments already present on the Property (matched by `db_ref`). Can be run on the whole network or on a selection of surveys.
+Copies attachments from General Surveys (where `asset_type = cams_property`) to their linked Property objects, matching on `asset_id`. Skips attachments already present on the Property (matched by `db_ref`). Can be run on the whole network or on a selection of surveys. Renames copied attachments for Property display (`Location view` purpose and a postcode/name-based filename).
+
+## [UI-CopySurveyAttachmentsToAsset.rb](./UI-CopySurveyAttachmentsToAsset.rb)
+Copies **attachment blob metadata** from **selected** survey objects to their associated asset object (any survey type that links to an asset with an `attachments` blob). Duplicate attachments on the asset (matched by `db_ref`, case-insensitive) are skipped. Files on disk are not duplicated — asset rows reference the same `db_ref` as the survey.
+
+**Asset resolution** (first match with an `attachments` field wins): `asset_id` + `asset_type`; flood-defence `user_text_39` / `user_text_40`; pipe link fields; `node_id`; then `navigate('property')`, `navigate('node')`, or `navigate('pipe')`. Asset lookup uses `row_object`, `row_objects_from_asset_id`, then a table scan on `id`, `asset_id`, `node_id`, and `property_id`.
+
+**Usage:** select survey object(s) on the GeoPlan, then run via **Network → Run Ruby Script…**. If `db_ref` is blank on a survey attachment row, the script falls back to `filename` as the file reference.
