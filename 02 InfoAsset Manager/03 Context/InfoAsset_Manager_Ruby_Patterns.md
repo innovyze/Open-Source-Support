@@ -108,7 +108,7 @@ options['Error File'] = 'C:\\Temp\\ImportErrorLog.txt' # PLACEHOLDER
 
 net.odic_import_ex(
   'CSV',
-  'C:\\Temp\\CSVConfig.cfg', # PLACEHOLDER
+  'C:\\Temp\\CSVConfig.cfg', # PLACEHOLDER — first line must be DBI002
   options,
   'pipe',
   'C:\\Temp\\pipe.csv'       # PLACEHOLDER
@@ -116,6 +116,14 @@ net.odic_import_ex(
 ```
 
 **Source style:** `0002 ODIC Import`
+
+> **CFG header:** ODIC import `.cfg` files start with `DBI002`. Use `DBX002` only for ODEC export configs.
+
+> **CFG layout:** Line 1 = `DBI002`. Line 2 = `table,{{"target_field","source_field","","",""},...}` — one outer `{...}` around all field tuples. Each tuple already starts with `{`, so in Ruby use `"#{table},{#{mappings.join(',')}}"` — the literal `,{` plus tuples plus `}` renders as `,{{...}}`. Do not use `"#{table},{{#{mappings.join(',')}}}"`; that produces `{{{` because the first tuple also starts with `{`.
+
+> **IAM 2027+ csv:** UI Ruby cannot reliably use the bundled `csv` gem (`require 'csv'` fails; loading the gem from Program Files then crashes in `Forwardable`). Prefer inline CSV parsing/writing in UI scripts until IAM documents a supported gem bootstrap pattern.
+
+> **Attachments import:** Use `Duplication Behaviour` = `Merge` to append blob rows. Keep `Blob Merge` = `false`; when enabled it collapses multiple CSV rows for the same survey into one attachment (last row wins).
 
 ---
 

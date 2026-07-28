@@ -377,10 +377,14 @@ nw.odec_export_ex('SQLSERVER', 'C:/config.cfg', options,
 | `'Export Selection'` | Boolean | false | Export selected objects only |
 | `'Callback Class'` | Ruby Class | nil | Callback class instance |
 
+**Config file (`.cfg`) header line:** ODEC export configs must start with `DBX002` on the first line. ODIC **import** configs use `DBI002` instead (see `odic_import_ex` above).
+
 **Table name format:** UI display name with spaces removed. Examples:
 - `'Pipe'` → `cams_pipe`
 - `'CCTVSurvey'` → `cams_cctv_survey`
 - `'ManholeReport'` (for report mode)
+
+**Blob sub-table imports:** For ODIC imports into a blob sub-table, append the blob field name (PascalCase, no spaces) to the parent UI table name in the `odic_import_ex` table argument. Example: Manhole Survey + `attachments` → `ManholeSurveyAttachments`. The `.cfg` mapped line still uses the database form `cams_manhole_survey:attachments`.
 
 ### `odic_import_ex` Parameters and Options
 
@@ -402,10 +406,14 @@ net.odic_import_ex('CSV', 'C:/config.cfg', options, 'Pipe', 'C:/input.csv')
 | `'Duplication Behaviour'` | String | `'Merge'` | `'Overwrite'`, `'Merge'`, `'Ignore'` |
 | `'Delete Missing Objects'` | Boolean | false | |
 | `'Update Only'` | Boolean | false | |
-| `'Blob Merge'` | Boolean | false | |
+| `'Blob Merge'` | Boolean | false | Keep false for attachment imports; when true, multiple CSV rows for the same object can collapse to a single blob entry |
 | `'Callback Class'` | Ruby Class | nil | |
 | `'Set Value Flag'` | String | nil | Flag for imported fields |
 | `'Default Value Flag'` | String | nil | Flag for default-value fields |
+
+**Config file (`.cfg`) header line:** ODIC import configs must start with `DBI002` on the first line. Do not use `DBX002` — that header is for ODEC **export** configs (see `odec_export_ex` below).
+
+**Config file structure:** After `DBI002`, the first mapped line wraps field mappings in one outer `{...}`: `table,{{"InfoAsset field","CSV/source field","Default Value","Flag Field","units"},{"InfoAsset field","CSV/source field","","",""}}`. Header image imports map on `cams_manhole_survey`. Attachment imports map on `cams_manhole_survey:attachments` with blob sub-field targets (`db_ref`, `filename`, etc.) and `attachments.*` CSV column names. Remaining lines list every network table and blob sub-table as separate registry entries, for example `cams_manhole,` and `cams_manhole_survey:details,`. Only the line being imported carries field mappings; registry lines are table names only. The script `0045 Import Manhole Survey Photos from CSV` builds this registry from the open network at runtime.
 
 ---
 

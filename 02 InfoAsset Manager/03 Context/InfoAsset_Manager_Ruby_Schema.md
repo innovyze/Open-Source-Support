@@ -339,6 +339,7 @@ For `net.odec_export_ex` and `net.odic_import_ex`, the `table` parameter uses th
 |---|---|
 | CCTV Survey | `CCTVSurvey` |
 | Manhole Survey | `ManholeSurvey` |
+| Manhole Survey Attachments (blob) | `ManholeSurveyAttachments` |
 | GPS Survey | `GPSSurvey` |
 | Pipe | `Pipe` |
 | Node | `Node` |
