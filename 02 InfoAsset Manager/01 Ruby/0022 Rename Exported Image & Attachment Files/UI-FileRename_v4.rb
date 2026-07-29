@@ -38,12 +38,13 @@ converter = lambda { |header| header.downcase }
 CSV.foreach(exportfile, :headers=>true, header_converters: converter) do |row|
 rn=$.
     if (row[image].length)
+        newName = row[name].gsub(/[^0-9A-Za-z _-]/, '')
         fileFrom = File.join(exportloc, row[image])
-        fileTo = File.join(exportloc, row[name] + File.extname(fileFrom))
-		fileTo2 = File.join(exportloc, row[name] + '_' + rn.to_s + File.extname(fileFrom))
+        fileTo = File.join(exportloc, newName + File.extname(fileFrom))
+		fileTo2 = File.join(exportloc, newName + '_' + rn.to_s + File.extname(fileFrom))
         
-		filenew = row[name]
-		filenew2 = row[name] + '_' + rn.to_s
+		filenew = newName
+		filenew2 = newName + '_' + rn.to_s
 		
 		if !found.include? filenew
 			File.rename(fileFrom, fileTo)
@@ -56,7 +57,7 @@ rn=$.
 			puts 'File "'+row[image]+'" renamed "'+filenew2+'"'
 		
 		else
-		puts 'File "'+row[image]+'" not renamed, possible duplicate of "'+row[name]+'"'
+		puts 'File "'+row[image]+'" not renamed, possible duplicate of "'+newName+'"'
 		end
     end
 end
