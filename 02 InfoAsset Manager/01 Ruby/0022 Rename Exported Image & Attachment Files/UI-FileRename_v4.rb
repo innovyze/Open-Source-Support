@@ -37,9 +37,19 @@ end
 converter = lambda { |header| header.downcase }
 CSV.foreach(exportfile, :headers=>true, header_converters: converter) do |row|
 rn=$.
-    if (row[image].length)
-        newName = row[name].gsub(/[^0-9A-Za-z _-]/, '')
-        fileFrom = File.join(exportloc, row[image])
+    if !row[image].to_s.strip.empty?
+        currentFile = row[image].to_s.strip
+        newName = row[name].to_s.strip.gsub(/[^0-9A-Za-z. _-]/, '')
+        newName = File.basename(newName, ".*")
+        if newName.empty?
+            puts 'File "'+currentFile+'" not renamed, new filename "'+row[name]+'" has no valid characters after sanitisation'
+            next
+        end
+        fileFrom = File.join(exportloc, currentFile)
+        unless File.exist?(fileFrom)
+            puts 'File "'+currentFile+'" not renamed, source file not found in folder'
+            next
+        end
         fileTo = File.join(exportloc, newName + File.extname(fileFrom))
 		fileTo2 = File.join(exportloc, newName + '_' + rn.to_s + File.extname(fileFrom))
         
@@ -49,15 +59,15 @@ rn=$.
 		if !found.include? filenew
 			File.rename(fileFrom, fileTo)
 			found << filenew
-			puts 'File "'+row[image]+'" renamed "'+filenew+'"'
+			puts 'File "'+currentFile+'" renamed "'+filenew+'"'
 			
 		elsif !found.include? filenew2
 			File.rename(fileFrom, fileTo2)
 			found << filenew2
-			puts 'File "'+row[image]+'" renamed "'+filenew2+'"'
+			puts 'File "'+currentFile+'" renamed "'+filenew2+'"'
 		
 		else
-		puts 'File "'+row[image]+'" not renamed, possible duplicate of "'+newName+'"'
+		puts 'File "'+currentFile+'" not renamed, possible duplicate of "'+newName+'"'
 		end
     end
 end
