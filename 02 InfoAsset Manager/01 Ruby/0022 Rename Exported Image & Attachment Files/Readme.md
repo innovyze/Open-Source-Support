@@ -8,6 +8,7 @@ The scripts here will resolve this, allowing bulk renaming of files using a simp
 
 The script is designed to prevent overwriting of files by means of renaming a file to a filename already in use within the folder.  
 If this happens, the Script Output will try and append the new filename with an index number based on the line in the CSV[^1].  The outputted log will detail the file renamings which have occured.  
+Rows that cannot be renamed (for example, when the source file is missing or the proposed new name is invalid after sanitisation) are skipped and reported in the Ruby console rather than stopping the script.  
 Note, we cannot be held liable if the script does overwrite any files.  
 [^1]: Handling of multiple proposed filenames being the same is in v4 & later of this script.  
 
@@ -15,6 +16,8 @@ Note, we cannot be held liable if the script does overwrite any files.
 Script: **[UI-FileRename_v4.rb](./UI-FileRename_v4.rb)**  
 
 The prerequisite of using this script is a CSV file which contains at least two columns - one which has the file's current filename (full filename including file type extension) and a column with the new filename (without file type extension), and that the files to be renamed are all located within one folder.  
+
+When renaming, the script sanitises proposed new filenames to remove characters that are not permitted on Windows file systems. Any extension included in the new filename column is stripped before the source file's extension is appended.  
 
 ### Exporting the files & CSV from Infoasset Manager
 For example, I have the below CCTV Survey with some attachments.  
@@ -41,7 +44,7 @@ class Exporter
 end
 ```
 Essentially what it is doing is returning the object value for the id field, followed by an underscore character, then the attachments.purpose field value concatenated together if the purpose field has a value, else it is just outputting the Object ID.  
-The returned string then has any non-alphanumeric, spaces, underscores, or hyphens removed.  
+The returned string then has any characters removed that are not alphanumeric, spaces, underscores, or hyphens. The rename script applies further sanitisation when renaming files.  
 
 So that I have a simple CSV file, as below, which I can use to rename the files as well as the files themselves.  
 ![CSV export in Excel](./images/img003.png)  
@@ -49,10 +52,12 @@ So that I have a simple CSV file, as below, which I can use to rename the files 
 
 
 ### Run the Ruby Script
-Then I can run the script using the InfoAsset Manager interface (**Network** > **Run Ruby script...** > select the .rb file containing [UI-FileRename_v4.rb](./UI-FileRename_v4.rb)), when prompted selecting the folder where the files are, the mapping file, and the headers of the current & new filenames.  
-![Script Parameters](./images/img004.png)  
-*Script Parameters*  
+Run the script using the InfoAsset Manager interface (**Network** > **Run Ruby script...** > select [UI-FileRename_v4.rb](./UI-FileRename_v4.rb)). The script uses two prompts:
 
+1. **Rename Files - Step 1** — select the folder containing the exported files and the CSV mapping file.
+2. **Rename Files - Step 2** — select the current and new filename columns from dropdown lists populated from the CSV headers. 
+
+Review the Ruby console output for any rows that were skipped (missing source file, invalid new name, or duplicate target name).  
 Like magic, the files are renamed to something more meaningful as defined in the CSV. :satisfied:  
 ![Files pre and post renaming](./images/img005.png)  
 *Files pre and post renaming*  
