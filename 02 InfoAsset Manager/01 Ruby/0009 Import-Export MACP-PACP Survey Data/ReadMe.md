@@ -19,6 +19,96 @@ on.pacp_import_cctv_surveys(filename,flag,images,generateIDsFrom,duplicateIDs,im
 It is necessary to run the method within a transaction.  
 
 
+## [UI-PACP7_import_cctv_surveys_from_CSV](./UI-PACP7_import_cctv_surveys_from_CSV.rb)
+
+Import PACP7 (or LACP) CCTV survey data when the deliverable is a folder of CSV files instead of a single `.mdb` file.
+
+The script expects CSV filenames to match the PACP7 exchange table names and column headings to match the corresponding Access field names. It copies a **PACP7 template MDB** (for example an InfoAsset-exported `.mdb`) to preserve `DB_Version`, lookup tables, and exact field types, loads CSV data into the data tables with typed values, then runs `pacp_import_cctv_surveys` on that MDB.
+
+Use this script when a contractor or third party delivers PACP7 data as CSV exports rather than a complete Access database. The template MDB ensures the temporary database matches the structure InfoAsset Manager expects (integer `InspectionID`, date/time fields, condition-code lookups, and so on).
+
+### PACP7 template MDB
+
+A PACP7 `.mdb` is used as a schema template so the temporary database has the correct field types, lookup tables, and `DB_Version` record. You do not need to supply one in most cases.
+
+The script resolves the template in this order:
+
+1. The file you browse to in **PACP7 template MDB (optional)**, if provided.
+2. Otherwise the first `.mdb` in the CSV folder (excluding temp files named `PACP_import_*.mdb`).
+3. Otherwise the InfoAsset Manager install file **`PACP_LACPv702.mdb`** from `Program Files\Autodesk\InfoAsset Manager {version}\`.
+
+The template is copied to `%TEMP%` as `PACP_import_YYYYMMDD_HHMMSS.mdb`. Only the CSV-backed data tables are cleared (child tables first, to respect Access relationships) and reloaded. Lookup tables, `DB_Version`, and all other schema remain unchanged from the template.
+
+### Expected CSV files
+
+| CSV filename | Required when |
+|--------------|---------------|
+| `PACP_Inspections.csv` | Import PACP = true (**required**) |
+| `PACP_Conditions.csv` | Import PACP = true (**required**) |
+| `PACP_Media_Inspections.csv` | Import PACP = true (optional) |
+| `PACP_Media_Conditions.csv` | Import PACP = true (optional) |
+| `PACP_Custom_Fields.csv` | Import PACP = true (optional) |
+| `PACP_Ratings.csv` | Import PACP = true (optional) |
+| `LACP_Inspections.csv` | Import LACP = true (**required**) |
+| `LACP_Conditions.csv` | Import LACP = true (**required**) |
+| `LACP_Media_Inspections.csv` | Import LACP = true (optional) |
+| `LACP_Media_Conditions.csv` | Import LACP = true (optional) |
+| `LACP_Custom_Fields.csv` | Import LACP = true (optional) |
+
+Only the inspections (header) and conditions CSVs are mandatory. Media, custom-field, and ratings tables are loaded when present; otherwise they are skipped.
+
+**CSV format rules:**
+
+- The first row must be column headers matching Access field names exactly (for example `InspectionID`, `Inspection_Date`, `Inspection_Time`).
+- Filenames are matched case-insensitively (`PACP_Inspections.csv`, `pacp_inspections.csv`, etc.).
+- Spaces in filenames are treated as underscores (`PACP Inspections.csv` matches `PACP_Inspections`).
+- CSV files in subfolders of the selected folder are also discovered.
+
+### Prompt options
+
+| Option | Default | Notes |
+|--------|---------|-------|
+| Folder containing CSV files | — | All CSVs for the import should be in this folder |
+| PACP7 template MDB (optional) | — | Browse to override; otherwise uses an `.mdb` in the CSV folder, or `PACP_LACPv702.mdb` from the InfoAsset Manager install folder |
+| Import PACP pipe surveys? | true | Requires `PACP_Inspections.csv` and `PACP_Conditions.csv`; loads optional `PACP_*` media/custom/ratings CSVs if present |
+| Import LACP lateral surveys? | false | Requires `LACP_Inspections.csv` and `LACP_Conditions.csv`; loads optional `LACP_*` media/custom CSVs if present |
+| Import images? | true | Passed to `pacp_import_cctv_surveys`; only applies when media CSVs are present and paths are relative to the CSV folder |
+| Mark imported surveys as completed? | false | Passed to `pacp_import_cctv_surveys` |
+| Generate IDs from | Upstream MH, Direction, Date and Time | Same values as the PACP/LACP import dialog (1–13) |
+| Duplicate survey handling | Update existing surveys | String passed to `pacp_import_cctv_surveys`: `ignore` or `update` (must be a string, not a boolean) |
+| Flag for imported fields | BDGR | Passed to `pacp_import_cctv_surveys` |
+| Keep temporary MDB file? | false | Temp MDB is written to `%TEMP%`; when false, deleted after a successful import |
+
+### Workflow
+
+1. Select the folder containing the PACP/LACP CSV files (and optionally browse to a PACP7 template MDB).
+2. Copy the template `.mdb` to `%TEMP%` and clear/reload CSV-backed data tables using ACE/Jet field types read from the template schema.
+3. Validate the built MDB (for example confirm `InspectionID` is numeric and date/time fields are populated).
+4. Run `pacp_import_cctv_surveys` inside a network transaction.
+5. Write an import log alongside the CSV folder (`PACPimport_{folder}_{YYYYMMDD_HHMMSS}.log`) and echo it to the Ruby console.
+
+### Data handling notes
+
+- **Typed columns:** Values are written using the field types defined in the template (integers, dates, booleans, floats, text). Do not rely on creating tables from CSV alone; the template provides the correct schema.
+- **Inspection time recovery:** When `PACP_Inspections.csv` contains an Excel-style placeholder time (`00/01/1900`), the script attempts to recover `Inspection_Time` from the corresponding `PACP_Media_Inspections` video filename (for example `_2221` in `..._20180816_2221.MPG` → 22:21:00).
+- **Duplicate surveys:** Choose **Update existing surveys** to refresh an existing CCTV survey matched by the selected ID mode. Choose **Do not import duplicates** to skip surveys that already exist in the network.
+
+### Requirements
+
+InfoAsset Manager 2023.0+ (`pacp_import_cctv_surveys`). Microsoft Access Database Engine (ACE or Jet) must be installed. The network/database CCTV standard should be PACP (or LACP for lateral data). Run from the UI with a Collection Network open, or via Exchange as for [PACP_import_cctv_surveys](./UIIE-PACP_import_cctv_surveys.rb).
+
+**Note:** `PACP_Ratings.csv` is included in the temporary MDB when present, but summary rating fields on CCTV surveys are not updated automatically from that table. Use **Calculate CCTV Scores/Grades** in InfoAsset Manager, or export/import via [UI-PACP_export-PACP_Ratings](./UI-PACP_export-PACP_Ratings.rb) if ratings must be preserved exactly.
+
+### Troubleshooting
+
+| Symptom | Likely cause |
+|---------|----------------|
+| "A PACP7 template MDB is required" | No template found via browse, CSV folder, or InfoAsset Manager install. Confirm InfoAsset Manager is installed and `PACP_LACPv702.mdb` exists under `Program Files\Autodesk\InfoAsset Manager {version}\`. |
+| "InspectionID must be numeric" / import log shows blank date or time | Template missing or CSV columns do not match Access field names. Confirm headers match the PACP7 exchange format. |
+| Log says `'Do not import duplicate survey' is selected` but you chose Update | Re-run with **Update existing surveys**; the script passes `update` as a string to the API. |
+| Surveys not created after a successful run | Check the import log in the CSV folder. Confirm **Generate IDs from** matches how surveys are identified in the network. |
+| Image paths not found | Media CSV paths must be relative to the CSV folder (or absolute). Enable **Import images?** and ensure `PACP_Media_Inspections.csv` is present. |
+
 # [PACP_export](./UIIE-PACP_export.rb)
 on.pacp_export(filename,optionsHash)  
     filename – String - filename to export to  
