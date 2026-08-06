@@ -77,7 +77,7 @@ else
 end
 
 if WSApplication.ui?
-	loop do
+	while true
 		val = WSApplication.prompt 'MSCC CCTV export - multiple stored queries',
 			mscc_export_prompt_layout(export_folder, file_prefix, stored_query_ids, query_labels, individual_files, export_images),
 			false
@@ -126,13 +126,11 @@ end
 
 export_folder = normalize_export_folder(export_folder)
 
-log_file = "#{export_folder}#{file_prefix}Export_#{Time.now.strftime('%Y%m%d_%H%M%S')}.log"
 puts "Export folder: #{export_folder}"
 puts "File prefix: #{file_prefix}"
 puts "Stored queries: #{stored_queries.map { |q| "#{q[:id]} (#{safe_filename_part(q[:label])})" }.join(', ')}"
 puts "Individual files: #{individual_files}"
 puts "Export images: #{export_images}"
-puts "Log file: #{log_file}"
 
 stored_queries.each_with_index do |query, query_index|
 	query_id = query[:id]
@@ -157,12 +155,12 @@ stored_queries.each_with_index do |query, query_index|
 			filename = "#{export_folder}#{file_prefix}#{query_label}_#{survey_index}_#{survey_id}.xml"
 
 			puts "  Export #{survey_index + 1}/#{survey_count}: #{survey.id} -> #{filename}"
-			net.mscc_export_cctv_surveys(filename, export_images, true, log_file)
+			net.mscc_export_cctv_surveys(filename, export_images, true, nil)
 		end
 	else
 		filename = "#{export_folder}#{file_prefix}#{query_label}.xml"
 		puts "  Export combined file: #{filename}"
-		net.mscc_export_cctv_surveys(filename, export_images, true, log_file)
+		net.mscc_export_cctv_surveys(filename, export_images, true, nil)
 	end
 end
 
