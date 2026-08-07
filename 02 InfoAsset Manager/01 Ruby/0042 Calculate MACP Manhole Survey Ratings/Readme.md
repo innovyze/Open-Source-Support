@@ -16,7 +16,7 @@ Both sources contribute occurrences to the same grade-count tallies before the r
 ## Usage
 
 1. Open the relevant Collection Network in InfoAsset Manager.
-2. Optionally select one or more manhole surveys on the GeoPlan or in a selection list.
+2. Optionally select one or more manhole surveys.
 3. Run the script via **Network → Run Ruby Script…** and select `UI-MACPManholeSurvey-CalculateRatings.rb`.
 4. When prompted, configure the following options:
 

@@ -68,7 +68,7 @@ The prerequisite of using this script is a CSV file which contains at least two 
 
 When renaming, the script sanitises proposed new filenames to remove characters that are not permitted on Windows file systems. Any extension included in the new filename column is stripped before the source file's extension is appended.  
 
-### Run the Ruby Script
+## Run the Ruby Script
 
 1. Run the script using the InfoAsset Manager interface (**Network** > **Run Ruby script...** > select [UI-FileRename_v4.rb](./UI-FileRename_v4.rb)). The script uses two prompts:  
 2. **Rename Files - Step 1** — select the folder containing the exported files and the CSV mapping file.  
