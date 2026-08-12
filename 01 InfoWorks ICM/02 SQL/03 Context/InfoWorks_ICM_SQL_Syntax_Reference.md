@@ -405,7 +405,7 @@ Required ordering within a clause:
 - WHERE must come before GROUP BY
 - HAVING must come after GROUP BY
 - ORDER BY always last
-- INTO FILE comes before ORDER BY but after WHERE
+- INTO FILE comes after FROM and before WHERE; ORDER BY is last
 - TOP/BOTTOM comes after SELECT keyword
 
 ---

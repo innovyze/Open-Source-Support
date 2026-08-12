@@ -100,6 +100,8 @@
 | 0092 | UI       | Compare Model Results to Sensor Data                                | Simulations Data Get  |
 | 0093 | EX       | Update Run to Latest Network Commit                                 | Simulations Run       |
 | 0094 | EX       | Audit fixed runoff surfaces                                         | Network Data Analysis |
+| 0095 | UI       | Database Working and Results Folder Report                          | System Automation     |
+| 0096 | UI       | TVD & Simulation Summary Plots & CSV Export                         | Simulations Data Get  |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions

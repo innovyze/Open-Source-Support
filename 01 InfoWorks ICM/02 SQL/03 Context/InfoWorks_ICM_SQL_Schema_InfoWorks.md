@@ -1459,7 +1459,6 @@ The same directional prefix pattern applies to `MF*`, `PF*`, and `SEDDEP` fields
 | Max flood depth | `tsr.Max_FloodDepth` | result | Summary |
 | Max flood volume | `tsr.Max_FloodVolume` | result | Summary |
 | Max flood volume (cumulative) | `tsr.MAX_FLVOL` | result | Summary |
-| Flood volume (cumulative) | `tsr.FLVOL` | result | Summary |
 | Max stored volume | `tsr.MAX_VOLUME` | result | Summary |
 | Cumulative flow | `tsr.QCUM` | result | Summary |
 | Cumulative inflow | `tsr.QINCUM` | result | Summary |
@@ -1490,6 +1489,7 @@ The same directional prefix pattern applies to `MF*`, `PF*`, and `SEDDEP` fields
 | Depth at node | `tsr.DEPNOD` | result | Time-varying |
 | Flood depth | `tsr.FloodDepth` | result | Time-varying |
 | Flood volume | `tsr.FloodVolume` | result | Time-varying |
+| Volume lost | `tsr.FLVOL` | result | Time-varying; cumulative lost at lost nodes |
 | Flow | `tsr.FLOW` | result | Time-varying |
 | Gully flow | `tsr.GLLYFLOW` | result | Time-varying; gully nodes |
 | Gutter spread | `tsr.GTTRSPRD` | result | Time-varying; gully nodes |
