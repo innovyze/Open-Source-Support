@@ -1,0 +1,7 @@
+require_relative "smo_sepa_kiwis/version"
+require_relative "smo_sepa_kiwis/errors"
+require_relative "smo_sepa_kiwis/station"
+require_relative "smo_sepa_kiwis/timeseries"
+require_relative "smo_sepa_kiwis/value"
+require_relative "smo_sepa_kiwis/response_parser"
+require_relative "smo_sepa_kiwis/client"
