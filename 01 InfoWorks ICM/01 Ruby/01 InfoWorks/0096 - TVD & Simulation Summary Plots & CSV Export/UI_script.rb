@@ -1,6 +1,7 @@
 # Simulation summary validation for InfoWorks (hw_*) networks.
 # Run from the ICM UI with simulation results loaded on the GeoPlan.
-## Produces in-ICM graphs and one CSV file.
+#
+# Produces in-ICM graphs (SWMM summary-style validation) and one CSV file.
 # Empty GeoPlan selection uses all subcatchments / nodes / links in scope.
 
 require 'date'
@@ -16,6 +17,9 @@ catch(:stop) do
   end
 
   ts_count = timesteps.count
+
+  was_user_units = WSApplication.use_user_units?
+  WSApplication.use_user_units = false
 
   def objects_in_scope(net, table)
     selected = net.row_objects_selection(table)
@@ -330,6 +334,8 @@ catch(:stop) do
     ts_count,
     [build_trace('Outfall discharge (ds_flow)', WSApplication.colour(0, 0, 180), timesteps, outfall_cum)]
   )
+
+  WSApplication.use_user_units = was_user_units
 
   WSApplication.message_box(
     "Graphs opened.\n\nCSV written to:\n#{csv_path}\n\n#{ts_count} timesteps, one row per timestep.\n\nCumulative volumes use INTEGRAL x 60.",

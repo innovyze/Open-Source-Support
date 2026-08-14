@@ -48,8 +48,8 @@ Empty selection falls back to all objects automatically. Outfall link discovery 
 
 ## Graphs
 
-1. Wastewater/RDII instantaneous (L/s) — display values are m3/s x 1000
-2. Wastewater/RDII cumulative volume (m3) — INTEGRAL x 60 on raw result values
+1. Wastewater/RDII instantaneous (L/s) — native m3/s from results x 1000 for display
+2. Wastewater/RDII cumulative volume (m3) — INTEGRAL x 60 on native m3/s result values
 3. QCATCH minus three-flow delta (informational)
 4. Positive flood storage + lost volume (m3)
 5. Total floodvolume all nodes (m3)
@@ -62,20 +62,21 @@ Empty selection falls back to all objects automatically. Outfall link discovery 
 |--------|------|---------|
 | timestep | - | 1-based step number |
 | rel_minutes | min | Minutes from simulation start |
-| qtrade_ls, qfoul_ls, qrdii_ls | L/s | Instantaneous flows (m3/s x 1000 for display) |
-| qcatch_ls | L/s | Reference total subcatchment outflow (display) |
+| qtrade_ls, qfoul_ls, qrdii_ls | L/s | Instantaneous flows (native m3/s x 1000) |
+| qcatch_ls | L/s | Reference total subcatchment outflow (native m3/s x 1000) |
 | delta_ls | L/s | QCATCH minus three-flow |
-| qtrade_m3, qfoul_m3, qrdii_m3, qcatch_m3 | m3 | Cumulative volumes (INTEGRAL x 60) |
-| flood_positive_m3 | m3 | Sum of positive floodvolume only |
-| flood_all_m3 | m3 | Sum of all floodvolume (includes negative) |
-| lost_m3 | m3 | Sum of positive flvol on lost nodes in scope |
-| outfall_ls | L/s | Sum of outfall ds_flow (display) |
-| outfall_m3 | m3 | Cumulative outfall discharge (INTEGRAL x 60) |
+| qtrade_m3, qfoul_m3, qrdii_m3, qcatch_m3 | m3 | Cumulative volumes (INTEGRAL x 60 on native m3/s) |
+| flood_positive_m3 | m3 | Sum of positive floodvolume only (native m3) |
+| flood_all_m3 | m3 | Sum of all floodvolume (native m3; includes negative) |
+| lost_m3 | m3 | Sum of positive flvol on lost nodes in scope (native m3) |
+| outfall_ls | L/s | Sum of outfall ds_flow (native m3/s x 1000) |
+| outfall_m3 | m3 | Cumulative outfall discharge (INTEGRAL x 60 on native m3/s) |
 
-Cumulative volumes use INTEGRAL x 60 on raw m3/s result values (TVD Summary / OSS SQL 0051). Instantaneous flow columns multiply by 1000 for L/s display.
+The script temporarily sets `WSApplication.use_user_units = false` so all `results()` values are native units, matching OSS SQL 0051 / TVD Summary. Cumulative volumes use INTEGRAL x 60 on native m3/s flow series. Instantaneous L/s columns and graphs multiply native m3/s by 1000. Volume fields (`floodvolume`, `flvol`) are already native m3. Assumes metric native units (m3/s to L/s display).
 
 ## Notes
 
+- The script saves and restores your `use_user_units` preference; while running it forces native units for consistent flow integration and L/s display conversion.
 - InfoWorks networks only (`hw_*` tables).
 - Results must be loaded before running the script.
 - Works with both relative and absolute time simulations. Cumulative volume uses the absolute difference between consecutive timestep values, so relative-time negative seconds are handled correctly.
