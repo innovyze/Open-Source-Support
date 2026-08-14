@@ -42,7 +42,7 @@ Several component conditions have different structural grades depending on wheth
 
 ## Header-level Component Scoring
 
-The following fields on `cams_manhole_survey` are evaluated for each survey. Each checked Boolean or matched String value contributes **one occurrence** at the listed grade to the overall tally.
+The following fields on `cams_manhole_survey` are evaluated for each survey. Per the NASSCO MACP rule *"when more than one code is allowed, select the highest grade possible"*, fields where multiple Boolean conditions can be simultaneously true contribute **one occurrence at the highest applicable grade** (Structural and O&M evaluated independently). Fields with a single string or numeric value always contribute one occurrence at the matched grade.
 
 ### Field 52 — Hole Number + Field 27 — Potential for Runoff
 

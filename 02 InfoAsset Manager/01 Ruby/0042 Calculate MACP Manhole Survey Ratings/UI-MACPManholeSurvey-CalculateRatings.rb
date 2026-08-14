@@ -391,44 +391,79 @@ survey_objects.each do |survey|
   end
 
   # ---- Field 56: Cover Condition ------------------------------------------
-  add_grade.call(1,             nil, 'F56 cover_condition_sound')             if survey.cover_condition_sound             == true
-  add_grade.call(tg.call(3, 4), nil, "F56 cover_condition_cracked [#{tl.call(3,4)}]")  if survey.cover_condition_cracked           == true
-  add_grade.call(4,             nil, 'F56 cover_condition_corroded')           if survey.cover_condition_corroded           == true
-  add_grade.call(5,             nil, 'F56 cover_condition_broken')             if survey.cover_condition_broken             == true
-  add_grade.call(5,             nil, 'F56 cover_condition_missing')            if survey.cover_condition_missing            == true
-  add_grade.call(nil,           2,   'F56 cover_condition_boltsmissing')       if survey.cover_condition_boltsmissing       == true
-  add_grade.call(2,             2,   'F56 cover_condition_restraint_defect')   if survey.cover_condition_restraint_defect   == true
-  add_grade.call(nil,           3,   'F56 cover_condition_restraint_miss')     if survey.cover_condition_restraint_miss     == true
+  # Multiple booleans may be true simultaneously; MACP rule: score once at the
+  # highest grade applicable (structural and O&M evaluated independently).
+  f56 = []
+  f56 << [1,             nil, 'sound']             if survey.cover_condition_sound             == true
+  f56 << [tg.call(3, 4), nil, "cracked(#{tl.call(3,4)})"] if survey.cover_condition_cracked           == true
+  f56 << [4,             nil, 'corroded']           if survey.cover_condition_corroded           == true
+  f56 << [5,             nil, 'broken']             if survey.cover_condition_broken             == true
+  f56 << [5,             nil, 'missing']            if survey.cover_condition_missing            == true
+  f56 << [nil,           2,   'boltsmissing']       if survey.cover_condition_boltsmissing       == true
+  f56 << [2,             2,   'restraint_defect']   if survey.cover_condition_restraint_defect   == true
+  f56 << [nil,           3,   'restraint_miss']     if survey.cover_condition_restraint_miss     == true
+  unless f56.empty?
+    max_st = f56.map(&:first).compact.max
+    max_om = f56.map { |e| e[1] }.compact.max
+    add_grade.call(max_st, max_om, "F56 cover_condition [#{f56.map { |e| e[2] }.join(', ')}] -> ST:#{max_st || '--'} OM:#{max_om || '--'}")
+  end
 
   # ---- Field 58: Cover Insert Condition (Corroded=ST only; rest=O&M only) ---
-  add_grade.call(nil, 1, 'F58 insert_condition_sound')         if survey.insert_condition_sound         == true
-  add_grade.call(nil, 3, 'F58 insert_condition_poorlyfitting') if survey.insert_condition_poorlyfitting == true
-  add_grade.call(nil, 3, 'F58 insert_condition_cracked')       if survey.insert_condition_cracked       == true
-  add_grade.call(3, nil, 'F58 insert_condition_corroded')      if survey.insert_condition_corroded      == true
-  add_grade.call(nil, 5, 'F58 insert_condition_insertfell')    if survey.insert_condition_insertfell    == true
-  add_grade.call(nil, 5, 'F58 insert_condition_leaking')       if survey.insert_condition_leaking       == true
+  # Multiple booleans may be true; score once at the highest ST and highest OM.
+  f58 = []
+  f58 << [nil, 1, 'sound']         if survey.insert_condition_sound         == true
+  f58 << [nil, 3, 'poorlyfitting'] if survey.insert_condition_poorlyfitting == true
+  f58 << [nil, 3, 'cracked']       if survey.insert_condition_cracked       == true
+  f58 << [3, nil, 'corroded']      if survey.insert_condition_corroded      == true
+  f58 << [nil, 5, 'insertfell']    if survey.insert_condition_insertfell    == true
+  f58 << [nil, 5, 'leaking']       if survey.insert_condition_leaking       == true
+  unless f58.empty?
+    max_st = f58.map(&:first).compact.max
+    max_om = f58.map { |e| e[1] }.compact.max
+    add_grade.call(max_st, max_om, "F58 insert_condition [#{f58.map { |e| e[2] }.join(', ')}] -> ST:#{max_st || '--'} OM:#{max_om || '--'}")
+  end
 
   # ---- Field 61: Adjustment Ring Condition (Structural; Leaking=O&M only) --
-  add_grade.call(1,   nil, 'F61 ring_condition_sound')       if survey.ring_condition_sound       == true
-  add_grade.call(3,   nil, 'F61 ring_condition_corroded')    if survey.ring_condition_corroded    == true
-  add_grade.call(3,   nil, 'F61 ring_condition_cracked')     if survey.ring_condition_cracked     == true
-  add_grade.call(3,   nil, 'F61 ring_condition_poorinstall') if survey.ring_condition_poorinstall == true
-  add_grade.call(5,   nil, 'F61 ring_condition_broken')      if survey.ring_condition_broken      == true
-  add_grade.call(nil, 5,   'F61 ring_condition_leaking')     if survey.ring_condition_leaking     == true
+  # Multiple booleans may be true; score once at the highest ST and highest OM.
+  f61 = []
+  f61 << [1,   nil, 'sound']       if survey.ring_condition_sound       == true
+  f61 << [3,   nil, 'corroded']    if survey.ring_condition_corroded    == true
+  f61 << [3,   nil, 'cracked']     if survey.ring_condition_cracked     == true
+  f61 << [3,   nil, 'poorinstall'] if survey.ring_condition_poorinstall == true
+  f61 << [5,   nil, 'broken']      if survey.ring_condition_broken      == true
+  f61 << [nil, 5,   'leaking']     if survey.ring_condition_leaking     == true
+  unless f61.empty?
+    max_st = f61.map(&:first).compact.max
+    max_om = f61.map { |e| e[1] }.compact.max
+    add_grade.call(max_st, max_om, "F61 ring_condition [#{f61.map { |e| e[2] }.join(', ')}] -> ST:#{max_st || '--'} OM:#{max_om || '--'}")
+  end
 
   # ---- Field 68: Frame Condition (Structural only) ------------------------
-  add_grade.call(1,             nil, 'F68 frame_condition_sound')              if survey.frame_condition_sound    == true
-  add_grade.call(1,             nil, 'F68 frame_condition_corroded')           if survey.frame_condition_corroded == true
-  add_grade.call(tg.call(4, 5), nil, "F68 frame_condition_cracked [#{tl.call(4,5)}]") if survey.frame_condition_cracked  == true
-  add_grade.call(5,             nil, 'F68 frame_condition_broken')             if survey.frame_condition_broken    == true
-  add_grade.call(5,             nil, 'F68 frame_condition_missing')            if survey.frame_condition_missing   == true
+  # Multiple booleans may be true; score once at the highest ST grade.
+  f68 = []
+  f68 << [1,             nil, 'sound']              if survey.frame_condition_sound    == true
+  f68 << [1,             nil, 'corroded']           if survey.frame_condition_corroded == true
+  f68 << [tg.call(4, 5), nil, "cracked(#{tl.call(4,5)})"] if survey.frame_condition_cracked  == true
+  f68 << [5,             nil, 'broken']             if survey.frame_condition_broken    == true
+  f68 << [5,             nil, 'missing']            if survey.frame_condition_missing   == true
+  unless f68.empty?
+    max_st = f68.map(&:first).compact.max
+    add_grade.call(max_st, nil, "F68 frame_condition [#{f68.map { |e| e[2] }.join(', ')}] -> ST:#{max_st}")
+  end
 
   # ---- Field 69: Seal Condition (both Structural and O&M) -----------------
-  add_grade.call(1,             1, 'F69 seal_condition_sound')                           if survey.seal_condition_sound   == true
-  add_grade.call(tg.call(3, 4), 3, "F69 seal_condition_cracked [ST:#{tl.call(3,4)} OM:3]") if survey.seal_condition_cracked == true
-  add_grade.call(tg.call(3, 4), 3, "F69 seal_condition_loose   [ST:#{tl.call(3,4)} OM:3]") if survey.seal_condition_loose   == true
-  add_grade.call(3,             3, 'F69 seal_condition_offset')                           if survey.seal_condition_offset  == true
-  add_grade.call(3,             3, 'F69 seal_condition_missing')                          if survey.seal_condition_missing == true
+  # Multiple booleans may be true; score once at the highest ST and highest OM.
+  f69 = []
+  f69 << [1,             1, 'sound']                        if survey.seal_condition_sound   == true
+  f69 << [tg.call(3, 4), 3, "cracked(ST:#{tl.call(3,4)},OM:3)"] if survey.seal_condition_cracked == true
+  f69 << [tg.call(3, 4), 3, "loose(ST:#{tl.call(3,4)},OM:3)"]   if survey.seal_condition_loose   == true
+  f69 << [3,             3, 'offset']                       if survey.seal_condition_offset  == true
+  f69 << [3,             3, 'missing']                      if survey.seal_condition_missing == true
+  unless f69.empty?
+    max_st = f69.map(&:first).compact.max
+    max_om = f69.map { |e| e[1] }.compact.max
+    add_grade.call(max_st, max_om, "F69 seal_condition [#{f69.map { |e| e[2] }.join(', ')}] -> ST:#{max_st || '--'} OM:#{max_om || '--'}")
+  end
 
   # ---- Field 70: Frame Offset Distance (Structural only) ------------------
   fod = survey.frame_offset_distance
