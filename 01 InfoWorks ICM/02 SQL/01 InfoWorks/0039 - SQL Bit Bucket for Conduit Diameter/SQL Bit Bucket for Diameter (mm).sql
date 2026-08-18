@@ -3,5 +3,5 @@
 // Spatial Search: blank
 */
 
-LIST $buckets =  75, 150,200,300,600, 900, 1000, 1200,1500,2000,2500,3000;
+LIST $buckets = 100,150,225,300,375,450,600,750,900,1200,1500,1800,2400;
 SELECT count(*) AS 'Count' GROUP BY TITLE(RINDEX(conduit_width, $buckets), $buckets) AS 'Diameter(mm)'
