@@ -1,4 +1,4 @@
-//Object: SWMM Options
+//Object: Options
 //Spatial Search: blank
 
 SELECT
@@ -60,5 +60,3 @@ PROMPT LINE $Blank9 'Normal Flow Limited options are';
 LET $Blank10 = 'CFS, MGD, CMS, LPS, MLD';
 PROMPT LINE $Blank10 'Units may be';
 PROMPT DISPLAY;
-
-

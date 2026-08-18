@@ -20,10 +20,8 @@ LET $v_y = $y_ds - $y_us;
 
 //updates associated parameters into variables
 SELECT ground_level INTO $gl WHERE node_id=$linkid;
-SELECT system_type INTO $sys WHERE node_id=$linkid;
 SELECT ds_links.shape INTO $shp WHERE node_id = $linkid;
-SELECT ds_links.width INTO $width WHERE node_id = $linkid;
-SELECT ds_links.height INTO $height WHERE node_id = $linkid;
+SELECT ds_links.conduit_height INTO $height WHERE node_id = $linkid; // SWMM conduits use conduit_height for both dimensions
 
 //calculates the length of the pipe based on X1,Y1 vs X2,Y2. Preferable to using #D parameter in case changed in model
 LET $length = ($v_x^2 + $v_y^2)^0.5;
@@ -45,7 +43,7 @@ LET $new_y = $y_us + $y_chain;
 //Loop to produce number of new nodes until length is exceeded
 WHILE $chainage < $length;
 	//Inserts new node
-	INSERT INTO node (node_id, x, y,ground_level,flood_type) VALUES ($us_nodeid+"_"+ $chainage, $new_x, $new_y,$sys,$gl,"sealed");
+	INSERT INTO node (node_id, x, y, ground_level, flood_type, node_type) VALUES ($us_nodeid+"_"+ $chainage, $new_x, $new_y, $gl, "lost", "junction");
 
 	//Updates X,Y projection for next node in the loop
 	LET $new_x = $new_x + $x_chain;
@@ -60,13 +58,13 @@ WHILE $chainage < $length;
 	IF $chainage = $distance;
 		UPDATE [ALL LINKS] SET ds_node_id = ($us_nodeid + "_" + $chainage) WHERE $selected = 1;
 
-		INSERT INTO conduit (us_node_id, ds_node_id,link_suffix,system_type,shape, conduit_width, conduit_height) VALUES ($us_nodeid+"_"+$chainage , $us_nodeid+"_"+($chainage + $distance), 1, $sys, $shp, $width, $height);
+		INSERT INTO conduit (id, us_node_id, ds_node_id, shape, conduit_width, conduit_height) VALUES ($us_nodeid+"_c_"+$chainage, $us_nodeid+"_"+$chainage, $us_nodeid+"_"+($chainage + $distance), $shp, $height, $height);
 
 		ELSEIF ($chainage + $distance) < $length;
-		INSERT INTO conduit (us_node_id, ds_node_id,link_suffix,system_type,shape, conduit_width, conduit_height) VALUES ($us_nodeid+"_"+$chainage , $us_nodeid+"_"+($chainage + $distance), 1, $sys, $shp, $width, $height);
+		INSERT INTO conduit (id, us_node_id, ds_node_id, shape, conduit_width, conduit_height) VALUES ($us_nodeid+"_c_"+$chainage, $us_nodeid+"_"+$chainage, $us_nodeid+"_"+($chainage + $distance), $shp, $height, $height);
 
 		ELSE;
-		INSERT INTO conduit (us_node_id, ds_node_id,link_suffix,system_type,shape, conduit_width, conduit_height) VALUES ($us_nodeid+"_"+$chainage, $dslinkid, 1, $sys, $shp, $width, $height);
+		INSERT INTO conduit (id, us_node_id, ds_node_id, shape, conduit_width, conduit_height) VALUES ($us_nodeid+"_c_"+$chainage, $us_nodeid+"_"+$chainage, $dslinkid, $shp, $height, $height);
 	ENDIF;
 
 	LET $chainage= $chainage + $distance;

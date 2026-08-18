@@ -1,1 +1,0 @@
- set chamber_roof = chamber_floor + abs (chamber_roof-chamber_floor) where chamber_roof < 0.0
