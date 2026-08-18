@@ -7,12 +7,7 @@ cn=WSApplication.current_network
 network_name = cn.network_model_object.name
 
 # Create an array for the tables to be exported for ICM InfoWorks
-#
 export_tables = ["hw_node","hw_conduit","hw_subcatchment"]
-
-# Create an array for the tables to be exported for ICM SWMM
-#export_tables = ["sw_node","sw_conduit","sw_subcatchment"]
-
 
 # Create a hash for the export options override the defaults
 exp_options=Hash.new
