@@ -31,7 +31,29 @@ rescue StandardError
 end
 
 def safe_filename_part(value)
-	value.to_s.gsub(/[^0-9A-Za-z_-]/, '')
+	cleaned = value.to_s.gsub(/[^0-9A-Za-z_-]/, '_')
+	cleaned = cleaned.gsub(/_+/, '_')
+	cleaned = cleaned.gsub(/^_+|_+$/, '')
+	cleaned
+end
+
+def unique_export_label(group_key, used_labels)
+	base = safe_filename_part(group_key)
+	base = 'Unknown' if base.empty?
+	label = base
+	disambiguated = false
+
+	if used_labels.key?(label)
+		suffix = 2
+		while used_labels.key?("#{base}_#{suffix}")
+			suffix += 1
+		end
+		label = "#{base}_#{suffix}"
+		disambiguated = true
+	end
+
+	used_labels[label] = group_key
+	[label, disambiguated]
 end
 
 def normalize_file_prefix(prefix)
@@ -398,13 +420,13 @@ write_export_log_header(log_file, export_log_header)
 summary_log = File.open(summary_csv, 'w')
 summary_log.puts 'Group,SurveyCount,Filename,Status,SurveyIDs'
 
+used_export_labels = {}
 groups.sort.each do |group_key, survey_ids|
-	group_label = safe_filename_part(group_key)
-	group_label = 'Unknown' if group_label.empty?
+	export_label, disambiguated = unique_export_label(group_key, used_export_labels)
 
 	group_folder = export_folder
 	if subfolder_per_group
-		group_folder = "#{export_folder}#{group_label}\\"
+		group_folder = "#{export_folder}#{export_label}\\"
 		ensure_directory(group_folder)
 	end
 
@@ -414,6 +436,7 @@ groups.sort.each do |group_key, survey_ids|
 	end
 
 	append_export_log(log_file, "Group #{group_key}: #{survey_ids.length} survey(s)")
+	append_export_log(log_file, "  Export label: #{export_label}") if disambiguated
 	append_export_log(log_file, "  Survey IDs: #{format_survey_id_list(survey_ids)}")
 
 	if individual_files
@@ -422,7 +445,7 @@ groups.sort.each do |group_key, survey_ids|
 			net.row_object('cams_cctv_survey', survey_id).selected = true
 
 			survey_part = safe_filename_part(survey_id)
-			filename = "#{group_folder}#{file_prefix}#{group_label}_#{survey_index}_#{survey_part}.xml"
+			filename = "#{group_folder}#{file_prefix}#{export_label}_#{survey_index}_#{survey_part}.xml"
 
 			append_export_log(log_file, "  Export #{survey_index + 1}/#{survey_ids.length}: #{survey_id} -> #{filename}")
 			result = net.mscc_export_cctv_surveys(filename, export_images, true, nil)
@@ -431,7 +454,7 @@ groups.sort.each do |group_key, survey_ids|
 			summary_log.puts summary_csv_row(group_key, 1, filename, status, [survey_id])
 		end
 	else
-		filename = "#{group_folder}#{file_prefix}#{group_label}.xml"
+		filename = "#{group_folder}#{file_prefix}#{export_label}.xml"
 		append_export_log(log_file, "  Export combined file: #{filename}")
 		result = net.mscc_export_cctv_surveys(filename, export_images, true, nil)
 		status = mscc_export_status(result, filename)

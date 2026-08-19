@@ -301,7 +301,8 @@ Set `selection_only = false` to process all CCTV surveys in the network. Also co
 
 | Scenario | Use |
 |----------|-----|
-| Same scope (selection or network), split by field value | **GroupByField** (this script) |
+| Same scope (selection or network), split by field value — MSCC XML | **GroupByField** (this script) |
+| Same scope (selection or network), split by field value — snapshot (`.isfc` / `.isfd` / `.isfa`), any object table(s) | [UIIE-snapshot_export_ex-GroupByField.rb](../0006%20Import-Export%20Snapshot%20file/UIIE-snapshot_export_ex-GroupByField.rb) |
 | Different stored SQL selection per export batch | [RunMultipleQueries](./UIIE-mscc_export_cctv_surveys-RunMultipleQueries.rb) |
 
 ### Troubleshooting
@@ -314,5 +315,6 @@ Set `selection_only = false` to process all CCTV surveys in the network. Also co
 | All surveys in one `Unknown` group | Group field name is wrong, or values are blank on the survey / related pipe. |
 | Pipe field not grouping correctly | Confirm the survey has valid `us_node_id` / `ds_node_id` / `link_suffix` and the pipe record exists. |
 | `Export folder not found` | Create the export folder first, or choose an existing folder in the prompt. |
+| Previous XML export overwritten | Two different group field values sanitized to the same folder/filename (for example `2` and `2/`). The script replaces invalid characters with `_` and adds a numeric suffix when labels still collide. Check the log for `Export label:` lines. |
 | Log or summary filename contains `00000000_000000` | InfoAsset Ruby could not build a timestamp; check the script console for a warning. Re-run after updating the script — it uses manual date/time formatting to avoid `Time.now` / `strftime` issues. |
 | CSV status `Failed` but XML exists | InfoAsset Manager often returns `nil` on success; status should still be `OK` if the file was created. If not, report the script version — status checks file existence when the return value is inconclusive. |
