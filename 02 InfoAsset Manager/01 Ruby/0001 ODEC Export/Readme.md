@@ -67,7 +67,7 @@ net.odec_export_ex('CSV', 'C:/Temp/export.cfg', options, 'Node', 'C:/Temp/node.c
 net.odec_export_ex('SHP', 'C:/Temp/export.cfg', options, 'node', 'C:/Temp/node.SHP')
 ```
 
-**File Geodatabase** — nine arguments after the options hash:
+**Geodatabase** — nine arguments after the options hash:
 
 ```ruby
 net.odec_export_ex(
@@ -80,6 +80,8 @@ net.odec_export_ex(
   'C:/Temp/Test.gdb'
 )
 ```
+
+> **Note:** File geodatabase export requires the **Innovyze 32-bit** version of InfoAsset Manager (Workgroup Client) and a valid **ArcMap** licence. Exchange scripts may call `WSApplication.use_arcgis_desktop_licence()` to use a local ArcGIS Desktop licence rather than an ArcGIS Server licence.
 
 **SQL Server** — twelve arguments after the options hash. Call on the **network model object** (`WSNumbatNetworkObject`) — do **not** call `.open` first:
 
@@ -101,8 +103,6 @@ nw.odec_export_ex(
 The **table** argument uses the ODIC/ODEC UI table name with spaces removed (e.g. `'Node'`, `'Pipe'`, `'CCTVSurvey'`). Table name casing may vary between scripts — match the name used in your saved `.cfg` file.
 
 Call `odec_export_ex` once per destination file, feature class, or SQL table. The CSV example exports `Node` then `Pipe`; the shapefile example also exports `cctvsurvey`.
-
-For file geodatabase exports from Exchange, you may need `WSApplication.use_arcgis_desktop_licence()` if an ArcGIS Desktop licence is available locally.
 
 ---
 
