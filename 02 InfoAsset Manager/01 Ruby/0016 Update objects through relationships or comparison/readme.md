@@ -70,6 +70,34 @@ Surveys with a blank `user_text_39` or `user_text_40`, or an unrecognised asset 
 ## [UI-CopyGeneralSurveyAttachmentsToProperty.rb](./UI-CopyGeneralSurveyAttachmentsToProperty.rb)
 Copies attachments from General Surveys (where `asset_type = cams_property`) to their linked Property objects, matching on `asset_id`. Skips attachments already present on the Property (matched by `db_ref`). Can be run on the whole network or on a selection of surveys. Renames copied attachments for Property display (`Location view` purpose and a postcode/name-based filename).
 
+## [UI-UpdateCCTVSurveyContractNoFromProjectWorkPackage.rb](./UI-UpdateCCTVSurveyContractNoFromProjectWorkPackage.rb)
+Sets `contract_no` on `cams_cctv_survey` objects by matching `project` and `work_package` against a comma-separated mapping list defined at the top of the script.
+
+**Mapping format (one line per match):**
+
+```
+project,work_package,contract_no
+```
+
+Example:
+
+```
+proj1,wp1,con101
+proj1,wp2,con102
+proj2,wp1,con201
+```
+
+Project and work package values are compared case-insensitively. Surveys with a blank `project` or `work_package` are skipped. By default, surveys that already have a `contract_no` are left unchanged; use the prompt option to overwrite existing values.
+
+**Prompt options:**
+
+| Option | Default | Notes |
+|---|---|---|
+| Process SELECTION only? | false | When checked, only selected CCTV surveys are processed |
+| Overwrite existing contract_no values? | false | When unchecked, surveys with a non-blank `contract_no` are skipped |
+| Verbose logging? | false | When checked, writes one line per survey to the Ruby output (updated, skipped, and reason) |
+| Asset Group ID (optional) | blank | When entered, creates one Selection List per outcome in that Asset Group (updated and each skip reason). Lists are named with a run timestamp prefix including seconds, for example `CCTV contract_no 2026-08-24 13:05:42 - Updated`. If a name already exists, a numeric suffix is added automatically. Empty outcome groups are skipped. |
+
 ## [UI-CopySurveyAttachmentsToAsset.rb](./UI-CopySurveyAttachmentsToAsset.rb)
 Copies **attachment blob metadata** from **selected** survey objects to their associated asset object (any survey type that links to an asset with an `attachments` blob). Duplicate attachments on the asset (matched by `db_ref`, case-insensitive) are skipped. Files on disk are not duplicated — asset rows reference the same `db_ref` as the survey.
 
