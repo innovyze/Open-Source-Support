@@ -98,6 +98,46 @@ Project and work package values are compared case-insensitively. Surveys with a 
 | Verbose logging? | false | When checked, writes one line per survey to the Ruby output (updated, skipped, and reason) |
 | Asset Group ID (optional) | blank | When entered, creates one Selection List per outcome in that Asset Group (updated and each skip reason). Lists are named with a run timestamp prefix including seconds, for example `CCTV contract_no 2026-08-24 13:05:42 - Updated`. If a name already exists, a numeric suffix is added automatically. Empty outcome groups are skipped. |
 
+## [UI-CopyCCTVDefectImagesToPipeRepair.rb](./UI-CopyCCTVDefectImagesToPipeRepair.rb)
+Copies CCTV survey defect images onto **pipe repair** attachments by matching:
+
+| Pipe repair field | Match |
+|---|---|
+| `cctv_survey_id` | Identifies the pre-repair CCTV survey |
+| `defect_type` | Mapped to one or more CCTV defect `code` values (see `DEFECT_TYPE_MAPPINGS` in the script) |
+| `start_length` | CCTV defect `distance` within a configurable buffer (default 0.5 m) |
+
+When a matching defect row has a `detail_image`, the image UID is appended to the pipe repair `attachments` blob (same file reference — no duplicate on disk). Duplicate `db_ref` values on the repair are skipped.
+
+**Defect type mapping format (one line per repair defect type):**
+
+```
+repair_defect_type,cctv_code[,cctv_code...]
+```
+
+Example:
+
+```
+BREAK,B,H,CR
+JOINT,J,JNT
+ROOTS,R,ROOT
+```
+
+Matching is case-insensitive for both repair defect type and CCTV codes.
+
+**Prompt options:**
+
+| Option | Default | Notes |
+|---|---|---|
+| Process SELECTION only? | true | When checked, only selected pipe repairs are processed |
+| Distance buffer (m) | 0.5 | Defect `distance` must be within this tolerance of repair `start_length` |
+| Verbose logging? | false | When checked, writes one CSV-formatted line per pipe repair to the Ruby output (same columns as the log file) |
+| CSV log file folder (optional) | blank | Enter a folder path to write a timestamped CSV log; leave blank to skip the file |
+
+**Log file columns:** `status`, `reason`, `pipe_repair_id`, `cctv_survey_id`, `defect_type`, `start_length`, matched defect details, and image reference.
+
+**Status values:** `TRANSFERRED`, `ALREADY_PRESENT`, `FAILED` (with reason — survey not found, no mapping, no matching defect, no image, etc.).
+
 ## [UI-CopySurveyAttachmentsToAsset.rb](./UI-CopySurveyAttachmentsToAsset.rb)
 Copies **attachment blob metadata** from **selected** survey objects to their associated asset object (any survey type that links to an asset with an `attachments` blob). Duplicate attachments on the asset (matched by `db_ref`, case-insensitive) are skipped. Files on disk are not duplicated — asset rows reference the same `db_ref` as the survey.
 
