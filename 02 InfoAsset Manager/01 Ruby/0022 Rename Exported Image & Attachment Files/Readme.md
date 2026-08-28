@@ -4,11 +4,45 @@ Within the InfoAsset Manager you can export images and attachment files which ar
 
 When exporting these attachment files, they are exported with a GUID filename - which is what they are stored using within the Database.
 
+
+# Generic export and rename (selection + ODEC)
+
+Script: **[UI-ExportAndRenameAttachments.rb](./UI-ExportAndRenameAttachments.rb)**
+
+Use this script when you want to export attachment and image files from a GeoPlan selection and rename them in one step — without preparing a separate ODEC export manually.
+
+1. Select objects on the GeoPlan (across one or more object tables).
+2. Run the script via **Network** > **Run Ruby script...**
+3. Choose the object tables using checkboxes (only tables with a current selection are listed). Tick **Select all tables** to include every listed table, or tick individual tables instead.
+4. Choose which attachment / image sources to export. When multiple tables are selected, sources are labelled by table (for example `Manhole Survey (cams_manhole_survey) - Attachments (blob)` or `CCTV Survey (cams_cctv_survey) - Details - defect image (blob)`).
+5. Choose the export folder, a filename format, and optional subfolder options.
+
+Selected tables are processed in sequence under the chosen export folder. Optional subfolders can be created **by table name**, **by object ID**, or **both** — for example `ExportFolder\ManholeSurvey\SURVEY123\photo.jpg`.
+
+**Filename format presets** include `{table}_{id}_{purpose}`, `{table}_{id}_{filename}` (table + ID + original filename), `{id}_{filename}`, `{table}_{id}`, and `{id}_{source}`. Choose **Custom** to enter your own combination of placeholders:
+
+| Placeholder | Value |
+|---|---|
+| `{table}` | Object table name from the UI display name (spaces removed, each word capitalised — e.g. `GeneralAsset`, `ManholeSurvey`, `CCTVSurvey`) |
+| `{id}` | Object ID from the selected row object (`ro.id`). ODEC config uses the field whose description is **ID** in the table structure (see [0030 List Network Fields-Structure](../0030%20List%20Network%20Fields-Structure/)). Pipes use `us_node_id.ds_node_id.link_suffix`. |
+| `{filename}` | Original filename (when available) |
+| `{purpose}` | Attachment purpose (attachments blob), or defect **code_distance** for survey detail images (`details.detail_image` on CCTV Survey and Manhole Survey). Detail distance uses your **Tools > Options** display units (for example ft when set to MGD) and is always formatted to **2 decimal places**. |
+| `{description}` | Attachment description or image reference text |
+| `{source}` | Source field name (for example `attachments`, `location_image`, or `details.detail_image`) |
+
+Field and folder names are sanitised for Windows file names. If a proposed filename already exists in the destination folder, the script appends `_1`, `_2`, and so on until the name is unique. If the chosen format produces an empty name after sanitisation, the file is still moved using the original exported or attachment filename.
+
+Empty folders created during the run (table or object ID subfolders with no exported files) are removed automatically when the script finishes.
+
+An optional index CSV (`attachment_export_index.csv`) records the table, folder, and mapping from exported GUID filenames to the renamed files. When that option is kept, a matching log file (`attachment_export_log.txt`) is also written alongside the CSV with the same Ruby console output from the run (export progress, renames, skips, and summary).
+
+---
+
+
 The script is designed to prevent overwriting of files by means of renaming a file to a filename already in use within the folder.  
-If this happens, the Script Output will try and append the new filename with an index number based on the line in the CSV[^1].  The outputted log will detail the file renamings which have occured.  
-Rows that cannot be renamed (for example, when the source file is missing or the proposed new name is invalid after sanitisation) are skipped and reported in the Ruby console rather than stopping the script.  
-Note, we cannot be held liable if the script does overwrite any files.  
-[^1]: Handling of multiple proposed filenames being the same is in v4 & later of this script.  
+If this happens, the Script Output will try and append the new filename with an index number based on the line in the CSV.  The outputted log will detail the file renamings which have occured.  
+Rows that cannot be processed (for example, when the source file is missing) are skipped and reported in the Ruby console rather than stopping the script. If a proposed new name is empty after sanitisation, the file is still moved to the correct folder using the original exported filename (or attachment filename when available).  
+Note, we cannot be held liable if the script does overwrite any files.   
 
 ## Exporting the files and using the 'Original Filename' field for the new filename
 
@@ -59,6 +93,7 @@ The returned string then has any characters removed that are not alphanumeric, s
 *CSV export in Excel*  
 
 3. Run the script [as detailed in the Run the Ruby Script section](#Run-the-Ruby-Script).  
+
 
 ## Renaming Already Exported Files
 
