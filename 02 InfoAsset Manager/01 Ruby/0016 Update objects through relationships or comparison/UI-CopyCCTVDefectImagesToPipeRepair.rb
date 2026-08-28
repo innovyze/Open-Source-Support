@@ -116,7 +116,7 @@ def build_defect_type_map(mapping_lines)
     end
 
     repair_type = normalise_token(parts[0])
-    cctv_codes = parts[1..].map { |code| normalise_token(code) }.uniq
+    cctv_codes = parts[1..-1].map { |code| normalise_token(code) }.uniq
     map[repair_type] = cctv_codes
   end
 
