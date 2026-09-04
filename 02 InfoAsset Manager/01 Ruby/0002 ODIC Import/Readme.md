@@ -21,6 +21,8 @@ For ODIC **callback classes** (transform or filter values during import), see th
 | [IE-odic_import_ex-GDB.rb](./IE-odic_import_ex-GDB.rb) | ESRI File Geodatabase | Exchange |
 | [UI-odic_import_ex-SQLServer.rb](./UI-odic_import_ex-SQLServer.rb) | SQL Server | UI |
 | [IE-odic_import_ex-SQLServer.rb](./IE-odic_import_ex-SQLServer.rb) | SQL Server | Exchange |
+| [UI-odic_import_ex-Oracle.rb](./UI-odic_import_ex-Oracle.rb) | Oracle | UI |
+| [IE-odic_import_ex-Oracle.rb](./IE-odic_import_ex-Oracle.rb) | Oracle | Exchange |
 
 **UI scripts** (`UI-` prefix) use the currently open network (`WSApplication.current_network`) and are run from **Network → Run Ruby Script…**. They do not require an Exchange licence.
 
@@ -32,7 +34,7 @@ For ODIC **callback classes** (transform or filter values during import), see th
 
 1. **An open network** — UI scripts require the target Collection (or Asset/Distribution) network to be open in InfoAsset Manager.
 2. **A field-mapping config file** — create and save this from the ODIC dialog (*Load Config* / *Save Config*), or copy an existing `.cfg` file. Import configs must start with `DBI002` on the first line (export configs use `DBX002` instead).
-3. **Source data** — CSV files, shapefiles, a file geodatabase, or SQL Server tables, depending on the script variant.
+3. **Source data** — CSV files, shapefiles, a file geodatabase, SQL Server tables, or Oracle tables, depending on the script variant.
 
 ---
 
@@ -95,9 +97,23 @@ nw.odic_import_ex(
 )
 ```
 
+**Oracle** — eight arguments after the options hash:
+
+```ruby
+nw.odic_import_ex(
+  'ORACLE', 'C:/Temp/OracleConfig.cfg', options,
+  'node',           # InfoAsset table to import into
+  'T_MANHOLE',      # Oracle source table
+  'orahost/orcl',   # Connection string (e.g. host/service or //host/service)
+  nil,              # Owner (schema) of the source table
+  'oraun',          # Username
+  'orapw'           # Password
+)
+```
+
 The **table** argument uses the ODIC UI table name (e.g. `'node'`, `'pipe'`, `'cams_manhole'`). For blob sub-table imports, append the blob field name in PascalCase — for example `'ManholeSurveyAttachments'` when importing into the `attachments` blob on Manhole Survey.
 
-Call `odic_import_ex` once per source file or SQL table. The CSV and SQL Server examples import `node` then `pipe`; the GDB example imports both feature classes from the same geodatabase.
+Call `odic_import_ex` once per source file or database table. The CSV, SQL Server, and Oracle examples import `node` then `pipe`; the GDB example imports both feature classes from the same geodatabase.
 
 ### Prompted CSV import with embedded field mappings
 
