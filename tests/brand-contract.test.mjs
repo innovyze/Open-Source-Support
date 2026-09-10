@@ -11,6 +11,7 @@ const insightsPath = join(root, 'assets', 'js', 'insightsApp.js');
 const milestonesPath = join(root, 'assets', 'js', 'milestonesApp.js');
 const indexPath = join(root, 'index.html');
 const faviconPath = join(root, 'assets', 'brand', 'favicon.svg');
+const ogCardPath = join(root, 'docs', 'generate-og-card.html');
 
 const css = readFileSync(stylesPath, 'utf8');
 const configJs = readFileSync(configPath, 'utf8');
@@ -18,6 +19,7 @@ const insightsJs = readFileSync(insightsPath, 'utf8');
 const milestonesJs = readFileSync(milestonesPath, 'utf8');
 const indexHtml = readFileSync(indexPath, 'utf8');
 const faviconSvg = readFileSync(faviconPath, 'utf8');
+const ogCardHtml = readFileSync(ogCardPath, 'utf8');
 
 test('styles.css uses Autodesk brand token contract', () => {
   for (const token of [
@@ -130,4 +132,8 @@ test('index.html uses button elements for interactive legend series', () => {
 test('favicon.svg uses on-scale corner radius', () => {
   assert.doesNotMatch(faviconSvg, /rx="2"/, 'favicon inner rect must not use off-scale rx="2"');
   assert.match(faviconSvg, /rx="4"/, 'favicon inner rect must use 4px brand radius');
+});
+
+test('generate-og-card.html excludes off-token surface literals', () => {
+  assert.doesNotMatch(ogCardHtml, /#141414/i, 'custom surface #141414 must not appear in OG card generator');
 });
