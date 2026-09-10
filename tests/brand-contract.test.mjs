@@ -12,8 +12,10 @@ const milestonesPath = join(root, 'assets', 'js', 'milestonesApp.js');
 const indexPath = join(root, 'index.html');
 const faviconPath = join(root, 'assets', 'brand', 'favicon.svg');
 const ogCardPath = join(root, 'docs', 'generate-og-card.html');
+const chartPath = join(root, 'assets', 'js', 'chart.js');
 
 const css = readFileSync(stylesPath, 'utf8');
+const chartJs = readFileSync(chartPath, 'utf8');
 const configJs = readFileSync(configPath, 'utf8');
 const insightsJs = readFileSync(insightsPath, 'utf8');
 const milestonesJs = readFileSync(milestonesPath, 'utf8');
@@ -136,4 +138,41 @@ test('favicon.svg uses on-scale corner radius', () => {
 
 test('generate-og-card.html excludes off-token surface literals', () => {
   assert.doesNotMatch(ogCardHtml, /#141414/i, 'custom surface #141414 must not appear in OG card generator');
+});
+
+test('chart.js renders a clear empty state when all legend series are hidden', () => {
+  assert.match(
+    chartJs,
+    /!visibleSeries\.total\s*&&\s*!visibleSeries\.unique/,
+    'drawChart must detect when every interactive series is hidden'
+  );
+  assert.match(
+    chartJs,
+    /chart-empty-state[\s\S]*select[\s\S]*series/i,
+    'drawChart must render a static empty-state message asking the reader to select a series'
+  );
+
+  const drawChartBody = chartJs.match(/export function drawChart[\s\S]*/)?.[0] ?? '';
+  const emptyStateIndex = drawChartBody.search(/chart-empty-state/);
+  const d3Index = drawChartBody.search(/d3\.select/);
+  assert.ok(
+    emptyStateIndex > -1 && d3Index > -1 && emptyStateIndex < d3Index,
+    'empty-state handling must short-circuit before chart construction'
+  );
+});
+
+test('styles.css guards narrow-viewport Daily Traffic chart height', () => {
+  const narrowViewportBlock =
+    css.match(/@media\s*\(\s*max-width:\s*768px\s*\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+  assert.match(
+    narrowViewportBlock,
+    /#mainChart[\s\S]*min-height:\s*300px/,
+    '#mainChart must not shrink below the SVG chart minimum on narrow viewports'
+  );
+  assert.match(
+    narrowViewportBlock,
+    /\.chart-container[\s\S]*overflow:\s*visible/,
+    'Daily Traffic chart container must allow rotated x-axis labels to render without clipping the legend'
+  );
 });
