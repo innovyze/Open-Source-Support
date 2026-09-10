@@ -82,5 +82,12 @@
     "category": "product",
     "teaser": "220k+ views and 4k+ clones",
     "description": "Autodesk published a <a href='https://autodeskblog.wpengine.com/water/2026/03/28/how-our-open-source-github-repository-grew-from-a-simple-idea-into-a-global-engineering-community/' target='_blank' rel='noopener'>One Water Blog post</a> documenting how this repository grew from an internal script-sharing shortcut into a global engineering resource spanning six products, 220,000+ total views, 19,000+ unique visitors, and 4,000+ full repository clones. The article also highlights how major AI tooling releases tracked clear jumps in repository traffic."
+  },
+  {
+    "date": "2026-05-12",
+    "category": "product",
+    "name": "Autodesk Assistant for Hydraulic Modeling",
+    "teaser": "InfoWater Pro 2027.1 assistant preview",
+    "description": "Autodesk <a href='https://www.autodesk.com/blogs/water/2026/05/12/autodesk-assistant-hydraulic-modeling/' target='_blank' rel='noopener'>announced an InfoWater Pro 2027.1 technical preview of Autodesk Assistant</a> for conversational guidance inside the product, model actions through MCP (Model Context Protocol), and Python scripting support. The article directs readers to the Autodesk Water Infrastructure GitHub repository for community scripts, automation tools, and workflow examples."
   }
 ]
