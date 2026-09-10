@@ -4,8 +4,20 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-const stylesPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'css', 'styles.css');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const stylesPath = join(root, 'assets', 'css', 'styles.css');
+const configPath = join(root, 'assets', 'js', 'config.js');
+const insightsPath = join(root, 'assets', 'js', 'insightsApp.js');
+const milestonesPath = join(root, 'assets', 'js', 'milestonesApp.js');
+const indexPath = join(root, 'index.html');
+const faviconPath = join(root, 'assets', 'brand', 'favicon.svg');
+
 const css = readFileSync(stylesPath, 'utf8');
+const configJs = readFileSync(configPath, 'utf8');
+const insightsJs = readFileSync(insightsPath, 'utf8');
+const milestonesJs = readFileSync(milestonesPath, 'utf8');
+const indexHtml = readFileSync(indexPath, 'utf8');
+const faviconSvg = readFileSync(faviconPath, 'utf8');
 
 test('styles.css uses Autodesk brand token contract', () => {
   for (const token of [
@@ -15,6 +27,7 @@ test('styles.css uses Autodesk brand token contract', () => {
     '--adsk-morning',
     '--adsk-font-display',
     '--adsk-font-body',
+    '--adsk-space-3',
   ]) {
     assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${token}`);
   }
@@ -31,14 +44,16 @@ test('styles.css uses Artifakt local-family stacks', () => {
   assert.match(css, /Artifakt Element/, 'body font stack must reference Artifakt Element');
 });
 
-test('styles.css has no page-background radial gradient', () => {
-  const bodyBlock = css.match(/body\s*\{[^}]*\}/s)?.[0] ?? '';
-  assert.doesNotMatch(bodyBlock, /radial-gradient/i, 'body background must not use radial gradients');
+test('styles.css has no CSS gradients', () => {
+  assert.doesNotMatch(css, /linear-gradient/i, 'styles.css must not use linear gradients');
+  assert.doesNotMatch(css, /radial-gradient/i, 'styles.css must not use radial gradients');
+  assert.doesNotMatch(css, /conic-gradient/i, 'styles.css must not use conic gradients');
+  assert.doesNotMatch(css, /repeating-linear-gradient/i, 'styles.css must not use repeating gradients');
 });
 
-test('styles.css preserves dots and pip-glow keyframes', () => {
-  assert.match(css, /@keyframes\s+dots\b/, 'dots keyframes must remain');
-  assert.match(css, /@keyframes\s+pip-glow\b/, 'pip-glow keyframes must remain');
+test('styles.css excludes custom off-token surface literals', () => {
+  assert.doesNotMatch(css, /#111111/i, 'custom surface #111111 must not appear');
+  assert.doesNotMatch(css, /#141414/i, 'custom surface #141414 must not appear');
 });
 
 test('styles.css excludes legacy palette values', () => {
@@ -46,4 +61,73 @@ test('styles.css excludes legacy palette values', () => {
   assert.doesNotMatch(css, /#4fa9f0/i, 'legacy chart blue must not appear');
   assert.doesNotMatch(css, /#ef8848/i, 'legacy chart orange must not appear');
   assert.doesNotMatch(css, /#0b111d/i, 'legacy navy background must not appear');
+});
+
+test('styles.css uses token-backed semantic surfaces', () => {
+  assert.match(css, /--bg-secondary:\s*var\(--adsk-/, '--bg-secondary must use Autodesk token');
+  assert.match(css, /--bg-card:\s*var\(--adsk-/, '--bg-card must use Autodesk token');
+  assert.match(css, /--tooltip-bg:\s*var\(--adsk-/, '--tooltip-bg must use Autodesk token');
+});
+
+test('styles.css provides high-contrast focus-visible for interactive controls', () => {
+  assert.match(css, /:focus-visible/, 'focus-visible styles must be present');
+  assert.match(css, /\.page-toggle-btn:focus-visible/, 'page navigation needs focus-visible');
+  assert.match(css, /\.toggle-btn:focus-visible/, 'toggle buttons need focus-visible');
+  assert.match(css, /\.time-btn:focus-visible/, 'time buttons need focus-visible');
+  assert.match(css, /\.filter-pill:focus-visible/, 'filter pills need focus-visible');
+  assert.match(css, /\.legend-item:focus-visible/, 'legend controls need focus-visible');
+});
+
+test('styles.css honors prefers-reduced-motion', () => {
+  assert.match(css, /@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/, 'reduced-motion query required');
+});
+
+test('styles.css preserves dots and pip-glow keyframes', () => {
+  assert.match(css, /@keyframes\s+dots\b/, 'dots keyframes must remain');
+  assert.match(css, /@keyframes\s+pip-glow\b/, 'pip-glow keyframes must remain');
+});
+
+test('styles.css avoids off-scale spacing literals in control styling', () => {
+  const controlBlocks = [
+    css.match(/\.page-toggle-btn\s*\{[^}]*\}/s)?.[0] ?? '',
+    css.match(/\.toggle-btn\s*\{[^}]*\}/s)?.[0] ?? '',
+    css.match(/\.filter-pill\s*\{[^}]*\}/s)?.[0] ?? '',
+    css.match(/\.legend-item\s*\{[^}]*\}/s)?.[0] ?? '',
+  ].join('\n');
+  assert.doesNotMatch(controlBlocks, /\b6px\b/, 'control spacing must use brand tokens, not 6px');
+  assert.doesNotMatch(controlBlocks, /\b10px\b/, 'control spacing must use brand tokens, not 10px');
+  assert.doesNotMatch(controlBlocks, /\b14px\b/, 'control spacing must use brand tokens, not 14px');
+});
+
+test('config.js keeps animationDuration and drops legacy colors', () => {
+  assert.match(configJs, /animationDuration:\s*1500/, 'animationDuration must remain 1500');
+  assert.doesNotMatch(configJs, /colors\s*:\s*\{/, 'legacy CONFIG.colors must be removed');
+  assert.doesNotMatch(configJs, /#4fa9f0/i, 'legacy chart blue must not appear in config.js');
+  assert.doesNotMatch(configJs, /#ef8848/i, 'legacy chart orange must not appear in config.js');
+});
+
+test('insightsApp.js uses official Twilight fallback', () => {
+  assert.doesNotMatch(insightsJs, /#4fa9f0/i, 'legacy chart blue fallback must be removed');
+  assert.match(insightsJs, /#1[Dd]91[Dd]0/, 'Twilight fallback must be used');
+});
+
+test('milestonesApp.js uses cssVar directly without cssColor pass-through', () => {
+  assert.doesNotMatch(milestonesJs, /function cssColor\b/, 'redundant cssColor helper must be removed');
+  assert.match(milestonesJs, /function cssVar\b/, 'cssVar helper must remain');
+  assert.match(milestonesJs, /cssVar\('--chart-blue'\)/, 'chart colors must resolve via cssVar');
+});
+
+test('index.html uses button elements for interactive legend series', () => {
+  assert.match(indexHtml, /<button[^>]*class="legend-item"[^>]*data-series="total"/, 'total legend must be a button');
+  assert.match(indexHtml, /<button[^>]*class="legend-item"[^>]*data-series="unique"/, 'unique legend must be a button');
+  assert.doesNotMatch(
+    indexHtml,
+    /<div[^>]*class="legend-item"[^>]*data-series="/,
+    'interactive legend series must not use div wrappers'
+  );
+});
+
+test('favicon.svg uses on-scale corner radius', () => {
+  assert.doesNotMatch(faviconSvg, /rx="2"/, 'favicon inner rect must not use off-scale rx="2"');
+  assert.match(faviconSvg, /rx="4"/, 'favicon inner rect must use 4px brand radius');
 });
