@@ -12,10 +12,6 @@ function cssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-function cssColor(name) {
-    return cssVar(name);
-}
-
 function cssColorAlpha(name, opacity) {
     const resolved = d3.color(cssVar(name));
     return resolved ? resolved.copy({ opacity }).formatRgb() : '';
@@ -194,7 +190,7 @@ function renderCards() {
         if (activeFilter === 'product' && ms.category !== 'product') return;
 
         const stats = computeBeforeAfter(ms.date);
-        const color = ms.category === 'ai' ? cssColor('--chart-blue') : cssColor('--chart-green');
+        const color = ms.category === 'ai' ? cssVar('--chart-blue') : cssVar('--chart-green');
         const catLabel = ms.category === 'ai' ? 'AI' : 'Product';
 
         const card = document.createElement('div');

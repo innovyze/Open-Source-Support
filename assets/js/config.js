@@ -2,10 +2,6 @@
 export const CONFIG = {
     margin: { top: 20, right: 30, bottom: 50, left: 60 },
     chartHeight: Math.min(400, window.innerHeight * 0.45), // Dynamic height, max 400px or 45% of viewport
-    colors: {
-        total: '#4fa9f0',
-        unique: '#ef8848'
-    },
     animationDuration: 1500
 };
 

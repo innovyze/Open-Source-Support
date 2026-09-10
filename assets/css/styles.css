@@ -47,8 +47,8 @@ html {
 
     /* Semantic dashboard aliases */
     --bg-primary: var(--adsk-black);
-    --bg-secondary: #111111;
-    --bg-card: #141414;
+    --bg-secondary: var(--adsk-black);
+    --bg-card: var(--adsk-black);
     --text-primary: var(--adsk-white);
     --text-secondary: var(--adsk-slate-300);
     --text-muted: var(--adsk-slate-400);
@@ -72,7 +72,7 @@ html {
     --bar-stripe: rgba(255, 255, 255, 0.4);
     --table-row-alt: rgba(255, 255, 255, 0.03);
     --table-row-hover: rgba(29, 145, 208, 0.12);
-    --tooltip-bg: #141414;
+    --tooltip-bg: var(--adsk-black);
     --tooltip-border: rgba(213, 213, 203, 0.24);
 }
 
@@ -156,13 +156,18 @@ h1 {
 }
 
 .page-toggle-btn {
-    padding: 6px 14px;
+    padding: var(--adsk-space-2) var(--adsk-space-4);
     border-radius: var(--adsk-space-2);
     color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.85em;
     font-weight: 500;
     transition: all 0.2s ease;
+}
+
+.page-toggle-btn:focus-visible {
+    outline: 2px solid var(--adsk-twilight);
+    outline-offset: 2px;
 }
 
 .page-toggle-btn:hover {
@@ -509,7 +514,7 @@ h1 {
 }
 
 .toggle-btn {
-    padding: 6px 14px;
+    padding: var(--adsk-space-2) var(--adsk-space-4);
     background: transparent;
     border: none;
     border-radius: var(--adsk-space-2);
@@ -518,6 +523,11 @@ h1 {
     transition: all 0.2s ease;
     font-size: 0.85em;
     font-weight: 500;
+}
+
+.toggle-btn:focus-visible {
+    outline: 2px solid var(--adsk-twilight);
+    outline-offset: 2px;
 }
 
 .toggle-btn:hover {
@@ -558,6 +568,11 @@ h1 {
     border-color: var(--button-active);
     color: var(--button-active-text);
     font-weight: 600;
+}
+
+.time-btn:focus-visible {
+    outline: 2px solid var(--adsk-twilight);
+    outline-offset: 2px;
 }
 
 #mainChart {
@@ -658,12 +673,23 @@ h1 {
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--adsk-space-2);
     cursor: pointer;
     padding: var(--adsk-space-1) var(--adsk-space-2);
     border-radius: var(--adsk-space-1);
     transition: background 0.3s ease, opacity 0.3s ease;
     font-size: 0.9em;
+    border: none;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.legend-item:focus-visible {
+    outline: 2px solid var(--adsk-twilight);
+    outline-offset: 2px;
 }
 
 .legend-item:hover {
@@ -701,29 +727,13 @@ h1 {
 }
 
 .legend-color-band.missing {
-    background:
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 3px,
-            var(--chart-error-stroke) 3px,
-            var(--chart-error-stroke) 4px
-        ),
-        var(--chart-error-bg);
-    border-color: var(--chart-error-stroke);
+    background: var(--chart-error-bg);
+    border: 2px dashed var(--chart-error-stroke);
 }
 
 .legend-color-band.reconstructed {
-    background:
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 3px,
-            var(--chart-reconstructed-stroke) 3px,
-            var(--chart-reconstructed-stroke) 4px
-        ),
-        var(--chart-reconstructed-bg);
-    border-color: var(--chart-reconstructed-stroke);
+    background: var(--chart-reconstructed-bg);
+    border: 2px dashed var(--chart-reconstructed-stroke);
 }
 
 .loading {
@@ -983,7 +993,7 @@ body.milestones-page {
 }
 
 .filter-pill {
-    padding: 6px 14px;
+    padding: var(--adsk-space-2) var(--adsk-space-4);
     font-size: 13px;
     font-family: inherit;
     font-weight: 500;
@@ -993,6 +1003,11 @@ body.milestones-page {
     border-radius: var(--adsk-space-6);
     cursor: pointer;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filter-pill:focus-visible {
+    outline: 2px solid var(--adsk-twilight);
+    outline-offset: 2px;
 }
 
 .filter-pill:hover {
@@ -1209,5 +1224,16 @@ body.milestones-page {
 @media (min-width: 720px) and (max-width: 1023px) {
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
