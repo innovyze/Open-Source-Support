@@ -743,6 +743,17 @@ h1 {
     color: var(--text-muted);
 }
 
+.chart-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: var(--adsk-space-6);
+    text-align: center;
+    font-size: 1em;
+    color: var(--text-muted);
+}
+
 .loading::after {
     content: '...';
     animation: dots 1.5s steps(4, end) infinite;
@@ -861,6 +872,34 @@ h1 {
 
     #monthlyTable {
         max-height: 300px;
+    }
+
+    body:not(.insights-page):not(.milestones-page) {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    body:not(.insights-page):not(.milestones-page) .container {
+        height: auto;
+        min-height: calc(100vh - 20px);
+    }
+
+    .chart-container {
+        flex: 1 1 auto;
+        min-height: 380px;
+        overflow: visible;
+    }
+
+    #mainChart {
+        flex: none;
+        min-height: 300px;
+        padding-bottom: var(--adsk-space-4);
+    }
+
+    .chart-container .legend {
+        margin-top: var(--adsk-space-4);
+        flex-wrap: wrap;
+        row-gap: var(--adsk-space-2);
     }
 }
 

@@ -68,6 +68,12 @@ export function drawChart(containerId, data, type, range, visibleSeries = { tota
         return;
     }
 
+    if (!visibleSeries.total && !visibleSeries.unique) {
+        container.innerHTML =
+            '<div class="chart-empty-state">Select at least one series in the legend to display the chart.</div>';
+        return;
+    }
+
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     const svgHeight = Math.max(300, containerHeight);
