@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=1.0">
+    <title>Generate OG Card</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        html, body {
+            width: 1200px;
+            height: 630px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000000;
+        }
+
+        .og-card {
+            width: 1200px;
+            height: 630px;
+            box-sizing: border-box;
+            padding: 48px 56px;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 24px;
+            background: #000000;
+            color: #FFFFFF;
+            font-family: 'Artifakt Element', Arial, Helvetica, sans-serif;
+        }
+
+        .og-card h1 {
+            font-family: 'Artifakt Legend', Arial, Helvetica, sans-serif;
+            font-size: 48px;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .og-card .og-subtitle {
+            font-size: 22px;
+            color: #a3a3a3;
+            margin-top: 8px;
+        }
+
+        .og-chart-panel {
+            background: #141414;
+            border: 1px solid rgba(213, 213, 203, 0.16);
+            border-radius: 16px;
+            padding: 24px 24px 8px;
+        }
+
+        .og-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #858585;
+            font-size: 18px;
+        }
+
+        .og-legend {
+            display: flex;
+            gap: 24px;
+        }
+
+        .og-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .og-swatch {
+            width: 24px;
+            height: 4px;
+            border-radius: 4px;
+        }
+
+        .og-swatch.total { background: #1D91D0; }
+        .og-swatch.unique { background: #2AD0A9; }
+    </style>
+</head>
+<body>
+    <div class="og-card" id="ogCard">
+        <div>
+            <h1>Open Source Support</h1>
+            <p class="og-subtitle">Traffic analytics dashboard</p>
+        </div>
+        <div class="og-chart-panel">
+            <div id="ogChart"></div>
+        </div>
+        <div class="og-footer">
+            <span>GitHub repository traffic</span>
+            <div class="og-legend">
+                <div class="og-legend-item"><span class="og-swatch total"></span><span>Total views</span></div>
+                <div class="og-legend-item"><span class="og-swatch unique"></span><span>Unique views</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function renderOgChart() {
+            const views = await d3.csv('../data/views.csv');
+            let data = views.map(d => ({
+                date: new Date(d._date),
+                total: +d.total_views,
+                unique: +d.unique_views
+            })).sort((a, b) => a.date - b.date);
+
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+            data = data.filter(d => d.date >= threeMonthsAgo);
+
+            const margin = { top: 8, right: 16, bottom: 36, left: 48 };
+            const width = 1040 - margin.left - margin.right;
+            const height = 300 - margin.top - margin.bottom;
+
+            const svg = d3.select('#ogChart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            const x = d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0, width]);
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => Math.max(d.total, d.unique)) * 1.1])
+                .range([height, 0]);
+
+            svg.append('g')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(6).tickFormat(d3.timeFormat('%b')))
+                .call(g => g.selectAll('text').attr('fill', '#858585'))
+                .call(g => g.selectAll('path,line').attr('stroke', 'rgba(213, 213, 203, 0.16)'));
+
+            svg.append('g')
+                .call(d3.axisLeft(y).ticks(5))
+                .call(g => g.selectAll('text').attr('fill', '#858585'))
+                .call(g => g.selectAll('path,line').attr('stroke', 'rgba(213, 213, 203, 0.16)'));
+
+            const lineTotal = d3.line().x(d => x(d.date)).y(d => y(d.total)).curve(d3.curveMonotoneX);
+            const lineUnique = d3.line().x(d => x(d.date)).y(d => y(d.unique)).curve(d3.curveMonotoneX);
+
+            svg.append('path').datum(data).attr('fill', 'none').attr('stroke', '#1D91D0').attr('stroke-width', 3).attr('d', lineTotal);
+            svg.append('path').datum(data).attr('fill', 'none').attr('stroke', '#2AD0A9').attr('stroke-width', 3).attr('d', lineUnique);
+        }
+
+        renderOgChart().catch(err => console.error(err));
+    </script>
+</body>
+</html>

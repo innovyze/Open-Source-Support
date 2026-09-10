@@ -8,6 +8,19 @@ let milestones = [];
 let activeFilter = 'all';
 let activeMetric = 'views';
 
+function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function cssColor(name) {
+    return cssVar(name);
+}
+
+function cssColorAlpha(name, opacity) {
+    const resolved = d3.color(cssVar(name));
+    return resolved ? resolved.copy({ opacity }).formatRgb() : '';
+}
+
 function monthToIndex(monthKey) {
     for (let i = 0; i < monthlyData.length; i++) {
         if (monthlyData[i].month === monthKey) return i;
@@ -91,7 +104,7 @@ function drawContextChart() {
 
     g.append('path')
         .attr('d', area(monthlyData))
-        .attr('fill', 'rgba(79, 169, 240, 0.15)')
+        .attr('fill', cssColorAlpha('--chart-blue', 0.15))
         .attr('stroke', 'none');
 
     const pipContainer = document.createElement('div');
@@ -181,7 +194,7 @@ function renderCards() {
         if (activeFilter === 'product' && ms.category !== 'product') return;
 
         const stats = computeBeforeAfter(ms.date);
-        const color = ms.category === 'ai' ? '#4fa9f0' : '#ef8848';
+        const color = ms.category === 'ai' ? cssColor('--chart-blue') : cssColor('--chart-green');
         const catLabel = ms.category === 'ai' ? 'AI' : 'Product';
 
         const card = document.createElement('div');
@@ -265,7 +278,9 @@ function renderCards() {
                     if (vline) {
                         vline.className = 'context-vline visible';
                         vline.style.left = leftPx + 'px';
-                        vline.style.background = ms.category === 'ai' ? 'rgba(79, 169, 240, 0.4)' : 'rgba(239, 136, 72, 0.4)';
+                        vline.style.background = ms.category === 'ai'
+                            ? cssColorAlpha('--chart-blue', 0.4)
+                            : cssColorAlpha('--chart-green', 0.4);
                     }
                 }
             }

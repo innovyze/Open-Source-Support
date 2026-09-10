@@ -16,7 +16,7 @@ View the dashboard by opening `index.html` in a web browser (requires local web 
 - **🎯 Real-Time Statistics** - Key metrics including total views, unique visitors, and peak traffic days
 - **🕒 Flexible Time Ranges** - View data for 30 days, 90 days, 1 year, or all time
 - **💫 Responsive Design** - Works beautifully on desktop, tablet, and mobile devices
-- **🎨 Modern UI** - Glassmorphism design with gradient colors and smooth transitions
+- **🎨 Autodesk-aligned UI** - Black/white surfaces, Artifakt type stacks, and restrained tertiary chart colors
 - **📊 Hover Tooltips** - See detailed data points by hovering over the charts
 
 ## 📁 Project Structure
@@ -58,7 +58,7 @@ This repository uses GitHub Actions to automatically collect traffic data:
 
 - **D3.js v7** - Data visualization library
 - **Vanilla JavaScript** - No frameworks, pure ES6 modules
-- **CSS3** - Modern styling with glassmorphism effects
+- **CSS3** - Autodesk brand tokens with solid surfaces and responsive layout
 - **GitHub Pages** - Free hosting
 - **GitHub Actions** - Automated data collection
 
@@ -93,12 +93,15 @@ To run the dashboard locally:
 
 ## 📸 Generating Preview Images
 
-To generate a preview image for the README:
+To regenerate README and social preview assets:
 
-1. Open `docs/generate-preview.html` in your browser (via local server)
-2. Wait for the chart to render (shows last 3 months of data)
-3. Take a screenshot or use browser dev tools to capture the image
-4. Save as `docs/preview-placeholder.png`
+1. Start a local web server from the repo root (CSV loading requires HTTP):
+   ```bash
+   python -m http.server 8765 --bind 127.0.0.1
+   ```
+2. Open `http://127.0.0.1:8765/docs/generate-preview.html`, wait for the chart to render, and capture `#preview` as `assets/images/preview.png`.
+3. Open `http://127.0.0.1:8765/docs/generate-og-card.html`, wait for the chart to render, and capture `#ogCard` at 1200×630 as `assets/brand/og-card.png`.
+4. Both generator pages use the shared `assets/css/styles.css` palette and typography.
 
 ## 📝 License
 
