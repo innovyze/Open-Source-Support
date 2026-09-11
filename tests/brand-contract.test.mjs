@@ -140,6 +140,9 @@ test('generate-og-card.html excludes off-token surface literals', () => {
   assert.doesNotMatch(ogCardHtml, /#141414/i, 'custom surface #141414 must not appear in OG card generator');
 });
 
+const EMPTY_STATE_MARKUP =
+  '<div class="chart-empty-state">Select at least one series in the legend to display the chart.</div>';
+
 test('chart.js renders a clear empty state when all legend series are hidden', () => {
   assert.match(
     chartJs,
@@ -148,8 +151,10 @@ test('chart.js renders a clear empty state when all legend series are hidden', (
   );
   assert.match(
     chartJs,
-    /chart-empty-state[\s\S]*select[\s\S]*series/i,
-    'drawChart must render a static empty-state message asking the reader to select a series'
+    new RegExp(
+      `container\\.innerHTML\\s*=\\s*['"]${EMPTY_STATE_MARKUP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`
+    ),
+    'drawChart must assign the exact static empty-state markup'
   );
 
   const drawChartBody = chartJs.match(/export function drawChart[\s\S]*/)?.[0] ?? '';
@@ -158,6 +163,27 @@ test('chart.js renders a clear empty state when all legend series are hidden', (
   assert.ok(
     emptyStateIndex > -1 && d3Index > -1 && emptyStateIndex < d3Index,
     'empty-state handling must short-circuit before chart construction'
+  );
+});
+
+test('chart.js dismisses tooltip before redraw and early returns', () => {
+  const drawChartBody = chartJs.match(/export function drawChart[\s\S]*/)?.[0] ?? '';
+  const dismissIndex = drawChartBody.search(
+    /dismissTooltip\s*\(|getElementById\(['"]tooltip['"]\)[\s\S]*?classList\.remove\(['"]visible['"]\)/
+  );
+  const clearContainerIndex = drawChartBody.search(/container\.innerHTML\s*=\s*['"]['"]/);
+  const noDataIndex = drawChartBody.search(/No data available/);
+  const emptyStateIndex = drawChartBody.search(/chart-empty-state/);
+
+  assert.ok(dismissIndex > -1, 'drawChart must dismiss the tooltip');
+  assert.ok(
+    dismissIndex < clearContainerIndex,
+    'tooltip must be dismissed before clearing the chart container'
+  );
+  assert.ok(dismissIndex < noDataIndex, 'tooltip must be dismissed before no-data early return');
+  assert.ok(
+    dismissIndex < emptyStateIndex,
+    'tooltip must be dismissed before all-series-hidden early return'
   );
 });
 
@@ -174,5 +200,30 @@ test('styles.css guards narrow-viewport Daily Traffic chart height', () => {
     narrowViewportBlock,
     /\.chart-container[\s\S]*overflow:\s*visible/,
     'Daily Traffic chart container must allow rotated x-axis labels to render without clipping the legend'
+  );
+});
+
+test('styles.css guards short-viewport Daily Traffic chart height', () => {
+  const shortViewportBlock =
+    css.match(/@media\s*\([^)]*max-height:\s*600px[^)]*\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+  assert.ok(
+    shortViewportBlock.length > 0,
+    'short-viewport media query with max-height: 600px required'
+  );
+  assert.match(
+    shortViewportBlock,
+    /body:not\(\.insights-page\):not\(\.milestones-page\)/,
+    'short-viewport rules must exclude Insights and Milestones pages'
+  );
+  assert.match(
+    shortViewportBlock,
+    /#mainChart[\s\S]*min-height:\s*300px/,
+    '#mainChart must not shrink below the SVG chart minimum on short viewports'
+  );
+  assert.match(
+    shortViewportBlock,
+    /\.chart-container[\s\S]*overflow:\s*visible/,
+    'Daily Traffic chart container must allow rotated x-axis labels to render without clipping the legend on short viewports'
   );
 });
