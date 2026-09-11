@@ -53,7 +53,16 @@ function aggregateToWeekly(data) {
         }));
 }
 
+function dismissTooltip() {
+    const tooltip = document.getElementById('tooltip');
+    if (tooltip) {
+        tooltip.classList.remove('visible');
+    }
+}
+
 export function drawChart(containerId, data, type, range, visibleSeries = { total: true, unique: true }) {
+    dismissTooltip();
+
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 

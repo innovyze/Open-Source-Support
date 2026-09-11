@@ -903,6 +903,36 @@ h1 {
     }
 }
 
+@media (max-height: 600px) {
+    body:not(.insights-page):not(.milestones-page) {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    body:not(.insights-page):not(.milestones-page) .container {
+        height: auto;
+        min-height: calc(100vh - 32px);
+    }
+
+    .chart-container {
+        flex: 1 1 auto;
+        min-height: 380px;
+        overflow: visible;
+    }
+
+    #mainChart {
+        flex: none;
+        min-height: 300px;
+        padding-bottom: var(--adsk-space-4);
+    }
+
+    .chart-container .legend {
+        margin-top: var(--adsk-space-4);
+        flex-wrap: wrap;
+        row-gap: var(--adsk-space-2);
+    }
+}
+
 @media (max-width: 380px) {
     .stats-grid {
         grid-template-columns: 1fr;
