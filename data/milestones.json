@@ -86,8 +86,15 @@
   {
     "date": "2026-05-12",
     "category": "product",
-    "name": "Autodesk Assistant for Hydraulic Modeling",
+    "name": "InfoWater Pro adds Autodesk Assistant",
     "teaser": "InfoWater Pro 2027.1 assistant preview",
     "description": "Autodesk <a href='https://www.autodesk.com/blogs/water/2026/05/12/autodesk-assistant-hydraulic-modeling/' target='_blank' rel='noopener'>announced an InfoWater Pro 2027.1 technical preview of Autodesk Assistant</a> for conversational guidance inside the product, model actions through MCP (Model Context Protocol), and Python scripting support. The article directs readers to the Autodesk Water Infrastructure GitHub repository for community scripts, automation tools, and workflow examples."
+  },
+  {
+    "date": "2026-07-16",
+    "category": "product",
+    "name": "InfoWorks ICM adds Autodesk Assistant",
+    "teaser": "Contextual guidance in InfoWorks ICM 2027.1",
+    "description": "Autodesk <a href='https://www.autodesk.com/blogs/water/2026/07/16/infoworks-icm-2027-1-ai-powered-assistance-richer-esri-mapping-and-smarter-network-design/' target='_blank' rel='noopener'>released InfoWorks ICM 2027.1 with Autodesk Assistant</a> directly within the modelling workspace, letting users ask questions in natural language and receive contextual guidance from InfoWorks ICM Help and Autodesk knowledge resources without leaving the modelling environment."
   }
 ]
