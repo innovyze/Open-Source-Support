@@ -785,6 +785,14 @@ h1 {
     opacity: 1;
 }
 
+@media (max-width: 960px) {
+    .page-toggle {
+        position: static;
+        margin: 0 auto var(--adsk-space-3);
+        width: fit-content;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 10px;
