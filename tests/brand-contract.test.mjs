@@ -203,6 +203,31 @@ test('styles.css guards narrow-viewport Daily Traffic chart height', () => {
   );
 });
 
+test('styles.css stacks page-toggle below title on landscape tablet widths', () => {
+  const landscapeHeaderBlock =
+    css.match(/@media\s*\(\s*max-width:\s*960px\s*\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+  assert.ok(
+    landscapeHeaderBlock.length > 0,
+    'landscape tablet media query with max-width: 960px required so 812px viewports avoid header overlap'
+  );
+  assert.match(
+    landscapeHeaderBlock,
+    /\.page-toggle[\s\S]*position:\s*static/,
+    '.page-toggle must leave absolute header positioning at max-width: 960px'
+  );
+  assert.match(
+    landscapeHeaderBlock,
+    /\.page-toggle[\s\S]*margin:\s*0\s+auto/,
+    '.page-toggle must keep centered spacing when stacked in the header'
+  );
+  assert.match(
+    landscapeHeaderBlock,
+    /\.page-toggle[\s\S]*width:\s*fit-content/,
+    '.page-toggle must shrink-wrap when stacked in the header'
+  );
+});
+
 test('styles.css guards short-viewport Daily Traffic chart height', () => {
   const shortViewportBlock =
     css.match(/@media\s*\([^)]*max-height:\s*600px[^)]*\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
