@@ -58,7 +58,7 @@ html {
     --chart-green: var(--adsk-morning);
     --button-bg: rgba(255, 255, 255, 0.06);
     --button-hover: rgba(255, 255, 255, 0.12);
-    --button-active: var(--adsk-white);
+    --button-active: var(--adsk-yellow);
     --button-active-text: var(--adsk-black);
     --chart-error-bg: rgba(242, 82, 10, 0.16);
     --chart-error-stroke: rgba(255, 150, 103, 0.55);
