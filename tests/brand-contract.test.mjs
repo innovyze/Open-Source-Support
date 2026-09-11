@@ -27,6 +27,7 @@ test('styles.css uses Autodesk brand token contract', () => {
   for (const token of [
     '--adsk-black',
     '--adsk-white',
+    '--adsk-yellow',
     '--adsk-twilight',
     '--adsk-morning',
     '--adsk-font-display',
@@ -34,6 +35,44 @@ test('styles.css uses Autodesk brand token contract', () => {
     '--adsk-space-3',
   ]) {
     assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${token}`);
+  }
+});
+
+test('styles.css uses Hello Yellow for active interactive controls', () => {
+  assert.match(
+    css,
+    /--button-active:\s*var\(--adsk-yellow\)/,
+    '--button-active must resolve to --adsk-yellow for visible Hello Yellow accents'
+  );
+  assert.match(
+    css,
+    /--button-active-text:\s*var\(--adsk-black\)/,
+    '--button-active-text must resolve to --adsk-black for contrast-safe selected states'
+  );
+});
+
+test('styles.css applies token-backed yellow active state to control groups', () => {
+  const controlActiveRules = [
+    { selector: '.page-toggle-btn.active', label: 'page navigation' },
+    { selector: '.toggle-btn.active', label: 'chart type toggle' },
+    { selector: '.time-btn.active', label: 'time range' },
+    { selector: '.filter-pill.active', label: 'milestone filter' },
+  ];
+
+  for (const { selector, label } of controlActiveRules) {
+    const escaped = selector.replace(/\./g, '\\.');
+    const rule = css.match(new RegExp(`${escaped}\\s*\\{[^}]*\\}`, 's'))?.[0] ?? '';
+    assert.ok(rule.length > 0, `${label} active rule must exist`);
+    assert.match(
+      rule,
+      /background:\s*var\(--button-active\)/,
+      `${label} active background must use --button-active`
+    );
+    assert.match(
+      rule,
+      /color:\s*var\(--button-active-text\)/,
+      `${label} active text must use --button-active-text`
+    );
   }
 });
 
