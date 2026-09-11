@@ -144,3 +144,8 @@ Copies **attachment blob metadata** from **selected** survey objects to their as
 **Asset resolution** (first match with an `attachments` field wins): `asset_id` + `asset_type`; flood-defence `user_text_39` / `user_text_40`; pipe link fields; `node_id`; then `navigate('property')`, `navigate('node')`, or `navigate('pipe')`. Asset lookup uses `row_object`, `row_objects_from_asset_id`, then a table scan on `id`, `asset_id`, `node_id`, and `property_id`.
 
 **Usage:** select survey object(s) on the GeoPlan, then run via **Network → Run Ruby Script…**. If `db_ref` is blank on a survey attachment row, the script falls back to `filename` as the file reference.
+
+## [Complete Parent from Related Records](./Complete%20Parent%20from%20Related%20Records/Readme.md)
+Marks a parent object (work order, case, order, task, or incident) **completed** when every configured related record is done (`completed` or `resolved`), and sets the parent completion date from the latest related date. Uses parent–child relationships via `navigate` and/or a link field on child records. Supports default IAM tables (`wams_*`, `cams_*`) and user-defined objects (`wams__*`, `cams__*`). UIIE script with dry run and verbose output — see the sub-folder readme for full configuration and usage.
+
+Script: [UIIE-CompleteParentFromRelatedRecords.rb](./Complete%20Parent%20from%20Related%20Records/UIIE-CompleteParentFromRelatedRecords.rb)
