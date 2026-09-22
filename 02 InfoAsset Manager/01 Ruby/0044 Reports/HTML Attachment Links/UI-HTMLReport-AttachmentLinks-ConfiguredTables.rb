@@ -1,0 +1,914 @@
+# ============================================================================
+# InfoAsset Manager UI Script
+# Script: UI-HTMLReport-AttachmentLinks-ConfiguredTables.rb
+# Purpose: One HTML row per network object with attributes you choose, plus
+#          aggregated attachment / file links on the same line.
+#
+# Edit EXPORT_CONFIG below (table name + ordered field list), then run from
+# Network > Run Ruby Script on the open network.
+# ============================================================================
+
+require 'cgi'
+require 'uri'
+require 'fileutils'
+
+# ---------------------------------------------------------------------------
+# EXPORT CONFIGURATION — edit before running
+#
+# Each hash defines one IAM table to export:
+#   'table'   — internal table name (e.g. cams_cctv_survey)
+#   'fields'  — column order in the HTML (left to right)
+#   'headers' — optional; same length as 'fields' for column titles
+#
+# Scalar IAM fields: use the field name (e.g. survey_id, when_surveyed).
+#
+# File UID / path scalars — optional suffix:
+#   field:link    Hyperlink to SNumbatData file (video vs attachment store auto-detected)
+#   field:exists  Yes / No / blank (path not configured)
+#
+# attachments BLOB (child records with db_ref, filename, purpose, …):
+#   attachments          Same as attachments:links
+#   attachments:links    All attachment files as HTML links in one cell
+#   attachments:count    Count of attachment records with a db_ref
+#   attachments:filenames  Filenames separated by "; "
+#   attachments:text     Plain text "purpose — filename (db_ref)" per line
+#
+# Other nested BLOBs (e.g. cams_cctv_survey.details):
+#   details:count              Number of detail records
+#   details:links              Links for image/video fields on each detail row
+#   details:distance,code,remarks   One cell: each detail row is "distance; code; remarks",
+#                                  detail rows separated by line breaks in HTML (<br>)
+#   (Replace "details" with your blob field name. Sub-field names are comma-separated.)
+#
+# Headers for blob sub-field columns (same order as the field list):
+#   'details:Distance,Code,Remarks'   or   'Distance, Code, Remarks'
+#   Column title shows labels joined with "; ".
+#
+# Bare blob name without ":…" is not supported — pick a mode above.
+# ---------------------------------------------------------------------------
+
+EXPORT_CONFIG = [
+  # --- Collection node (manhole) assets — table cams_manhole ---
+  {
+    'table' => 'cams_manhole',
+    'fields' => %w[
+      node_id
+      asset_id
+      system_type
+      location_image:link
+      attachments:links
+    ],
+    'headers' => [
+      'Node ID',
+      'Asset ID',
+      'System type',
+      'Location image',
+      'Attachments'
+    ]
+  },
+  # --- manhole inspection surveys ---
+  {
+    'table' => 'cams_manhole_survey',
+    'fields' => %w[
+      id
+      survey_date
+      details:distance,structural_score,service_score
+      location_image:link
+      internal_image:link
+      attachments:links
+    ],
+    'headers' => [
+      'Survey ID',
+      'Survey date',
+      'details:Distance,Structural,Service',
+      'Location image',
+      'Internal image',
+      'Attachments'
+    ]
+  },
+  # --- CCTV pipe surveys ---
+  {
+    'table' => 'cams_cctv_survey',
+    'fields' => %w[
+      id
+      when_surveyed
+      start_manhole
+      finish_manhole
+      details:distance,code,remarks
+      attachments:links
+      video_file_in:link
+    ],
+    'headers' => [
+      'Survey ID',
+      'Survey date',
+      'Start MH',
+      'Finish MH',
+      'details:Distance,Code,Remarks',
+      'Attachments',
+      'Video in'
+    ]
+  }
+  # Each hash becomes a tab when more than one is listed. Remove or comment out
+  # entries you do not need. Field names must exist on your open network schema.
+].freeze
+
+IMAGE_REF_FIELDS = %w[
+  detail_image ds_image ds_photo external_photo injection_point_image
+  internal_image internal_photo location_image location_photo location_sketch
+  other_image photo plan_sketch sketch us_image us_photo
+].freeze
+
+VIDEO_REF_FIELDS = %w[video_file_in video_file_out video_file].freeze
+
+DETAIL_BLOB_LINK_FIELDS = (IMAGE_REF_FIELDS + VIDEO_REF_FIELDS).uniq.freeze
+
+# Optional fallbacks when db.file_root is empty. Add your UNC workgroup path if needed.
+SNUMBATDATA_CANDIDATES = [
+  'C:\\ProgramData\\Autodesk\\SNumbatData',
+  'C:\\ProgramData\\Innovyze\\SNumbatData'
+].freeze
+
+def html_escape(value)
+  CGI.escapeHTML(value.to_s)
+end
+
+def file_href(path)
+  return '' if path.nil? || path.to_s.strip.empty?
+  normalized = path.to_s.gsub('\\', '/')
+  if normalized.start_with?('//')
+    "file:#{URI::DEFAULT_PARSER.escape(normalized)}"
+  else
+    "file:///#{URI::DEFAULT_PARSER.escape(normalized)}"
+  end
+end
+
+def win_join(*parts)
+  parts.map { |p| p.to_s.strip.gsub('/', '\\').chomp('\\') }
+       .reject(&:empty?)
+       .join('\\')
+end
+
+def normalise_snumbatdata_root(path)
+  root = path.to_s.strip.gsub('/', '\\').chomp('\\')
+  return '' if root.empty?
+  lower = root.downcase
+  root = root[0, root.length - 12] if lower.end_with?('\\attachments')
+  root = root[0, root.length - 7]  if lower.end_with?('\\videos')
+  root.chomp('\\')
+end
+
+def detect_snumbatdata_root(db_file_root, guid)
+  root = normalise_snumbatdata_root(db_file_root)
+  return root unless root.empty?
+  SNUMBATDATA_CANDIDATES.each do |candidate|
+    return candidate if File.directory?(win_join(candidate, 'Attachments', guid))
+  end
+  SNUMBATDATA_CANDIDATES.each { |c| return c if File.directory?(c) }
+  ''
+end
+
+def prompt_bool(val)
+  val == true || val.to_s.strip.downcase == 'true'
+end
+
+def prompt_val(prompt_result, index, default = nil)
+  return default if prompt_result.nil?
+  return prompt_result[index] if prompt_result.is_a?(Array)
+  default
+end
+
+def network_rows(net, table_name, selection_only)
+  if selection_only
+    if net.respond_to?(:row_object_collection_selection)
+      return net.row_object_collection_selection(table_name)
+    end
+    if net.respond_to?(:row_objects_selection)
+      return net.row_objects_selection(table_name)
+    end
+    return []
+  end
+  return net.row_object_collection(table_name) if net.respond_to?(:row_object_collection)
+  return net.row_objects(table_name) if net.respond_to?(:row_objects)
+  nil
+end
+
+def network_display_name(net)
+  begin
+    mo = net.model_object if net.respond_to?(:model_object)
+    return mo.name.to_s if mo && mo.respond_to?(:name)
+  rescue
+  end
+  begin
+    return net.name.to_s if net.respond_to?(:name)
+  rescue
+  end
+  '(current network)'
+end
+
+def row_id(ro)
+  return ro.id.to_s if ro.respond_to?(:id)
+  return ro['id'].to_s if ro.respond_to?(:[])
+  ''
+rescue
+  ''
+end
+
+def row_field(ro, field_name)
+  if ro.respond_to?(:[])
+    val = ro[field_name]
+    return val unless val.nil?
+  end
+  return ro.send(field_name) if ro.respond_to?(field_name)
+  nil
+rescue TypeError
+  nil
+rescue
+  nil
+end
+
+def abs_path?(val)
+  s = val.to_s.strip
+  return true if s.length >= 2 && s[1, 1] == ':' &&
+                 ((s[0] >= 'A' && s[0] <= 'Z') || (s[0] >= 'a' && s[0] <= 'z'))
+  return true if s.length >= 2 && s[0, 2] == '\\\\'
+  false
+end
+
+def attachment_field(attachment, name)
+  return attachment.send(name).to_s if attachment.respond_to?(name)
+  return attachment[name].to_s if attachment.respond_to?(:[])
+  ''
+rescue
+  ''
+end
+
+def resolve_path(store_dir, uid, uid_lookup)
+  return '' if uid.to_s.strip.empty?
+  found = uid_lookup[uid.to_s]
+  return found if found
+  store_dir.empty? ? '' : win_join(store_dir, uid.to_s)
+end
+
+def scan_uid_store(root_dir)
+  uids = {}
+  return uids unless File.directory?(root_dir.to_s)
+  stack = [root_dir.to_s]
+  until stack.empty?
+    dir = stack.pop
+    begin
+      Dir.entries(dir).each do |entry|
+        next if entry == '.' || entry == '..'
+        full = File.join(dir, entry)
+        if File.directory?(full)
+          stack << full
+        else
+          uids[entry] = full
+        end
+      end
+    rescue
+    end
+  end
+  uids
+end
+
+def parse_field_token(token)
+  text = token.to_s.strip
+  idx = text.index(':')
+  if idx
+    { 'base' => text[0, idx], 'mode' => text[idx + 1, text.length - idx - 1] }
+  else
+    { 'base' => text, 'mode' => 'value' }
+  end
+end
+
+ATTACHMENTS_MODES = %w[count filenames text links value].freeze
+SCALAR_FIELD_MODES = %w[value link exists].freeze
+
+def blob_subfields_from_mode(mode)
+  return nil if mode.nil?
+  text = mode.to_s.strip
+  return nil if text.empty?
+  return nil if text == 'count' || text == 'links'
+  return nil if SCALAR_FIELD_MODES.include?(text)
+  return nil if ATTACHMENTS_MODES.include?(text)
+  parts = text.split(',').map(&:strip).reject(&:empty?)
+  parts.empty? ? nil : parts
+end
+
+def default_column_header(token)
+  parsed = parse_field_token(token)
+  base = parsed['base']
+  mode = parsed['mode']
+  subs = blob_subfields_from_mode(mode)
+  if base == 'attachments'
+    case mode
+    when 'count' then 'Attachment count'
+    when 'filenames' then 'Attachment filenames'
+    when 'text' then 'Attachments (text)'
+    when 'links', 'value' then 'Attachment links'
+    when nil
+      base
+    else
+      if subs
+        subs.join('; ')
+      else
+        "attachments:#{mode}"
+      end
+    end
+  elsif subs
+    subs.join('; ')
+  elsif mode == 'link'
+    "#{base} (link)"
+  elsif mode == 'exists'
+    "#{base} (exists)"
+  elsif mode == 'count'
+    "#{base} count"
+  elsif mode == 'links'
+    "#{base} links"
+  else
+    base
+  end
+end
+
+def resolve_column_header(field_token, header_entry)
+  entry = header_entry.to_s.strip
+  return default_column_header(field_token) if entry.empty?
+
+  field_parsed = parse_field_token(field_token)
+  subs = blob_subfields_from_mode(field_parsed['mode'])
+  return entry unless subs
+
+  header_parsed = parse_field_token(entry)
+  header_subs = blob_subfields_from_mode(header_parsed['mode'])
+  if header_subs && header_parsed['base'] == field_parsed['base']
+    return header_subs.join('; ')
+  end
+  if entry.include?(',')
+    return entry.split(',').map(&:strip).join('; ')
+  end
+  entry
+end
+
+def format_scalar_value(value)
+  return '' if value.nil?
+  return value.strftime('%Y-%m-%d') if value.respond_to?(:strftime)
+  if value.is_a?(TrueClass)
+    return 'true'
+  elsif value.is_a?(FalseClass)
+    return 'false'
+  end
+  value.to_s
+end
+
+def external_url?(path)
+  lower = path.to_s.strip.downcase
+  lower.start_with?('http://') || lower.start_with?('https://')
+end
+
+def link_anchor(label, full_path)
+  path = full_path.to_s.strip
+  href = if external_url?(path)
+           path
+         else
+           file_href(path)
+         end
+  return html_escape(label) if href.empty?
+  safe_label = html_escape(label.to_s.empty? ? File.basename(path) : label)
+  "<a href=\"#{html_escape(href)}\" target=\"_blank\" rel=\"noopener noreferrer\">#{safe_label}</a>"
+end
+
+def read_attachments_blob(ro)
+  begin
+    if ro.respond_to?(:attachments)
+      blob = ro.attachments
+      return blob unless blob.nil?
+    end
+  rescue
+  end
+  row_field(ro, 'attachments')
+rescue
+  nil
+end
+
+def attachment_storage_ref(attachment)
+  db_ref = attachment_field(attachment, 'db_ref').strip
+  return db_ref unless db_ref.empty?
+  attachment_field(attachment, 'filename').strip
+end
+
+def each_attachment_record(ro)
+  blob = read_attachments_blob(ro)
+  return if blob.nil?
+
+  process = lambda do |attachment|
+    next if attachment.nil?
+    storage_ref = attachment_storage_ref(attachment)
+    next if storage_ref.empty?
+    yield attachment, storage_ref
+  end
+
+  if blob.respond_to?(:size)
+    size = blob.size
+    if size.respond_to?(:to_i) && size.to_i > 0 && blob.respond_to?(:[])
+      (0...size.to_i).each do |i|
+        process.call(blob[i])
+      end
+      return
+    end
+  end
+
+  return unless blob.respond_to?(:each)
+  blob.each { |attachment| process.call(attachment) }
+end
+
+def read_nested_blob(ro, blob_name)
+  return row_field(ro, blob_name) if row_field(ro, blob_name)
+  return ro.send(blob_name) if ro.respond_to?(blob_name)
+  nil
+rescue
+  nil
+end
+
+def nested_blob_size(blob)
+  return 0 if blob.nil?
+  return blob.size if blob.respond_to?(:size)
+  return blob.length if blob.respond_to?(:length)
+  0
+rescue
+  0
+end
+
+def nested_child_field(child, field_name)
+  return child.send(field_name) if child.respond_to?(field_name)
+  return child[field_name] if child.respond_to?(:[])
+  nil
+rescue
+  nil
+end
+
+def file_ref_path(uid, field_name, att_store, vid_store, att_uids, all_uids)
+  val = uid.to_s.strip
+  return '' if val.empty?
+  return val if external_url?(val)
+  if abs_path?(val)
+    val
+  elsif VIDEO_REF_FIELDS.include?(field_name)
+    resolve_path(vid_store, val, all_uids)
+  else
+    resolve_path(att_store, val, all_uids)
+  end
+end
+
+def resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, table_field_names, blob_field_names)
+  parsed = parse_field_token(token)
+  base = parsed['base']
+  mode = parsed['mode']
+
+  if base == 'attachments'
+    subfields = blob_subfields_from_mode(mode)
+    if subfields
+      return attachment_subfields_cell(ro, subfields)
+    end
+    mode = 'links' if mode == 'value'
+    return attachment_blob_cell(ro, mode, att_store, att_uids)
+  end
+
+  if blob_field_names.include?(base)
+    subfields = blob_subfields_from_mode(mode)
+    if subfields
+      return nested_blob_subfields_cell(ro, base, subfields)
+    end
+    if mode == 'count' || mode == 'links'
+      return nested_blob_cell(ro, base, mode, att_store, vid_store, att_uids, all_uids)
+    end
+    if mode == 'value'
+      return html_escape("(BLOB field — use #{base}:count, #{base}:links, or #{base}:field1,field2)")
+    end
+  end
+
+  scalar = row_field(ro, base)
+  case mode
+  when 'value'
+    html_escape(format_scalar_value(scalar))
+  when 'exists'
+    path = file_ref_path(scalar, base, att_store, vid_store, att_uids, all_uids)
+    if scalar.to_s.strip.empty?
+      ''
+    elsif path.empty?
+      html_escape('No')
+    else
+      File.exist?(path) ? 'Yes' : html_escape('No')
+    end
+  when 'link'
+    val = scalar.to_s.strip
+    return '' if val.empty?
+    path = file_ref_path(val, base, att_store, vid_store, att_uids, all_uids)
+    label = abs_path?(val) ? File.basename(val) : val
+    link_anchor(label, path)
+  else
+    html_escape(format_scalar_value(scalar))
+  end
+end
+
+def attachment_blob_cell(ro, mode, att_store, att_uids)
+  records = []
+  each_attachment_record(ro) { |att, db_ref| records << [att, db_ref] }
+
+  case mode
+  when 'count'
+    records.size.to_s
+  when 'filenames'
+    html_escape(records.map { |att, _| attachment_field(att, 'filename') }.reject(&:empty?).join('; '))
+  when 'text'
+    lines = records.map do |att, db_ref|
+      purpose = attachment_field(att, 'purpose')
+      filename = attachment_field(att, 'filename')
+      label = [purpose, filename].reject(&:empty?).join(' — ')
+      label = db_ref if label.empty?
+      "#{label} (#{db_ref})"
+    end
+    html_escape(lines.join("\n")).gsub("\n", '<br>')
+  when 'links'
+    parts = records.map do |att, storage_ref|
+      path = if external_url?(storage_ref) || abs_path?(storage_ref)
+               storage_ref
+             else
+               resolve_path(att_store, storage_ref, att_uids)
+             end
+      purpose = attachment_field(att, 'purpose')
+      filename = attachment_field(att, 'filename')
+      label = [purpose, filename].reject(&:empty?).join(': ')
+      label = storage_ref if label.empty?
+      link_anchor(label, path)
+    end
+    parts.join('<br>')
+  else
+    html_escape("(Unknown attachments mode — use links, count, filenames, or text)")
+  end
+end
+
+def each_nested_blob_child(blob)
+  return if blob.nil?
+  if blob.respond_to?(:size) && blob.respond_to?(:[])
+    size = blob.size
+    if size.respond_to?(:to_i) && size.to_i > 0
+      (0...size.to_i).each do |i|
+        yield blob[i]
+      end
+      return
+    end
+  end
+  return unless blob.respond_to?(:each)
+  blob.each { |child| yield child }
+end
+
+def nested_blob_subfields_cell(ro, blob_name, subfields)
+  blob = read_nested_blob(ro, blob_name)
+  lines = []
+  each_nested_blob_child(blob) do |child|
+    next if child.nil?
+    parts = subfields.map do |fld|
+      html_escape(format_scalar_value(nested_child_field(child, fld)))
+    end
+    lines << parts.join('; ')
+  end
+  lines.join('<br>')
+end
+
+def attachment_subfields_cell(ro, subfields)
+  lines = []
+  each_attachment_record(ro) do |att, _storage_ref|
+    parts = subfields.map do |fld|
+      html_escape(format_scalar_value(attachment_field(att, fld)))
+    end
+    lines << parts.join('; ')
+  end
+  lines.join('<br>')
+end
+
+def nested_blob_cell(ro, blob_name, mode, att_store, vid_store, att_uids, all_uids)
+  blob = read_nested_blob(ro, blob_name)
+  if mode == 'count'
+    return nested_blob_size(blob).to_s
+  end
+
+  links = []
+  each_nested_blob_child(blob) do |child|
+    next if child.nil?
+    DETAIL_BLOB_LINK_FIELDS.each do |fld|
+      val = nested_child_field(child, fld)
+      next if val.nil? || val.to_s.strip.empty?
+      path = file_ref_path(val, fld, att_store, vid_store, att_uids, all_uids)
+      links << link_anchor("#{fld}: #{val}", path)
+    end
+  end
+  links.join('<br>')
+end
+
+def blob_child_field_names(net, table_name, blob_name)
+  net.tables.each do |t|
+    next unless t.name == table_name
+    t.fields.each do |f|
+      next unless f.name == blob_name && f.data_type == 'WSStructure'
+      return [] if f.fields.nil?
+      return f.fields.map { |bf| bf.name }
+    end
+  end
+  []
+rescue
+  []
+end
+
+def table_field_name_list(net, table_name)
+  net.tables.each do |t|
+    return t.fields.map { |f| f.name } if t.name == table_name
+  end
+  []
+rescue
+  []
+end
+
+def table_blob_field_names(net, table_name)
+  net.tables.each do |t|
+    next unless t.name == table_name
+    return t.fields.select { |f| f.data_type == 'WSStructure' }.map { |f| f.name }
+  end
+  []
+rescue
+  []
+end
+
+def table_description(net, table_name)
+  net.tables.each do |t|
+    return t.description.to_s if t.name == table_name
+  end
+  table_name
+rescue
+  table_name
+end
+
+def report_html_style_lines
+  [
+    '    body { font-family: Arial, sans-serif; margin: 16px; }',
+    '    h1 { margin: 0 0 8px 0; }',
+    '    h2 { margin: 12px 0 8px 0; font-size: 1.1em; }',
+    '    .meta { margin: 0 0 16px 0; color: #555; }',
+    '    table.data { border-collapse: collapse; width: 100%; }',
+    '    table.data th, table.data td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; vertical-align: top; }',
+    '    table.data th { background: #f3f3f3; position: sticky; top: 0; }',
+    '    .tab-bar { display: flex; flex-wrap: wrap; gap: 4px; margin: 16px 0 0 0; border-bottom: 2px solid #ccc; }',
+    '    .tab-bar button { margin: 0; padding: 8px 12px; border: 1px solid #ccc; border-bottom: none; background: #eee; cursor: pointer; font-size: 13px; border-radius: 4px 4px 0 0; max-width: 280px; text-align: left; }',
+    '    .tab-bar button.active { background: #fff; font-weight: bold; margin-bottom: -2px; border-bottom: 2px solid #fff; }',
+    '    .tab-panel { display: none; padding-top: 8px; }',
+    '    .tab-panel.active { display: block; }',
+    '    .panel-meta { color: #666; margin: 0 0 8px 0; font-size: 13px; }',
+    '    .empty-tab { color: #666; font-style: italic; }'
+  ]
+end
+
+def build_configured_export_html(network_name, meta_lines, sections)
+  html = []
+  html << '<!doctype html>'
+  html << '<html lang="en">'
+  html << '<head>'
+  html << '  <meta charset="utf-8">'
+  html << '  <meta name="viewport" content="width=device-width, initial-scale=1">'
+  html << "  <title>Configured object export - #{html_escape(network_name)}</title>"
+  html << '  <style>'
+  report_html_style_lines.each { |line| html << line }
+  html << '  </style>'
+  html << '</head>'
+  html << '<body>'
+  html << "  <h1>Configured object export - #{html_escape(network_name)}</h1>"
+  html << '  <p class="meta">'
+  meta_lines.each_with_index do |line, idx|
+    html << '<br>' if idx > 0
+    html << line
+  end
+  html << '</p>'
+
+  use_tabs = sections.size > 1
+  if use_tabs
+    html << '  <div class="tab-bar" role="tablist">'
+    sections.each_with_index do |section, idx|
+      active = idx.zero? ? ' active' : ''
+      label = "#{section['table_label']} (#{section['rows'].size})"
+      html << "    <button type=\"button\" class=\"tab-btn#{active}\" role=\"tab\" onclick=\"showReportTab(#{idx}, this)\">#{html_escape(label)}</button>"
+    end
+    html << '  </div>'
+  end
+
+  sections.each_with_index do |section, idx|
+    if use_tabs
+      active = idx.zero? ? ' active' : ''
+      html << "  <div id=\"report-tab-panel-#{idx}\" class=\"tab-panel#{active}\" role=\"tabpanel\">"
+      html << "    <h2>#{html_escape(section['table_label'])}</h2>"
+      html << "    <p class=\"panel-meta\">Table: <code>#{html_escape(section['table_name'])}</code> &mdash; #{section['rows'].size} object(s)</p>"
+    end
+    html << '  <table class="data">'
+    html << '    <thead><tr>'
+    section['headers'].each { |h| html << "      <th>#{html_escape(h)}</th>" }
+    html << '    </tr></thead><tbody>'
+    if section['rows'].empty?
+      col_span = section['headers'].size
+      html << "      <tr><td colspan=\"#{col_span}\" class=\"empty-tab\">No objects exported for this table.</td></tr>"
+    else
+      section['rows'].each do |cells|
+        html << '      <tr>'
+        cells.each { |cell| html << "        <td>#{cell}</td>" }
+        html << '      </tr>'
+      end
+    end
+    html << '    </tbody></table>'
+    html << '  </div>' if use_tabs
+  end
+
+  if use_tabs
+    html << '  <script>'
+    html << '    function showReportTab(index, btn) {'
+    html << '      var panels = document.querySelectorAll(".tab-panel");'
+    html << '      for (var i = 0; i < panels.length; i++) { panels[i].classList.remove("active"); }'
+    html << '      var buttons = document.querySelectorAll(".tab-btn");'
+    html << '      for (var j = 0; j < buttons.length; j++) { buttons[j].classList.remove("active"); }'
+    html << '      var panel = document.getElementById("report-tab-panel-" + index);'
+    html << '      if (panel) { panel.classList.add("active"); }'
+    html << '      if (btn) { btn.classList.add("active"); }'
+    html << '    }'
+    html << '  </script>'
+  end
+
+  html << '</body></html>'
+  html.join("\n")
+end
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+if EXPORT_CONFIG.nil? || EXPORT_CONFIG.empty?
+  WSApplication.message_box(
+    "EXPORT_CONFIG is empty.\n\nEdit the configuration section at the top of the script.",
+    'OK', '!', false
+  )
+  raise 'abort'
+end
+
+net = WSApplication.current_network
+if net.nil?
+  WSApplication.message_box(
+    "No open network found.\n\nOpen a network, then run via Network > Run Ruby Script.",
+    'OK', '!', false
+  )
+  raise 'abort'
+end
+
+db = nil
+db_guid = ''
+file_root = ''
+begin
+  db = WSApplication.current_database
+  db_guid = db.guid.to_s.strip if db && db.respond_to?(:guid)
+  db_root = db.file_root.to_s if db && db.respond_to?(:file_root)
+  file_root = detect_snumbatdata_root(db_root, db_guid)
+rescue => e
+  puts "Database lookup: #{e.message}"
+end
+
+default_output = begin; WSApplication.local_root.to_s.strip; rescue; 'C:\\Temp'; end
+
+prompt1 = WSApplication.prompt(
+  'Configured object export (HTML)',
+  [
+    ['Process SELECTION only?', 'Boolean', false],
+    ['SNumbatData root (parent of Attachments & Videos folders):',
+     'String', file_root, nil, 'FOLDER', 'Select SNumbatData folder'],
+    ['Output folder:', 'String', default_output, nil, 'FOLDER', 'Select output folder'],
+    ['Output filename:', 'String', 'IAM_AttachmentLinks_ConfiguredTables.html'],
+  ],
+  false
+)
+
+if prompt1.nil?
+  WSApplication.message_box("Dialog closed\nScript cancelled.", 'OK', '!', false)
+  raise 'abort'
+end
+
+selection_only = prompt_bool(prompt_val(prompt1, 0, false))
+file_root      = normalise_snumbatdata_root(prompt_val(prompt1, 1, file_root))
+output_folder  = prompt_val(prompt1, 2, default_output).to_s.strip
+output_name    = prompt_val(prompt1, 3, 'IAM_AttachmentLinks_ConfiguredTables.html').to_s.strip
+output_name    = 'IAM_AttachmentLinks_ConfiguredTables.html' if output_name.empty?
+output_name   += '.html' unless output_name.downcase.end_with?('.html')
+output_html    = win_join(output_folder, output_name)
+
+if output_folder.empty?
+  WSApplication.message_box("Output folder is required.\nScript cancelled.", 'OK', '!', false)
+  raise 'abort'
+end
+
+att_store = file_root.empty? ? '' : win_join(file_root, 'Attachments', db_guid)
+vid_store = file_root.empty? ? '' : win_join(file_root, 'Videos', db_guid)
+att_uids = scan_uid_store(att_store)
+vid_uids = scan_uid_store(vid_store)
+all_uids = vid_uids.merge(att_uids)
+
+known_tables = {}
+net.tables.each { |t| known_tables[t.name] = true }
+
+sections = []
+EXPORT_CONFIG.each do |entry|
+  table_name = entry['table'].to_s.strip
+  fields = entry['fields']
+  if table_name.empty? || fields.nil? || fields.empty?
+    puts 'Skipping config entry with no table or fields'
+    next
+  end
+  unless known_tables[table_name]
+    puts "Warning: table '#{table_name}' not found in open network — skipped"
+    next
+  end
+
+  raw_headers = entry['headers']
+  if raw_headers.nil? || raw_headers.size != fields.size
+    headers = fields.map { |f| default_column_header(f) }
+  else
+    headers = fields.each_with_index.map { |f, i| resolve_column_header(f, raw_headers[i]) }
+  end
+
+  field_names = table_field_name_list(net, table_name)
+  blob_field_names = table_blob_field_names(net, table_name)
+  fields.each do |token|
+    parsed = parse_field_token(token)
+    base = parsed['base']
+    subs = blob_subfields_from_mode(parsed['mode'])
+    if subs
+      if base == 'attachments' || blob_field_names.include?(base)
+        child_names = blob_child_field_names(net, table_name, base)
+        unless child_names.empty?
+          subs.each do |sf|
+            puts "Warning: #{table_name}.#{base} — sub-field '#{sf}' not in blob schema" unless child_names.include?(sf)
+          end
+        end
+      end
+      next
+    end
+    next if base == 'attachments'
+    next if parsed['mode'] == 'count' || parsed['mode'] == 'links'
+    next if field_names.include?(base)
+    puts "Warning: #{table_name} — field '#{parsed['base']}' not in table schema"
+  end
+
+  row_set = network_rows(net, table_name, selection_only)
+  if row_set.nil?
+    puts "Skipped #{table_name} — cannot read row objects on this IAM build"
+    next
+  end
+
+  data_rows = []
+  row_set.each do |ro|
+    next if ro.nil?
+    cells = fields.map do |token|
+      resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, field_names, blob_field_names)
+    end
+    data_rows << cells
+  end
+
+  sections << {
+    'table_name' => table_name,
+    'table_label' => table_description(net, table_name),
+    'headers' => headers,
+    'rows' => data_rows
+  }
+  puts "Exported #{table_name}: #{data_rows.size} object row(s)"
+end
+
+if sections.empty?
+  WSApplication.message_box(
+    "No data exported.\n\nCheck EXPORT_CONFIG table names match the open network.",
+    'OK', '!', false
+  )
+  raise 'abort'
+end
+
+network_name = network_display_name(net)
+scope_label  = selection_only ? 'Selection only' : 'All network objects'
+object_count = sections.inject(0) { |sum, s| sum + s['rows'].size }
+
+meta_lines = [
+  "Scope: #{html_escape(scope_label)}",
+  "Database GUID: #{html_escape(db_guid.empty? ? 'Not detected' : db_guid)}",
+  "File root: #{html_escape(file_root.empty? ? 'Not configured' : file_root)}",
+  "Configured tables: #{sections.size}",
+  "Object rows: #{object_count}"
+]
+
+html = build_configured_export_html(network_name, meta_lines, sections)
+FileUtils.mkdir_p(output_folder)
+File.open(output_html, 'w') { |f| f.write(html) }
+
+puts "Created: #{output_html}"
+
+summary = "Report created.\n\nFile: #{output_html}\nTables: #{sections.size}\nObject rows: #{object_count}"
+if WSApplication.message_box("#{summary}\n\nOpen report in your default browser?", 'YesNo', 'Information', false) == 'yes'
+  system("start \"\" \"#{output_html.gsub('/', '\\')}\"")
+end
