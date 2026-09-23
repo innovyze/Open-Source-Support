@@ -43,6 +43,7 @@ Used by the bulk import scripts in this folder. See [UI-Snapshot-Bulk-Import.rb]
 |--------|:--:|:--------:|---------|
 | [UI-snapshot_export_ex.rb](./UI-snapshot_export_ex.rb) | ✓ | | Single snapshot export with Save As dialog |
 | [IE-snapshot_export_ex.rb](./IE-snapshot_export_ex.rb) | | ✓ | Basic Exchange snapshot export example |
+| [IE-snapshot_export_import_differential.rb](./IE-snapshot_export_import_differential.rb) | | ✓ | Differential export from one network, import into another (automated commit tracking) |
 | [UIIE-snapshot_export_ex-GroupByField.rb](./UIIE-snapshot_export_ex-GroupByField.rb) | ✓ | ✓ | Group objects from selected tables by field; export one snapshot per group |
 | [UI-Snapshot-Bulk-Import.rb](./UI-Snapshot-Bulk-Import.rb) | ✓ | | Bulk import from a hardcoded folder |
 | [UI-Snapshot-Bulk-Import-FolderSelect.rb](./UI-Snapshot-Bulk-Import-FolderSelect.rb) | ✓ | | Bulk import with folder browser |
@@ -68,6 +69,24 @@ A Save As dialog opens so you can choose the export destination. The script uses
 
 ### `IE-snapshot_export_ex.rb` — Exchange, single network export
 Run via InfoAsset Exchange outside of the InfoAsset Manager interface. The Database connection and Network ID are set on lines 3–4.
+
+### `IE-snapshot_export_import_differential.rb` — Exchange, differential sync between networks
+
+Automates the pattern used in full refresh scripts (export snapshot from a source network, import into a target network), but exports **only changes** since the last successful run using `ChangesFromVersion` on `snapshot_export_ex`.
+
+Commit tracking follows the same approach as the ODEC differential examples ([IE-odec_export_ex-GDB-differencial.rb](../0001%20ODEC%20Export/IE-odec_export_ex-GDB-differencial.rb), [IE-odec_export_ex-SQLSERVER-differences.rb](../0001%20ODEC%20Export/IE-odec_export_ex-SQLSERVER-differences.rb)): after a successful import, the source network’s current commit ID is written to a text file. The next run reads that value and sets `ChangesFromVersion`. If the tracking file is missing, `ChangesFromVersion` is `0` (full export).
+
+Configure at the top of the script:
+
+| Setting | Purpose |
+|---------|---------|
+| Database connection | Exchange `WSApplication.open` string |
+| `source_network_id` / `target_network_id` | Model object IDs for export and import |
+| `snapshot_directory` | Folder for the snapshot file and commit tracking file |
+| `version_tracking_file` | Text file storing the last exported commit ID |
+| `exp_options` / `imp_options` | Same keys as other snapshot scripts in this folder |
+
+If the source commit ID has not increased since the last recorded export, the script skips export and import.
 
 ### [UIIE-snapshot_export_ex-GroupByField.rb](./UIIE-snapshot_export_ex-GroupByField.rb)
 
