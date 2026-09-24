@@ -1,0 +1,14 @@
+name,type,path,target_version
+# --- Cloud databases ---
+# Format: cloud://<Database_Name>@<Tenant_ID>/<Region>
+# Leave target_version blank or set 'latest' to update to the running ICMExchange version.
+# Example Cloud Model,cloud,cloud://Example_Model@000000000000000000000000/emea,latest
+#
+# --- Workgroup databases ---
+# Format: <Server_Hostname_or_IP>:<Port>/<Database_Group>/<Database_Name>
+# Example Workgroup Model,workgroup,your-server:40000/Example_Group/Example_DB,latest
+# Pinned Version Model,workgroup,192.0.2.10:40000/Example_Group/Example_DB_2,2025.2
+#
+# --- Standalone databases ---
+# Format: <Absolute_File_Path_To_.icmm>
+# Example Standalone Model,standalone,C:/ICM_Models/Example.icmm,latest
