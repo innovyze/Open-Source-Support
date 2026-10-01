@@ -104,6 +104,7 @@
 | 0096 | UI       | TVD & Simulation Summary Plots & CSV Export                         | Simulations Data Get  |
 | 0097 | UI       | Storage and Pond node audit and correction                          | Network Data Analysis |
 | 0098 | UI       | Flow Survey Data Importer                                           | Network Data Analysis |
+| 0100 | EX       | Batch update databases to latest version                            | System Automation     |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
