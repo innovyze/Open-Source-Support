@@ -1,0 +1,14 @@
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/tmp/
+/.bundle/
+/vendor/bundle
+Gemfile.lock
+.ruby-lsp/
+.DS_Store
+playground.rb
