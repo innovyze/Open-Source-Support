@@ -20,4 +20,4 @@ Highlights the shortest path between two manually selected nodes.
 - Quick path analysis
 
 ## See Also
-For **automated batch tracing** from all terminal nodes to selected targets, see folder **0078 - Trace all flow paths to downstream nodes**.
+For **automated batch tracing** from all terminal nodes to selected targets, see folder **0079 - Trace all flow paths to downstream nodes**.
