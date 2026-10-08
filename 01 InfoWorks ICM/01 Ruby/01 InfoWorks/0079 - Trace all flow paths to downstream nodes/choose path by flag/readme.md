@@ -10,7 +10,7 @@ This script is inspired by the path tracing scripts of **Marcos Perez**. His scr
 
 ## Why
 
-Master plans document each proposed measure with a screenshot and a longitudinal profile, usually along the longest route. Links in a measure carry a flag (for example `OP`). The route with the most flagged links normally matches the measure, and the other routes are listed in case a different one is better to plot.
+When developing options a user may want a quick way to select a longitudinal profile. Updated objects may carry a flag (for example `OP`). The route with the most flagged links normally matches the measure, and the other routes are listed in case a different one is better to plot.
 
 It is also a quick way to select the route between two nodes and save it as a Selection List. This saves making many selections by hand in the long section profile tool. Leave the flag blank and the routes are simply ranked by length.
 
