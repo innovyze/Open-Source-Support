@@ -28,7 +28,7 @@ Routes follow flow direction only. The script works out which node is upstream, 
 | Column | Meaning |
 |--------|---------|
 | Route | Rank. Route 1 has the most flagged links |
-| Flagged | Flagged links / total links, for example `6/8`. A gap can mean a link was not flagged, or does not need to change |
+| Flagged | Flagged links / total links |
 | Length (m) | Total route length |
 | Link types | Count of each link type on the route |
 
@@ -48,7 +48,6 @@ Routes that still tie are shown as separate rows and the script does not choose 
 - **Chosen route** saves one list. **All routes** saves one list per route in the table.
 - Saved in the same Model Group as the network, named `Route_<upstream_id>_to_<downstream_id>_<route number>` (a numeric suffix is added if the name exists).
 - The GeoPlan selection returns to your chosen route afterwards. Refresh the database tree to see the lists.
-- If drop-downs are not available in your ICM version, the prompt falls back to a text box where you type `chosen` or `all`.
 
 ## Flag Fields
 
@@ -69,8 +68,6 @@ FLAG_FIELDS = {
 }
 ```
 
-The `orifice` / `diameter_flag` entry has been checked in a model. For other link types, confirm the link type and field names yourself. Links of a type with no entry never count as flagged, so a weir route and an orifice route tie on conduit flags and both are listed.
-
 ## Search Limits
 
 ```ruby
@@ -89,8 +86,7 @@ MAX_DEPTH = 100    # Longest route (in nodes) the search will follow
 2. Ranking is by flagged link count, not flagged length or continuity.
 3. Downstream only. It will not find a route against link direction.
 4. Length uses `conduit_length` where it exists, otherwise the straight-line distance between node coordinates.
-5. It is not confirmed that the long section tool accepts a route containing non-conduit links. Test this in your own model.
-6. Prompts block GeoPlan, so routes cannot be previewed while the table is open. Use the table and console, or save the routes and view them in the database tree.
+5. Prompts block GeoPlan, so routes cannot be previewed while the table is open. Save the routes in the database tree and view individually.
 
 ## Troubleshooting
 
@@ -98,12 +94,5 @@ MAX_DEPTH = 100    # Longest route (in nodes) the search will follow
 |-------|----------|
 | No downstream route found | Check link directions and that both nodes are in the same network |
 | Table note says no route carries the flag | Check the flag value and that the flag is in a field listed in `FLAG_FIELDS` |
-| Selection Lists not saved | The network must be opened from a database. Check the console for the error |
-
-## See Also
-
-- `0052 - Select flow path between two nodes` for a single shortest path between two nodes
-- The parent `0079` folder for tracing paths from every upstream terminal node to selected nodes
-- `networks with loops` for all contributing paths in networks with loops
 
 Generated using AI
