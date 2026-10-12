@@ -1,0 +1,6 @@
+[
+  ["station_no","station_name","station_latitude","station_longitude","catchment_name","river_name"],
+  ["14964","Auchinner","56.36","-4.05","Earn","Allt Srath a Ghlinne"],
+  ["14933","Killin","56.47","-4.32","Tay",""],
+  ["14901","Eskdalemuir","55.31","-3.20","Esk","White Esk"]
+]
