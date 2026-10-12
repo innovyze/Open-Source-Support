@@ -1,0 +1,4 @@
+*.gem
+.ruby-lsp/
+.DS_Store
+Gemfile.lock
