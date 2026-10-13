@@ -88,4 +88,12 @@ If your network has **bifurcations that rejoin** (loops), these scripts will onl
 
 **[networks with loops](./networks%20with%20loops/)** - Contains scripts that find ALL paths through the network
 
+---
+
+## For Flag-Based Route Selection
+
+To find the routes between two nodes and pick the one with the most links carrying a user flag (for example links in a proposed measure), see:
+
+**[choose path by flag](./choose%20path%20by%20flag/)** - Ranks routes by flagged links and can save chosen routes as selection lists. Inspired by the scripts of Marcos Perez.
+
 Generated using AI
