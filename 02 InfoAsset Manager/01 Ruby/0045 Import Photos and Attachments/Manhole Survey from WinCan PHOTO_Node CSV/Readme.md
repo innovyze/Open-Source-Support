@@ -81,4 +81,4 @@ Attachments import uses ODIC **Duplication Behaviour = Merge** (not Blob Merge) 
 
 - [0002 ODIC Import](../0002%20ODIC%20Import/)
 - [0022 Rename Exported Image & Attachment Files](../0022%20Rename%20Exported%20Image%20&%20Attachment%20Files/) (manhole survey image field examples)
-- [0044 HTML Report](../0044%20HTML%20Report/)
+- [0044 Reports — HTML Attachment Links](../../0044%20Reports/HTML%20Attachment%20Links/)
