@@ -6,6 +6,8 @@ Each script demonstrates a single source format and shows how to set import opti
 
 For ODIC **callback classes** (transform or filter values during import), see the companion folder [0002A ODIC Callback Examples](../0002A%20ODIC%20Callback%20Examples/).
 
+For **delta shapefiles** (NEW / UPDATED / DELETED) imported from **multiple sources into one node table**, see [Delta Import Multiple Sources](./Delta%20Import%20Multiple%20Sources/).
+
 ---
 
 ## Script variants
@@ -23,6 +25,7 @@ For ODIC **callback classes** (transform or filter values during import), see th
 | [IE-odic_import_ex-SQLServer.rb](./IE-odic_import_ex-SQLServer.rb) | SQL Server | Exchange |
 | [UI-odic_import_ex-Oracle.rb](./UI-odic_import_ex-Oracle.rb) | Oracle | UI |
 | [IE-odic_import_ex-Oracle.rb](./IE-odic_import_ex-Oracle.rb) | Oracle | Exchange |
+| [UI-odic_delta_import_multiple_shp.rb](./Delta%20Import%20Multiple%20Sources/UI-odic_delta_import_multiple_shp.rb) | ESRI Shapefile (delta, multiple layers → one table) | UI |
 
 **UI scripts** (`UI-` prefix) use the currently open network (`WSApplication.current_network`) and are run from **Network → Run Ruby Script…**. They do not require an Exchange licence.
 
