@@ -15,6 +15,7 @@ Ingest-only scripts (after a manual or scripted SHP export):
 |------|---------|
 | [ingest_shp_to_file_gdb_arcgis.py](./ingest_shp_to_file_gdb_arcgis.py) | ArcGIS Pro (`arcpy`) |
 | [ingest_shp_to_file_gdb_ogr.py](./ingest_shp_to_file_gdb_ogr.py) | QGIS / GDAL `ogr2ogr` |
+| [invoke_qgis_ingest.bat](./invoke_qgis_ingest.bat) | QGIS ingest from Ruby (logs to `staging_shp\qgis_ingest.log`) |
 
 Parent folder: [ODEC Export examples](../Readme.md).
 
@@ -51,7 +52,7 @@ Default staging folder in the examples: `staging_shp` next to the scripts.
 
 If the output `.gdb` already exists, the Python script **deletes it** before creating a new one.
 
-To chain ingest from the UI script in one step, check **Run ArcGIS Pro ingest after export** in the prompt. The UI **can** call `propy.bat` via `system()`; it is often **more likely to succeed** than Exchange, because IAM and Pro run under your interactive Windows user (Pro licence checkout). It still fails if Pro is not installed, paths are wrong, or policy blocks child processes. IAM may appear frozen until ingest finishes.
+To chain ingest from the UI script in one step, check **Run ArcGIS Pro ingest after export** in the ArcGIS prompt, or **Build File Geodatabase with QGIS after export** in the QGIS prompt. QGIS ingest runs `o4w_env.bat` then `ogr2ogr` (same as the `.bat` helper); do not rely on launching QGIS `python.exe` directly from IAM. The UI **can** call `propy.bat` via `system()`; it is often **more likely to succeed** than Exchange, because IAM and Pro run under your interactive Windows user (Pro licence checkout). It still fails if Pro is not installed, paths are wrong, or policy blocks child processes. IAM may appear frozen until ingest finishes.
 
 **UI-only:** `EXPORT_LAYERS` at the top of the UI script still defines which IAM tables are exported; ODEC field mapping comes from the config file you pick in the dialog.
 

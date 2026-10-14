@@ -29,9 +29,9 @@ def prompt_export_settings
   val = WSApplication.prompt(
     'ODEC export to shapefile (GDB sync staging)',
     [
-      ['ODEC export config (.cfg, DBX002):', 'String', DEFAULT_CONFIG_FILE, nil, 'FILE', false, 'cfg', 'Select ODEC export config', false],
+      ['ODEC export config (.cfg, DBX002):', 'String', DEFAULT_CONFIG_FILE, nil, 'FILE', true, 'cfg', 'Select ODEC export config', false],
       ['Shapefile staging folder:', 'String', DEFAULT_STAGING_FOLDER, nil, 'FOLDER', 'Staging folder'],
-      ['ODEC error log file:', 'String', DEFAULT_ERROR_FILE, nil, 'FILE', true, 'txt', 'ODEC error log', false],
+      ['ODEC error log file:', 'String', DEFAULT_ERROR_FILE, nil, 'FILE', false, 'txt', 'ODEC error log', false],
       ['Units behaviour:', 'String', 'Native', nil, 'LIST', ['Native', 'User']],
       ['Export selection only', 'Boolean', false],
       ['Export as WGS84', 'Boolean', false],

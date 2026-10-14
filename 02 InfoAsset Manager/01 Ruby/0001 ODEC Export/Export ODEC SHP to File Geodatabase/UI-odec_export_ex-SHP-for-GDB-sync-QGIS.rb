@@ -9,8 +9,6 @@ DEFAULT_ERROR_FILE = File.join(DEFAULT_STAGING_FOLDER, 'odec_export_errors.txt')
 DEFAULT_OUTPUT_GDB = 'C:\\Temp\\IAMFullSync.gdb'
 DEFAULT_QGIS_ROOT = 'C:\\Program Files\\QGIS 4.0.3'
 
-INGEST_SCRIPT = File.join(SCRIPT_DIR, 'ingest_shp_to_file_gdb_ogr.py')
-
 EXPORT_LAYERS = [
   ['node', 'node'],
   ['pipe', 'pipe']
@@ -25,46 +23,42 @@ def prompt_cancel(message)
   raise 'abort'
 end
 
+def shapefile_path(staging_folder, base_name)
+  path = File.join(staging_folder, "#{base_name}.shp")
+  return path if File.file?(path)
+
+  path = File.join(staging_folder, "#{base_name}.SHP")
+  return path if File.file?(path)
+
+  raise "Shapefile not found for layer '#{base_name}' in #{staging_folder}"
+end
+
 def run_qgis_gdb_ingest(staging_folder, output_gdb, qgis_root, export_layers)
-  ogr2ogr = File.join(qgis_root, 'bin', 'ogr2ogr.exe')
-  python = File.join(qgis_root, 'bin', 'python.exe')
-  unless File.file?(ogr2ogr)
-    raise "QGIS ogr2ogr not found: #{ogr2ogr}. Check QGIS install folder in the prompt."
+  wrapper = File.join(SCRIPT_DIR, 'invoke_qgis_ingest.bat')
+  unless File.file?(wrapper)
+    raise "QGIS ingest helper not found: #{wrapper}"
   end
-  unless File.file?(INGEST_SCRIPT)
-    raise "Ingest script not found: #{INGEST_SCRIPT}"
+
+  export_layers.each do |layer|
+    _table, base_name = layer
+    shapefile_path(staging_folder, base_name)
   end
 
   puts "Starting QGIS/GDAL ingest -> #{output_gdb}"
-
-  if File.file?(python)
-    ok = system(
-      python,
-      INGEST_SCRIPT,
-      '--staging', staging_folder,
-      '--gdb', output_gdb,
-      '--ogr2ogr', ogr2ogr
-    )
-  else
-    o4w_env = File.join(qgis_root, 'bin', 'o4w_env.bat')
-    unless File.file?(o4w_env)
-      raise "QGIS environment not found: #{o4w_env}"
-    end
-    shp_for = lambda do |base|
-      path = File.join(staging_folder, "#{base}.shp")
-      File.file?(path) ? path : File.join(staging_folder, "#{base}.SHP")
-    end
-    cmd = "call \"#{o4w_env}\" && \"#{ogr2ogr}\" -f OpenFileGDB \"#{output_gdb}\" \"#{shp_for.call(export_layers[0][1])}\" -nln Node -overwrite"
-    export_layers[1..-1].each do |_table, base_name|
-      fc = base_name.capitalize
-      cmd << " && \"#{ogr2ogr}\" -f OpenFileGDB -update \"#{output_gdb}\" \"#{shp_for.call(base_name)}\" -nln #{fc} -overwrite"
-    end
-    ok = system('cmd', '/c', cmd)
-  end
-
+  cmd = 'cmd /c ""' + wrapper + '" "' + staging_folder + '" "' + output_gdb + '" "' + qgis_root + '""'
+  system(cmd)
   exit_code = $?.exitstatus
-  unless ok && exit_code == 0
-    raise "QGIS/GDAL ingest failed (exit #{exit_code.inspect})"
+
+  log_path = File.join(staging_folder, 'qgis_ingest.log')
+  if exit_code != 0
+    detail = ''
+    if File.file?(log_path)
+      lines = File.read(log_path).strip.split(/\r?\n/)
+      detail = lines.last([8, lines.length].min).join("\n")
+    end
+    msg = "QGIS/GDAL ingest failed (exit #{exit_code}). See #{log_path}"
+    msg = msg + ":\n\n" + detail unless detail.empty?
+    raise msg
   end
   puts "Geodatabase ingest complete: #{output_gdb}"
 end
@@ -73,9 +67,9 @@ def prompt_export_settings
   val = WSApplication.prompt(
     'ODEC export + QGIS File Geodatabase',
     [
-      ['ODEC export config (.cfg, DBX002):', 'String', DEFAULT_CONFIG_FILE, nil, 'FILE', false, 'cfg', 'Select ODEC export config', false],
+      ['ODEC export config (.cfg, DBX002):', 'String', DEFAULT_CONFIG_FILE, nil, 'FILE', true, 'cfg', 'Select ODEC export config', false],
       ['Shapefile staging folder:', 'String', DEFAULT_STAGING_FOLDER, nil, 'FOLDER', 'Staging folder'],
-      ['ODEC error log file:', 'String', DEFAULT_ERROR_FILE, nil, 'FILE', true, 'txt', 'ODEC error log', false],
+      ['ODEC error log file:', 'String', DEFAULT_ERROR_FILE, nil, 'FILE', false, 'txt', 'ODEC error log', false],
       ['Units behaviour:', 'String', 'Native', nil, 'LIST', ['Native', 'User']],
       ['Export selection only', 'Boolean', false],
       ['Export as WGS84', 'Boolean', false],

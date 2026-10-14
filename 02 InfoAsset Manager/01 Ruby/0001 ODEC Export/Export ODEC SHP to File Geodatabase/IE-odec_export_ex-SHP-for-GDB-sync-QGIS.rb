@@ -18,7 +18,6 @@ begin
 
   RUN_QGIS_INGEST = true
   QGIS_ROOT = 'C:\\Program Files\\QGIS 4.0.3'
-  INGEST_SCRIPT = File.join(SCRIPT_DIR, 'ingest_shp_to_file_gdb_ogr.py')
   OUTPUT_GDB = 'C:\\Temp\\IAMFullSync.gdb'
 
   unless File.file?(CONFIG_FILE)
@@ -54,39 +53,26 @@ begin
   puts "Shapefile staging complete: #{STAGING_FOLDER}"
 
   if RUN_QGIS_INGEST
-    ogr2ogr = File.join(QGIS_ROOT, 'bin', 'ogr2ogr.exe')
-    python = File.join(QGIS_ROOT, 'bin', 'python.exe')
-    unless File.file?(ogr2ogr)
-      raise "QGIS ogr2ogr not found: #{ogr2ogr}. Edit QGIS_ROOT in this script."
-    end
-    unless File.file?(INGEST_SCRIPT)
-      raise "Ingest script not found: #{INGEST_SCRIPT}"
+    wrapper = File.join(SCRIPT_DIR, 'invoke_qgis_ingest.bat')
+    unless File.file?(wrapper)
+      raise "QGIS ingest helper not found: #{wrapper}"
     end
 
     puts "Starting QGIS/GDAL ingest -> #{OUTPUT_GDB}"
-    if File.file?(python)
-      ok = system(
-        python,
-        INGEST_SCRIPT,
-        '--staging', STAGING_FOLDER,
-        '--gdb', OUTPUT_GDB,
-        '--ogr2ogr', ogr2ogr
-      )
-    else
-      o4w_env = File.join(QGIS_ROOT, 'bin', 'o4w_env.bat')
-      raise "QGIS python and o4w_env not found under #{QGIS_ROOT}" unless File.file?(o4w_env)
-
-      node_shp = File.join(STAGING_FOLDER, 'node.shp')
-      node_shp = File.join(STAGING_FOLDER, 'node.SHP') unless File.file?(node_shp)
-      pipe_shp = File.join(STAGING_FOLDER, 'pipe.shp')
-      pipe_shp = File.join(STAGING_FOLDER, 'pipe.SHP') unless File.file?(pipe_shp)
-      cmd = "call \"#{o4w_env}\" && \"#{ogr2ogr}\" -f OpenFileGDB \"#{OUTPUT_GDB}\" \"#{node_shp}\" -nln Node -overwrite && \"#{ogr2ogr}\" -f OpenFileGDB -update \"#{OUTPUT_GDB}\" \"#{pipe_shp}\" -nln Pipe -overwrite"
-      ok = system('cmd', '/c', cmd)
-    end
-
+    cmd = 'cmd /c ""' + wrapper + '" "' + STAGING_FOLDER + '" "' + OUTPUT_GDB + '" "' + QGIS_ROOT + '""'
+    system(cmd)
     exit_code = $?.exitstatus
-    unless ok && exit_code == 0
-      raise "QGIS/GDAL ingest failed (exit #{exit_code.inspect})"
+
+    log_path = File.join(STAGING_FOLDER, 'qgis_ingest.log')
+    if exit_code != 0
+      detail = ''
+      if File.file?(log_path)
+        lines = File.read(log_path).strip.split(/\r?\n/)
+        detail = lines.last([8, lines.length].min).join("\n")
+      end
+      msg = "QGIS/GDAL ingest failed (exit #{exit_code}). See #{log_path}"
+      msg = msg + "\n" + detail unless detail.empty?
+      raise msg
     end
     puts "Geodatabase ingest complete: #{OUTPUT_GDB}"
   end
