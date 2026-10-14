@@ -15,6 +15,7 @@ For ODEC **callback classes** (transform, calculate, or filter values during exp
 | [UIIE-odec_export_ex-CSV.rb](./UIIE-odec_export_ex-CSV.rb) | CSV | UI or Exchange | Exports `Node` and `Pipe` |
 | [UIIE-odec_export_ex-GDB.rb](./UIIE-odec_export_ex-GDB.rb) | ESRI File Geodatabase | UI or Exchange | Exports `Node` and `Pipe` feature classes |
 | [UI-odec_export_ex-SHP.rb](./UI-odec_export_ex-SHP.rb) | ESRI Shapefile | UI | Config and output paths relative to the script file |
+| [Export ODEC SHP to File Geodatabase](./Export%20ODEC%20SHP%20to%20File%20Geodatabase/Readme.md) | Shapefile staging → new `.gdb` (ArcGIS Pro **or** QGIS/GDAL) | UI / Exchange | Workaround when File GDB ODEC is UI-only |
 | [IE-odec_export_ex-CSV-MultipleNetworks.rb](./IE-odec_export_ex-CSV-MultipleNetworks.rb) | CSV | Exchange | Exports `Pipe` from multiple network IDs |
 | [IE-odec_export_ex-GDB-differencial.rb](./IE-odec_export_ex-GDB-differencial.rb) | ESRI File Geodatabase | Exchange | Differential export using `'Previous Version'` |
 | [IE-odec_export_ex-SQLSERVER.rb](./IE-odec_export_ex-SQLSERVER.rb) | SQL Server | Exchange | Full export to an existing SQL Server table |
