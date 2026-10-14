@@ -2,13 +2,13 @@
 
 ## Script
 
-[UI-MACPManholeSurvey-CalculateRatings.rb](./UI-MACPManholeSurvey-CalculateRatings.rb)
+[UI-MACPManholeSurvey-CalculateRatings_MACP7-8.rb](./UI-MACPManholeSurvey-CalculateRatings_MACP7-8.rb)
 
 ## Purpose
 
-Calculates NASSCO MACP composite ratings for each manhole survey in `cams_manhole_survey` and writes the nine summary fields back to the survey object. Ratings are derived from two sources:
+Calculates NASSCO MACP composite ratings for each manhole survey in `cams_manhole_survey` and writes the nine summary fields back to the survey object. Supports both **NASSCO MACP v7.0.3** and **NASSCO MACP v8.0** grading tables, selectable at runtime. Ratings are derived from two sources:
 
-1. **Header-level component condition fields** on the survey object (Cover, Frame, Seal, Chimney, pipe connections) — scored per the NASSCO MACP Condition Grade Matrix (v7.0.3, Appendix C, pp. 32–34).
+1. **Header-level component condition fields** on the survey object (Cover, Frame, Seal, Chimney, pipe connections) — scored per the NASSCO MACP Condition Grade Matrix (v7.0.3 or v8.0, selected at runtime).
 2. **Detail-blob defect observations** in the `details` sub-table, graded by code-based lookup tables. Continuous defect S##/F## pair support is included.
 
 Both sources contribute occurrences to the same grade-count tallies before the ratings are calculated.
@@ -22,6 +22,7 @@ Both sources contribute occurrences to the same grade-count tallies before the r
 
 | Option | Default | Description |
 |--------|---------|-------------|
+| MACP version | 8 | Grading standard to apply — `7` (v7.0.3) or `8` (v8.0) |
 | Process SELECTION only? | Yes | Process only selected surveys, or all surveys in the network |
 | Distance units are Imperial (feet)? | Yes | Affects continuous defect divisor and Frame Offset Distance thresholds |
 | Index rating decimal places | 1 | Number of decimal places for index ratings stored and displayed (1–3) |
@@ -33,7 +34,7 @@ Both sources contribute occurrences to the same grade-count tallies before the r
 
 ## Traffic vs No-Traffic grades
 
-Several component conditions have different structural grades depending on whether the manhole is in a vehicular-traffic location. The script reads `location_code` (MACP Field 25) to determine this:
+In **v7**, several component conditions have different structural grades depending on whether the manhole is in a vehicular-traffic location. The script reads `location_code` (MACP Field 25) to determine this. **v8 removes all traffic sensitivity from MACP header scoring** — all grades are fixed regardless of location code.
 
 | Category | Location codes |
 |----------|----------------|
@@ -43,6 +44,8 @@ Several component conditions have different structural grades depending on wheth
 ## Header-level Component Scoring
 
 The following fields on `cams_manhole_survey` are evaluated for each survey. Per the NASSCO MACP rule *"when more than one code is allowed, select the highest grade possible"*, fields where multiple Boolean conditions can be simultaneously true contribute **one occurrence at the highest applicable grade** (Structural and O&M evaluated independently). Fields with a single string or numeric value always contribute one occurrence at the matched grade.
+
+Where v7 and v8 differ, both values are shown.
 
 ### Field 52 — Hole Number + Field 27 — Potential for Runoff
 
@@ -56,16 +59,16 @@ The following fields on `cams_manhole_survey` are evaluated for each survey. Per
 
 | Value | Structural | O&M |
 |-------|-----------|-----|
-| G (Good) | — | 1 |
-| R (Rocking) / U (Unstable) | 4 NT / 5 T | 4 NT / 5 T |
+| G (Good) | — | v7: 1 / v8: No Score |
+| R (Rocking) / U (Unstable) | v7: 4 NT / 5 T / v8: 5 | v7: 4 NT / 5 T / v8: 5 |
 | O (Open) | 5 | 5 |
 
 ### Field 56 — Cover Condition
 
 | Field | Structural | O&M |
 |-------|-----------|-----|
-| `cover_condition_sound` | 1 | — |
-| `cover_condition_cracked` | 3 NT / 4 T | — |
+| `cover_condition_sound` | v7: 1 / v8: No Score | — |
+| `cover_condition_cracked` | v7: 3 NT / 4 T / v8: 4 | — |
 | `cover_condition_corroded` | 4 | — |
 | `cover_condition_broken` | 5 | — |
 | `cover_condition_missing` | 5 | — |
@@ -79,7 +82,7 @@ Only `insert_condition_corroded` scores Structural. All other conditions score O
 
 | Field | Structural | O&M |
 |-------|-----------|-----|
-| `insert_condition_sound` | — | 1 |
+| `insert_condition_sound` | — | v7: 1 / v8: No Score |
 | `insert_condition_poorlyfitting` | — | 3 |
 | `insert_condition_cracked` | — | 3 |
 | `insert_condition_corroded` | 3 | — |
@@ -92,7 +95,7 @@ Only `insert_condition_corroded` scores Structural. All other conditions score O
 
 | Field | Structural | O&M |
 |-------|-----------|-----|
-| `ring_condition_sound` | 1 | — |
+| `ring_condition_sound` | v7: 1 / v8: No Score | — |
 | `ring_condition_corroded` | 3 | — |
 | `ring_condition_cracked` | 3 | — |
 | `ring_condition_poorinstall` | 3 | — |
@@ -103,9 +106,9 @@ Only `insert_condition_corroded` scores Structural. All other conditions score O
 
 | Field | Structural |
 |-------|-----------|
-| `frame_condition_sound` | 1 |
+| `frame_condition_sound` | v7: 1 / v8: No Score |
 | `frame_condition_corroded` | 1 |
-| `frame_condition_cracked` | 4 NT / 5 T |
+| `frame_condition_cracked` | v7: 4 NT / 5 T / v8: 4 |
 | `frame_condition_broken` | 5 |
 | `frame_condition_missing` | 5 |
 
@@ -113,9 +116,9 @@ Only `insert_condition_corroded` scores Structural. All other conditions score O
 
 | Field | Structural | O&M |
 |-------|-----------|-----|
-| `seal_condition_sound` | 1 | 1 |
-| `seal_condition_cracked` | 3 NT / 4 T | 3 |
-| `seal_condition_loose` | 3 NT / 4 T | 3 |
+| `seal_condition_sound` | v7: 1 / v8: No Score | v7: 1 / v8: No Score |
+| `seal_condition_cracked` | v7: 3 NT / 4 T / v8: 4 | 3 |
+| `seal_condition_loose` | v7: 3 NT / 4 T / v8: 4 | 3 |
 | `seal_condition_offset` | 3 | 3 |
 | `seal_condition_missing` | 3 | 3 |
 
@@ -133,12 +136,12 @@ The Imperial/Metric threshold is selected by the prompt option. The field is onl
 
 Both fields use the same infiltration code → grade mapping and contribute to **O&M only** (Structural grade is blank per MACP grade matrix). Values are matched case-insensitively:
 
-| Value | O&M |
-|-------|-----|
-| None / N | 1 |
-| IS | 2 |
-| IW | 3 |
-| ID | 4 |
+| Value | v7 O&M | v8 O&M |
+|-------|--------|--------|
+| None / N | 1 | **No Score** |
+| IS | 2 | 2 |
+| IW | 3 | 3 |
+| ID | 4 | 4 |
 | IR | 5 |
 | IG | 5 |
 
@@ -146,10 +149,10 @@ Both fields use the same infiltration code → grade mapping and contribute to *
 
 Each row in the `pipes_in` and `pipes_out` sub-tables is evaluated. Structural grade is blank per the MACP grade matrix:
 
-| `condition_code` | O&M |
-|-----------------|-----|
-| S / Sound | 1 |
-| D / Defective | 3 |
+| `condition_code` | v7 O&M | v8 O&M |
+|-----------------|--------|--------|
+| S / Sound | 1 | **No Score** |
+| D / Defective | 3 | 3 |
 
 ## Detail-blob Scoring
 
@@ -181,6 +184,8 @@ The console log shows the grade source for each detail row (`lookup`, `lookup(lo
 
 ### Structural detail grades
 
+The table below covers both v7 and v8. Entries marked *(v8 only)* do not exist in v7. Where grades differ between versions both values are shown.
+
 | Group | Codes | Chimney | Cone/Wall | Bench | Channel |
 |-------|-------|---------|-----------|-------|---------|
 | Crack (C) | CC CL CS | 2 | 2 | 2 | 2 |
@@ -190,32 +195,41 @@ The console log shows the grade source for each detail row (`lookup`, `lookup(lo
 | Broken (B) | B BSV BVV | 5 | 5 | 5 | 5 |
 | Hole (H) | H | 2 | 2 | 2 | 4 or 5 * |
 | Hole (H) | HSV HVV | 5 | 5 | 5 | 5 |
+| Deformed *(v8 only)* | DFBI DFC DTBI | 5 | 5 | 5 | 5 |
+| Deformed *(v8 only)* | DFE | 3 | 3 | 3 | 3 |
+| Deformed pct *(v8 only)* | DFBR | ≤5%→3 / >5–≤10%→4 / >10%→5 (all locations) |||
+| Deformed pct *(v8 only)* | DR DTBR | ≤5%→4 / >5%→5 (all locations) |||
 | Collapse (X) | X | 5 | 5 | 5 | 5 |
 | Joint (J) | JOM JOL JSM JSL JAM JAL | 5 | 5 | 5 | 5 |
 | Surface Damage | SRI | 1 | 1 | 1 | 1 |
 | Surface Damage | SSS SSC SAV | 2 | 2 | 2 | 2 |
 | Surface Damage | SAP | 3 | 3 | 3 | 3 |
-| Surface Damage (Silent) | SAM | 4 | 4 | 4 | 4 |
-| Surface Damage (Silent) | SRV SRP SRC SMW | 5 | 5 | 5 | 5 |
+| Surface Damage | SAM | 4 | 4 | 4 | 4 |
+| Surface Damage | SRV SRP SRC SMW | 5 | 5 | 5 | 5 |
+| Surface Damage | SZD *(v8 only)* | 3 | 3 | 3 | 3 |
 | Surface Damage (Metal) | SCP | 3 | 3 | 3 | 3 |
-| Lining Features | LFD | 4 | 4 | 3 | 3 |
+| Surface Damage (Metal) | SPP *(v8 only)* | 4 | 4 | 4 | 4 |
+| Lining Features | LFD | 4 | 4 | v7: 3 / v8: 4 | v7: 3 / v8: 4 |
 | Lining Features | LFOC LFUC LFW | 2 | 2 | 2 | 2 |
 | Lining Features | LFDE LFB LFCS LFBK LFAS LFBU LFRS | 3 | 3 | 3 | 3 |
-| Lining Features | LFDC | 3 | 2 | 3 | 3 |
+| Lining Features | LFDC | 3 | v7: 2 / v8: 3 | 3 | 3 |
 | Lining Features | LFDL LFPH | 4 | 4 | 4 | 4 |
 | Weld Failure (WF) | WFC WFL WFS | 2 | 2 | 2 | 2 |
 | Weld Failure (WF) | WFM | 3 | 3 | 3 | 3 |
+| Bolts – Metal Pipe *(v8 only)* | BTL | 2 | 2 | 2 | 2 |
+| Bolts – Metal Pipe *(v8 only)* | BTM | 3 (1 clock pos) / 4 (≥2 clock pos), all locations |||
 | Point Repair (RP) | RPLD RPPD | 4 | 4 | 4 | 4 |
-| Point Repair (RP) | RPRD | 4 | 4 | N/A | N/A |
-| Brickwork (Silent) | DB | 3 | 3 | 3 | 3 |
-| Brickwork (Silent) | MB | 4 | 4 | 4 | 4 |
-| Brickwork (Silent) | MMS | 2 | 2 | 2 | 2 |
-| Brickwork (Silent) | MMM | 3 | 3 | 3 | 3 |
-| Brickwork (Silent) | MML | 4 | 4 | 4 | 4 |
+| Point Repair (RP) | RPRD | 4 | 4 | v7: N/A / v8: 4 | v7: N/A / v8: 4 |
+| Point Repair (RP) | RPZD | v7: N/A / v8: 4 | v7: N/A / v8: 4 | v7: N/A / v8: 4 | v7: N/A / v8: 4 |
+| Brickwork | DB | 3 | 3 | 3 | 3 |
+| Brickwork | MB | 4 | 4 | 4 | 4 |
+| Brickwork | MMS | 2 | 2 | 2 | 2 |
+| Brickwork | MMM | 3 | 3 | 3 | 3 |
+| Brickwork | MML | 4 | 4 | 4 | 4 |
 
-\* `H` at Channel: grade **4** if `clock_at` only (or `clock_at == clock_to`); grade **5** if `clock_at` and `clock_to` differ (2+ clock positions).
+\* `H` at Channel: grade **4** if `clock_at` only (or `clock_at == clock_to`); grade **5** if `clock_at` and `clock_to` differ (2+ clock positions). Same logic applies to `BTM` in v8.
 
-Codes `SZ`, `LFAC`, `LFZ`, `RPZD` are recorded as observations only (N/A grade).
+In v7, codes `SZ`, `LFAC`, `LFZ`, `RPZD` are observation-only (nil grade). In v8: `SZD` replaces `SZ` with grade 3; `RPZD` scores grade 4. `LFAC` and `LFZ` remain observation-only in both versions.
 
 ### O&M detail grades — fixed codes
 
@@ -257,8 +271,9 @@ These codes score based on the `percentage` field value.
 
 | Code | Chimney / Cone/Wall / Bench | Channel |
 |------|-----------------------------|---------|
-| OBB | flat 1 | flat 2 |
-| OBM OBI OBJ OBC OBP OBS OBN OBR OBZ | <30%→1; ≥30%→2 | ≤10%→2; >10–≤20%→3; >20–≤30%→4; >30%→5 |
+| OBB | v7: flat 1 / v8: <30%→1; ≥30%→2 | v7: flat 2 / v8: ≤10%→2; >10–≤20%→3; >20–≤30%→4; >30%→5 |
+| OBI | v7: <30%→1; ≥30%→2 / v8: flat 5 | v7: ≤10%→2; >10–≤20%→3; >20–≤30%→4; >30%→5 / v8: flat 5 |
+| OBM OBJ OBC OBP OBS OBN OBR OBZ | <30%→1; ≥30%→2 | ≤10%→2; >10–≤20%→3; >20–≤30%→4; >30%→5 |
 
 Codes not in any lookup table have both `structural_score` and `service_score` cleared to nil.
 
