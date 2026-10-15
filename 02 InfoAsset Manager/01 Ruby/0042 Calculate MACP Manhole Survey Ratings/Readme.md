@@ -305,7 +305,7 @@ Index ratings are rounded to the number of decimal places chosen in the prompt (
 
 ### Quick Rating format
 
-Per NASSCO MACP v7.0.3: `[highest grade][count][second highest grade][count]`
+Per NASSCO MACP (v7.0.3 and v8.0): `[highest grade][count][second highest grade][count]`
 
 | Count | Character |
 |-------|-----------|
@@ -341,4 +341,4 @@ For each detail row, the calculated `structural_score` and `service_score` are a
 - Surveys with no scored observations from either source are skipped and reported in the console.
 - For MACP import options see [0009 Import-Export MACP-PACP Survey Data](../0009%20Import-Export%20MACP-PACP%20Survey%20Data/ReadMe.md).
 - Requires InfoAsset Manager 2023.0 or later (MACP support).
-- Reference: NASSCO PACP/MACP Condition Grading System, Version 7.0.3, January 2018, Appendix C.
+- References: NASSCO PACP/MACP Condition Grading System, Version 7.0.3, January 2018, Appendix C; and Version 8.0, January 2024, Appendix C.
