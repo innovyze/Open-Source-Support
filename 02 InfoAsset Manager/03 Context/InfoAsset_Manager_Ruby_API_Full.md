@@ -128,11 +128,11 @@ Returns `nil` if user cancels and `hard_wire_cancel` is false; raises exception 
 
 | Parameter | Values |
 |-----------|--------|
-| `buttons` | `'OK'`, `'OkCancel'`, `'YesNo'`, `'YesNoCancel'`, `nil` (→ OkCancel) |
-| `icon` | `'!'`, `'?'`, `'Information'`, `'Stop'`, `nil` (→ `'!'`) |
-| `hard_wire_cancel` | `true`/`nil` exits script on Cancel; `false` returns `nil` |
+| `buttons` | `'OK'`, `'OKCancel'`, `'YesNo'`, `'YesNoCancel'`, `nil` (→ OKCancel) |
+| `icon` | `'!'`, `'?'`, `'Information'`, `nil` (→ `'!'`) |
+| `hard_wire_cancel` | `true`/`nil` → stops script execution on Cancel; `false` → returns `'Cancel'` as a string |
 
-Returns: `'ok'`, `'cancel'`, `'yes'`, `'no'` (lowercase strings).
+Returns: `'OK'`, `'Cancel'`, `'Yes'`, `'No'` (mixed-case strings matching button labels).
 
 ### `WSApplication.graph` Options Hash
 
