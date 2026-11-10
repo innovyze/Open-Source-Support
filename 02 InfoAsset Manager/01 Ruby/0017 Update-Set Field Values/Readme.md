@@ -80,6 +80,10 @@ The script logs:
 - Tables skipped because the field was not found
 - Objects skipped because they already had a value (Fill blanks only mode)
 
+Geometry-related coordinate scripts (for example setting General Survey X/Y from a pipe polyline) live under **[0034 Set Edit Export Geometries](../0034%20Set%20Edit%20Export%20Geometries/Readme.md)**.
+
+---
+
 ### Example workflow
 
 1. Open a Collection network and select valve maintenance records on the GeoPlan.
