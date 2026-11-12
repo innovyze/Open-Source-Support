@@ -333,8 +333,8 @@ def get_dbf_files(model_path, field_maps = nil)
   
   # Create a hash of DBF names (in lowercase with no extension) to their filepath
   # Only include root-level DBFs for BASE scenario import.
-  # NOTE: Directory listing (Dir.glob/entries/foreach/new) is broken on this
-  # embedded Ruby build, so known/expected table names are probed directly
+  # NOTE: Directory listing (Dir.glob/entries/foreach/new) does not work on
+  # this embedded Ruby build, so known/expected table names are probed directly
   # with File.exist? instead of discovering files by listing the folder.
   dbf = Hash.new
   get_known_dbf_names(field_maps).each do |name|

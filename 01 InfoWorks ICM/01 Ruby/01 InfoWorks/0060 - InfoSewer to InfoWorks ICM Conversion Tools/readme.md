@@ -2,7 +2,7 @@
 
 **Import InfoSewer models into InfoWorks ICM with multi-scenario support**
 
-**Last Updated**: November 2025
+**Last Updated**: November 2026
 
 ---
 
@@ -24,7 +24,7 @@ This tool is a **completely refreshed version** of the InfoSewer import workflow
 
 ## Quick Start
 
-1. **Download the tool** and save these files/folders to the same location:
+1. **Download the tool** — the easiest way is to download the entire folder directly using this [link](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Finnovyze%2FOpen-Source-Support%2Ftree%2Fmain%2F01%2520InfoWorks%2520ICM%2F01%2520Ruby%2F01%2520InfoWorks%2F0060%2520-%2520InfoSewer%2520to%2520InfoWorks%2520ICM%2520Conversion%2520Tools), then save these files/folders to the same location:
    - `InfoSewer_Import_UI.rb` (main script)
    - `lib/` folder (required helper modules)
    - `import_config/` folder (required configuration files)

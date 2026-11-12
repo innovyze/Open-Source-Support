@@ -1,9 +1,9 @@
 require 'json'
 # NOTE: 'fileutils' is intentionally NOT required here. On this embedded Ruby
-# build (InfoWorks ICM 2027.1.0, Ruby 3.4.6, x64-mswin64_140) the Symbol#to_s
-# bug corrupts Ruby's own internal error/source formatting, which causes
-# fileutils.rb's module_eval-based method definitions to raise a bogus
-# SyntaxError on require (e.g. "def #<Symbol:0x...>(*args, **options)").
+# build (InfoWorks ICM 2027.1.0, Ruby 3.4.6, x64-mswin64_140) a compatibility
+# issue with Symbol#to_s affects Ruby's own internal error/source formatting,
+# which causes fileutils.rb's module_eval-based method definitions to raise
+# an unrelated-looking SyntaxError on require (e.g. "def #<Symbol:0x...>(*args, **options)").
 # FileUtils is not actually used anywhere in this tool - only core File/Dir
 # methods are - so it is safe to skip loading it entirely.
 
