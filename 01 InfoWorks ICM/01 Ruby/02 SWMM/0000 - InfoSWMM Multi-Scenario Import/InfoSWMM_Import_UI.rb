@@ -36,6 +36,129 @@
 
 require 'json'
 
+# ----------------------------------------------------------------------------
+# ICM 2027.1 Ruby build (3.4.6, x64-mswin64) has two confirmed bugs:
+#   1. Symbol#to_s / Symbol#name return garbage or raise, instead of the
+#      real text. (Symbol#inspect and string interpolation of a Symbol
+#      both work correctly — use those instead.)
+#   2. String#unpack raises. (String#getbyte and String#[offset,len] both
+#      work correctly — use those to decode binary DBF data instead.)
+# The helpers and DBF reader below are written to avoid both broken paths.
+# ----------------------------------------------------------------------------
+
+# Safe error class name without relying on Class#to_s/#name (untested/risky
+# on this build) — matches against known exception classes explicitly.
+def infoswmm_safe_class_name(e)
+  case e
+  when NoMethodError then 'NoMethodError'
+  when NameError then 'NameError'
+  when ArgumentError then 'ArgumentError'
+  when TypeError then 'TypeError'
+  when IOError then 'IOError'
+  when SystemCallError then 'SystemCallError'
+  when RuntimeError then 'RuntimeError'
+  when StandardError then 'StandardError'
+  else 'Error'
+  end
+end
+
+# Safe error description — uses Symbol#inspect (confirmed working) instead
+# of Symbol#to_s/#name (confirmed broken) to show the real missing method.
+def infoswmm_diagnose_error(e)
+  cls = infoswmm_safe_class_name(e)
+  detail = ''
+  if (e.is_a?(NoMethodError) || e.is_a?(NameError)) && e.respond_to?(:name)
+    begin
+      detail = " (method #{e.name.inspect})"
+    rescue
+      detail = ''
+    end
+  end
+  "#{cls}#{detail}"
+rescue
+  'Unknown error'
+end
+
+# 32-bit / 16-bit little-endian integer from raw bytes, without String#unpack.
+def infoswmm_le_int(bytes)
+  return 0 if bytes.nil?
+  value = 0
+  i = 0
+  len = bytes.length
+  while i < len
+    value += bytes.getbyte(i) << (8 * i)
+    i += 1
+  end
+  value
+end
+
+# Trim a null-padded fixed-width field (replaces unpack('Z11')), without
+# String#unpack — finds the first null byte manually.
+def infoswmm_null_terminated(raw)
+  return '' if raw.nil?
+  len = raw.length
+  end_idx = len
+  i = 0
+  while i < len
+    if raw.getbyte(i) == 0
+      end_idx = i
+      break
+    end
+    i += 1
+  end
+  raw[0, end_idx].strip
+end
+
+# The entire Time class is broken on this ICM build — Time.now, #to_s,
+# #strftime, and even the plain #year accessor all raise. Avoid Time
+# entirely: get epoch seconds from Process.clock_gettime (a different
+# subsystem, returns a plain Float — no Time object involved) and convert
+# to a calendar date with hand-rolled integer arithmetic (Howard Hinnant's
+# days-from-civil algorithm), using only string interpolation (confirmed
+# safe) rather than explicit Integer#to_s.
+def infoswmm_epoch_now
+  Process.clock_gettime(Process::CLOCK_REALTIME)
+rescue
+  0
+end
+
+def infoswmm_civil_from_epoch(epoch_seconds)
+  total_days = (epoch_seconds / 86400).floor
+  secs_of_day = (epoch_seconds - (total_days * 86400)).floor
+  hour = secs_of_day / 3600
+  minute = (secs_of_day % 3600) / 60
+  second = secs_of_day % 60
+
+  z = total_days + 719468
+  era = (z >= 0 ? z : z - 146096) / 146097
+  doe = z - era * 146097
+  yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365
+  y = yoe + era * 400
+  doy = doe - (365 * yoe + yoe / 4 - yoe / 100)
+  mp = (5 * doy + 2) / 153
+  d = doy - (153 * mp + 2) / 5 + 1
+  m = mp + (mp < 10 ? 3 : -9)
+  y = y + (m <= 2 ? 1 : 0)
+
+  [y, m, d, hour, minute, second]
+end
+
+def infoswmm_zero_pad(n)
+  n < 10 ? "0#{n}" : "#{n}"
+end
+
+def infoswmm_timestamp_display
+  y, mo, d, h, mi, s = infoswmm_civil_from_epoch(infoswmm_epoch_now)
+  "#{y}-#{infoswmm_zero_pad(mo)}-#{infoswmm_zero_pad(d)} " +
+  "#{infoswmm_zero_pad(h)}:#{infoswmm_zero_pad(mi)}:#{infoswmm_zero_pad(s)}"
+end
+
+def infoswmm_timestamp_compact
+  y, mo, d, h, mi, s = infoswmm_civil_from_epoch(infoswmm_epoch_now)
+  "#{y}#{infoswmm_zero_pad(mo)}#{infoswmm_zero_pad(d)}_" +
+  "#{infoswmm_zero_pad(h)}#{infoswmm_zero_pad(mi)}#{infoswmm_zero_pad(s)}"
+end
+
 # Get the script directory
 script_dir = File.dirname(WSApplication.script_file)
 
@@ -202,9 +325,9 @@ if isdb_folder
         
         raise "DBF header is incomplete" if num_records_bytes.nil? || header_length_bytes.nil? || record_length_bytes.nil?
         
-        num_records = num_records_bytes.unpack('V')[0]
-        header_length = header_length_bytes.unpack('v')[0]
-        record_length = record_length_bytes.unpack('v')[0]
+        num_records = infoswmm_le_int(num_records_bytes)
+        header_length = infoswmm_le_int(header_length_bytes)
+        record_length = infoswmm_le_int(record_length_bytes)
         
         file.read(20)  # Reserved
         
@@ -212,20 +335,34 @@ if isdb_folder
         fields = []
         field_offset = 1  # First byte is delete flag
         
-        loop do
+        # NOTE: Kernel#loop is also broken on this ICM build (raises
+        # NoMethodError), so a plain while/true loop is used instead.
+        reading_fields = true
+        while reading_fields
           field_name_bytes = file.read(11)
-          break if field_name_bytes.nil? || field_name_bytes[0] == "\r" || field_name_bytes[0] == "\x0D"
+          if field_name_bytes.nil? || field_name_bytes.length < 11
+            reading_fields = false
+            next
+          end
+          if field_name_bytes.getbyte(0) == 0x0D
+            reading_fields = false
+            next
+          end
           
-          field_name = field_name_bytes.unpack('Z11')[0]
-          break if field_name.nil? || field_name.empty?
+          field_name = infoswmm_null_terminated(field_name_bytes)
+          if field_name.empty?
+            reading_fields = false
+            next
+          end
           
           field_type = file.read(1)
           file.read(4)  # Reserved
-          field_length = file.read(1).unpack('C')[0]
+          field_length_byte = file.read(1)
+          field_length = field_length_byte.nil? ? 0 : field_length_byte.getbyte(0)
           file.read(15)  # Decimals + reserved
           
           fields << {
-            name: field_name.strip,
+            name: field_name,
             type: field_type,
             offset: field_offset,
             length: field_length
@@ -252,14 +389,18 @@ if isdb_folder
           # Skip to data records
           file.seek(header_length)
           
-          # Read each record
-          num_records.times do
+          # Read each record.
+          # NOTE: Integer#times is also broken on this ICM build (raises
+          # NoMethodError), so a plain counter-based while loop is used.
+          record_index = 0
+          while record_index < num_records
             record = file.read(record_length)
-            next if record.nil? || record[0] == '*'  # Skip deleted records
-            
-            # Extract ID field value
-            id_value = record[id_field[:offset], id_field[:length]].strip
-            scenario_names << id_value unless id_value.empty?
+            unless record.nil? || record.length < record_length || record.getbyte(0) == 42  # '*' = deleted record
+              # Extract ID field value
+              id_value = record[id_field[:offset], id_field[:length]].strip
+              scenario_names << id_value unless id_value.empty?
+            end
+            record_index += 1
           end
         end
       end
@@ -269,11 +410,16 @@ if isdb_folder
       end
       
     rescue => e
-      puts "Warning: Could not auto-detect scenarios (#{e.message})"
-      
+      diagnosis = infoswmm_diagnose_error(e)
+      puts "Warning: Could not auto-detect scenarios (#{diagnosis})"
+      begin
+        e.backtrace.first(5).each { |line| puts "  #{line}" } if e.backtrace
+      rescue
+      end
+
       WSApplication.message_box(
         "Could not read SCENARIO.DBF file.\n\n" +
-        "Error: #{e.message}\n\n" +
+        "Diagnosis: #{diagnosis}\n\n" +
         "Will use manual entry instead.",
         "OK",
         "!",
@@ -464,7 +610,7 @@ config = {
   'scenarios' => scenario_input,
   'database_guid' => db_guid,
   'database_path' => db_path,
-  'timestamp' => Time.now.to_s,
+  'timestamp' => infoswmm_timestamp_display,
   'merge_scenarios' => true,
   'cleanup_empty_label_lists' => true,
   'copy_swmm_runs' => true
@@ -521,10 +667,17 @@ end
 # Launch Exchange script (capture output for summary)
 command = "\"#{icm_exchange}\" \"#{exchange_script}\" /ICM"
 
-# Capture the console output
-require 'open3'
-output, status = Open3.capture2(command)
-success = status.success?
+# Capture the console output.
+# NOTE: Open3.capture2 is broken on this ICM build — it fails internally
+# with NoMethodError (method :last) inside Autodesk's own shipped
+# open3.rb. Use backticks instead, which go through Kernel/IO directly
+# and never touch the open3 library.
+output = `#{command} 2>&1`
+success = begin
+  $?.success?
+rescue
+  false
+end
 
 # Parse the console output to extract statistics
 scenarios_imported = output.match(/Phase 1: (\d+) scenario\(s\) imported successfully/)
@@ -640,18 +793,30 @@ rescue SystemExit, Interrupt
   raise
 rescue => e
   # Handle any unexpected errors
+  diagnosis = infoswmm_diagnose_error(e)
   puts "\n" + "="*70
   puts "FATAL ERROR"
   puts "="*70
-  puts "Error: #{e.class} - #{e.message}"
+  puts "Error: #{diagnosis}"
   puts "\nStack trace:"
-  puts e.backtrace.first(10).join("\n")
+  backtrace_lines = []
+  begin
+    backtrace_lines = e.backtrace.first(10) if e.backtrace
+    puts backtrace_lines.join("\n") unless backtrace_lines.empty?
+  rescue
+  end
   puts "="*70
-  
+
+  location_text = ''
+  begin
+    location_text = "\n\nLocation:\n#{backtrace_lines.first(3).join("\n")}" unless backtrace_lines.empty?
+  rescue
+  end
+
   WSApplication.message_box(
     "An unexpected error occurred:\n\n" +
-    "#{e.message}\n\n" +
-    "Check the Ruby output window for details.",
+    "#{diagnosis}#{location_text}\n\n" +
+    "Check the Ruby output window for full details.",
     "OK",
     "!",
     false

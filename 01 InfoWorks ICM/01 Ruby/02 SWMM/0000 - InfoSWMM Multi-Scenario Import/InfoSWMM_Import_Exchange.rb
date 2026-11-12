@@ -40,6 +40,65 @@ def log(message, log_file = nil)
   log_file.puts message if log_file
 end
 
+# The entire Time class is broken on this ICM build — Time.now, #to_s,
+# #strftime, and even the plain #year accessor all raise. Avoid Time
+# entirely: get epoch seconds from Process.clock_gettime (a different
+# subsystem, returns a plain Float — no Time object involved) and convert
+# to a calendar date with hand-rolled integer arithmetic (Howard Hinnant's
+# days-from-civil algorithm), using only string interpolation (confirmed
+# safe) rather than explicit Integer#to_s.
+def infoswmm_epoch_now
+  Process.clock_gettime(Process::CLOCK_REALTIME)
+rescue
+  0
+end
+
+def infoswmm_civil_from_epoch(epoch_seconds)
+  total_days = (epoch_seconds / 86400).floor
+  secs_of_day = (epoch_seconds - (total_days * 86400)).floor
+  hour = secs_of_day / 3600
+  minute = (secs_of_day % 3600) / 60
+  second = secs_of_day % 60
+
+  z = total_days + 719468
+  era = (z >= 0 ? z : z - 146096) / 146097
+  doe = z - era * 146097
+  yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365
+  y = yoe + era * 400
+  doy = doe - (365 * yoe + yoe / 4 - yoe / 100)
+  mp = (5 * doy + 2) / 153
+  d = doy - (153 * mp + 2) / 5 + 1
+  m = mp + (mp < 10 ? 3 : -9)
+  y = y + (m <= 2 ? 1 : 0)
+
+  [y, m, d, hour, minute, second]
+end
+
+def infoswmm_zero_pad(n)
+  n < 10 ? "0#{n}" : "#{n}"
+end
+
+def infoswmm_timestamp_display
+  y, mo, d, h, mi, s = infoswmm_civil_from_epoch(infoswmm_epoch_now)
+  "#{y}-#{infoswmm_zero_pad(mo)}-#{infoswmm_zero_pad(d)} " +
+  "#{infoswmm_zero_pad(h)}:#{infoswmm_zero_pad(mi)}:#{infoswmm_zero_pad(s)}"
+end
+
+def infoswmm_timestamp_compact
+  y, mo, d, h, mi, s = infoswmm_civil_from_epoch(infoswmm_epoch_now)
+  "#{y}#{infoswmm_zero_pad(mo)}#{infoswmm_zero_pad(d)}_" +
+  "#{infoswmm_zero_pad(h)}#{infoswmm_zero_pad(mi)}#{infoswmm_zero_pad(s)}"
+end
+
+# File.mtime also returns a (broken) Time object; comparing/converting it
+# (as max_by would) risks the same TypeError. Fall back to 0 on failure so
+# "most recent file" selection degrades gracefully instead of crashing.
+def infoswmm_safe_mtime_i(path)
+  File.mtime(path).to_i
+rescue
+  0
+end
+
 # Check if label list is empty (InfoSWMM imports create empty lists as artifacts)
 def is_label_list_empty?(label_list, log_file = nil)
   begin
@@ -71,7 +130,7 @@ unless config_file && File.exist?(config_file)
   end
   
   if search_paths.any?
-    config_file = search_paths.max_by { |f| File.mtime(f) }
+    config_file = search_paths.max_by { |f| infoswmm_safe_mtime_i(f) }
   end
 end
 
@@ -194,7 +253,7 @@ end
 log_dir = File.join(File.dirname(file_path), "ICM Import Log Files")
 Dir.mkdir(log_dir) unless Dir.exist?(log_dir)
 
-log_filename = File.join(log_dir, "Import_Runs_#{Time.now.strftime('%Y%m%d_%H%M%S')}.log")
+log_filename = File.join(log_dir, "Import_Runs_#{infoswmm_timestamp_compact}.log")
 log_file = File.open(log_filename, 'w')
 
 # ============================================================================
@@ -235,7 +294,7 @@ if lock_files.any?
 end
 
 log "\n" + "="*70, log_file
-log "InfoSWMM Multi-Scenario Import with SWMM Runs - #{Time.now}", log_file
+log "InfoSWMM Multi-Scenario Import with SWMM Runs - #{infoswmm_timestamp_display}", log_file
 log "="*70, log_file
 log "Database GUID: #{db.guid}", log_file
 log "Source File: #{file_path}", log_file
@@ -302,7 +361,7 @@ scenarios.each_with_index do |scenario_name, index|
     end
     
     # Create import log
-    import_log_path = File.join(log_dir, "#{scenario_name}_#{Time.now.strftime('%Y%m%d_%H%M%S')}.txt")
+    import_log_path = File.join(log_dir, "#{scenario_name}_#{infoswmm_timestamp_compact}.txt")
     
     # Import
     log "Importing scenario '#{scenario_name}' from #{File.basename(file_path)}...", log_file
@@ -520,8 +579,19 @@ def get_object_hash(obj, log_file = nil)
       log "  Original size: #{contents.length} bytes, Cleaned size: #{cleaned_content.length} bytes", log_file
     end
     
-    # Calculate hash on cleaned content
-    hash = Digest::SHA256.hexdigest(cleaned_content)
+    # Calculate hash on cleaned content.
+    # NOTE: Digest is a C extension, same risk category as the broken Time
+    # class on this ICM build. If it fails, fall back to using the raw
+    # content as the dedup key — less memory-efficient, but functionally
+    # equivalent for detecting duplicates (String#hash/#== are core
+    # language features, not a swappable C extension, and are already
+    # relied on throughout this script via Hash keys).
+    hash = begin
+      Digest::SHA256.hexdigest(cleaned_content)
+    rescue => digest_error
+      log "  NOTE: Digest::SHA256 failed (#{infoswmm_diagnose_error(digest_error)}); using raw content for dedup instead", log_file if log_file
+      cleaned_content
+    end
     
     # Cleanup
     File.delete(temp_file) if File.exist?(temp_file)
