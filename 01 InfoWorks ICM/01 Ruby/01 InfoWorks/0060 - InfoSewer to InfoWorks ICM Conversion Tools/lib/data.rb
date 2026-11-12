@@ -1,5 +1,11 @@
 require 'json'
-require 'fileutils'
+# NOTE: 'fileutils' is intentionally NOT required here. On this embedded Ruby
+# build (InfoWorks ICM 2027.1.0, Ruby 3.4.6, x64-mswin64_140) the Symbol#to_s
+# bug corrupts Ruby's own internal error/source formatting, which causes
+# fileutils.rb's module_eval-based method definitions to raise a bogus
+# SyntaxError on require (e.g. "def #<Symbol:0x...>(*args, **options)").
+# FileUtils is not actually used anywhere in this tool - only core File/Dir
+# methods are - so it is safe to skip loading it entirely.
 
 # Gets DBF files and returns a hash mapping to their filepaths
 #
@@ -17,7 +23,7 @@ def get_dbf_files_for_import(model_path)
     raise "Cannot find IEDB folder: #{iedb_path}" unless Dir.exist?(iedb_path)
     
     puts "\n[OK] Reading InfoSewer model data"
-    return get_dbf_files(iedb_path)
+    return get_dbf_files(iedb_path, $field_maps)
   rescue => err
     puts "ERROR in get_dbf_files_for_import: #{err.message}"
     puts "  #{err.backtrace[0..2].join("\n  ")}"

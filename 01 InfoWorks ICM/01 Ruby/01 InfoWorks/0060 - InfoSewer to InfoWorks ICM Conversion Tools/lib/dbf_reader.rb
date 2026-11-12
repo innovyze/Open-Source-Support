@@ -1,5 +1,91 @@
 # Native DBF File Reader
 # Reads FoxPro 2.x DBF files without requiring Excel
+#
+# NOTE: This embedded Ruby build (InfoWorks ICM 2027.1.0, Ruby 3.4.6,
+# x64-mswin64_140) raises NoMethodError for String#unpack, so all binary
+# values below are decoded manually via String#getbyte instead.
+
+# Reads a little-endian unsigned integer from raw bytes (replaces String#unpack('V')/('v')/('C'))
+#
+# @param bytes [String] raw binary string (1-4 bytes)
+# @return [Integer] the decoded unsigned integer
+def unpack_uint_le(bytes)
+  value = 0
+  index = 0
+  while index < bytes.bytesize
+    value += bytes.getbyte(index) << (8 * index)
+    index += 1
+  end
+  value
+end
+
+# Extracts a null-terminated string from raw bytes (replaces String#unpack('Z*'))
+#
+# @param bytes [String] raw binary string
+# @return [String] the string up to (but not including) the first null byte
+def unpack_null_terminated_string(bytes)
+  index = 0
+  while index < bytes.bytesize
+    return bytes[0, index] if bytes.getbyte(index) == 0
+    index += 1
+  end
+  bytes
+end
+
+# NOTE: On this embedded Ruby build (InfoWorks ICM 2027.1.0), every Dir
+# method that lists folder contents (Dir.glob, Dir.entries, Dir.foreach,
+# Dir.new, Dir.new+#each/#read, Dir[]) raises NoMethodError - only
+# Dir.exist? works. So instead of discovering DBF files by listing the
+# IEDB folder, we build a list of the DBF table names we actually expect
+# (from the field mapping JSON configs plus the fixed set read directly
+# for BASE geometry) and probe for each one with File.exist?, exactly like
+# scenario_import.rb already does for scenario-specific DBFs.
+
+# Base set of DBF table names read directly for BASE network geometry
+# (see get_network_geometry / import_unit_hydrographs in InfoSewer_Import_UI.rb)
+# NOTE: This file is loaded (not required) and may run more than once per
+# ICM session, so ||= avoids an "already initialized constant" warning.
+BASE_DBF_NAMES ||= ['node', 'manhole', 'wwell', 'vertex', 'link', 'pipe', 'pump', 'hydrogrh', 'scenario']
+
+# Builds the full list of DBF table names that might need to be read, combining
+# the fixed BASE set with every table name referenced under 'import' in the
+# field mapping configs (e.g. pipehyd, pumphyd, wwellhyd, mhhyd, control)
+#
+# @param field_maps [Hash] the parsed field mapping config (see get_field_maps)
+# @return [Array<String>] unique, lowercase DBF table names
+def get_known_dbf_names(field_maps)
+  names = BASE_DBF_NAMES.dup
+  
+  if field_maps.is_a?(Hash)
+    field_maps.each_value do |fields|
+      next unless fields.is_a?(Hash) && fields['import'].is_a?(Hash)
+      fields['import'].each_key { |table_name| names << table_name.downcase }
+    end
+  end
+  
+  names.uniq
+end
+
+# Finds a DBF file for a given table name, trying common case variants
+# (DBF filenames are usually all-uppercase, but this is not guaranteed)
+#
+# @param iedb_path [String] path to the .IEDB folder
+# @param name [String] the table name (lowercase, no extension)
+# @return [String, nil] the full path if found, nil otherwise
+def find_dbf_file(iedb_path, name)
+  candidates = [
+    File.join(iedb_path, name.upcase + '.DBF'),
+    File.join(iedb_path, name.upcase + '.dbf'),
+    File.join(iedb_path, name.downcase + '.dbf'),
+    File.join(iedb_path, name.downcase + '.DBF')
+  ].uniq
+  
+  candidates.each do |candidate|
+    return candidate if File.exist?(candidate)
+  end
+  
+  nil
+end
 
 # Makes a string safe for use as a file/object name
 # Removes problematic characters like pipes and exclamation marks
@@ -129,12 +215,10 @@ def parse_dbf_file(file_path)
     
     raise "DBF header is incomplete: #{file_path}" if num_records_bytes.nil? || header_length_bytes.nil? || record_length_bytes.nil?
     
-    # Unpack binary values
-    # 'V' = 32-bit unsigned, little-endian (for record count)
-    # 'v' = 16-bit unsigned, little-endian (for lengths)
-    num_records = num_records_bytes.unpack('V')[0]
-    header_length = header_length_bytes.unpack('v')[0]
-    record_length = record_length_bytes.unpack('v')[0]
+    # Decode binary values (32-bit and 16-bit unsigned, little-endian)
+    num_records = unpack_uint_le(num_records_bytes)
+    header_length = unpack_uint_le(header_length_bytes)
+    record_length = unpack_uint_le(record_length_bytes)
     
     file.read(20)  # Skip reserved bytes (12-31)
     
@@ -142,19 +226,19 @@ def parse_dbf_file(file_path)
     fields = []
     field_offset = 1  # First byte of each record is delete flag
     
-    loop do
+    while true
       field_name_bytes = file.read(11)
       
       # Check for end of field descriptors (0x0D terminator or end of header)
       break if field_name_bytes.nil? || field_name_bytes[0] == "\r" || field_name_bytes[0] == "\x0D"
       
-      # 'Z11' = null-terminated string, max 11 bytes
-      field_name = field_name_bytes.unpack('Z11')[0]
+      # Null-terminated string, max 11 bytes
+      field_name = unpack_null_terminated_string(field_name_bytes)
       break if field_name.nil? || field_name.empty?
       
       field_type = file.read(1)
       file.read(4)  # Reserved
-      field_length = file.read(1).unpack('C')[0]  # 'C' = 8-bit unsigned
+      field_length = unpack_uint_le(file.read(1))  # 8-bit unsigned
       file.read(15)  # Decimals + reserved
       
       fields << {
@@ -174,47 +258,49 @@ def parse_dbf_file(file_path)
     file.seek(header_length)
     
     # Read each record
-    num_records.times do |i|
+    record_index = 0
+    while record_index < num_records
       record_bytes = file.read(record_length)
       
       # Skip if we couldn't read the full record or if it's marked as deleted
-      next if record_bytes.nil? || record_bytes.length < record_length
-      next if record_bytes[0] == '*'  # Deleted record marker
-      
-      # Parse field values from record bytes
-      record = {}
-      fields.each do |field|
-        raw_value = record_bytes[field[:offset], field[:length]]
-        
-        # Parse based on field type
-        value = case field[:type]
-        when 'C'  # Character
-          raw_value.strip
-        when 'N', 'F'  # Numeric, Float
-          raw_value.strip
-          # Leave as string for now - Ruby will auto-convert when needed
-          # This matches CSV behavior
-        when 'L'  # Logical
-          case raw_value.strip.upcase
-          when 'T', 'Y'
-            'T'
-          when 'F', 'N'
-            'F'
+      unless record_bytes.nil? || record_bytes.length < record_length || record_bytes[0] == '*'
+        # Parse field values from record bytes
+        record = {}
+        fields.each do |field|
+          raw_value = record_bytes[field[:offset], field[:length]]
+          
+          # Parse based on field type
+          value = case field[:type]
+          when 'C'  # Character
+            raw_value.strip
+          when 'N', 'F'  # Numeric, Float
+            raw_value.strip
+            # Leave as string for now - Ruby will auto-convert when needed
+            # This matches CSV behavior
+          when 'L'  # Logical
+            case raw_value.strip.upcase
+            when 'T', 'Y'
+              'T'
+            when 'F', 'N'
+              'F'
+            else
+              ''
+            end
+          when 'D'  # Date (YYYYMMDD)
+            raw_value.strip
+          when 'M'  # Memo (just return the reference number)
+            raw_value.strip
           else
-            ''
+            raw_value.strip
           end
-        when 'D'  # Date (YYYYMMDD)
-          raw_value.strip
-        when 'M'  # Memo (just return the reference number)
-          raw_value.strip
-        else
-          raw_value.strip
+          
+          record[field[:name]] = value
         end
         
-        record[field[:name]] = value
+        records << record
       end
       
-      records << record
+      record_index += 1
     end
   end
   
@@ -229,12 +315,14 @@ end
 # Gets DBF files and returns a hash mapping to their filepaths
 #
 # @param model_path [String] path to the IEDB folder
+# @param field_maps [Hash, nil] parsed field mapping config, used to discover
+#   additional table names beyond the fixed BASE set (see get_known_dbf_names)
 # @return [Hash] hash of DBF names (lowercase, no extension) to their filepath
 #
 # Only returns root-level DBFs for BASE scenario import
 # Scenario-specific DBFs (in subfolders) are accessed directly during scenario import
 
-def get_dbf_files(model_path)
+def get_dbf_files(model_path, field_maps = nil)
   # Ensure we're working with the .IEDB folder
   iedb_path = model_path
   unless model_path.end_with?('.IEDB') || model_path.end_with?('.iedb')
@@ -244,18 +332,15 @@ def get_dbf_files(model_path)
   raise "Cannot find IEDB folder: #{iedb_path}" unless Dir.exist?(iedb_path)
   
   # Create a hash of DBF names (in lowercase with no extension) to their filepath
-  # Only include root-level DBFs for BASE scenario import
+  # Only include root-level DBFs for BASE scenario import.
+  # NOTE: Directory listing (Dir.glob/entries/foreach/new) is broken on this
+  # embedded Ruby build, so known/expected table names are probed directly
+  # with File.exist? instead of discovering files by listing the folder.
   dbf = Hash.new
-  unix_iedb_path = iedb_path.gsub('\\', '/')
-  Dir.glob(unix_iedb_path + '/*.DBF').each do |file|
-    name = File.basename(file, '.*').downcase
-    dbf[name] = file
-  end
-  
-  # Also check for lowercase .dbf extension
-  Dir.glob(unix_iedb_path + '/*.dbf').each do |file|
-    name = File.basename(file, '.*').downcase
-    dbf[name] = file unless dbf.key?(name)  # Don't overwrite if uppercase version exists
+  get_known_dbf_names(field_maps).each do |name|
+    next if dbf.key?(name)
+    file = find_dbf_file(iedb_path, name)
+    dbf[name] = file if file
   end
   
   return dbf

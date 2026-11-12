@@ -1,5 +1,15 @@
 require 'json'
 
+# Converts a Symbol to a String (replaces Symbol#to_s/#name, which raise
+# NoMethodError on this embedded Ruby build). Symbol#inspect still works and
+# returns ":name", so the leading colon is stripped with String#sub.
+#
+# @param sym [Symbol] the symbol to convert
+# @return [String] the symbol's name as a string
+def symbol_to_string(sym)
+  sym.inspect.sub(/\A:/, '')
+end
+
 # Show user prompt to customize the import
 #
 # @param config_file [String] path to the config file
@@ -39,7 +49,7 @@ def prompt_get_config(config_file)
   [:model_path, :fields_path].each do |path|
     unless file_exists?(config[path])
       WSApplication.message_box(
-        "Invalid path: #{path.to_s}\n\n#{config[path]}\n\nPath does not exist.",
+        "Invalid path: #{symbol_to_string(path)}\n\n#{config[path]}\n\nPath does not exist.",
         "OK",
         "!",
         false
@@ -51,7 +61,7 @@ def prompt_get_config(config_file)
   
   # Save the config for next time
   json_hash = Hash.new
-  config.each { |key, value| json_hash[key.to_s] = value }
+  config.each { |key, value| json_hash[symbol_to_string(key)] = value }
   File.write(config_file, JSON.pretty_generate(json_hash))
   
   return config
@@ -108,9 +118,11 @@ def read_scenario_names_from_dbf(iedb_path)
       
       raise "DBF header is incomplete" if num_records_bytes.nil?
       
-      num_records = num_records_bytes.unpack('V')[0]
-      header_length = header_length_bytes.unpack('v')[0]
-      record_length = record_length_bytes.unpack('v')[0]
+      # Decode binary values manually - String#unpack raises NoMethodError
+      # on this embedded Ruby build (see unpack_uint_le/unpack_null_terminated_string in dbf_reader.rb)
+      num_records = unpack_uint_le(num_records_bytes)
+      header_length = unpack_uint_le(header_length_bytes)
+      record_length = unpack_uint_le(record_length_bytes)
       
       file.read(20)  # Reserved
       
@@ -118,16 +130,16 @@ def read_scenario_names_from_dbf(iedb_path)
       fields = []
       field_offset = 1  # First byte is delete flag
       
-      loop do
+      while true
         field_name_bytes = file.read(11)
         break if field_name_bytes.nil? || field_name_bytes[0] == "\r" || field_name_bytes[0] == "\x0D"
         
-        field_name = field_name_bytes.unpack('Z11')[0]
+        field_name = unpack_null_terminated_string(field_name_bytes)
         break if field_name.nil? || field_name.empty?
         
         field_type = file.read(1)
         file.read(4)  # Reserved
-        field_length = file.read(1).unpack('C')[0]
+        field_length = unpack_uint_le(file.read(1))
         file.read(15)  # Decimals + reserved
         
         fields << {
@@ -149,13 +161,15 @@ def read_scenario_names_from_dbf(iedb_path)
       file.seek(header_length)
       
       # Read each record
-      num_records.times do
+      record_index = 0
+      while record_index < num_records
         record = file.read(record_length)
-        next if record.nil? || record[0] == '*'  # Skip deleted records
-        
-        # Extract ID field value
-        id_value = record[id_field[:offset], id_field[:length]].strip
-        scenario_names << id_value unless id_value.empty?
+        unless record.nil? || record[0] == '*'  # Skip deleted records
+          # Extract ID field value
+          id_value = record[id_field[:offset], id_field[:length]].strip
+          scenario_names << id_value unless id_value.empty?
+        end
+        record_index += 1
       end
     end
   rescue => e

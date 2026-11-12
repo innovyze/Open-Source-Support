@@ -18,7 +18,11 @@
 #
 # ============================================================================
 
-require 'date'
+# NOTE: 'date' is intentionally NOT required here. It is unused in this file
+# (date comparisons below are done as plain string/numeric comparisons), and
+# on this embedded Ruby build (InfoWorks ICM 2027.1.0) the Time/date-related
+# stdlib internals are broken (see Time class notes elsewhere in this repo),
+# so loading 'date' is skipped to avoid triggering the same class of failure.
 
 # Parse a simple query condition (TABLE->FIELD OPERATOR VALUE)
 def parse_query_condition(condition_str)
