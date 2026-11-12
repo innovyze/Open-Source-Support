@@ -1,17 +1,17 @@
 ## on.mscc_import_cctv_surveys(import_file, import_flag, import_images, id_gen, overwrite, log_file)
-### import_file – String - filename to import from
-### import_flag – String - flag for imported data
-### import_images – Boolean – true to import images
-### id_gen – Integer – the following values are allowed:
-#### 1 – StartNodeRef, Direction, Date and Time
-#### 2 – StartNodeRef, Direction and an index for uniqueness
-#### 3 – US node ID, Direction, Date and Time
-#### 4 – US node ID, Direction and an index for uniqueness
-#### 5 – ClientDefined1
-#### 6 – ClientDefined2
-#### 7 – ClientDefined3
-### overwrite – Boolean – To prevent the overwriting of existing surveys in the event of name clashes, set overwite to false
-### log_file – String – log file path
+### import_file - String - filename to import from
+### import_flag - String - flag for imported data
+### import_images - Boolean - true to import images
+### id_gen - Integer - the following values are allowed:
+#### 1 - StartNodeRef, Direction, Date and Time
+#### 2 - StartNodeRef, Direction and an index for uniqueness
+#### 3 - US node ID, Direction, Date and Time
+#### 4 - US node ID, Direction and an index for uniqueness
+#### 5 - ClientDefined1
+#### 6 - ClientDefined2
+#### 7 - ClientDefined3
+### overwrite - Boolean - To prevent the overwriting of existing surveys in the event of name clashes, set overwite to false
+### log_file - String - log file path
 
 
 if WSApplication.ui?

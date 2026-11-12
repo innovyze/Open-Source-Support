@@ -30,7 +30,7 @@ require 'fileutils'
 #                              0002A ODIC Callback Examples). User onBegin/onEnd run first;
 #                              ID tracking runs after onEnd when use_import_id_callback is true.
 #
-# Optional custom callback — define above IMPORT_CONFIG, then set custom_callback_class:
+# Optional custom callback - define above IMPORT_CONFIG, then set custom_callback_class:
 #
 #   class MyImporter
 #     def MyImporter.onEndRecordNode(obj)
@@ -48,7 +48,7 @@ IMPORT_CONFIG = {
   custom_callback_class: nil
 }.freeze
 
-# ODIC import options — edit here (not prompted at run time).
+# ODIC import options - edit here (not prompted at run time).
 # 'Error File' is set automatically in the working folder.
 # 'Duplication Behaviour': 'Overwrite', 'Merge', or 'Ignore'
 #
@@ -81,7 +81,7 @@ PIPE_KEY_FIELDS = %w[us_node_id ds_node_id link_suffix].freeze
 $odic_imported_source_ids = []
 
 # ---------------------------------------------------------------------------
-# ODIC callback — record source IDs as each CSV record is processed
+# ODIC callback - record source IDs as each CSV record is processed
 # ---------------------------------------------------------------------------
 
 def odic_record_suffix(odic_table)

@@ -3,7 +3,7 @@
 # Script: UI-CopySurveyAttachmentsToAsset.rb
 # Purpose: Copy attachments from selected survey objects to their associated
 #          asset object. Duplicate attachments on the asset (same db_ref) are
-#          skipped. Attachment files on disk are not copied — only blob metadata
+#          skipped. Attachment files on disk are not copied - only blob metadata
 #          referencing the same db_ref is written to the asset.
 #
 # Run from: Network > Run Ruby Script (with survey object(s) selected)
@@ -413,7 +413,7 @@ selected_surveys.each do |survey_table, survey|
 
   if attachment_rows.empty?
     stats[:surveys_skipped_no_attachments] += 1
-    puts "#{survey_label}: no attachments with db_ref/filename — skipped."
+    puts "#{survey_label}: no attachments with db_ref/filename - skipped."
     next
   end
 
@@ -426,7 +426,7 @@ selected_surveys.each do |survey_table, survey|
     asset_type = survey.respond_to?(:asset_type) ? survey.asset_type.to_s.strip : ''
     asset_id = survey.respond_to?(:asset_id) ? survey.asset_id.to_s.strip : ''
     resolved_table = resolve_asset_table_name(asset_type, network_table_names, table_descriptions)
-    puts "#{survey_label}: could not resolve associated asset — skipped."
+    puts "#{survey_label}: could not resolve associated asset - skipped."
     if non_blank?(asset_type) || non_blank?(asset_id)
       puts "  asset_type=#{asset_type.empty? ? '(blank)' : asset_type}"
       puts "  asset_id=#{asset_id.empty? ? '(blank)' : asset_id}"
@@ -437,7 +437,7 @@ selected_surveys.each do |survey_table, survey|
 
   unless object_has_attachments_blob?(asset)
     stats[:surveys_skipped_asset_no_attachments] += 1
-    puts "#{survey_label}: asset #{asset.table_info.name} '#{asset.id}' has no attachments field — skipped."
+    puts "#{survey_label}: asset #{asset.table_info.name} '#{asset.id}' has no attachments field - skipped."
     next
   end
 
@@ -452,7 +452,7 @@ net.transaction_commit
 elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
 
 summary = [
-  'Copy survey attachments to asset — complete.',
+  'Copy survey attachments to asset - complete.',
   '',
   "Surveys selected       : #{selected_surveys.size}",
   "Surveys updated        : #{stats[:surveys_processed]}",

@@ -46,7 +46,7 @@ ASSET_TYPE_MAP = {
 # Pass 1: scan selected flood defence surveys (processed or not) and track the
 # single latest survey per (cams_table, asset_id) by survey_date, regardless
 # of used_in_network status.  A separate hash records whether that latest
-# survey is still unprocessed — only those assets will be updated.
+# survey is still unprocessed - only those assets will be updated.
 # This prevents an older unprocessed survey being applied when a newer one
 # has already been marked used_in_network = true.
 # ---------------------------------------------------------------------------
@@ -85,7 +85,7 @@ all_latest.each do |table, by_id|
 end
 
 unless skipped_type.empty?
-  puts "WARNING: unrecognised asset type value(s) in user_text_40 — skipped:"
+  puts "WARNING: unrecognised asset type value(s) in user_text_40 - skipped:"
   skipped_type.each { |t| puts "  '#{t}'" }
 end
 
@@ -97,7 +97,7 @@ if total_surveys == 0
 else
 
   # -------------------------------------------------------------------------
-  # Pass 2: build an id→row_object lookup for each asset table we need.
+  # Pass 2: build an id->row_object lookup for each asset table we need.
   # -------------------------------------------------------------------------
   asset_lookup = {}
   latest_by_asset.each_key do |table|
@@ -108,7 +108,7 @@ else
   end
 
   # -------------------------------------------------------------------------
-  # Pass 3: update assets and mark surveys processed — single transaction.
+  # Pass 3: update assets and mark surveys processed - single transaction.
   # -------------------------------------------------------------------------
   updated = 0
   not_found = 0
@@ -120,7 +120,7 @@ else
       asset = asset_lookup[table][asset_id]
 
       if asset.nil?
-        puts "WARNING: #{table} asset '#{asset_id}' not found in network — skipping."
+        puts "WARNING: #{table} asset '#{asset_id}' not found in network - skipping."
         not_found += 1
         next
       end
@@ -143,7 +143,7 @@ else
       asset.condition_grade = survey.condition_grading_score
 
       # Append survey date and notes to existing asset notes only when the
-      # survey has notes to contribute — skipped entirely if survey notes blank.
+      # survey has notes to contribute - skipped entirely if survey notes blank.
       survey_notes = survey.notes.to_s.strip
       unless survey_notes.empty?
         existing_notes = asset.notes.to_s

@@ -8,6 +8,8 @@
 
 Load `InfoAsset_Manager_Ruby_Lessons_Learned.md` immediately after the boundary guard when generating code, adapting examples, or troubleshooting runtime failures.
 
+When generating or editing IAM Ruby scripts, apply the **ASCII-only source text** rule from Lessons Learned and Boundary Guard (prompts, message boxes, logs, and comments in `01 Ruby` scripts).
+
 Do not search the full `01 Ruby` tree first. Route through the Example Index after confirming runtime mode.
 
 ## Step 0 - Verify Product

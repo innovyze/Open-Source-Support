@@ -1,4 +1,4 @@
-# Fixed flag mappings — no prompts. Edit FLAG_REPLACEMENTS for your project.
+# Fixed flag mappings - no prompts. Edit FLAG_REPLACEMENTS for your project.
 # Replicates Tools > Find and Replace Flags on the whole open network.
 
 FLAG_REPLACEMENTS = {

@@ -6,9 +6,9 @@ CSV.open("c:\\temp\\choices.csv", "wb") do |csv|		##open the CSV file and iterat
 
 	nw = WSApplication.current_network					##use the current open network
 	
-		fc = nw.field_choices('cams_cctv_survey','category_code')					##select the Field Choice ‘text’ codes for: CCTV Survey – Category Code
+		fc = nw.field_choices('cams_cctv_survey','category_code')					##select the Field Choice 'text' codes for: CCTV Survey - Category Code
 		
-		fd = nw.field_choice_descriptions('cams_cctv_survey','category_code')		##select the Field Choice descriptions codes for: CCTV Survey – Category Code
+		fd = nw.field_choice_descriptions('cams_cctv_survey','category_code')		##select the Field Choice descriptions codes for: CCTV Survey - Category Code
 		
 		i=0										##this starts a counter, needed to iterate through all the values
 		
@@ -20,9 +20,9 @@ CSV.open("c:\\temp\\choices.csv", "wb") do |csv|		##open the CSV file and iterat
 		
 			fc.each do | value|											##runs through each fc to retrieve all values
 			
-			puts("""#{tbl}"",""#{col}"",""#{value}"",""#{fd[i]}""")		##where the output should go: to screen (“puts”) and what the output should be
+			puts("""#{tbl}"",""#{col}"",""#{value}"",""#{fd[i]}""")		##where the output should go: to screen ("puts") and what the output should be
 			
-			csv << ["#{tbl}", "#{col}", "#{value}", "#{fd[i]}"]			##where the output should go: csv (“<<” inserts as an additional line) and what the output should be
+			csv << ["#{tbl}", "#{col}", "#{value}", "#{fd[i]}"]			##where the output should go: csv ("<<" inserts as an additional line) and what the output should be
 			
 			i=i+1														##add 1 to the interaction counter
 			

@@ -42,7 +42,7 @@ expOptions=Hash.new
 expOptions["Selection Only"]=exportSel				## Boolean, true for selection only, all objects otherwise | Default=false
 expOptions["Images"]=exportImages						## Boolean, if true the images are exported to same location as .mdb | Default=false
 expOptions["Imperial"]=exportImperial						## Boolean, true for imperial values (the WSApplication setting for units is ignored) | Default=false
-expOptions["InfoAsset"]=exportID						## nil or an Integer, if an integer must be between 1 and 10 – corresponds to the dialog setting | Default=nil
+expOptions["InfoAsset"]=exportID						## nil or an Integer, if an integer must be between 1 and 10 - corresponds to the dialog setting | Default=nil
 expOptions["Format"]="7"						## String, PACP db version format (must be "6" or "7") | Default=7
 expOptions["LogFile"]=exportLog				## String, path of a log file, if nil or blank then nothing is logged to the file | Default=nil
 #puts expOptions
@@ -176,9 +176,9 @@ survey_objects.each do |survey|
                                             if !finish_distance.nil? && finish_distance.is_a?(Numeric)
                                                 # Calculate length: finish_distance - start_distance
                                                 length = finish_distance - start_distance
-                                                # Calculate equivalent point defects: length ÷ 5, rounded to nearest whole number
+                                                # Calculate equivalent point defects: length / 5, rounded to nearest whole number
                                                 # Per PACP: "The quotient is then rounded to the nearest whole number"
-                                                # Example: 19.7 feet ÷ 5 = 3.94 → rounds to 4
+                                                # Example: 19.7 feet / 5 = 3.94 -> rounds to 4
                                                 equivalent_defects = (length / 5.0).round
                                                 # Ensure at least 1 defect is counted (even if length < 2.5 feet)
                                                 equivalent_defects = 1 if equivalent_defects < 1
@@ -212,7 +212,7 @@ survey_objects.each do |survey|
             structuralScore = details[i]['structural_score']
             
             # Determine how many times to count this defect (1 for regular, N for continuous)
-            # N = equivalent point defects calculated from length ÷ 5, rounded
+            # N = equivalent point defects calculated from length / 5, rounded
             count_multiplier = detail_segments[i] || 1
             
             # Count service_score values (1-5) - handle null values
@@ -275,7 +275,7 @@ survey_objects.each do |survey|
         if !has_defects
             # If condition assessment data is available and there are no defects, LoF is 1.0
             lof_pacp = 1.0
-            puts "  LoFPACP calculation: No defects found → LoF = 1.0"
+            puts "  LoFPACP calculation: No defects found -> LoF = 1.0"
         elsif quick_rating_str.length >= 2
             # Extract the first two characters
             first_char = quick_rating_str[0]
@@ -286,13 +286,13 @@ survey_objects.each do |survey|
                 # Replace the letter with 0, then divide by 10 and add 1.0
                 numeric_value = "#{first_char}0".to_i
                 lof_pacp = (numeric_value / 10.0) + 1.0
-                puts "  LoFPACP calculation: #{quick_rating_str} → #{first_char}#{second_char} (letter) → #{numeric_value}/10 + 1.0 = #{lof_pacp}"
+                puts "  LoFPACP calculation: #{quick_rating_str} -> #{first_char}#{second_char} (letter) -> #{numeric_value}/10 + 1.0 = #{lof_pacp}"
             elsif second_char.match?(/[0-9]/)
                 # Second character is a digit (no more than 9 occurrences)
                 # Divide the first two numbers by 10
                 numeric_value = "#{first_char}#{second_char}".to_i
                 lof_pacp = numeric_value / 10.0
-                puts "  LoFPACP calculation: #{quick_rating_str} → #{numeric_value}/10 = #{lof_pacp}"
+                puts "  LoFPACP calculation: #{quick_rating_str} -> #{numeric_value}/10 = #{lof_pacp}"
             else
                 puts "  LoFPACP calculation: Warning - unexpected format in PACP Quick Rating: #{quick_rating_str}"
             end
@@ -349,13 +349,13 @@ puts ""
 puts "Total weighted service_score values:"
 (1..5).each do |score|
     weighted = totalServiceScoreCounts[score] * score
-    puts "  Score #{score}: #{totalServiceScoreCounts[score]} records × #{score} = #{weighted}"
+    puts "  Score #{score}: #{totalServiceScoreCounts[score]} records x #{score} = #{weighted}"
 end
 puts ""
 puts "Total weighted structural_score values:"
 (1..5).each do |score|
     weighted = totalStructuralScoreCounts[score] * score
-    puts "  Score #{score}: #{totalStructuralScoreCounts[score]} records × #{score} = #{weighted}"
+    puts "  Score #{score}: #{totalStructuralScoreCounts[score]} records x #{score} = #{weighted}"
 end
 puts ""
 
@@ -644,7 +644,7 @@ if surveyResults.length > 0
         puts "Exported #{records_inserted} survey records to PACP_Ratings table"
         
         # Display results in console
-        puts "\nResults (weighted values - count × score + PACP ratings):"
+        puts "\nResults (weighted values - count x score + PACP ratings):"
         puts "Survey ID\t\tSTPipeRating\tOMPipeRating\tOverallPipeRating\tSTQuickRating\tOMQuickRating\tPACPQuickRating\tSTPipeRatingsIndex\tOMPipeRatingsIndex\tOverallPipeRatingsIndex\tLoFPACP"
         puts "-" * 200
         surveyResults.each do |result|

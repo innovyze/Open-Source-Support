@@ -22,7 +22,7 @@ options=Hash.new
 #options['Append'] = false						# Boolean, True to enable 'Append to existing data' | Default = FALSE
 #options['Export Selection'] = false			# Boolean, True to export the selected objects only | Default = FALSE
 #options['Previous Version'] = false			# Integer, Previous version, if not zero differences are exportedy | Default = 0
-#options['Don’t Update Geometry'] = false		# Boolean | Default = FALSE
+#options['Don't Update Geometry'] = false		# Boolean | Default = FALSE
 
 	puts 'Ready for export'
 

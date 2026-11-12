@@ -26,6 +26,7 @@ Read `Instructions.md` first.
 ## Design Rules
 
 - Product scope is InfoAsset Manager only.
+- IAM Ruby scripts (`01 Ruby`): ASCII punctuation in prompts, message boxes, logs, and comments; see Boundary Guard and Lessons Learned.
 - Ruby and SQL context stay separate.
 - UI, Exchange, and dual-mode examples are routed through a single Example Index with mode sections.
 - Cross-product examples are quarantined unless the task is explicitly interoperability work.

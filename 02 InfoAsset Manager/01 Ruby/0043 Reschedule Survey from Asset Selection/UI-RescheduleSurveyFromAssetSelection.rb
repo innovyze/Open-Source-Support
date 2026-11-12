@@ -2,8 +2,8 @@
 # InfoAsset Manager UI Script
 # Script: UI-RescheduleSurveyFromAssetSelection.rb
 # Purpose: For each selected asset, copy the most recent **completed** survey
-#          (latest date_completed) of a chosen survey type — all top-level fields
-#          and blob sub-tables — and create a new planned survey with ID
+#          (latest date_completed) of a chosen survey type - all top-level fields
+#          and blob sub-tables - and create a new planned survey with ID
 #          {asset_id}-{date_planned}. Prompts when incomplete related surveys exist.
 #          Network field structure is discovered at runtime so user-defined
 #          object and survey types are supported when present in the network.
@@ -67,7 +67,7 @@ MAIN_ESTIMATED_FROM_ACTUAL = {
   'actual_cost'     => 'estimated_cost'
 }.freeze
 
-# Never copied — assigned automatically by InfoAsset Manager.
+# Never copied - assigned automatically by InfoAsset Manager.
 SYSTEM_MANAGED_FIELDS = %w[
   date_opened
   date_opened_flag
@@ -75,7 +75,7 @@ SYSTEM_MANAGED_FIELDS = %w[
   uid
 ].freeze
 
-# Flood-defence survey asset-type values (user_text_40) → cams asset table.
+# Flood-defence survey asset-type values (user_text_40) -> cams asset table.
 ASSET_TYPE_MAP = {
   'cams_channel'           => 'cams_channel',
   'channel'                => 'cams_channel',
@@ -573,7 +573,7 @@ def surveys_from_asset_relationship(asset, survey_table)
       end
     end
   rescue StandardError
-    # Relationship not available on this asset type — fall through.
+    # Relationship not available on this asset type - fall through.
   end
 
   begin
@@ -582,7 +582,7 @@ def surveys_from_asset_relationship(asset, survey_table)
       nav.each { |s| found << s unless s.nil? }
     end
   rescue StandardError
-    # navigate not available — fall through.
+    # navigate not available - fall through.
   end
 
   found.uniq { |s| s.id.to_s }

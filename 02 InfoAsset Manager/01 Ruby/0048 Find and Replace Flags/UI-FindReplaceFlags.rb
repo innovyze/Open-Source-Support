@@ -53,7 +53,7 @@ end
 
 def prompt_whole_network
   answer = WSApplication.prompt(
-    'Find and Replace Flags — scope',
+    'Find and Replace Flags - scope',
     [
       ['Process whole network? (clear for GeoPlan selection only)', 'Boolean', true]
     ],

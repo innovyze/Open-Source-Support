@@ -1,19 +1,19 @@
 ## The pacp_import_cctv_surveys method is available in InfoAsset Manager (+Exchange) V2022.1 & later
 
 ## pacp_import_cctv_surveys(filename,flag,images,generateIDsFrom,duplicateIDs,importPACP,importLACP,logFile,[markImportedSurveysAsCompleted])
-## Filename – String - filename to import from
-## Flag – String - flag for imported data
-## Images – Boolean – true to import images
-## GenarateIDsfrom – Integer – the following values are allowed:
-### 1 – Upstream Direction + Date + Time
-### 2 – Upstream Direction + Index
-### 3 – Inspection ID
-### 4 – 13 – Custom (4 = custom field 1, 5 = custom field 2 etc.)
-## DuplicateIds – String – ignore / update / overwrite
-## ImportPACP – Boolean – true to import PACP data
-## ImportLACP – Boolean – true to import LACP data
-## LogFile – String – log file path
-## MarkImportedSurveysAsCompleted – Boolean – true to mark imported surveys as completed
+## Filename - String - filename to import from
+## Flag - String - flag for imported data
+## Images - Boolean - true to import images
+## GenarateIDsfrom - Integer - the following values are allowed:
+### 1 - Upstream Direction + Date + Time
+### 2 - Upstream Direction + Index
+### 3 - Inspection ID
+### 4 - 13 - Custom (4 = custom field 1, 5 = custom field 2 etc.)
+## DuplicateIds - String - ignore / update / overwrite
+## ImportPACP - Boolean - true to import PACP data
+## ImportLACP - Boolean - true to import LACP data
+## LogFile - String - log file path
+## MarkImportedSurveysAsCompleted - Boolean - true to mark imported surveys as completed
 ## It is necessary to run this within a transaction.
 
 if WSApplication.ui?

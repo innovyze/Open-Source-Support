@@ -27,6 +27,8 @@ raise 'No open network' if net.nil?
 
 **Intent:** Collect UI input and stop cleanly if the user cancels.
 
+Use **ASCII punctuation** in prompt title and field label strings, and match that style in comments and `puts` for the same script (see Boundary Guard → IAM Ruby Source Text Guard).
+
 ```ruby
 net = WSApplication.current_network
 

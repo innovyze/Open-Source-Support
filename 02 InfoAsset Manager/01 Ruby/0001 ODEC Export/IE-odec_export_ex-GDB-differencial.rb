@@ -89,7 +89,7 @@ nw.odec_export_ex(
 	'Pipe',											# Export to Feature class - unqualified name
 	'Pipes',										# Export to Feature Dataset - fully qualified name
 	true,											# true to update, false otherwise. If true the feature class must exist
-	nil,											# ArcSDE configuration keyword – nil for Personal / File GeoDatabases, and ignored for updates
+	nil,											# ArcSDE configuration keyword - nil for Personal / File GeoDatabases, and ignored for updates
 	'C:\Temp\Test.gdb'								# Filename (for personal and file GeoDatabases, connection name for SDE)
 )
 

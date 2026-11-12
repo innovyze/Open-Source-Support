@@ -408,7 +408,7 @@ net.tables.each do |table|
 
   row_set = network_rows(net, table.name, selection_only)
   if row_set.nil?
-    puts "Skipped #{table.name} – cannot read row objects on this IAM build"
+    puts "Skipped #{table.name} - cannot read row objects on this IAM build"
     next
   end
 

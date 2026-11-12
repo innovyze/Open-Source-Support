@@ -60,6 +60,30 @@ Safe only in UI scripts:
 - `WSApplication.message_box`
 - Folder or file dialogs triggered from the UI
 
+### IAM Ruby Source Text Guard
+
+All human-readable text **in IAM Ruby scripts** under `01 Ruby` should use **ASCII punctuation** (not only dialogs). That includes:
+
+- `WSApplication.prompt` titles, field labels, and `LIST` entries
+- `WSApplication.message_box` bodies
+- `puts`, `report`, and other console or log messages
+- Comments and file headers
+
+IAM often garbles typographic Unicode in the UI; the same characters in comments encourage copy-paste back into prompts.
+
+**Use instead:**
+
+| Avoid | Use |
+|-------|-----|
+| Em dash, en dash | `-` |
+| Ellipsis character | `...` |
+| Right arrow | `->` |
+| Smart single/double quotes | `'` and `"` |
+| `<=` / `>=` symbols (if used in comments) | `<=` and `>=` as ASCII |
+| Box-drawing characters in comment banners | repeated `-` |
+
+Exported file content (HTML entities such as `&mdash;`, CSV field values, or binary paths) may use Unicode when required by the format. `03 Context` markdown may keep normal typography for readability.
+
 ### Exchange-only Signals
 
 Safe only in Exchange scripts unless verified otherwise:

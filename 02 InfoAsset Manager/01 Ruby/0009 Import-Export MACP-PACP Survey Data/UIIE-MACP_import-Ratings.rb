@@ -244,7 +244,7 @@ def survey_matches_mh?(survey, mh_row, ids_mode, custom_value, custom_field_num)
       return true if [mh_num + idx, "#{mh_num}_#{idx}", "#{mh_num}-#{idx}"].include?(sid)
     end
 
-    # Same manhole surveyed more than once – use date/time to distinguish.
+    # Same manhole surveyed more than once - use date/time to distinguish.
     !mh_dt.nil? && datetimes_equal?(survey_datetime_normalized(survey), mh_dt)
 
   when 'CustomField'
@@ -278,7 +278,7 @@ def find_survey_for_mh(mh_row, surveys_by_id, all_surveys, ids_mode, custom_fiel
       dt_matches = matches.select { |s| datetimes_equal?(survey_datetime_normalized(s), mh_dt) }
       return dt_matches[0] if dt_matches.length == 1
     end
-    puts "  WARNING: #{matches.length} surveys match InspectionID #{insp_id} (#{mh_row['Manhole_Number']}) – using first"
+    puts "  WARNING: #{matches.length} surveys match InspectionID #{insp_id} (#{mh_row['Manhole_Number']}) - using first"
     return matches[0]
   end
 

@@ -4,7 +4,7 @@
 # delta column (NEW / UPDATED / DELETED). Useful when GIS publishes one layer
 # per asset type but IAM stores them in a single table (e.g. cams_manhole).
 #
-# Run from: Network → Run Ruby Script… (Collection network open on GeoPlan)
+# Run from: Network -> Run Ruby Script... (Collection network open on GeoPlan)
 #
 # Prerequisites:
 #   - One ODIC import .cfg per shapefile (DBI002 header, no UTF-8 BOM)
@@ -12,7 +12,7 @@
 #   - See Readme.md and example_manhole_delta_import.cfg in this folder
 
 # ---------------------------------------------------------------------------
-# Configuration — edit for your project
+# Configuration - edit for your project
 # ---------------------------------------------------------------------------
 
 WORKING_FOLDER = File.join(File.dirname(WSApplication.script_file), 'delta_import_data')
@@ -22,7 +22,7 @@ ERROR_LOG      = File.join(WORKING_FOLDER, 'odic_delta_import_errors.txt')
 # Source shapefile attribute names (first match wins)
 DELTA_FIELD_NAMES = ['DELTA_TYPE', 'delta_type', 'Delta_Type'].freeze
 
-# Normalised (uppercase) delta values — edit if your GIS uses other codes
+# Normalised (uppercase) delta values - edit if your GIS uses other codes
 IMPORT_DELTA_VALUES = ['NEW', 'UPDATED'].freeze
 DELETE_DELTA_VALUES = ['DELETED'].freeze
 
@@ -103,7 +103,7 @@ class DeltaNodeImporter
   end
 end
 
-# Optional: per-source callbacks with extra field logic (subtype → node_type, etc.)
+# Optional: per-source callbacks with extra field logic (subtype -> node_type, etc.)
 # class LayerANodeImporter
 #   def LayerANodeImporter.OnBeginRecordNode(obj)
 #     DeltaNodeImporter.OnBeginRecordNode(obj)
@@ -174,7 +174,7 @@ begin
     raise "Missing shapefile: #{shp_path}" unless File.exist?(shp_path)
     raise "Missing config: #{cfg_path}" unless File.exist?(cfg_path)
 
-    log_line "#{index + 1}. Import #{source[:label]} — #{source[:shapefile]}"
+    log_line "#{index + 1}. Import #{source[:label]} - #{source[:shapefile]}"
     options['Callback Class'] = source[:callback_class]
 
     net.odic_import_ex('SHP', cfg_path, options, ODIC_NODE_TABLE, shp_path)
@@ -183,7 +183,7 @@ begin
 
   delete_ids = $delta_deleted_node_ids.uniq
   unless delete_ids.empty?
-    log_line 'Applying delta deletions…'
+    log_line 'Applying delta deletions...'
     open_net = net.respond_to?(:open) ? net.open : net
     open_net.transaction_begin
     deleted, not_found = delete_nodes_by_id(open_net, delete_ids)

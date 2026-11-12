@@ -17,7 +17,7 @@ begin
 	
 	# Create a hash for the options of the import method
 	options=Hash.new
-	options['IDs']='ManholeNumberDateAndTime'		## String, field or fields to use for IDs – choices are: 'ManholeNumberDateAndTime', 'ManholeNumberAndIndex', 'InspectionID', 'CustomField'
+	options['IDs']='ManholeNumberDateAndTime'		## String, field or fields to use for IDs - choices are: 'ManholeNumberDateAndTime', 'ManholeNumberAndIndex', 'InspectionID', 'CustomField'
 	#options['CustomField']=10						## Integer, ID of custom field. Needed if IDs is set to 'CustomField'
 	#options['IfBlankUseInspectionID']=true			## Boolean, if blank use Inspection ID | Default=false
 	options['UpdateDuplicates']=false				## Boolean, update duplicates. (UpdateDuplicates may not be false if IDs is set to 'ManholeNumberAndIndex') | Default=false

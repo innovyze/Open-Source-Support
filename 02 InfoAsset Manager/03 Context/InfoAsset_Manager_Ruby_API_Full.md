@@ -106,6 +106,8 @@ db = WSApplication.open('C:/Data/MyDB.icmm', '2025.0')
 
 ### `WSApplication.prompt` Layout Format
 
+Prompt and message box strings should use **ASCII punctuation**; keep the same convention in comments and log messages in the script. See `InfoAsset_Manager_Ruby_Boundary_Guard.md` → IAM Ruby Source Text Guard.
+
 Each row in the layout array is an Array:
 
 ```ruby

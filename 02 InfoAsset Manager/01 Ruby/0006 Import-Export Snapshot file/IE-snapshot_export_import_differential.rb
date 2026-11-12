@@ -21,7 +21,7 @@ begin
 	version_tracking_file = snapshot_directory + 'network1_previous_export_commit_id.txt'
 
 	#####################################################
-	## Export options — ChangesFromVersion set from tracking file below
+	## Export options - ChangesFromVersion set from tracking file below
 	exp_options = Hash.new
 	exp_options['SelectedOnly'] = false
 	exp_options['IncludeImageFiles'] = false
@@ -38,7 +38,7 @@ begin
 	imp_options['ImportImageFiles'] = false
 
 	#####################################################
-	## Source network — read last exported commit, update, export if changed
+	## Source network - read last exported commit, update, export if changed
 	source_nw = db.model_object_from_type_and_id(network_type, source_network_id)
 
 	previous_export_commit_id = 0
@@ -62,7 +62,7 @@ begin
 	puts "#{currtime} Previous export Commit ID: #{previous_export_commit_id} | Current Commit ID: #{current_commit_id}"
 
 	if previous_export_commit_id >= current_commit_id
-		puts "#{currtime} No changes since last export — skipping export and import"
+		puts "#{currtime} No changes since last export - skipping export and import"
 	else
 		exp_options['ChangesFromVersion'] = previous_export_commit_id
 
@@ -74,7 +74,7 @@ begin
 		source_on.close
 
 		#####################################################
-		## Target network — import snapshot and commit
+		## Target network - import snapshot and commit
 		target_nw = db.model_object_from_type_and_id(network_type, target_network_id)
 
 		currtime = Time.now.strftime('%Y-%m-%d %H:%M:%S')

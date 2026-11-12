@@ -16,7 +16,7 @@ options=Hash.new
 #options['Export Selection'] = false			# Boolean, True to export the selected objects only | Default = FALSE
 #options['Previous Version'] = false			# Integer, Previous version, if not zero differences are exportedy | Default = 0
 #options['WGS84'] = false						# Boolean | Default = FALSE
-#options['Don’t Update Geometry'] = false		# Boolean | Default = FALSE
+#options['Don't Update Geometry'] = false		# Boolean | Default = FALSE
 
 
 nw.odec_export_ex(

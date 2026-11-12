@@ -13,7 +13,7 @@ WORK_PACKAGE_FIELD = 'work_package'.freeze
 CONTRACT_NO_FIELD = 'contract_no'.freeze
 
 # ---------------------------------------------------------------------------
-# Mapping: one line per match — project, work_package, contract_no
+# Mapping: one line per match - project, work_package, contract_no
 # Values are trimmed; project and work_package matching is case-insensitive.
 # ---------------------------------------------------------------------------
 CONTRACT_MAPPINGS = [
@@ -42,7 +42,7 @@ def build_contract_map(mapping_lines)
 
     parts = text.split(',', 3)
     if parts.length < 3
-      puts "Warning: mapping line #{idx + 1} ignored — expected project,work_package,contract_no: #{line}"
+      puts "Warning: mapping line #{idx + 1} ignored - expected project,work_package,contract_no: #{line}"
       next
     end
 
@@ -52,7 +52,7 @@ def build_contract_map(mapping_lines)
     key = [project, work_package]
 
     if map.key?(key)
-      puts "Warning: duplicate mapping for #{parts[0]},#{parts[1]} — using last entry"
+      puts "Warning: duplicate mapping for #{parts[0]},#{parts[1]} - using last entry"
     end
     map[key] = contract_no
   end
@@ -120,7 +120,7 @@ def create_outcome_selection_lists(net, asset_group, outcome_ids, run_prefix, ve
 
     selected = select_surveys(net, survey_ids)
     if selected == 0
-      verbose_log(verbose, "Selection List not created for '#{label}' — no surveys could be selected")
+      verbose_log(verbose, "Selection List not created for '#{label}' - no surveys could be selected")
       next
     end
 

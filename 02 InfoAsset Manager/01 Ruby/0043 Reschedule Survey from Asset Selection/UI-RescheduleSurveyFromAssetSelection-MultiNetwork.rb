@@ -676,7 +676,7 @@ def surveys_from_asset_relationship(asset, survey_table, profile)
       end
     end
   rescue StandardError
-    # Relationship not available on this asset type — fall through.
+    # Relationship not available on this asset type - fall through.
   end
 
   begin
@@ -685,7 +685,7 @@ def surveys_from_asset_relationship(asset, survey_table, profile)
       nav.each { |s| found << s unless s.nil? }
     end
   rescue StandardError
-    # navigate not available — fall through.
+    # navigate not available - fall through.
   end
 
   found.uniq { |s| s.id.to_s }

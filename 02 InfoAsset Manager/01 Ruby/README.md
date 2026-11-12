@@ -31,7 +31,7 @@ More information can be found in the online InfoAsset Manager Help [https://help
 
 ## AI-assisted scripting context
 
-The [`03 Context/`](../03%20Context/) folder contains LLM-oriented reference files for IAM Ruby scripting — API class reference, schema tables, production patterns, error reference, and load-order instructions. Load `Instructions.md` first when using an AI coding assistant for IAM Ruby work.
+The [`03 Context/`](../03%20Context/) folder contains LLM-oriented reference files for IAM Ruby scripting — API class reference, schema tables, production patterns, error reference, and load-order instructions. Load `Instructions.md` first when using an AI coding assistant for IAM Ruby work. Use ASCII punctuation throughout Ruby scripts (prompts, message boxes, `puts`, and comments); see `03 Context/InfoAsset_Manager_Ruby_Lessons_Learned.md`.
 
 ## Note
 See the README in the top-level of the [Innovyze/Open-Source-Support repository](https://github.com/innovyze/Open-Source-Support/tree/main) for more information.  

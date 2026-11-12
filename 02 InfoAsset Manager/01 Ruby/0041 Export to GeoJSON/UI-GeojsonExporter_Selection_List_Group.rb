@@ -464,7 +464,7 @@ def run_export
     return
   end
 
-  report "Exporting to CSV (WGS84, selection only) — output: #{output_base}"
+  report "Exporting to CSV (WGS84, selection only) - output: #{output_base}"
   report "Target: #{label}"
 
   csv_dir, geojson_dir = export_selection_list(net, selection_list_id, output_base)

@@ -36,7 +36,7 @@ options,									# specified options override the default options
 'sqlname',						# the SQL server name
 nil,							# the SQL Server instance name
 'serverdb',						# the database name
-false,							# integrated security (Boolean – true or false, true meaning integrated security)
+false,							# integrated security (Boolean - true or false, true meaning integrated security)
 'sqlun',						# user name
 'sqlpw'							# password
 )
@@ -52,7 +52,7 @@ options,									# specified options override the default options
 'sqlname',						# the server name
 nil,							# the SQL Server instance name
 'serverdb',						# the database name
-false,							# integrated security (Boolean – true or false, true meaning integrated security)
+false,							# integrated security (Boolean - true or false, true meaning integrated security)
 'sqlun',						# user name
 'sqlpw'							# password
 )

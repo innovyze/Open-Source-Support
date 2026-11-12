@@ -65,7 +65,7 @@ else
   end
 
   unless skipped_type.empty?
-    puts 'WARNING: unrecognised asset type value(s) in user_text_40 — those surveys will be skipped:'
+    puts 'WARNING: unrecognised asset type value(s) in user_text_40 - those surveys will be skipped:'
     skipped_type.each { |t| puts "  '#{t}'" }
   end
 
@@ -107,7 +107,7 @@ else
 
     asset = asset_lookup[table][asset_id]
     if asset.nil?
-      puts "WARNING: #{table} asset '#{asset_id}' not found for survey '#{survey.id}' — skipping."
+      puts "WARNING: #{table} asset '#{asset_id}' not found for survey '#{survey.id}' - skipping."
       not_found += 1
       next
     end

@@ -11,6 +11,17 @@ See `InfoAsset_Manager_Ruby_Boundary_Guard.md` → **Runtime Guard** for the ful
 
 **Key takeaway:** If a script fails at startup, the first check is always whether the entry pattern matches the runtime mode.
 
+## CRITICAL: IAM Ruby Source Text Should Be ASCII-Only
+
+InfoAsset Manager often renders Unicode punctuation incorrectly in dialogs (for example em dash, en dash, or ellipsis appear garbled). The same punctuation in `puts`, comments, and message boxes encourages copying bad text into prompts.
+
+**Apply to all generated and edited scripts under `01 Ruby`:**
+
+- Prompts, message boxes, `puts` / `report` messages, and comments: ASCII punctuation only (`-`, `...`, `->`, straight quotes).
+- When adapting or reviewing examples, normalize the whole script, not only dialog strings.
+
+See `InfoAsset_Manager_Ruby_Boundary_Guard.md` → **IAM Ruby Source Text Guard**.
+
 ## CRITICAL: Do Not Reuse Example Paths or IDs As Real Defaults
 
 Many IAM Exchange examples contain placeholder values such as:

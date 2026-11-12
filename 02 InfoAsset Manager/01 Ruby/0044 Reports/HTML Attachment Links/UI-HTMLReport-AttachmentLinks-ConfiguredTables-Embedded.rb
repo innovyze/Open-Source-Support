@@ -15,25 +15,25 @@ require 'fileutils'
 require 'base64'
 
 # ---------------------------------------------------------------------------
-# EXPORT CONFIGURATION — edit before running
+# EXPORT CONFIGURATION - edit before running
 #
 # Each hash defines one IAM table to export:
-#   'table'   — internal table name (e.g. cams_cctv_survey)
-#   'fields'  — column order in the HTML (left to right)
-#   'headers' — optional; same length as 'fields' for column titles
+#   'table'   - internal table name (e.g. cams_cctv_survey)
+#   'fields'  - column order in the HTML (left to right)
+#   'headers' - optional; same length as 'fields' for column titles
 #
 # Scalar IAM fields: use the field name (e.g. survey_id, when_surveyed).
 #
-# File UID / path scalars — optional suffix:
+# File UID / path scalars - optional suffix:
 #   field:link    Hyperlink to SNumbatData file (video vs attachment store auto-detected)
 #   field:exists  Yes / No / blank (path not configured)
 #
-# attachments BLOB (child records with db_ref, filename, purpose, …):
+# attachments BLOB (child records with db_ref, filename, purpose, ...):
 #   attachments          Same as attachments:links
 #   attachments:links    All attachment files as HTML links in one cell
 #   attachments:count    Count of attachment records with a db_ref
 #   attachments:filenames  Filenames separated by "; "
-#   attachments:text     Plain text "purpose — filename (db_ref)" per line
+#   attachments:text     Plain text "purpose - filename (db_ref)" per line
 #
 # Other nested BLOBs (e.g. cams_cctv_survey.details):
 #   details:count              Number of detail records
@@ -46,7 +46,7 @@ require 'base64'
 #   'details:Distance,Code,Remarks'   or   'Distance, Code, Remarks'
 #   Column title shows labels joined with "; ".
 #
-# Bare blob name without ":…" is not supported — pick a mode above.
+# Bare blob name without ":..." is not supported - pick a mode above.
 #
 # Embedded export (this script): at run time you choose whether to inline
 # images, other files (PDF etc.), and videos. Large files are linked instead
@@ -54,7 +54,7 @@ require 'base64'
 # ---------------------------------------------------------------------------
 
 EXPORT_CONFIG = [
-  # --- Collection node (manhole) assets — table cams_manhole ---
+  # --- Collection node (manhole) assets - table cams_manhole ---
   {
     'table' => 'cams_manhole',
     'fields' => %w[
@@ -621,7 +621,7 @@ def resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, tabl
       return nested_blob_cell(ro, base, mode, att_store, vid_store, att_uids, all_uids, embed_ctx)
     end
     if mode == 'value'
-      return html_escape("(BLOB field — use #{base}:count, #{base}:links, or #{base}:field1,field2)")
+      return html_escape("(BLOB field - use #{base}:count, #{base}:links, or #{base}:field1,field2)")
     end
   end
 
@@ -662,7 +662,7 @@ def attachment_blob_cell(ro, mode, att_store, att_uids, embed_ctx)
     lines = records.map do |att, db_ref|
       purpose = attachment_field(att, 'purpose')
       filename = attachment_field(att, 'filename')
-      label = [purpose, filename].reject(&:empty?).join(' — ')
+      label = [purpose, filename].reject(&:empty?).join(' - ')
       label = db_ref if label.empty?
       "#{label} (#{db_ref})"
     end
@@ -682,7 +682,7 @@ def attachment_blob_cell(ro, mode, att_store, att_uids, embed_ctx)
     end
     parts.join('<br>')
   else
-    html_escape("(Unknown attachments mode — use links, count, filenames, or text)")
+    html_escape("(Unknown attachments mode - use links, count, filenames, or text)")
   end
 end
 
@@ -941,7 +941,7 @@ end
 default_output = begin; WSApplication.local_root.to_s.strip; rescue; 'C:\\Temp'; end
 
 prompt1 = WSApplication.prompt(
-  'Configured export — single-file HTML (embedded media)',
+  'Configured export - single-file HTML (embedded media)',
   [
     ['Process SELECTION only?', 'Boolean', false],
     ['Embed local images in HTML?', 'Boolean', true],
@@ -1011,7 +1011,7 @@ EXPORT_CONFIG.each do |entry|
     next
   end
   unless known_tables[table_name]
-    puts "Warning: table '#{table_name}' not found in open network — skipped"
+    puts "Warning: table '#{table_name}' not found in open network - skipped"
     next
   end
 
@@ -1033,7 +1033,7 @@ EXPORT_CONFIG.each do |entry|
         child_names = blob_child_field_names(net, table_name, base)
         unless child_names.empty?
           subs.each do |sf|
-            puts "Warning: #{table_name}.#{base} — sub-field '#{sf}' not in blob schema" unless child_names.include?(sf)
+            puts "Warning: #{table_name}.#{base} - sub-field '#{sf}' not in blob schema" unless child_names.include?(sf)
           end
         end
       end
@@ -1042,12 +1042,12 @@ EXPORT_CONFIG.each do |entry|
     next if base == 'attachments'
     next if parsed['mode'] == 'count' || parsed['mode'] == 'links'
     next if field_names.include?(base)
-    puts "Warning: #{table_name} — field '#{parsed['base']}' not in table schema"
+    puts "Warning: #{table_name} - field '#{parsed['base']}' not in table schema"
   end
 
   row_set = network_rows(net, table_name, selection_only)
   if row_set.nil?
-    puts "Skipped #{table_name} — cannot read row objects on this IAM build"
+    puts "Skipped #{table_name} - cannot read row objects on this IAM build"
     next
   end
 

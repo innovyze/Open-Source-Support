@@ -7,8 +7,8 @@
 #          1. Header-level component condition fields (Cover, Frame, Seal,
 #             Chimney, pipe connections) per the MACP Condition Grade Matrix.
 #             Traffic-sensitive grades (v7 only) use location_code (Field 25):
-#               Traffic     (T)  – codes A, B, C, D, G, H, M
-#               No-Traffic  (NT) – codes E, F, I, J, K, L, Y, Z
+#               Traffic     (T)  - codes A, B, C, D, G, H, M
+#               No-Traffic  (NT) - codes E, F, I, J, K, L, Y, Z
 #             (v8 removes all traffic sensitivity from MACP header scoring.)
 #
 #          2. Detail-blob defect observations (structural_score / service_score,
@@ -18,7 +18,7 @@
 #          MACP summary rating fields are then written back to the survey.
 #          A full per-survey scoring breakdown is printed to the Ruby console.
 #
-#          Supports NASSCO MACP v7.0.3 (Appendix C pp. 32–34) and
+#          Supports NASSCO MACP v7.0.3 (Appendix C pp. 32-34) and
 #          NASSCO MACP v8.0 (Appendix C pp. C-25 to C-34). Selected at runtime.
 #
 # Run from: Network > Run Ruby Script (with a Collection Network open)
@@ -30,8 +30,8 @@ net = WSApplication.current_network
 
 # ---------------------------------------------------------------------------
 # Helper: encode an occurrence count per NASSCO MACP quick-rating spec.
-#   1–9    → '1'–'9'
-#   10–14  → 'A', 15–19 → 'B', 20–24 → 'C' … (bands of 5 per letter, capped at 'Z')
+#   1-9    -> '1'-'9'
+#   10-14  -> 'A', 15-19 -> 'B', 20-24 -> 'C' ... (bands of 5 per letter, capped at 'Z')
 # ---------------------------------------------------------------------------
 def format_occurrence_count(count)
   return count.to_s if count <= 9
@@ -41,10 +41,10 @@ def format_occurrence_count(count)
 end
 
 # ---------------------------------------------------------------------------
-# Helper: build NASSCO quick-rating string from a grade→count hash.
-#   No defects           → '0000'
-#   One grade only       → e.g. '4200' (grade + count + '00')
-#   Two or more grades   → e.g. '5132'
+# Helper: build NASSCO quick-rating string from a grade->count hash.
+#   No defects           -> '0000'
+#   One grade only       -> e.g. '4200' (grade + count + '00')
+#   Two or more grades   -> e.g. '5132'
 # ---------------------------------------------------------------------------
 def build_quick_rating(grade_counts)
   active = (5).downto(1)
@@ -59,18 +59,18 @@ end
 # Lookup tables used in header-level scoring
 # ---------------------------------------------------------------------------
 
-# MACP Field 25 – location codes that indicate vehicular traffic (T).
+# MACP Field 25 - location codes that indicate vehicular traffic (T).
 # All other recorded codes are treated as No-Traffic (NT).
 traffic_location_codes = %w[A B C D G H M].freeze
 
-# Infiltration/Inflow code → O&M grade (Structural grade is blank for both
+# Infiltration/Inflow code -> O&M grade (Structural grade is blank for both
 # Field 71 Frame Seal Inflow and Field 76 Chimney I/I per MACP grade matrix).
 # v7 base: NONE/N = grade 1. v8 override applied post-prompt: NONE/N = No Score.
 ini_flow_grade = {
   'NONE' => 1, 'N' => 1, 'IS' => 2, 'IW' => 3, 'ID' => 4, 'IR' => 5, 'IG' => 5
 }.freeze
 
-# Pipe connection condition code → O&M grade (Structural grade is blank
+# Pipe connection condition code -> O&M grade (Structural grade is blank
 # for Field 115 per MACP grade matrix).
 # v7 base: SOUND/S = grade 1. v8 override applied post-prompt: SOUND/S = No Score.
 pipe_condition_grade = {
@@ -86,7 +86,7 @@ pipe_condition_grade = {
 # nil = the defect code is not applicable at that location.
 # ---------------------------------------------------------------------------
 
-# Normalise descriptive_location field value → location index 0-3, or nil.
+# Normalise descriptive_location field value -> location index 0-3, or nil.
 # Codes: B=Bench, C=Channel, CME/CMI=Chimney, COE/COI=Cone, WE/WI=Wall
 # Cone and Wall share index 1 in the grade arrays.
 detail_loc_idx = lambda do |loc_str|
@@ -99,7 +99,7 @@ detail_loc_idx = lambda do |loc_str|
   end
 end
 
-# Structural family detail grades: code → [chimney, cone/wall, bench, channel]
+# Structural family detail grades: code -> [chimney, cone/wall, bench, channel]
 STRUCT_DETAIL_GRADES = {
   # Crack (C)
   'CC' => [2,2,2,2], 'CL' => [2,2,2,2], 'CM' => [3,3,3,3], 'CS' => [2,2,2,2],
@@ -107,7 +107,7 @@ STRUCT_DETAIL_GRADES = {
   'FC' => [3,3,3,3], 'FL' => [3,3,3,3], 'FM' => [4,4,4,4], 'FS' => [3,3,3,3],
   # Broken (B)
   'B'   => [5,5,5,5], 'BSV' => [5,5,5,5], 'BVV' => [5,5,5,5],
-  # Hole (H) – channel grade depends on clock_at: 1 position→4, other/nil→5 (resolved at runtime)
+  # Hole (H) - channel grade depends on clock_at: 1 position->4, other/nil->5 (resolved at runtime)
   'H'   => [2,2,2,5], 'HSV' => [5,5,5,5], 'HVV' => [5,5,5,5],
   # Collapse (X)
   'X'   => [5,5,5,5],
@@ -140,18 +140,18 @@ STRUCT_DETAIL_GRADES = {
   'MMS' => [2,2,2,2], 'MMM' => [3,3,3,3], 'MML' => [4,4,4,4],
 }.freeze
 
-# O&M family detail grades – fixed (non-percentage) codes
-# code → [chimney, cone/wall, bench, channel]
+# O&M family detail grades - fixed (non-percentage) codes
+# code -> [chimney, cone/wall, bench, channel]
 OM_DETAIL_GRADES_FIXED = {
-  # Roots – Fine (RF): location suffix B=Both B/C, L=Lateral, C=Connection, J=Joint
+  # Roots - Fine (RF): location suffix B=Both B/C, L=Lateral, C=Connection, J=Joint
   'RFB' => [1,1,1,2], 'RFL' => [1,1,1,1], 'RFC' => [1,1,1,1], 'RFJ' => [1,1,1,1],
-  # Roots – Tap (RT)
+  # Roots - Tap (RT)
   'RTB' => [1,1,1,3], 'RTL' => [1,1,1,2], 'RTC' => [1,1,1,2], 'RTJ' => [1,1,1,2],
-  # Roots – Medium (RM)
+  # Roots - Medium (RM)
   'RMB' => [1,1,1,4], 'RML' => [1,1,1,3], 'RMC' => [1,1,1,3], 'RMJ' => [1,1,1,3],
-  # Roots – Blocking (RB) – grade 2 on chimney/cone/bench, higher on channel
+  # Roots - Blocking (RB) - grade 2 on chimney/cone/bench, higher on channel
   'RBB' => [2,2,2,5], 'RBL' => [2,2,2,4], 'RBC' => [2,2,2,4], 'RBJ' => [2,2,2,4],
-  # Infiltration (I) – detail-level observation codes
+  # Infiltration (I) - detail-level observation codes
   'IS' => [1,1,1,1], 'IW' => [2,2,2,2],
   'ID' => [3,3,3,3],  # Dripping: chimney=2, all other locations=3
   'IR' => [4,4,4,4], 'IG' => [5,5,5,5],
@@ -166,9 +166,9 @@ OM_DETAIL_GRADES_FIXED = {
 # Each factory returns a lambda that accepts a percentage value (or nil)
 # and returns the appropriate grade integer (or nil for N/A locations).
 #   _F[g]  flat grade g regardless of percentage
-#   _T2[]  2-tier: pct < 30% → 1, pct ≥ 30% → 2
-#   _CD[]  deposit 4-tier channel: ≤10%→1, >10–≤20%→2, >20–≤30%→3, >30%→4
-#   _CO[]  obstacle 4-tier channel: ≤10%→2, >10–≤20%→3, >20–≤30%→4, >30%→5
+#   _T2[]  2-tier: pct < 30% -> 1, pct >= 30% -> 2
+#   _CD[]  deposit 4-tier channel: <=10%->1, >10-<=20%->2, >20-<=30%->3, >30%->4
+#   _CO[]  obstacle 4-tier channel: <=10%->2, >10-<=20%->3, >20-<=30%->4, >30%->5
 #   _NA[]  not applicable at this location (always nil)
 _F  = ->(g) { ->(p) { g } }
 _T2 = ->    { ->(p) { !p || p.to_f <  30 ? 1 : 2 } }
@@ -177,25 +177,25 @@ _CO = ->    { ->(p) { p.nil? ? 2 : (pf = p.to_f) <= 10 ? 2 : pf <= 20 ? 3 : pf <
 _NA = ->    { ->(_p) { nil } }
 
 # O&M percentage-based grade table.
-# code → [fn_chimney, fn_cone_wall, fn_bench, fn_channel]
+# code -> [fn_chimney, fn_cone_wall, fn_bench, fn_channel]
 # Each fn receives the percentage value and returns a grade Integer or nil.
 OM_PCT_GRADE_TABLE = {
-  # ── Deposits – Attached ────────────────────────────────────────────────────
+  # -- Deposits - Attached ----------------------------------------------------
   # DAE has the same tier structure as DAGS/DAR
   'DAE'  => [_T2[], _T2[], _T2[], _CD[]],
   'DAGS' => [_F[1], _F[1], _T2[], _CD[]],
   'DAR'  => [_F[1], _F[1], _T2[], _CD[]],
   'DAZ'  => [_T2[], _T2[], _T2[], _CD[]],
-  # ── Deposits – Settled ─────────────────────────────────────────────────────
+  # -- Deposits - Settled -----------------------------------------------------
   'DSC'  => [_NA[], _NA[], _T2[], _CD[]],  # n/a chimney/cone
   'DSF'  => [_NA[], _NA[], _T2[], _CD[]],
   'DSGV' => [_NA[], _NA[], _T2[], _CD[]],
   'DSZ'  => [_NA[], _NA[], _T2[], _CD[]],
-  # ── Deposits – Non-cohesive ────────────────────────────────────────────────
+  # -- Deposits - Non-cohesive ------------------------------------------------
   'DNF'  => [_NA[], _NA[], _T2[], _CD[]],  # n/a chimney/cone
   'DNGV' => [_NA[], _NA[], _T2[], _CD[]],
   'DNZ'  => [_NA[], _NA[], _T2[], _CD[]],
-  # ── Obstacles / Obstructions ───────────────────────────────────────────────
+  # -- Obstacles / Obstructions -----------------------------------------------
   # OBB single-tier: flat 1 on chimney/cone/bench, flat 2 on channel
   'OBB'  => [_F[1], _F[1], _F[1], _F[2]],
   'OBM'  => [_T2[], _T2[], _T2[], _CO[]],
@@ -209,7 +209,7 @@ OM_PCT_GRADE_TABLE = {
   'OBZ'  => [_T2[], _T2[], _T2[], _CO[]],
 }.freeze
 
-# O&M percentage-based grade lookup (v7 base – overridden after prompt for v8).
+# O&M percentage-based grade lookup (v7 base - overridden after prompt for v8).
 om_pct_grade = lambda do |code, loc_idx, pct|
   row = OM_PCT_GRADE_TABLE[code]
   return nil unless row && !loc_idx.nil?
@@ -217,44 +217,44 @@ om_pct_grade = lambda do |code, loc_idx, pct|
   fn ? fn.call(pct) : nil
 end
 
-# Set of all percentage-based O&M codes – used by suffix normalisation.
+# Set of all percentage-based O&M codes - used by suffix normalisation.
 OM_PCT_CODES = %w[
   DAE DAGS DAR DAZ DSC DSF DSGV DSZ DNF DNGV DNZ
   OBB OBM OBI OBJ OBC OBP OBS OBN OBR OBZ
 ].freeze
 
 # ---------------------------------------------------------------------------
-# NASSCO MACP v8.0 – grade overrides and additions (Appendix C, C-25 to C-34)
+# NASSCO MACP v8.0 - grade overrides and additions (Appendix C, C-25 to C-34)
 # Merged on top of v7 base tables when v8 is selected at runtime.
 # ---------------------------------------------------------------------------
 
 # Structural detail grade changes and new codes in v8.
 STRUCT_DETAIL_GRADES_V8_PATCHES = {
   # Changed grades vs v7
-  'LFD'  => [4,4,4,4],   # Bench and Channel raised from 3 → 4
-  'LFDC' => [3,3,3,3],   # Cone/Wall raised from 2 → 3
+  'LFD'  => [4,4,4,4],   # Bench and Channel raised from 3 -> 4
+  'LFDC' => [3,3,3,3],   # Cone/Wall raised from 2 -> 3
   'RPRD' => [4,4,4,4],   # Bench and Channel added (were nil in v7)
   'RPZD' => [4,4,4,4],   # All locations added (were nil/observation-only in v7)
   # New codes added in v8
   'SZD'  => [3,3,3,3],   # Surface Damage Other
   'SPP'  => [4,4,4,4],   # Surface Damage Metal Pitting/Perforation
-  'BTL'  => [2,2,2,2],   # Bolts – Metal Pipe Loose
-  'BTM'  => [3,3,3,3],   # Bolts – Metal Pipe Missing (runtime override for 2+ clock pos → 4)
-  'DFBI' => [5,5,5,5],   # Deformed – Buckling Intruding
-  'DFC'  => [5,5,5,5],   # Deformed – Crushed
-  'DFE'  => [3,3,3,3],   # Deformed – Elliptical
-  'DTBI' => [5,5,5,5],   # Deformed – Transverse Break Intruding
-  # DFBR, DR, DTBR are percentage-based structural – handled via STRUCT_PCT_GRADES_V8
+  'BTL'  => [2,2,2,2],   # Bolts - Metal Pipe Loose
+  'BTM'  => [3,3,3,3],   # Bolts - Metal Pipe Missing (runtime override for 2+ clock pos -> 4)
+  'DFBI' => [5,5,5,5],   # Deformed - Buckling Intruding
+  'DFC'  => [5,5,5,5],   # Deformed - Crushed
+  'DFE'  => [3,3,3,3],   # Deformed - Elliptical
+  'DTBI' => [5,5,5,5],   # Deformed - Transverse Break Intruding
+  # DFBR, DR, DTBR are percentage-based structural - handled via STRUCT_PCT_GRADES_V8
 }.freeze
 
 # Percentage-based structural grade lambdas for v8 Deformed codes.
 # Each lambda takes a percentage value (or nil) and returns a grade integer.
 STRUCT_PCT_GRADES_V8 = {
-  # Deformed – Buckling Receded: ≤5% → 3, >5–≤10% → 4, >10% → 5
+  # Deformed - Buckling Receded: <=5% -> 3, >5-<=10% -> 4, >10% -> 5
   'DFBR' => ->(p) { p.nil? ? 3 : (pf = p.to_f) <= 5 ? 3 : pf <= 10 ? 4 : 5 },
-  # Deformed – Reduced: ≤5% → 4, >5% → 5
+  # Deformed - Reduced: <=5% -> 4, >5% -> 5
   'DR'   => ->(p) { p.nil? ? 4 : p.to_f <= 5 ? 4 : 5 },
-  # Deformed – Transverse Break Receded: ≤5% → 4, >5% → 5
+  # Deformed - Transverse Break Receded: <=5% -> 4, >5% -> 5
   'DTBR' => ->(p) { p.nil? ? 4 : p.to_f <= 5 ? 4 : 5 },
 }.freeze
 
@@ -298,7 +298,7 @@ can_lookup_location    = detail_fields.key?('descriptive_location')
 can_lookup_percentage  = detail_fields.key?('percentage')
 can_write_equiv_count  = detail_fields.key?('characterisation3')
 
-#puts "Detail-defect grade source: code-based lookup (descriptive_location: #{can_lookup_location ? 'found' : 'NOT found – location unknown for lookup'}, percentage: #{can_lookup_percentage ? 'found' : 'NOT found – pct-based codes fall back to stored score'})"
+#puts "Detail-defect grade source: code-based lookup (descriptive_location: #{can_lookup_location ? 'found' : 'NOT found - location unknown for lookup'}, percentage: #{can_lookup_percentage ? 'found' : 'NOT found - pct-based codes fall back to stored score'})"
 #puts ''
 
 macp_output_fields = %w[
@@ -325,7 +325,7 @@ unavailable_output = macp_output_fields - available_output
 # Prompt: scope, version and options
 # ---------------------------------------------------------------------------
 val = WSApplication.prompt(
-  'MACP Manhole Survey – Calculate Ratings',
+  'MACP Manhole Survey - Calculate Ratings',
   [
     ['MACP version:',                                   'String',  '8', nil, 'LIST', ['7', '8']],
     ['Process SELECTION only?',                         'Boolean', true],
@@ -435,12 +435,12 @@ survey_objects.each do |survey|
   # Traffic-conditional grade value.
   tg = ->(nt_grade, t_grade) { is_traffic ? t_grade : nt_grade }
   # Traffic-conditional label suffix showing the grade actually applied.
-  tl = ->(nt_grade, t_grade) { is_traffic ? "T→#{t_grade}" : "NT→#{nt_grade}" }
+  tl = ->(nt_grade, t_grade) { is_traffic ? "T->#{t_grade}" : "NT->#{nt_grade}" }
 
   # =========================================================================
   # Source 1: Header-level component condition fields
   # Reference: NASSCO MACP Condition Grade Matrix, Appendix C
-  #            v7.0.3 pp. 32–34  |  v8.0 pp. C-25 to C-26
+  #            v7.0.3 pp. 32-34  |  v8.0 pp. C-25 to C-26
   # =========================================================================
 
   # ---- Field 52: Hole Number + Field 27: Potential for Runoff (O&M only) --
@@ -565,7 +565,7 @@ survey_objects.each do |survey|
   chi_grade = ini_flow_grade[chi_val]
   add_grade.call(nil, chi_grade, "F76 chimney_ini=#{chi_val}") if chi_grade
 
-  # ---- Field 115: Pipe Connections – incoming and outgoing (O&M only) -----
+  # ---- Field 115: Pipe Connections - incoming and outgoing (O&M only) -----
   [['pipes_in', survey.pipes_in], ['pipes_out', survey.pipes_out]].each do |blob_name, blob|
     (0...blob.size).each do |i|
       cc   = blob[i]['condition_code'].to_s.strip.upcase
@@ -702,8 +702,8 @@ survey_objects.each do |survey|
 
     # If the code isn't found as-is, strip trailing characters one at a time
     # until a base code is matched.  This handles location/size suffix variants
-    # such as ISB/ISC/ISL → IS, IWB/IWC/IWJ/IWL → IW, IDJ → ID, etc.
-    # Codes with their own direct table entries (ISSR, ISGT, ISZ …) are found
+    # such as ISB/ISC/ISL -> IS, IWB/IWC/IWJ/IWL -> IW, IDJ -> ID, etc.
+    # Codes with their own direct table entries (ISSR, ISGT, ISZ ...) are found
     # on the first check and are never stripped.
     in_any = lambda { |c|
       struct_grades.key?(c) || struct_pct_grades.key?(c) ||
@@ -728,7 +728,7 @@ survey_objects.each do |survey|
     if struct_grades.key?(effective_code)
       arr   = struct_grades[effective_code]
       st_g  = loc_idx ? arr[loc_idx] : arr.compact.first
-      # H (Hole) at Channel: 1 clock position → grade 4, 2+ positions → grade 5.
+      # H (Hole) at Channel: 1 clock position -> grade 4, 2+ positions -> grade 5.
       # 1 position = clock_at only, or clock_at == clock_to.
       # 2+ positions = clock_at and clock_to are both present and differ.
       if effective_code == 'H' && loc_idx == 3
@@ -737,7 +737,7 @@ survey_objects.each do |survey|
         multi_pos = !cat.nil? && !cto.nil? && cat.to_s.strip != cto.to_s.strip
         st_g = multi_pos ? 5 : 4
       end
-      # BTM (Bolts – Metal Pipe Missing, v8): grade 3 for 1 clock position, 4 for 2+.
+      # BTM (Bolts - Metal Pipe Missing, v8): grade 3 for 1 clock position, 4 for 2+.
       if macp_v8 && effective_code == 'BTM'
         cat = details[i]['clock_at']
         cto = details[i]['clock_to']
@@ -772,7 +772,7 @@ survey_objects.each do |survey|
     # Write the calculated grades back into the details blob so the stored
     # structural_score / service_score fields reflect the correct values.
     # For continuous-defect start records (mul > 1) the single-observation
-    # grade is written, not the multiplied count – the count is for tallying only.
+    # grade is written, not the multiplied count - the count is for tallying only.
     details[i].structural_score = st_g
     details[i].service_score    = om_g
 
@@ -788,7 +788,7 @@ survey_objects.each do |survey|
   # Skip surveys with no scored observations from either source
   total_observations = struct_counts.values.sum + om_counts.values.sum
   if total_observations == 0
-    puts '  No scored observations from component conditions or details – skipping.'
+    puts '  No scored observations from component conditions or details - skipping.'
     puts ''
     count_no_scores += 1
     next

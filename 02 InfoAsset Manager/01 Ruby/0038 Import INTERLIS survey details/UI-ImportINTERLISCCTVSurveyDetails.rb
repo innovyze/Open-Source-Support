@@ -138,8 +138,8 @@ else
 				details_row[n].distance = details[:distanz]
 				code = details[:kanalschadencode].to_s
 				details_row[n].code              = code[0, 3]						## First 3 characters only.
-				details_row[n].characterisation1 = code[3] if code.length > 3		## 4th character → band
-				details_row[n].characterisation2 = code[4] if code.length > 4		## 5th character → material
+				details_row[n].characterisation1 = code[3] if code.length > 3		## 4th character -> band
+				details_row[n].characterisation2 = code[4] if code.length > 4		## 5th character -> material
 				if QUANTIFIZIERUNG_PERCENTAGE_CODES.include?(details[:kanalschadencode])
 					details_row[n].percentage = details[:quantifizierung1]
 				else

@@ -221,7 +221,7 @@ def seed_nodes_from_selection_lists(net, db, list_ids)
   list_ids.each do |list_id|
     mo = resolve_selection_list(db, list_id)
     if mo.nil?
-      report "WARNING: Selection List ID #{list_id} was not found — skipped."
+      report "WARNING: Selection List ID #{list_id} was not found - skipped."
       next
     end
 
@@ -285,7 +285,7 @@ def ui_run_settings
   )
 
   if prompt.nil?
-    WSApplication.message_box('Dialog closed — script cancelled.', 'OK', '!', false) if WSApplication.respond_to?(:message_box)
+    WSApplication.message_box('Dialog closed - script cancelled.', 'OK', '!', false) if WSApplication.respond_to?(:message_box)
     raise 'abort'
   end
 
@@ -344,7 +344,7 @@ def build_export_rows(net, seed_nodes)
     unless operational_status_ok?(seed[OPERATIONAL_STATUS_FIELD])
       skipped_ineligible += 1
       if SKIP_INELIGIBLE_SEEDS
-        report "Skipping node #{seed['node_id']} — operational status is not #{OPERATIONAL_STATUS_TOKEN}."
+        report "Skipping node #{seed['node_id']} - operational status is not #{OPERATIONAL_STATUS_TOKEN}."
         next
       end
     end

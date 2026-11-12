@@ -111,7 +111,7 @@ def build_defect_type_map(mapping_lines)
 
     parts = text.split(',').map(&:strip).reject(&:empty?)
     if parts.length < 2
-      puts "Warning: defect mapping line #{idx + 1} ignored — expected repair_type,cctv_code[,cctv_code...]: #{line}"
+      puts "Warning: defect mapping line #{idx + 1} ignored - expected repair_type,cctv_code[,cctv_code...]: #{line}"
       next
     end
 

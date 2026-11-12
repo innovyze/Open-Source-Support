@@ -1,8 +1,8 @@
 ## on.mscc_export_cctv_surveys(export_file, export_images, selection_only, log_file)
-### export_file – String - filename to export to
-### export_images – Boolean – true to export defect images to same folder as XML.
+### export_file - String - filename to export to
+### export_images - Boolean - true to export defect images to same folder as XML.
 ### selection_only - Boolean - limit the export to selected objects. 
-### log_file – String – the location of a text file for errors.
+### log_file - String - the location of a text file for errors.
 
 
 if WSApplication.ui?
