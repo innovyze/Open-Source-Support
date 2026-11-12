@@ -62,8 +62,6 @@
 
 - `InfoSWMM_Import_UI.rb` - **Run this** (user interface)
 - `InfoSWMM_Import_Exchange.rb` - Core logic (launched automatically)
-- `InfoSWMM_DWF_Supplement_UI.rb` - Optional follow-up **Run this** (user interface) — fixes Dry Weather Flow data that the built-in InfoSWMM import doesn't correctly populate
-- `InfoSWMM_DWF_Supplement_Exchange.rb` - DWF supplement core logic (launched automatically)
 - `README.md` - This guide
 
 ---
@@ -98,9 +96,9 @@ These features **cannot** be automated via InfoWorks ICM Ruby API:
 
 **Confirmed working on:** InfoWorks ICM 2027.1.0 (embedded Ruby 3.4.6) and InfoWorks ICM 2026.3 and earlier (embedded Ruby 2.4).
 
-All four scripts in this folder use a single, shared codebase across ICM versions — there is no separate branch or version to maintain for older installs. This is intentional: every workaround below relies only on long-standing, version-independent Ruby features (plain `while` loops, `String#getbyte`/`#[offset,len]` for binary parsing, `Process.clock_gettime` for timestamps, backtick subprocess calls), none of which were introduced by or depend on Ruby 3.x. They should run unchanged on any ICM version back to at least 2024.2 (the oldest version this script's `ICMExchange.exe` path list targets). If you have access to an older ICM install, a quick smoke test is still recommended before relying on it in production, but no code changes are expected to be needed.
+Both scripts in this folder use a single, shared codebase across ICM versions — there is no separate branch or version to maintain for older installs. This is intentional: every workaround below relies only on long-standing, version-independent Ruby features (plain `while` loops, `String#getbyte`/`#[offset,len]` for binary parsing, `Process.clock_gettime` for timestamps, backtick subprocess calls), none of which were introduced by or depend on Ruby 3.x. They should run unchanged on any ICM version back to at least 2024.2 (the oldest version this script's `ICMExchange.exe` path list targets). If you have access to an older ICM install, a quick smoke test is still recommended before relying on it in production, but no code changes are expected to be needed.
 
-### Known ICM 2027.0+ embedded Ruby bugs (worked around in these scripts)
+### Known ICM 2027.0+ embedded Ruby compatibility issues (addressed in these scripts)
 
 ICM 2027.0 upgraded its embedded Ruby engine from 2.4 to 3.4.6. On the `x64-mswin64` Ruby 3.4.6 build shipped with ICM 2027.1.0, several individual core methods were found to be non-functional — confirmed by direct reproduction, not a Ruby 3.4 language change (none of the methods below were altered or removed in real Ruby 3.4):
 
@@ -115,11 +113,7 @@ ICM 2027.0 upgraded its embedded Ruby engine from 2.4 to 3.4.6. On the `x64-mswi
 
 Confirmed **not** affected (safe, used as-is): `String#strip`/`#getbyte`/`#[offset,len]`/`#upcase`/`#downcase`/`#casecmp`, `Symbol#inspect`, `Array#each`/`#find`/`#reject`/`#map`/`#any?`/`#max_by`, `JSON.parse`/`#pretty_generate`, `Digest::SHA256.hexdigest`.
 
-These scripts avoid every broken method above entirely: manual byte-level DBF parsing instead of `unpack`, plain `while` loops instead of `loop`/`times`, epoch-based timestamp math via `Process.clock_gettime` instead of `Time`, and backticks instead of `Open3`. If a future ICM version surfaces a new broken method, the fatal-error dialog includes the exact file/line ("Location:" section) to make it fast to diagnose — please report it so the script can be updated.
-
-### Note: these are compatibility workarounds, not upgrades
-
-The original code (using `unpack`, `loop`, `times`, `Time`, `Open3`) was standard, idiomatic Ruby — it was not inferior code. These workarounds trade idiom quality for compatibility with a broken runtime. If Autodesk ships a fixed embedded Ruby build in a future ICM version, the `Time`-based and `Open3`-based workarounds in particular are worth reverting back to the original approach (see the developer findings table for why). The `unpack`/`loop`/`times` workarounds are lower-priority to revert since they're functionally equivalent, just more verbose.
+These scripts avoid every affected method above entirely: manual byte-level DBF parsing instead of `unpack`, plain `while` loops instead of `loop`/`times`, epoch-based timestamp math via `Process.clock_gettime` instead of `Time`, and backticks instead of `Open3`. If a future ICM version surfaces a new affected method, the fatal-error dialog includes the exact file/line ("Location:" section) to make it fast to diagnose — please report it so the script can be updated.
 
 ---
 

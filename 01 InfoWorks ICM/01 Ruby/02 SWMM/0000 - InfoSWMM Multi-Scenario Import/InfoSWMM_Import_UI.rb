@@ -37,13 +37,15 @@
 require 'json'
 
 # ----------------------------------------------------------------------------
-# ICM 2027.1 Ruby build (3.4.6, x64-mswin64) has two confirmed bugs:
-#   1. Symbol#to_s / Symbol#name return garbage or raise, instead of the
-#      real text. (Symbol#inspect and string interpolation of a Symbol
+# ICM 2027.1 Ruby build (3.4.6, x64-mswin64) has two confirmed compatibility
+# issues:
+#   1. Symbol#to_s / Symbol#name return unusable text or raise, instead of
+#      the real text. (Symbol#inspect and string interpolation of a Symbol
 #      both work correctly — use those instead.)
 #   2. String#unpack raises. (String#getbyte and String#[offset,len] both
 #      work correctly — use those to decode binary DBF data instead.)
-# The helpers and DBF reader below are written to avoid both broken paths.
+# The helpers and DBF reader below are written to avoid both affected code
+# paths.
 # ----------------------------------------------------------------------------
 
 # Safe error class name without relying on Class#to_s/#name (untested/risky
@@ -63,7 +65,8 @@ def infoswmm_safe_class_name(e)
 end
 
 # Safe error description — uses Symbol#inspect (confirmed working) instead
-# of Symbol#to_s/#name (confirmed broken) to show the real missing method.
+# of Symbol#to_s/#name (confirmed not to work on this build) to show the
+# real missing method.
 def infoswmm_diagnose_error(e)
   cls = infoswmm_safe_class_name(e)
   detail = ''
@@ -109,7 +112,7 @@ def infoswmm_null_terminated(raw)
   raw[0, end_idx].strip
 end
 
-# The entire Time class is broken on this ICM build — Time.now, #to_s,
+# The entire Time class does not work on this ICM build — Time.now, #to_s,
 # #strftime, and even the plain #year accessor all raise. Avoid Time
 # entirely: get epoch seconds from Process.clock_gettime (a different
 # subsystem, returns a plain Float — no Time object involved) and convert
@@ -335,7 +338,7 @@ if isdb_folder
         fields = []
         field_offset = 1  # First byte is delete flag
         
-        # NOTE: Kernel#loop is also broken on this ICM build (raises
+        # NOTE: Kernel#loop also does not work on this ICM build (raises
         # NoMethodError), so a plain while/true loop is used instead.
         reading_fields = true
         while reading_fields
@@ -390,7 +393,7 @@ if isdb_folder
           file.seek(header_length)
           
           # Read each record.
-          # NOTE: Integer#times is also broken on this ICM build (raises
+          # NOTE: Integer#times also does not work on this ICM build (raises
           # NoMethodError), so a plain counter-based while loop is used.
           record_index = 0
           while record_index < num_records
@@ -668,7 +671,7 @@ end
 command = "\"#{icm_exchange}\" \"#{exchange_script}\" /ICM"
 
 # Capture the console output.
-# NOTE: Open3.capture2 is broken on this ICM build — it fails internally
+# NOTE: Open3.capture2 does not work on this ICM build — it fails internally
 # with NoMethodError (method :last) inside Autodesk's own shipped
 # open3.rb. Use backticks instead, which go through Kernel/IO directly
 # and never touch the open3 library.

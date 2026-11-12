@@ -40,7 +40,7 @@ def log(message, log_file = nil)
   log_file.puts message if log_file
 end
 
-# The entire Time class is broken on this ICM build — Time.now, #to_s,
+# The entire Time class does not work on this ICM build — Time.now, #to_s,
 # #strftime, and even the plain #year accessor all raise. Avoid Time
 # entirely: get epoch seconds from Process.clock_gettime (a different
 # subsystem, returns a plain Float — no Time object involved) and convert
@@ -90,7 +90,7 @@ def infoswmm_timestamp_compact
   "#{infoswmm_zero_pad(h)}#{infoswmm_zero_pad(mi)}#{infoswmm_zero_pad(s)}"
 end
 
-# File.mtime also returns a (broken) Time object; comparing/converting it
+# File.mtime also returns a Time object, which is affected by the same issue; comparing/converting it
 # (as max_by would) risks the same TypeError. Fall back to 0 on failure so
 # "most recent file" selection degrades gracefully instead of crashing.
 def infoswmm_safe_mtime_i(path)
@@ -580,7 +580,7 @@ def get_object_hash(obj, log_file = nil)
     end
     
     # Calculate hash on cleaned content.
-    # NOTE: Digest is a C extension, same risk category as the broken Time
+    # NOTE: Digest is a C extension, same risk category as the affected Time
     # class on this ICM build. If it fails, fall back to using the raw
     # content as the dedup key — less memory-efficient, but functionally
     # equivalent for detecting duplicates (String#hash/#== are core
