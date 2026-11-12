@@ -51,7 +51,23 @@ require 'base64'
 # Embedded export (this script): at run time you choose whether to inline
 # images, other files (PDF etc.), and videos. Large files are linked instead
 # when over the max size per file. Same :link / attachments:links tokens apply.
+#
+# Optional per-table key embed_image_meta (hash): lines shown under each
+# embedded image in that table's export (not under plain hyperlinks).
+#   attachments => IAM sub-fields on the attachments BLOB: purpose, filename,
+#                  description, db_ref (list any subset or all four, in order).
+#   default or a scalar image field name (e.g. location_image) =>
+#                  tokens: field (column title), uid (stored ref), filename
+#                  (basename on disk), path, name (IAM field name).
+#   detail_image etc. under details:links => names of sub-fields on the
+#                  detail row (e.g. distance, code, remarks).
+# Set embed_image_meta to false on a table to disable captions.
 # ---------------------------------------------------------------------------
+
+EMBED_IMAGE_META_DEFAULT = {
+  'attachments' => %w[purpose filename description db_ref],
+  'default' => %w[field uid filename]
+}.freeze
 
 EXPORT_CONFIG = [
   # --- Collection node (manhole) assets - table cams_manhole ---
@@ -70,7 +86,12 @@ EXPORT_CONFIG = [
       'System type',
       'Location image',
       'Attachments'
-    ]
+    ],
+    'embed_image_meta' => {
+      'attachments' => %w[purpose filename description db_ref],
+      'location_image' => %w[field uid filename],
+      'default' => %w[field uid filename]
+    }
   },
   # --- manhole inspection surveys ---
   {
@@ -468,6 +489,60 @@ def embedded_image_open_anchor(inner_html, data_url, css_class, title_text)
          "onclick=\"return openEmbeddedMedia(this);\">#{inner_html}</a>"
 end
 
+def embed_meta_lookup(embed_ctx)
+  return {} if embed_ctx.nil?
+  meta = embed_ctx['embed_meta']
+  return {} if meta == false
+  return EMBED_IMAGE_META_DEFAULT if meta.nil?
+  meta
+end
+
+def embed_meta_keys_for(field_name, embed_ctx)
+  return [] if embed_ctx.nil? || embed_ctx['embed_meta'] == false
+  cfg = embed_meta_lookup(embed_ctx)
+  keys = cfg[field_name]
+  keys = cfg['default'] if keys.nil?
+  if keys.nil?
+    keys = EMBED_IMAGE_META_DEFAULT[field_name] || EMBED_IMAGE_META_DEFAULT['default']
+  end
+  Array(keys).map(&:to_s).map(&:strip).reject(&:empty?)
+end
+
+def scalar_meta_token_value(token, field_name, column_label, uid, path)
+  case token.to_s.strip.downcase
+  when 'field', 'field_name', 'column', 'label' then column_label.to_s
+  when 'uid', 'db_ref', 'value', 'ref' then uid.to_s
+  when 'filename', 'basename' then File.basename(path.to_s)
+  when 'path' then path.to_s
+  when 'name' then field_name.to_s
+  else ''
+  end
+end
+
+def build_embed_meta_lines(field_name, embed_ctx, meta_ctx, label, path)
+  keys = embed_meta_keys_for(field_name, embed_ctx)
+  return [] if keys.empty?
+  if meta_ctx && meta_ctx[:type] == :attachment
+    att = meta_ctx[:attachment]
+    return [] if att.nil?
+    return keys.map { |k| attachment_field(att, k).strip }.reject(&:empty?)
+  end
+  if meta_ctx && meta_ctx[:type] == :blob_child
+    child = meta_ctx[:child]
+    return [] if child.nil?
+    return keys.map { |k| format_scalar_value(nested_child_field(child, k)).strip }.reject(&:empty?)
+  end
+  uid = meta_ctx && meta_ctx[:uid] ? meta_ctx[:uid] : label
+  column = meta_ctx && meta_ctx[:column_label] ? meta_ctx[:column_label] : field_name
+  keys.map { |k| scalar_meta_token_value(k, field_name, column, uid, path).strip }.reject(&:empty?)
+end
+
+def wrap_embedded_with_meta(markup, meta_lines)
+  return markup if meta_lines.nil? || meta_lines.empty?
+  body = meta_lines.map { |line| "<div>#{html_escape(line)}</div>" }.join
+  "<div class=\"embed-block\">#{markup}<div class=\"embed-meta\">#{body}</div></div>"
+end
+
 def render_embedded_markup(data_url, path, field_name, label, embed_ctx)
   safe_url = html_escape(data_url)
   safe_label = html_escape(label.to_s.empty? ? File.basename(path.to_s) : label)
@@ -493,7 +568,7 @@ def render_embedded_markup(data_url, path, field_name, label, embed_ctx)
   "<a href=\"#{safe_url}\" download=\"#{html_escape(File.basename(path.to_s))}\">#{safe_label}</a>"
 end
 
-def media_or_link(label, full_path, field_name, embed_ctx)
+def media_or_link(label, full_path, field_name, embed_ctx, meta_ctx = nil)
   path = full_path.to_s.strip
   return html_escape(label) if path.empty?
 
@@ -509,7 +584,12 @@ def media_or_link(label, full_path, field_name, embed_ctx)
       cache[path] = data_url
       embed_ctx['stats']['embedded'] += 1
     end
-    return render_embedded_markup(data_url, path, field_name, label, embed_ctx)
+    markup = render_embedded_markup(data_url, path, field_name, label, embed_ctx)
+    if image_field_or_file?(field_name, path)
+      meta_lines = build_embed_meta_lines(field_name, embed_ctx, meta_ctx, label, path)
+      markup = wrap_embedded_with_meta(markup, meta_lines)
+    end
+    return markup
   end
 
   embed_ctx['stats']['linked'] += 1 if embed_ctx
@@ -598,7 +678,7 @@ def file_ref_path(uid, field_name, att_store, vid_store, att_uids, all_uids)
   end
 end
 
-def resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, table_field_names, blob_field_names, embed_ctx)
+def resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, table_field_names, blob_field_names, embed_ctx, column_label = '')
   parsed = parse_field_token(token)
   base = parsed['base']
   mode = parsed['mode']
@@ -643,7 +723,8 @@ def resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, tabl
     return '' if val.empty?
     path = file_ref_path(val, base, att_store, vid_store, att_uids, all_uids)
     label = abs_path?(val) ? File.basename(val) : val
-    media_or_link(label, path, base, embed_ctx)
+    meta_ctx = { type: :scalar, uid: val, column_label: column_label }
+    media_or_link(label, path, base, embed_ctx, meta_ctx)
   else
     html_escape(format_scalar_value(scalar))
   end
@@ -678,7 +759,8 @@ def attachment_blob_cell(ro, mode, att_store, att_uids, embed_ctx)
       filename = attachment_field(att, 'filename')
       label = [purpose, filename].reject(&:empty?).join(': ')
       label = storage_ref if label.empty?
-      media_or_link(label, path, 'attachments', embed_ctx)
+      meta_ctx = { type: :attachment, attachment: att }
+      media_or_link(label, path, 'attachments', embed_ctx, meta_ctx)
     end
     parts.join('<br>')
   else
@@ -738,7 +820,8 @@ def nested_blob_cell(ro, blob_name, mode, att_store, vid_store, att_uids, all_ui
       val = nested_child_field(child, fld)
       next if val.nil? || val.to_s.strip.empty?
       path = file_ref_path(val, fld, att_store, vid_store, att_uids, all_uids)
-      links << media_or_link("#{fld}: #{val}", path, fld, embed_ctx)
+      meta_ctx = { type: :blob_child, child: child, uid: val }
+      links << media_or_link("#{fld}: #{val}", path, fld, embed_ctx, meta_ctx)
     end
   end
   links.join('<br>')
@@ -802,9 +885,11 @@ def report_html_style_lines
     '    .tab-panel.active { display: block; }',
     '    .panel-meta { color: #666; margin: 0 0 8px 0; font-size: 13px; }',
     '    .empty-tab { color: #666; font-style: italic; }',
+    '    .embed-block { margin: 8px 0; }',
     '    .embed-img { max-width: 240px; max-height: 180px; height: auto; display: block; margin: 4px 0; }',
     '    a.embed-img-wrap { display: inline-block; cursor: pointer; }',
     '    a.embed-open { display: inline-block; margin: 4px 0; }',
+    '    .embed-meta { font-size: 11px; color: #444; line-height: 1.35; margin-top: 2px; max-width: 280px; }',
     '    .embed-vid { max-width: 360px; display: block; margin: 4px 0; }'
   ]
 end
@@ -1051,11 +1136,19 @@ EXPORT_CONFIG.each do |entry|
     next
   end
 
+  table_embed_meta = entry['embed_image_meta']
+  table_embed_meta = EMBED_IMAGE_META_DEFAULT if table_embed_meta.nil?
+  table_embed_ctx = embed_ctx.merge('embed_meta' => table_embed_meta)
+
   data_rows = []
   row_set.each do |ro|
     next if ro.nil?
-    cells = fields.map do |token|
-      resolve_field_cell(ro, token, att_store, vid_store, att_uids, all_uids, field_names, blob_field_names, embed_ctx)
+    cells = fields.each_with_index.map do |token, col_idx|
+      col_label = headers[col_idx].to_s
+      resolve_field_cell(
+        ro, token, att_store, vid_store, att_uids, all_uids,
+        field_names, blob_field_names, table_embed_ctx, col_label
+      )
     end
     data_rows << cells
   end

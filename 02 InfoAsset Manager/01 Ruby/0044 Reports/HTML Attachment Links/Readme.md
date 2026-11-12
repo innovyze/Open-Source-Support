@@ -139,6 +139,18 @@ Uses the same **`EXPORT_CONFIG`** as [UI-HTMLReport-AttachmentLinks-ConfiguredTa
 
 Embedded image links use a small **JavaScript** helper (`openEmbeddedMedia`) so left-click opens the image in a new tab reliably (browsers often show a blank tab for direct `target="_blank"` navigation to long `data:` URLs).
 
+#### Captions under embedded images
+
+Optional per-table hash **`embed_image_meta`** in `EXPORT_CONFIG` (embedded script only). Each key is an IAM field context; the value is an ordered list of lines printed under embedded images (one `<div>` per non-empty value). Plain hyperlinks (not embedded) are unchanged.
+
+| Key | Value list |
+|-----|------------|
+| `attachments` | Attachments BLOB sub-fields: `purpose`, `filename`, `description`, `db_ref` (any subset, in order) |
+| Scalar image `:link` columns (`location_image`, `photo`, …) or `default` | Tokens: `field` (column title), `uid` (stored ref), `filename` (basename on disk), `path`, `name` (IAM field name) |
+| e.g. `detail_image` | For `details:links`, names of sub-fields on each detail row (`distance`, `code`, `remarks`, …) |
+
+Set `embed_image_meta` to `false` on a table block to turn captions off. If omitted, attachment defaults are all four BLOB fields (`purpose`, `filename`, `description`, `db_ref`); scalar image links use `field`, `uid`, `filename`. Empty values are skipped. See `EMBED_IMAGE_META_DEFAULT` in the embedded script.
+
 **Caution:** embedding many CCTV videos or large attachments can produce very large HTML files and slow browsers; keep video embed off unless you need offline playback for a small set.
 
 ## Notes
