@@ -1,7 +1,7 @@
 # Top 10 fail / unconverge - standalone script
 #
-# Run from ICM Scripts. You'll be prompted for a Simulation ID (selecting a Sim in the
-# database tree first does not currently feed into that prompt - see resolve_sim_mo).
+# Run from ICM Scripts. You'll always be prompted to type a Simulation ID - there is
+# no API to read which Sim is selected in the database tree or open in GeoPlan.
 # The UI branch then launches ICMExchange on this exact same file, passing it your
 # database path and Sim ID as arguments. You do not open Exchange yourself; parsing,
 # selection-list creation (replacing any same-named lists from a previous run against
@@ -25,6 +25,16 @@ ICM_EXCHANGE_CANDIDATES = [
 
 module Top10FailUnconverge
   SELECTION_LIST_LIMIT = 10
+
+  # Pre-processor child object names (PreProcessorInterface_ChildObjectNames.md), checked in
+  # order after a direct lookup misses. Group 1 is the parent stem; '!' is the collision marker.
+  CHILD_OBJECT_RULES = [
+    { pattern: /\A(.+)_brk!*(\.\d+)\z/i, parent: :link_same_suffix },
+    { pattern: /\A(.+)_brk!*\z/i, parent: :node },
+    { pattern: /\A(.+)_B[OEC]\d*!*(?:\.\d+)?\z/i, parent: :bridge },
+    { pattern: /\A(.+)_[LR]!*\.\d+\z/i, parent: :river_reach },
+    { pattern: /\A(.+)_o!*(?:\.\d+)?\z/i, parent: :node_and_culvert }
+  ].freeze
 
   MARKER_LISTS = /SELECTION_LISTS_CREATED=(\d+)/
   MARKER_REPLACED = /SELECTION_LISTS_REPLACED=(\d+)/
@@ -374,8 +384,7 @@ module Top10FailUnconverge
             object_id: link_id,
             first: elapsed_min,
             last: elapsed_min,
-            dt_values: [],
-            type: :failure
+            dt_values: []
           }
           data[:timestep_occurrences][composite_key][:last] = elapsed_min
           data[:timestep_occurrences][composite_key][:dt_values] << dt_value if dt_value
@@ -390,8 +399,7 @@ module Top10FailUnconverge
             object_id: link_id,
             first: elapsed_min,
             last: elapsed_min,
-            dt_values: [],
-            type: :failure
+            dt_values: []
           }
           data[:timestep_occurrences][composite_key][:last] = elapsed_min
           data[:timestep_occurrences][composite_key][:dt_values] << dt_value if dt_value
@@ -405,8 +413,7 @@ module Top10FailUnconverge
             object_id: node_id,
             first: elapsed_min,
             last: elapsed_min,
-            dt_values: [],
-            type: :failure
+            dt_values: []
           }
           data[:timestep_occurrences][node_id][:last] = elapsed_min
           data[:timestep_occurrences][node_id][:dt_values] << dt_value if dt_value
@@ -497,20 +504,15 @@ module Top10FailUnconverge
 
   # Extract top N failures/iterations with appropriate metrics
   # @param failures_hash [Hash] Object ID => count
-  # @param estimated_timesteps [Integer] Total timesteps
-  # @param occurrence_data [Hash] Composite key => {object_id, first, last, dt_values}.
-  #   Unconverged entries have no matching key here, so their max/avg iterations
-  #   below always report "Unknown".
+  # @param estimated_timesteps [Integer] Unused by this method; kept so callers can pass it
+  #   through for future metrics without changing the call signature again.
+  # @param occurrence_data [Hash] Composite key => {object_id, first, last, dt_values}
   # @param limit [Integer] Number to return
-  # @param is_failure [Boolean] True for failures (show first/last/min_dt), false for iterations (show max/avg)
+  # @param is_failure [Boolean] True for failures (show first/last/min_dt), false for unconverged iterations
   # @param failure_type [Symbol] :depth, :flow, or :node (for looking up correct composite key)
   # @return [Array<Hash>] Top failures with appropriate metrics
   def extract_top_failures(failures_hash, estimated_timesteps, occurrence_data, limit, is_failure = true, failure_type = nil)
     failures_hash.map do |object_id, count|
-      # impact_pct/impact_level are not displayed by the report or used by the
-      # selection-list code, but are included here for callers that want them.
-      impact_pct = (count.to_f / estimated_timesteps * 100).round(2)
-
       # Look up occurrence data using composite key for link failures
       lookup_key = if failure_type == :depth
         "#{object_id}:depth"
@@ -522,8 +524,8 @@ module Top10FailUnconverge
 
       occurrence = occurrence_data[lookup_key] || {}
 
-      # For failures, show first/last seen and min dt
-      # For iterations, show max and average iterations
+      # Failures show first/last seen and min dt; unconverged items don't have
+      # this occurrence data, so these stay nil (not shown in the report).
       if is_failure
         first_seen = occurrence[:first] ? "%.1f min" % occurrence[:first] : "Unknown"
         last_seen = occurrence[:last] ? "%.1f min" % occurrence[:last] : "Unknown"
@@ -535,44 +537,18 @@ module Top10FailUnconverge
         else
           min_dt = "Unknown"
         end
-
-        max_iterations = nil
-        avg_iterations = nil
       else
         first_seen = nil
         last_seen = nil
         min_dt = nil
-
-        iterations_list = occurrence[:iterations] || []
-        if iterations_list.any?
-          max_iterations = iterations_list.max
-          avg_iterations = (iterations_list.sum.to_f / iterations_list.size).round(1)
-        else
-          max_iterations = "Unknown"
-          avg_iterations = "Unknown"
-        end
-      end
-
-      impact_level = if impact_pct > 10.0
-        :critical
-      elsif impact_pct > 5.0
-        :warning
-      elsif impact_pct > 1.0
-        :info
-      else
-        :ok
       end
 
       {
         object_id: object_id,
         count: count,
-        impact_pct: impact_pct,
-        impact_level: impact_level,
         min_dt: min_dt,
         first_seen: first_seen,
-        last_seen: last_seen,
-        max_iterations: max_iterations,
-        avg_iterations: avg_iterations
+        last_seen: last_seen
       }
     end.sort_by { |f| -f[:count] }.slice(0, limit || 999999)
   end
@@ -608,6 +584,7 @@ module Top10FailUnconverge
     conflict_count = 0
     lost_count = 0
     resolution = {}
+    index = build_parent_link_index(net)
 
     # All 6 categories' selection lists are saved directly into the single
     # diagnostics_group created above (no per-category sub-group).
@@ -630,30 +607,32 @@ module Top10FailUnconverge
       net.clear_selection
 
       missing_ids = []
+      child_ids = []
+      resolved = {}
+      selected_keys = {}
       selected_count = 0
+      table = category[:type] == 'link' ? '_links' : '_nodes'
       net.transaction_begin
       begin
         data.each do |item|
           object_id = item[:object_id]
+          result = resolve_objects(net, object_id, table, index)
 
-          if category[:type] == 'link'
-            link_obj = net.row_object('_links', object_id)
-            if link_obj
-              link_obj.selected = true
-              link_obj.write
-              selected_count += 1
-            else
-              missing_ids << object_id
-            end
-          elsif category[:type] == 'node'
-            node_obj = net.row_object('_nodes', object_id)
-            if node_obj
-              node_obj.selected = true
-              node_obj.write
-              selected_count += 1
-            else
-              missing_ids << object_id
-            end
+          if result[:rows].empty?
+            missing_ids << object_id
+            child_ids << object_id if result[:child]
+            next
+          end
+
+          resolved[object_id] = result[:via] if result[:via]
+          result[:rows].each do |row|
+            key = "#{row.table}:#{row.id}"
+            next if selected_keys[key]
+
+            selected_keys[key] = true
+            row.selected = true
+            row.write
+            selected_count += 1
           end
         end
         net.transaction_commit
@@ -671,7 +650,9 @@ module Top10FailUnconverge
       resolution[category[:key]] = {
         selected: selected_count,
         requested: data.size,
-        missing: missing_ids
+        missing: missing_ids,
+        resolved: resolved,
+        child: child_ids
       }
 
       if missing_ids.any?
@@ -733,6 +714,75 @@ module Top10FailUnconverge
       created_count: created_count, replaced_count: replaced_count,
       conflict_count: conflict_count, lost_count: lost_count, resolution: resolution
     }
+  end
+
+  # One pass over the network. The log writes IDs in upper case while the network keeps
+  # mixed case, so every key here is upcased and maps back to the real ID.
+  def build_parent_link_index(net)
+    index = { nodes: {}, links: {}, river_reach: {}, bridge: {}, culvert: {} }
+    net.row_objects('_nodes').each { |ro| index[:nodes][ro.id.to_s.upcase] = ro.id }
+    net.row_objects('_links').each do |ro|
+      index[:links][ro.id.to_s.upcase] = ro.id
+      case ro.table
+      when 'hw_river_reach' then add_parent_link(index[:river_reach], ro['us_node_id'], ro.id)
+      when 'hw_bridge' then add_parent_link(index[:bridge], ro['us_node_id'], ro.id)
+      when 'hw_conduit'
+        next unless ro['conduit_type'].to_s.downcase == 'culvert'
+
+        add_parent_link(index[:culvert], ro['us_node_id'], ro.id)
+        add_parent_link(index[:culvert], ro['ds_node_id'], ro.id)
+      end
+    end
+    index
+  end
+
+  def add_parent_link(by_node, node_id, link_id)
+    return if node_id.nil?
+
+    ids = (by_node[node_id.to_s.upcase] ||= [])
+    ids << link_id unless ids.include?(link_id)
+  end
+
+  # Exact-case lookup first, then the upcased index.
+  def find_row(net, table, object_id, index)
+    row = net.row_object(table, object_id)
+    return row if row
+
+    real_id = index[table == '_links' ? :links : :nodes][object_id.to_s.upcase]
+    real_id ? net.row_object(table, real_id) : nil
+  end
+
+  def indexed_links(net, by_node, node_id)
+    (by_node[node_id.upcase] || []).map { |id| net.row_object('_links', id) }
+  end
+
+  # Returns { rows:, via:, child: }. The direct lookup runs before any rule because real
+  # IDs can end in a child-like suffix or contain '!' (e.g. WEST01_2813!).
+  def resolve_objects(net, object_id, table, index)
+    row = find_row(net, table, object_id, index)
+    return { rows: [row], via: nil, child: false } if row
+    return { rows: [], via: nil, child: true } if object_id.to_s =~ /\Adum_/i
+
+    Top10FailUnconverge::CHILD_OBJECT_RULES.each do |rule|
+      m = object_id.to_s.match(rule[:pattern])
+      next unless m
+
+      stem = m[1]
+      groups = case rule[:parent]
+      when :link_same_suffix then [['link', [find_row(net, '_links', "#{stem}#{m[2]}", index)]]]
+      when :node then [['node', [find_row(net, '_nodes', stem, index)]]]
+      when :bridge then [['bridge', indexed_links(net, index[:bridge], stem)]]
+      when :river_reach then [['river reach', indexed_links(net, index[:river_reach], stem)]]
+      when :node_and_culvert
+        [['node', [find_row(net, '_nodes', stem, index)]], ['culvert', indexed_links(net, index[:culvert], stem)]]
+      end
+      groups = groups.map { |label, rows| [label, rows.compact] }.reject { |_, rows| rows.empty? }
+      return { rows: [], via: nil, child: true } if groups.empty?
+
+      via = groups.map { |label, rows| "#{label} #{rows.map(&:id).join(', ')}" }.join('; ')
+      return { rows: groups.flat_map(&:last), via: via, child: false }
+    end
+    { rows: [], via: nil, child: false }
   end
 
   # Look for an existing Selection List child with this exact name in
@@ -812,8 +862,15 @@ module Top10FailUnconverge
       return items.map { |item| item.merge(in_latest_network: nil) } unless category_resolution
 
       missing = category_resolution[:missing] || []
+      resolved = category_resolution[:resolved] || {}
+      child = category_resolution[:child] || []
       items.map do |item|
-        item.merge(in_latest_network: !missing.include?(item[:object_id]))
+        id = item[:object_id]
+        item.merge(
+          in_latest_network: !missing.include?(id),
+          resolved_via: resolved[id],
+          child_object: child.include?(id)
+        )
       end
     end
 
@@ -854,10 +911,12 @@ module Top10FailUnconverge
       list_resolution && !list_resolution.empty?
     end
 
+    CHILD_OBJECT_NOTE = 'child object, check node ID and attached links'.freeze
+
     def latest_network_cell(item)
       case item[:in_latest_network]
-      when true then 'Yes'
-      when false then 'No'
+      when true then item[:resolved_via] ? "Yes (via #{item[:resolved_via]})" : 'Yes'
+      when false then item[:child_object] ? "No - #{CHILD_OBJECT_NOTE}" : 'No'
       else 'Not checked'
       end
     end
@@ -872,14 +931,14 @@ module Top10FailUnconverge
                  'only; "in latest network" is unknown for every row because that check only happens while ' \
                  'saving selection lists. Close the network elsewhere and run the script again.'
       else
-        lines << '"In latest network" shows whether this script found an object with that exact ID on the ' \
-                 'network\'s current latest commit when it tried to select it. "Not in latest network" can ' \
-                 'mean either the network changed since this simulation ran (edits, renames, deletions), OR ' \
-                 'the object still exists but under a slightly different ID than the log reports - the log ' \
-                 'can include direction/halving suffixes or other decoration that this script strips before ' \
-                 'looking the ID up, and that stripped-down ID does not always match the stored ID exactly. ' \
-                 'If an object below looks like it should exist, check for it directly in the database before ' \
-                 'assuming it was deleted. Either way, it was NOT saved to a selection list this run.'
+        lines << '"In latest network" shows whether this script found the object on the network\'s current ' \
+                 'latest commit when it tried to select it. IDs are matched ignoring case, and pre-processor ' \
+                 'child objects (e.g. _O, _L/_R, _BO/_BE) are matched to their parent, shown as "via ...". ' \
+                 '"Not in latest network" can mean either the network changed since this simulation ran ' \
+                 '(edits, renames, deletions), OR the log ID could not be mapped back to an object stored in ' \
+                 'the network. If an object below looks like it should exist, check for it directly in the ' \
+                 'database before assuming it was deleted. Either way, it was NOT saved to a selection list ' \
+                 'this run.'
       end
       lines << ''
       sections.each do |sec|
@@ -890,9 +949,9 @@ module Top10FailUnconverge
           sec[:items].each_with_index do |item, idx|
             latest = item[:in_latest_network]
             latest_note = if latest == false
-              ', not in latest network'
+              item[:child_object] ? ", not in latest network - #{CHILD_OBJECT_NOTE}" : ', not in latest network'
             elsif latest == true
-              ', in selection list'
+              item[:resolved_via] ? ", in selection list (via #{item[:resolved_via]})" : ', in selection list'
             else
               ''
             end
@@ -920,16 +979,15 @@ module Top10FailUnconverge
                 '&ldquo;Not checked&rdquo; for every row because that check only happens while saving ' \
                 'selection lists. Close the network elsewhere, then run the script again.</p>'
       elsif any_missing_from_latest?(list_resolution)
-        body << '<p class="note"><strong>In latest network?</strong> shows whether this script found an ' \
-                "object with that exact ID on the network's current latest commit when it tried to select it. " \
-                'A &ldquo;No&rdquo; can mean either (a) the network changed since this simulation ran (edits, ' \
-                'renames, deletions), <strong>or (b) the object still exists but under a slightly different ' \
-                'ID than the log reports</strong> &mdash; the log can include direction/halving suffixes ' \
-                '(e.g. trailing &ldquo;-&rdquo;, &ldquo;&lt;&rdquo;, &ldquo;&gt;&rdquo;) or other decoration ' \
-                'that this script strips before looking the ID up, and that stripped-down ID does not always ' \
-                'match the ID actually stored on the object. If an Object ID below looks like it should exist, ' \
-                'check for it directly in the database before assuming it was deleted. Either way, it was ' \
-                '<strong>not</strong> saved to a selection list this run.</p>'
+        body << '<p class="note"><strong>In latest network?</strong> shows whether this script found the ' \
+                "object on the network's current latest commit when it tried to select it. IDs are matched " \
+                'ignoring case, and pre-processor child objects (e.g. _O, _L/_R, _BO/_BE) are matched to ' \
+                'their parent, shown as &ldquo;Yes (via &hellip;)&rdquo;. A &ldquo;No&rdquo; can mean either ' \
+                '(a) the network changed since this simulation ran (edits, renames, deletions), ' \
+                '<strong>or (b) the log ID could not be mapped back to an object stored in the network' \
+                '</strong>. If an Object ID below looks like it should exist, check for it directly in the ' \
+                'database before assuming it was deleted. Either way, it was <strong>not</strong> saved to a ' \
+                'selection list this run.</p>'
       end
 
       # Paired into a 3x2 grid: build_sections already orders these as
@@ -946,7 +1004,7 @@ module Top10FailUnconverge
             body << '<div class="table-wrap">'
             if sec[:failure]
               body << "<table><thead><tr><th>Rank</th><th>Object ID</th><th>Count</th><th>% of category</th>" \
-                      "<th title=\"No can mean the network changed, or the log ID was decorated/normalized and no longer matches the stored ID exactly.\">In latest network?</th>" \
+                      "<th title=\"No can mean the network changed, or the log ID could not be mapped back to a stored object.\">In latest network?</th>" \
                       "<th>Min dt</th><th>First seen</th><th>Last seen</th></tr></thead><tbody>\n"
               sec[:items].each_with_index do |item, idx|
                 body << '<tr>'
@@ -954,7 +1012,7 @@ module Top10FailUnconverge
                 body << "<td>#{escape_html(item[:object_id])}</td>"
                 body << "<td>#{item[:count]}</td>"
                 body << "<td>#{item[:category_pct]}</td>"
-                body << "<td>#{latest_network_cell(item)}</td>"
+                body << "<td>#{escape_html(latest_network_cell(item))}</td>"
                 body << "<td>#{escape_html(item[:min_dt])}</td>"
                 body << "<td>#{escape_html(item[:first_seen])}</td>"
                 body << "<td>#{escape_html(item[:last_seen])}</td>"
@@ -962,14 +1020,14 @@ module Top10FailUnconverge
               end
             else
               body << "<table><thead><tr><th>Rank</th><th>Object ID</th><th>Count</th>" \
-                      "<th>% of category</th><th title=\"No can mean the network changed, or the log ID was decorated/normalized and no longer matches the stored ID exactly.\">In latest network?</th></tr></thead><tbody>\n"
+                      "<th>% of category</th><th title=\"No can mean the network changed, or the log ID could not be mapped back to a stored object.\">In latest network?</th></tr></thead><tbody>\n"
               sec[:items].each_with_index do |item, idx|
                 body << '<tr>'
                 body << "<td>#{idx + 1}</td>"
                 body << "<td>#{escape_html(item[:object_id])}</td>"
                 body << "<td>#{item[:count]}</td>"
                 body << "<td>#{item[:category_pct]}</td>"
-                body << "<td>#{latest_network_cell(item)}</td>"
+                body << "<td>#{escape_html(latest_network_cell(item))}</td>"
                 body << "</tr>\n"
               end
             end
@@ -1245,7 +1303,6 @@ module Top10FailUnconverge
     def list_write_failed?(combined)
       combined.to_s.match?(LIST_WRITE_FAILURE)
     end
-
     # Name of the sim's model network when GeoPlan has that network open, else nil.
     # The UI API cannot report which commit is open, so this is only checked after
     # Exchange has failed to save lists.
@@ -1331,21 +1388,6 @@ module Top10FailUnconverge
       ''
     end
 
-    # Best-effort: WSApplication.current_selection reflects GeoPlan/network
-    # selections, not database-tree clicks, so selecting a Sim in the
-    # database tree does not set it. resolve_sim_mo falls through to
-    # prompt_sim_id when this returns nil.
-    def resolve_sim_from_selection
-      return nil unless ws_method?(:current_selection)
-
-      mo = WSApplication.current_selection
-      return mo if mo && mo.respond_to?(:type) && mo.type.to_s == 'Sim'
-
-      nil
-    rescue
-      nil
-    end
-
     def prompt_sim_id
       return nil unless ws_method?(:input_box)
 
@@ -1362,9 +1404,6 @@ module Top10FailUnconverge
     end
 
     def resolve_sim_mo(db)
-      mo = resolve_sim_from_selection
-      return mo if mo
-
       sim_id = prompt_sim_id
       return nil unless sim_id
 
@@ -1485,7 +1524,6 @@ module Top10FailUnconverge
 
       report_html = File.join(Dir.tmpdir, "top10_fail_unconverge_#{sim_id}_#{Process.pid}.html")
       File.delete(report_html) if File.exist?(report_html)
-
       # No `puts` here: the ICM UI opens a "Script Output" console the moment
       # this UI-run script writes to stdout. All user-facing feedback for the
       # UI run goes through message_box instead, below.
