@@ -10,52 +10,6 @@ Copy **`UIIE_top10_fail_unconverge.rb`** and paste into a Ruby script object. Ev
 
 When you run the script from the UI and enter a Sim ID, it automatically starts a short **ICMExchange** run on the **same script file** with your database path and Sim ID. That headless pass reads the log, writes selection lists into the database, and builds the HTML summary. You do not open ICM Exchange or run command-line steps yourself.
 
-### Process flow
-
-```mermaid
-flowchart TD
-    start(["Script starts"]) --> uicheck{"Running inside\nICM UI?"}
-    uicheck -->|No| hstart["Headless.run"]
-    uicheck -->|Yes| ustart["UI.run"]
-
-    subgraph ui["UI pass (in ICM)"]
-        ustart --> udb{"Database\nopen?"}
-        udb -->|No| uerr1["Message box: open a database"]
-        udb -->|Yes| uprompt["Prompt for Sim ID\n(input_box)"]
-        uprompt --> usim{"Sim resolved?"}
-        usim -->|No| uerr2["Message box: cancelled"]
-        usim -->|Yes| uconfirm["Confirm dialog:\nscan this Sim?"]
-        uconfirm -->|No| uend1(["Exit"])
-        uconfirm -->|Yes| ulaunch["Launch ICMExchange.exe\nwith db path + Sim ID\n(Open3.capture2e)"]
-    end
-
-    subgraph headless["Headless pass (ICMExchange.exe)"]
-        hstart --> hdb["Open database\nfrom ARGV[1]"]
-        hdb --> hsim["Get Sim object\nfrom ARGV[2]"]
-        hsim --> hlog["Locate SIM{id}.log"]
-        hlog --> hrun["Resolve Run / Network\nfrom Sim"]
-        hrun --> hparse["Parse log file:\nheader, timesteps,\nHalving events,\nend-of-log summary"]
-        hparse --> hdata{"Any 1D\nfail/unconverged\ndata found?"}
-        hdata -->|No| hfail1["Report failure\n(no 1D data)"]
-        hdata -->|Yes| htop["Extract top 10 per category\n(Link Flow / Depth,\nNode x Failure/Unconverged)"]
-        htop --> hnet["Open network for writing"]
-        hnet --> hlists["Resolve object IDs,\nselect rows,\nsave Selection Lists\n(replace prior run's lists)"]
-        hlists --> hreport["Build report sections\n+ write HTML report"]
-        hreport --> htext["Write text summary\nto result file"]
-        htext --> hsuccess["Emit SELECTION_LISTS_*\nmarkers to stdout\n+ result file"]
-        hsuccess --> hend(["Exit"])
-        hfail1 --> hendfail(["Exit"])
-    end
-
-    ulaunch -.->|spawns, waits| hstart
-    hsuccess -.->|stdout + result file\nread back by| uparse["Parse worker output"]
-    hfail1 -.->|stdout + result file\nread back by| uparse
-
-    uparse --> uopenhtml["Open HTML report\nin browser"]
-    uopenhtml --> umsg["Message box:\nresult summary\n(created / replaced /\nconflicts / blocked / error)"]
-    umsg --> uend2(["Done"])
-```
-
 ## UI workflow
 
 1. Open the database. Do not have the **latest version** of the simulation's model network open in GeoPlan — it stops the background task from saving selection lists. Older (read-only) versions and other networks can stay open.

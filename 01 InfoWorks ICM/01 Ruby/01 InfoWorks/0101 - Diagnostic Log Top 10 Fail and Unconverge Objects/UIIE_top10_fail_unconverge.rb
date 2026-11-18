@@ -115,11 +115,7 @@ module Top10FailUnconverge
 
       puts "Log file found: #{log_file_path}"
       puts "File size: #{format_file_size(log_file_path)}"
-      {
-        log_path: log_file_path,
-        results_dir: results_dir,
-        file_size_mb: File.size(log_file_path) / 1024.0 / 1024.0
-      }
+      { log_path: log_file_path }
     end
 
     def get_run_info(db, sim_mo)
@@ -163,11 +159,7 @@ module Top10FailUnconverge
     puts "\nParsing log file..."
 
     data = {
-      run_timestep: nil,
-      diagnostic_level: nil,
       simulation_duration_min: nil,
-      node_count: 0,
-      has_wq: false,
       # Failures (actual problems)
       link_flow_failures: {},
       link_depth_failures: {},
@@ -176,7 +168,7 @@ module Top10FailUnconverge
       link_depth_unconverged: {},
       link_flow_unconverged: {},
       node_unconverged: {},
-      timestep_data: [],
+      timestep_line_count: 0,
       timestep_occurrences: {},  # First/last-seen timing + dt values per Halving-based
                                  # failure (link depth/flow, node). Only halving events are
                                  # tracked here; unconverged counts come from the end-of-log
@@ -187,15 +179,6 @@ module Top10FailUnconverge
     lines = File.readlines(log_path)
     total_lines = lines.size
     puts "Total lines in log: #{total_lines}"
-
-    # Parse header for run timestep
-    parse_header(lines, data)
-
-    # Parse run control parameters for WQ detection
-    parse_run_control(lines, data)
-
-    # Parse network size
-    parse_network_size(lines, data)
 
     # Parse timestep lines for temporal data and dt values
     parse_timestep_lines(lines, data)
@@ -221,82 +204,12 @@ module Top10FailUnconverge
     puts "Parsed: #{data[:link_depth_unconverged].size} link depth unconverged"
     puts "Parsed: #{data[:link_flow_unconverged].size} link flow unconverged"
     puts "Parsed: #{data[:node_unconverged].size} node unconverged"
-    puts "Parsed: #{data[:timestep_data].size} timestep entries"
+    puts "Parsed: #{data[:timestep_line_count]} timestep entries"
 
     data
   end
 
-  # Parse log header for run timestep and diagnostic level
-  def parse_header(lines, data)
-    # Validation warnings can push Run control parameters well past line 600
-    # (e.g. ADSK model: INITIALISING at ~1390), and Run control parameters can
-    # follow the INITIALISING marker. Scan until the SIMULATING phase starts.
-    in_run_control = false
-
-    lines.each do |line|
-      if line =~ /^SIMULATING$/i
-        break
-      end
-
-      if line =~ /Run control parameters:/
-        in_run_control = true
-        next
-      end
-
-      next unless in_run_control
-
-      if m = line.match(/Run timestep \(s\)\s*-\s*(\d+)/)
-        data[:run_timestep] = m[1].to_i
-        puts "Found run timestep: #{data[:run_timestep]}s"
-      end
-
-      if m = line.match(/Diagnostic output level\s*-\s*(\d+)/)
-        data[:diagnostic_level] = m[1].to_i
-        puts "Found diagnostic level: #{data[:diagnostic_level]}"
-      end
-
-      # Run control block ends at first blank line after parameters started
-      if line.strip.empty? && data[:run_timestep]
-        break
-      end
-    end
-  end
-
-  # Parse run control parameters for WQ detection
-  def parse_run_control(lines, data)
-    in_run_control = false
-
-    lines.each do |line|
-      if line =~ /Run control parameters:/
-        in_run_control = true
-      elsif in_run_control
-        # Check for WQ-specific parameters
-        if line =~ /quality|constituent/i
-          data[:has_wq] = true
-          puts "Detected Water Quality parameters"
-          break
-        end
-
-        # Exit run control section
-        if line.strip.empty? || line =~ /^[A-Z]/
-          break
-        end
-      end
-    end
-  end
-
-  # Parse network size from available program options
-  def parse_network_size(lines, data)
-    lines.first(200).each do |line|
-      if m = line.match(/(\d+)\s+nodes/i)
-        data[:node_count] = m[1].to_i
-        puts "Found node count: #{data[:node_count]}"
-        break
-      end
-    end
-  end
-
-  # Parse timestep lines for temporal distribution and iteration tracking
+  # Parse timestep lines for simulation duration and Halving-event tracking
   def parse_timestep_lines(lines, data)
     puts "Parsing timestep lines..."
 
@@ -312,20 +225,9 @@ module Top10FailUnconverge
       end
 
       # Timestep: 3.88min elapsed, dt = 120.00s, 1 iteration(s).
-      if m = line.match(/Timestep:\s+(\S+)min elapsed, dt = (\S+)s(?:,\s+(\d+)\s+iteration\(s\))?/)
+      if m = line.match(/Timestep:\s+(\S+)min elapsed, dt = (\S+)s(?:,\s+\d+\s+iteration\(s\))?/)
         elapsed_min = m[1].to_f
-        dt_value = m[2].to_f
-        iterations = m[3] ? m[3].to_i : 1
-
-        # Record every timestep line (tagged with is_simulation) so it's available
-        # as a fallback timestep count; only SIMULATING-phase entries count toward
-        # the simulation duration below.
-        data[:timestep_data] << {
-          elapsed_min: elapsed_min,
-          dt: dt_value,
-          iterations: iterations,
-          is_simulation: in_simulation_phase
-        }
+        data[:timestep_line_count] += 1
 
         # Track simulation duration (only from SIMULATING phase)
         if in_simulation_phase && (data[:simulation_duration_min].nil? || elapsed_min > data[:simulation_duration_min])
@@ -334,18 +236,19 @@ module Top10FailUnconverge
 
         # Look ahead for Halving (failure) messages near this timestep
         # Only track SIMULATING phase for temporal metrics (to avoid initialization dt values)
-        track_occurrences_from_timestep(lines, idx, elapsed_min, iterations, in_simulation_phase, data)
+        track_occurrences_from_timestep(lines, idx, elapsed_min, in_simulation_phase, data)
       end
     end
 
     puts "Simulation duration: #{data[:simulation_duration_min]} minutes"
   end
 
-  # Track Halving-based failures for each object (see NOTE below on why
-  # per-iteration unconverged tracking is not done here)
-  # dt_value is the timestep size for this particular timestep
+  # Track Halving-based failures for each object. Unconverged counts are not
+  # tracked here; they come from the end-of-log summary instead (see
+  # parse_end_of_log_summary), since the log does not emit a per-iteration
+  # Halving line for those.
   # Only track SIMULATING phase to exclude initialization dt values
-  def track_occurrences_from_timestep(lines, start_idx, elapsed_min, iterations, in_simulation_phase, data)
+  def track_occurrences_from_timestep(lines, start_idx, elapsed_min, in_simulation_phase, data)
     # Skip if not in simulation phase (avoid initialization dt values)
     return unless in_simulation_phase
 
@@ -491,27 +394,14 @@ module Top10FailUnconverge
     link_section ? id.gsub(/[-<>]\s*$/, '') : id
   end
 
-  # Calculate estimated total timesteps for impact calculation
-  def calculate_estimated_timesteps(log_data)
-    if log_data[:simulation_duration_min] && log_data[:run_timestep]
-      duration_seconds = log_data[:simulation_duration_min] * 60
-      (duration_seconds / log_data[:run_timestep]).to_i
-    else
-      # Fallback: use number of parsed timestep lines
-      log_data[:timestep_data].size
-    end
-  end
-
   # Extract top N failures/iterations with appropriate metrics
   # @param failures_hash [Hash] Object ID => count
-  # @param estimated_timesteps [Integer] Unused by this method; kept so callers can pass it
-  #   through for future metrics without changing the call signature again.
   # @param occurrence_data [Hash] Composite key => {object_id, first, last, dt_values}
   # @param limit [Integer] Number to return
   # @param is_failure [Boolean] True for failures (show first/last/min_dt), false for unconverged iterations
   # @param failure_type [Symbol] :depth, :flow, or :node (for looking up correct composite key)
   # @return [Array<Hash>] Top failures with appropriate metrics
-  def extract_top_failures(failures_hash, estimated_timesteps, occurrence_data, limit, is_failure = true, failure_type = nil)
+  def extract_top_failures(failures_hash, occurrence_data, limit, is_failure = true, failure_type = nil)
     failures_hash.map do |object_id, count|
       # Look up occurrence data using composite key for link failures
       lookup_key = if failure_type == :depth
@@ -639,17 +529,11 @@ module Top10FailUnconverge
       rescue => e
         net.transaction_rollback
         puts "  WARNING: Transaction failed for #{category[:name]}: #{e.message}"
-        resolution[category[:key]] = {
-          selected: 0,
-          requested: data.size,
-          missing: data.map { |i| i[:object_id] }
-        }
+        resolution[category[:key]] = { missing: data.map { |i| i[:object_id] } }
         next
       end
 
       resolution[category[:key]] = {
-        selected: selected_count,
-        requested: data.size,
         missing: missing_ids,
         resolved: resolved,
         child: child_ids
@@ -1056,11 +940,18 @@ module Top10FailUnconverge
             th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; font-size: 0.9rem; }
             th { background: #f5f5f5; }
             .meta { color: #555; font-size: 0.85rem; margin-bottom: 20px; max-width: 1600px; }
+            .intro { font-size: 0.9rem; margin-bottom: 16px; max-width: 1600px; }
             .note { background: #f9f6e8; border: 1px solid #e6d9a8; padding: 10px 12px; font-size: 0.9rem; max-width: 1600px; }
           </style>
         </head>
         <body>
           <h1>Top 10 fail / unconverge</h1>
+          <p class="intro">The six tables below rank this simulation's worst-performing links and nodes from the log,
+          split into <strong>Failures</strong> (halving events) and <strong>Unconverged</strong> (iteration counts) for
+          Link Flow, Link Depth, and Node. <strong>In latest network?</strong> shows whether each object (or, for
+          pre-processor child IDs such as <code>_O</code>, <code>_L</code>/<code>_R</code>, <code>_BO</code>/<code>_BE</code>/<code>_BC</code>,
+          and <code>_brk</code>, its resolved parent) could still be found on the network's current latest commit when
+          this report was generated.</p>
           <div class="meta">
             <div>Simulation: #{escape_html(sim_mo.name)} (ID #{sim_id})</div>
             <div>Generated: #{escape_html(generated)}</div>
@@ -1154,25 +1045,24 @@ module Top10FailUnconverge
       end
 
       limit = SELECTION_LIST_LIMIT
-      estimated = LogParse.calculate_estimated_timesteps(log_data)
 
       top_link_flow_failures = LogParse.extract_top_failures(
-        log_data[:link_flow_failures], estimated, log_data[:timestep_occurrences], limit, true, :flow
+        log_data[:link_flow_failures], log_data[:timestep_occurrences], limit, true, :flow
       )
       top_link_depth_failures = LogParse.extract_top_failures(
-        log_data[:link_depth_failures], estimated, log_data[:timestep_occurrences], limit, true, :depth
+        log_data[:link_depth_failures], log_data[:timestep_occurrences], limit, true, :depth
       )
       top_node_failures = LogParse.extract_top_failures(
-        log_data[:node_failures], estimated, log_data[:timestep_occurrences], limit, true, :node
+        log_data[:node_failures], log_data[:timestep_occurrences], limit, true, :node
       )
       top_link_depth_unconverged = LogParse.extract_top_failures(
-        log_data[:link_depth_unconverged], estimated, log_data[:timestep_occurrences], limit, false
+        log_data[:link_depth_unconverged], log_data[:timestep_occurrences], limit, false
       )
       top_link_flow_unconverged = LogParse.extract_top_failures(
-        log_data[:link_flow_unconverged], estimated, log_data[:timestep_occurrences], limit, false
+        log_data[:link_flow_unconverged], log_data[:timestep_occurrences], limit, false
       )
       top_node_unconverged = LogParse.extract_top_failures(
-        log_data[:node_unconverged], estimated, log_data[:timestep_occurrences], limit, false
+        log_data[:node_unconverged], log_data[:timestep_occurrences], limit, false
       )
 
       failure_data = {
@@ -1556,9 +1446,7 @@ module Top10FailUnconverge
         message_box(
           "This script started a background check for Simulation #{sim_id}, but it didn't finish or " \
           "report back properly - so nothing was created.\n\n" \
-          "What to try:\n" \
-          "  - Run the script again, and\n" \
-          '  - If this keeps happening, contact whoever maintains this script for help.',
+          'What to try: run the script again.',
           '!'
         )
       else
@@ -1656,9 +1544,8 @@ rescue => e
   if ws_ui?
     Top10FailUnconverge::UI.message_box(
       "Something unexpected went wrong and the script had to stop.\n\n" \
-      "Technical details (useful if you need to report this):\n#{e.class}: #{e.message}\n\n" \
-      'You can try running the script again. If it keeps happening, share the details above with ' \
-      'whoever maintains this script.',
+      "Technical details:\n#{e.class}: #{e.message}\n\n" \
+      'You can try running the script again.',
       'Stop'
     )
   else
