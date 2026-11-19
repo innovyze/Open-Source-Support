@@ -437,9 +437,21 @@ puts "Max qfull: #{qfull_max.max}"
 ### PAT_RESULTS_FIELDS_ENUM_019: Enumerate Results Fields
 **Intent:** Discover available result fields  
 
+**See:** `01 Ruby/01 InfoWorks/0008`; Lessons Learned (`results_fields` vs `fields`).
+
 ```ruby
-fields = points.first.table_info.fields.map(&:name)
-puts fields.join(',')
+net = WSApplication.current_network
+net.tables.each do |table|
+  results_array = []
+  net.row_object_collection(table.name).each do |row_object|
+    next if row_object.table_info.results_fields.nil?
+
+    row_object.table_info.results_fields.each do |field|
+      results_array |= [field.name]
+    end
+  end
+  puts "#{table.name}: #{results_array.join(', ')}" unless results_array.empty?
+end
 ```
 
 ### PAT_RESULTS_STAT_SUMMARY_020: Quick Statistics

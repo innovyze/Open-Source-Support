@@ -29,7 +29,6 @@
 | 0021 | UI & EX  | Populate conduit inverts with cross section elevations              | Network Data Set      |
 | 0022 | UI & EX  | Output CSV of calcs based on subcatchment data                      | Network Data Get      | <!-- Justification for category: CSV generated via Ruby File class rather than Export API -->
 | 0023 | TBC      | Import ground model                                                 | Network Data Import   | <!-- Type: TBC - If this imports a ground model into the UI then this is `UI` only however if this actually updates manholes with ground model data this is `UI & EX`? -->
-| 0024 | UI       | List all results fields in a Simulation                             | Network Data Get      |
 | 0025 | EX       | Recursively find model network                                      | Database Data Get     |
 | 0026 | UI & EX  | Export to geodatabase                                               | Network Data Export   |
 | 0027 | UI & EX  | Copy a subcatchment and rename it                                   | Network Data Set      |

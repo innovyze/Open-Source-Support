@@ -131,7 +131,7 @@ link.results('qlink')   # Get flow results
 2. **Object Selection**: Check if objects are selected first, fall back to all objects if none selected
 3. **Network Tracing**: Use `_seen` flags to prevent infinite loops, clean up afterwards
 4. **Error Handling**: Wrap operations in begin/rescue blocks
-5. **Results Access**: Access results from `current_network`; use `background_network` only for comparing two simulations
+5. **Results Access**: Read simulation results from `current_network` only.
 
 ### Most Common Script Patterns
 1. **Bulk Property Updates**: Modify multiple objects with transaction handling
@@ -344,6 +344,9 @@ end
 ## Results Handling (see PAT_RESULTS_ACCESS_018, PAT_RESULTS_FIELDS_ENUM_019)
 
 ### Accessing Results
+
+For discovering which result column names exist, use example **0008** under Results Field Discovery below.
+
 ```ruby
 net = WSApplication.current_network  # Results always from current network
 timesteps = net.list_timesteps
@@ -382,22 +385,24 @@ end
 **See:** PAT_RESULTS_FIELDS_ENUM_019 for field discovery pattern
 
 ### Results Field Discovery
+
+Use `table_info.results_fields`, not `table_info.fields` (network columns). See Lessons Learned and example **0008** (`01 Ruby/01 InfoWorks/0008`).
+
 ```ruby
-require 'set'
-
-# Discover available results fields for a table
 net = WSApplication.current_network
-results_set = Set.new
+net.tables.each do |table|
+  puts "=> #{table.name.upcase}"
+  results_array = []
+  net.row_object_collection(table.name).each do |row_object|
+    next if row_object.table_info.results_fields.nil?
 
-net.row_object_collection('hw_node').each do |node|
-  next unless node.table_info.results_fields
-  
-  node.table_info.fields.each do |field|
-    results_set << field.name
+    row_object.table_info.results_fields.each do |field|
+      results_array |= [field.name]
+    end
   end
+  puts results_array
+  puts ""
 end
-
-puts "Available results fields: #{results_set.to_a}"
 ```
 
 ### Iterating Selected Objects
@@ -416,41 +421,6 @@ end
 selected = net.row_object_collection_selection('_nodes')
 selected.each do |node|
   puts "#{node.node_id}: Level = #{node.ground_level}"
-end
-```
-
-### Comparing Simulations
-```ruby
-cn = WSApplication.current_network      # Current simulation
-bn = WSApplication.background_network   # Background simulation
-
-cn.row_objects('hw_node').each do |cn_node|
-  bn_node = bn.row_object('hw_node', cn_node.id)
-  next if bn_node.nil?
-  
-  diff = cn_node.results('depnod').max - bn_node.results('depnod').max
-  puts "#{cn_node.id}: Difference = #{diff.round(3)}"
-end
-```
-  node.table_info.fields.each do |field|
-    results_set << field.name
-  end
-end
-
-puts "Available results fields: #{results_set.to_a}"
-
-# Compare results between current and background networks
-cn = WSApplication.current_network
-bn = WSApplication.background_network
-
-cn.row_objects('hw_node').each do |cn_node|
-  bn_node = bn.row_object('hw_node', cn_node.id)
-  next if bn_node.nil?
-  
-  cn_result = cn_node.results('depnod').max
-  bn_result = bn_node.results('depnod').max
-  
-  puts "Node #{cn_node.id}: Current=#{cn_result}, Background=#{bn_result}"
 end
 ```
 

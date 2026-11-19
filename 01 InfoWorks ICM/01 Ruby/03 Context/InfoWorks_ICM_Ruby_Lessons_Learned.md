@@ -3,7 +3,7 @@
 **Purpose:** High-priority warnings about InfoWorks Ruby behavior that differs from standard Ruby. Load this FIRST before generating any code.
 
 **Load Priority:** CRITICAL - Always load FIRST before any code generation  
-**Last Updated:** July 7, 2026
+**Last Updated:** November 19, 2026
 
 ## How to Use This File
 
@@ -528,6 +528,8 @@ Load in this order:
 | 2026-03-13 | Added UI `exit` guidance | `exit` in UI scripts can raise SystemExit popups; prefer `catch`/`throw` for graceful stop |
 | 2026-07-02 | MCP-verified corrections | Collection return types, DateTime scope, commit availability, children staleness, _seen reset |
 | 2026-07-07 | Context alignment pass | API_Reference canonical PAT IDs, validate/import/update class placement, Database_Fields_Guide integration |
+| 2026-11-19 | background_network vs simulation results | Removed incorrect pattern of comparing sims via background_network; Open as alternative results does not populate it |
+| 2026-11-19 | results_fields vs fields | Results introspection must use table_info.results_fields, not table_info.fields |
 
 ---
 
@@ -1006,6 +1008,84 @@ table_info.fields.each { |f| puts "#{f.name} (#{f.type})" }
 1. **Don't guess field names** - provide discovery script if uncertain
 2. **Workflow:** Error → script → user reports fields → regenerate with correct names
 3. **100+ tables, thousands of fields** - names vary by version/license/network type
+
+---
+
+## CRITICAL: background_network and Simulation Results
+
+### The Problem
+
+Agents often treat `WSApplication.background_network` as a **second simulation results** context (for example after **Open as alternative results**). In that mode `background_network` is typically **nil**. Scripts that call `bn.tables`, `bn.row_objects`, or `bn_node.results(...)` without a nil check fail.
+
+`background_network` returns the **other GeoPlan network** when two networks are open in the current/draft pair (documented in API help as the background network on the focused GeoPlan). That is not the same as a second loaded simulation result set.
+
+### What Works
+
+```ruby
+net = WSApplication.current_network
+net.row_objects('hw_node').each do |node|
+  puts "#{node.id}: max depth=#{node.results('depnod').max}"
+end
+```
+
+### Valid cn/bn usage (not simulation-results comparison)
+
+Dual-network scripts (for example `01 Ruby/02 SWMM/0018`) compare **model** objects between InfoWorks and SWMM networks when both are actually open. Always guard `bn = WSApplication.background_network` for nil before use.
+
+### What FAILS
+
+```ruby
+bn = WSApplication.background_network
+bn.tables.each { |t| puts t.name }  # NoMethodError when bn is nil
+```
+
+```ruby
+# Wrong mental model: "current sim" vs "background sim" via alternative results
+diff = cn_node.results('depnod').max - bn_node.results('depnod').max
+```
+
+### LLM Agent Rules
+
+1. **Simulation `.results(...)`** — use `current_network` on the GeoPlan where results are loaded.
+2. **`background_network`** — only when a second **network** is open; nil-check; do not assume a second sim result set.
+3. **No Ruby template** for comparing two simulation result sets via `cn`/`bn` unless product behavior is verified for the user's workflow.
+
+---
+
+## CRITICAL: results_fields vs fields (Results Introspection)
+
+### The Problem
+
+`WSTableInfo#fields` lists **network/database** columns. Result time series columns are exposed via `WSTableInfo#results_fields`. Using `.fields` when listing result names (removed example 0024, old Tutorial snippet) produces wrong or empty output.
+
+Network property discovery correctly uses `.fields` — see **Field Discovery for Unknown Properties** above.
+
+### What Works
+
+```ruby
+net = WSApplication.current_network
+net.tables.each do |table|
+  net.row_object_collection(table.name).each do |row_object|
+    next if row_object.table_info.results_fields.nil?
+
+    row_object.table_info.results_fields.each { |f| puts f.name }
+    break
+  end
+end
+```
+
+**See:** `01 Ruby/01 InfoWorks/0008`, PAT_RESULTS_FIELDS_ENUM_019.
+
+### What FAILS
+
+```ruby
+row_object.table_info.fields.each { |f| puts f.name }  # network columns, not results
+```
+
+### LLM Agent Rules
+
+1. **Results field names** — `results_fields`.
+2. **Network/database field names** — `fields` (or Database Fields Guide / discovery script in the section above).
 
 ---
 
