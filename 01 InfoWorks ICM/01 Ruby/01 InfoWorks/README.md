@@ -50,7 +50,7 @@
 | 0044 | UI       | Trace current network family in database tree                       | Database Data Get     |
 | 0045 | UI       | Clear SUDS from subcatchments                                       | Network Data Set      |
 | 0046 | UI       | Output SUDS control as CSV                                          | Network Data Get      |
-| 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data Get      |
+| 0047 | UI       | Select bifurcation links                                            | Network Data Get      |
 | 0048 | —        | *(placeholder - unused)*                                            | —                      |
 | 0049 | EX       | Extract river reach results                                         | Network Data Get      |
 | 0050 | UI & EX  | Assign subcatchment to nearest 'Storage' type node                  | Network Data Get      |
@@ -104,7 +104,7 @@
 | 0098 | UI       | Flow Survey Data Importer                                           | Network Data Analysis |
 | 0099 | EX       | Cloud simulation result download and open                           | Simulations Data Get  |
 | 0100 | EX       | Batch update databases to latest version                            | System Automation     |
-| 0101 | UI & EX  | Top 10 Fail and Unconverge Objects                                  | Simulations Data Get  |
+| 0101 | UI & EX  | Diagnostic Log Top 10 Fail and Unconverge Objects                   | Simulations Data Get  |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
