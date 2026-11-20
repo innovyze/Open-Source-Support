@@ -8,7 +8,7 @@
 | 0002 | UI & EX  | Runoff surfaces from selected subcatchments                         | Network Data Get      |
 | 0003 | UI & EX  | Find parent model group ID                                          | Database Data Get     |
 | 0004 | UI & EX  | Connect subcatchment to nearest node                                | Network Data Set      |
-| 0005 | UI & EX  | Trace network from selection                                        | Network Data Analysis |
+| 0005 | UI & EX  | Network Tracing                                                    | Network Data Analysis |
 | 0006 | EX       | Copy a run and set 'Working' flag                                   | Simulations Run       |
 | 0007 | EX       | Running simulations                                                 | Simulations Run       |
 | 0008 | UI & EX  | List all results fields in a simulation                             | Network Data Get      |
