@@ -92,4 +92,29 @@ These features **cannot** be automated via InfoWorks ICM Ruby API:
 
 ---
 
+## ICM Version Compatibility
+
+**Confirmed working on:** InfoWorks ICM 2027.1.0 (embedded Ruby 3.4.6) and InfoWorks ICM 2026.3 and earlier (embedded Ruby 2.4).
+
+Both scripts in this folder use a single, shared codebase across ICM versions — there is no separate branch or version to maintain for older installs. This is intentional: every workaround below relies only on long-standing, version-independent Ruby features (plain `while` loops, `String#getbyte`/`#[offset,len]` for binary parsing, `Process.clock_gettime` for timestamps, backtick subprocess calls), none of which were introduced by or depend on Ruby 3.x. They should run unchanged on any ICM version back to at least 2024.2 (the oldest version this script's `ICMExchange.exe` path list targets). If you have access to an older ICM install, a quick smoke test is still recommended before relying on it in production, but no code changes are expected to be needed.
+
+### Known ICM 2027.0+ embedded Ruby compatibility issues (addressed in these scripts)
+
+ICM 2027.0 upgraded its embedded Ruby engine from 2.4 to 3.4.6. On the `x64-mswin64` Ruby 3.4.6 build shipped with ICM 2027.1.0, several individual core methods were found to be non-functional — confirmed by direct reproduction, not a Ruby 3.4 language change (none of the methods below were altered or removed in real Ruby 3.4):
+
+| Method / Class | Symptom |
+|---|---|
+| `Symbol#to_s` / `Symbol#name` | Returns garbled `#<Symbol:0xADDRESS>` text or raises `NoMethodError` — this is also why unrelated `NoMethodError` messages appeared corrupted, since Ruby's own error formatter uses `Symbol#to_s` internally |
+| `String#unpack` (all formats tested) | Raises `NoMethodError` |
+| Bare `Kernel#loop` (`loop do...end`) | Raises `NoMethodError` |
+| `Integer#times` | Raises `NoMethodError` |
+| Entire `Time` class (`.now`, `#to_s`, `#strftime`, `#year`) | Raises `NoMethodError` / `TypeError` |
+| `Open3.capture2` | Raises `NoMethodError` **inside Autodesk's own shipped `open3.rb`** |
+
+Confirmed **not** affected (safe, used as-is): `String#strip`/`#getbyte`/`#[offset,len]`/`#upcase`/`#downcase`/`#casecmp`, `Symbol#inspect`, `Array#each`/`#find`/`#reject`/`#map`/`#any?`/`#max_by`, `JSON.parse`/`#pretty_generate`, `Digest::SHA256.hexdigest`.
+
+These scripts avoid every affected method above entirely: manual byte-level DBF parsing instead of `unpack`, plain `while` loops instead of `loop`/`times`, epoch-based timestamp math via `Process.clock_gettime` instead of `Time`, and backticks instead of `Open3`. If a future ICM version surfaces a new affected method, the fatal-error dialog includes the exact file/line ("Location:" section) to make it fast to diagnose — please report it so the script can be updated.
+
+---
+
 *Note: This documentation was AI-generated and reviewed by the script author.*

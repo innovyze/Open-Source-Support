@@ -646,12 +646,15 @@ end
 # Run the main method, catch any errors
 # ============================================================================
 begin
-  start_time = Time.now
+  # NOTE: The Time class raises NoMethodError/TypeError on this embedded
+  # Ruby build (InfoWorks ICM 2027.1.0), so elapsed runtime is measured
+  # with a monotonic clock instead of Time.now.
+  start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
   completed = main()
   
   # Only print runtime if import completed (not cancelled)
   if completed
-    end_time = Time.now
+    end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     runtime = end_time - start_time
     puts ""
     puts "Runtime: #{sprintf('%.2f', runtime)} seconds"

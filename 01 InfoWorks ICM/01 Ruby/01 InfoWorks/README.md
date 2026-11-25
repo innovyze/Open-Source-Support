@@ -1,8 +1,6 @@
 # InfoWorks ICM - Ruby Scripts
 
-## Index of contents
-
-### Index
+## Index
 
 | ID   | Type     | Name                                                                | Category              |
 |------|----------|---------------------------------------------------------------------|-----------------------|
@@ -10,7 +8,7 @@
 | 0002 | UI & EX  | Runoff surfaces from selected subcatchments                         | Network Data Get      |
 | 0003 | UI & EX  | Find parent model group ID                                          | Database Data Get     |
 | 0004 | UI & EX  | Connect subcatchment to nearest node                                | Network Data Set      |
-| 0005 | UI & EX  | Trace network from selection                                        | Network Data Analysis |
+| 0005 | UI & EX  | Network Tracing                                                    | Network Data Analysis |
 | 0006 | EX       | Copy a run and set 'Working' flag                                   | Simulations Run       |
 | 0007 | EX       | Running simulations                                                 | Simulations Run       |
 | 0008 | UI & EX  | List all results fields in a simulation                             | Network Data Get      |
@@ -29,12 +27,12 @@
 | 0021 | UI & EX  | Populate conduit inverts with cross section elevations              | Network Data Set      |
 | 0022 | UI & EX  | Output CSV of calcs based on subcatchment data                      | Network Data Get      | <!-- Justification for category: CSV generated via Ruby File class rather than Export API -->
 | 0023 | TBC      | Import ground model                                                 | Network Data Import   | <!-- Type: TBC - If this imports a ground model into the UI then this is `UI` only however if this actually updates manholes with ground model data this is `UI & EX`? -->
-| 0024 | UI       | List all results fields in a Simulation                             | Network Data Get      |
+| 0024 | —        | *(placeholder - unused)*                                            | —                      |
 | 0025 | EX       | Recursively find model network                                      | Database Data Get     |
 | 0026 | UI & EX  | Export to geodatabase                                               | Network Data Export   |
 | 0027 | UI & EX  | Copy a subcatchment and rename it                                   | Network Data Set      |
 | 0028 | UI & EX  | Percentage change in runoff surfaces upstream node into new scenario| Network Data Set      | <!-- Consider a Network Scenario Set Category -->
-| 0029 | UI       | Subcatchment parameter statistics                                   | Network Data Get      |
+| 0029 | —        | *(placeholder - unused)*                                            | —                      |
 | 0030 | UI & EX  | Maintain only first and last river reach sections                   | Network Data Set      |
 | 0031 | UI & EX  | Replace flag in all objects in a model network                      | Network Data Set      |
 | 0032 | UI & EX  | List complete database objects contents                             | Network Data Get      |
@@ -52,8 +50,8 @@
 | 0044 | UI       | Trace current network family in database tree                       | Database Data Get     |
 | 0045 | UI       | Clear SUDS from subcatchments                                       | Network Data Set      |
 | 0046 | UI       | Output SUDS control as CSV                                          | Network Data Get      |
-| 0047 | UI       | Select links sharing the same us and ds node ids                    | Network Data Get      |
-| 0048 | UI       | Delete all scenarios except Base                                    | Network Data Set      |
+| 0047 | UI       | Select bifurcation links                                            | Network Data Get      |
+| 0048 | —        | *(placeholder - unused)*                                            | —                      |
 | 0049 | EX       | Extract river reach results                                         | Network Data Get      |
 | 0050 | UI & EX  | Assign subcatchment to nearest 'Storage' type node                  | Network Data Get      |
 | 0051 | EX       | Interactive Exchange in VS Code                                     | Developer Tools       |
@@ -104,32 +102,34 @@
 | 0096 | UI       | TVD & Simulation Summary Plots & CSV Export                         | Simulations Data Get  |
 | 0097 | UI       | Storage and Pond node audit and correction                          | Network Data Analysis |
 | 0098 | UI       | Flow Survey Data Importer                                           | Network Data Analysis |
+| 0099 | EX       | Cloud simulation result download and open                           | Simulations Data Get  |
 | 0100 | EX       | Batch update databases to latest version                            | System Automation     |
+| 0101 | UI & EX  | Diagnostic Log Top 10 Fail and Unconverge Objects                   | Simulations Data Get  |
 |------|----------|---------------------------------------------------------------------|-----------------------|
 
 ### Descriptions
 
 * Field `Type`:
-    * `UI & EX` - Script can be ran in either UI or ICM Exchange
-    * `UI` - Script is designed to run in the UI only
-    * `EX` - Script is designed to run in the ICM Exchange only
-    * `TBC` - Requires assessment from a maintainer
+  * `UI & EX` - Script can be ran in either UI or ICM Exchange
+  * `UI` - Script is designed to run in the UI only
+  * `EX` - Script is designed to run in the ICM Exchange only
+  * `TBC` - Requires assessment from a maintainer
 * Field `Category`:
-    * `Network Data Bin`      - Reading raw binary data from the network. Makes no attempt to parse data.
-    * `Network Data Get`      - Reading useful data from a network
-    * `Network Data Set`      - Writing data to a network
-    * `Network Data Export`   - Export network data to a file
-    * `Network Data Import`   - Import network data from a file
-    * `Network Data Analysis` - Related to tracing through a network or checking for specific conditions. These examples are more like final products.
-    * `Database Data Bin`     - Reading raw binary data from the database. Makes no attempt to parse data.
-    * `Database Data Get`     - Reading useful data from a database
-    * `Database Data Set`     - Writing data to a database
-    * `Database Data Export`  - Export database data to a file
-    * `Database Data Import`  - Import database data from a file
-    * `Network RTC Bin`       - Reading raw binary data from the network RTC data. Makes no attempt to parse data.
-    * `Network RTC Get`       - Reading useful data from the network RTC data
-    * `Network RTC Set`       - Writing data to the network RTC data
-    * `Simulations Run`       - Creating and Running simulations
-    * `Simulations Data Get`  - Obtaining simulation data
-    * `System Automation`     - Misc system tasks
-    * `Developer Tools`       - Tools that can help you make / learn how to make Ruby scripts.
+  * `Network Data Bin`      - Reading raw binary data from the network. Makes no attempt to parse data.
+  * `Network Data Get`      - Reading useful data from a network
+  * `Network Data Set`      - Writing data to a network
+  * `Network Data Export`   - Export network data to a file
+  * `Network Data Import`   - Import network data from a file
+  * `Network Data Analysis` - Related to tracing through a network or checking for specific conditions. These examples are more like final products.
+  * `Database Data Bin`     - Reading raw binary data from the database. Makes no attempt to parse data.
+  * `Database Data Get`     - Reading useful data from a database
+  * `Database Data Set`     - Writing data to a database
+  * `Database Data Export`  - Export database data to a file
+  * `Database Data Import`  - Import database data from a file
+  * `Network RTC Bin`       - Reading raw binary data from the network RTC data. Makes no attempt to parse data.
+  * `Network RTC Get`       - Reading useful data from the network RTC data
+  * `Network RTC Set`       - Writing data to the network RTC data
+  * `Simulations Run`       - Creating and Running simulations
+  * `Simulations Data Get`  - Obtaining simulation data
+  * `System Automation`     - Misc system tasks
+  * `Developer Tools`       - Tools that can help you make / learn how to make Ruby scripts.

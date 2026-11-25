@@ -844,7 +844,7 @@ PROMPT TITLE 'Press OK to continue or Cancel to review';
 PROMPT LINE $n 'Number of affected objects';
 PROMPT DISPLAY READONLY;
 ```
-**See:** `../01 InfoWorks/0024` for confirmation before update
+**See:** `../01 InfoWorks/0024 - Call out info box and choice to OK or Cancel` for confirmation before update
 
 ---
 

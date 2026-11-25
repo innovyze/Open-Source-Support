@@ -105,8 +105,13 @@ def create_root_active_network_selection(open_net, parent_object, iedb_path)
       return 1
     rescue => e
       # If selection list already exists, try to update it
+      # Use find_child_model_object(type, name) to look it up directly,
+      # rather than listing all children and searching by .name - this
+      # avoids both the WSModelObjectCollection.find limitation (see
+      # InfoWorks_ICM_Ruby_Error_Reference.md) and any issue calling .name
+      # on WSModelObject instances in this environment.
       begin
-        sl = parent_object.list_model_objects('Selection List').find { |obj| obj.name == selection_name }
+        sl = parent_object.find_child_model_object('Selection List', selection_name)
         if sl
           open_net.save_selection(sl)
           puts "  [OK] Updated '#{selection_name}' (#{node_count} nodes, #{link_count} links)"
@@ -150,8 +155,16 @@ def create_active_network_selections(open_net, parent_object, scenarios, iedb_pa
   }
   
   # Count scenarios by FAC_TYPE
-  fac_type_counts = Hash.new(0)
-  scenarios.each { |id, data| fac_type_counts[data['FAC_TYPE']] += 1 }
+  # NOTE: Hash.new(default_value) raises ArgumentError ("wrong number of
+  # arguments (given 1, expected 0)") on this embedded Ruby build - the
+  # positional default-value form of Hash.new appears to be disabled here,
+  # similar to other class methods being restricted (see Dir class notes
+  # elsewhere in this tool). Counting is done manually instead.
+  fac_type_counts = {}
+  scenarios.each do |id, data|
+    fac_type = data['FAC_TYPE']
+    fac_type_counts[fac_type] = (fac_type_counts[fac_type] || 0) + 1
+  end
   
   # Only process scenarios with FAC_TYPE = 0 (Active Network)
   # scenarios is a hash keyed by scenario ID
@@ -285,8 +298,11 @@ def create_active_network_selections(open_net, parent_object, scenarios, iedb_pa
         selection_count += 1
       rescue => e
         # If selection list already exists, try to update it
+        # Use find_child_model_object(type, name) - see the note in
+        # create_root_active_network_selection above for why this is
+        # preferred over listing children and searching by .name
         begin
-          sl = parent_object.list_model_objects('Selection List').find { |obj| obj.name == selection_name }
+          sl = parent_object.find_child_model_object('Selection List', selection_name)
           if sl
             open_net.save_selection(sl)
             puts "  [OK] Updated '#{selection_name}' (#{node_count} nodes, #{link_count} links)"

@@ -30,5 +30,21 @@ This script provides a user-friendly interface to delete multiple scenarios from
 - Option to cancel at any point without making changes
 - Clear feedback messages throughout the process
 
+## Alternative: Quick Delete-All (No Prompts)
+
+If you just want to delete every non-Base scenario immediately, without any selection or confirmation dialogs, use this short script instead:
+
+```ruby
+net=WSApplication.current_network
+net.scenarios do |s|
+    if s != 'Base'
+        net.delete_scenario(s)
+    end
+end
+puts 'All scenarios deleted'
+```
+
+This runs unattended and deletes all scenarios except `Base` with no option to pick specific scenarios or confirm before deleting. Use with caution.
+
 ---
 *Generated using AI*
