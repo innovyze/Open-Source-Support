@@ -1,0 +1,18 @@
+Open Government Licence v3.0
+
+Copyright (c) 2026 Sebastian Madrid Ontiveros
+
+Contains OS data. Crown copyright and database right 2026.
+
+Licensed under the Open Government Licence v3.0.
+https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+
+You are free to copy, publish, distribute, transmit, adapt and exploit the
+information commercially or non-commercially, provided you acknowledge the
+source by including the following attribution statement:
+
+  Contains OS data. Crown copyright and database right 2026.
+
+The Ordnance Survey grid data included in this gem is sourced directly from
+the OS BNG Grids GeoPackage published by Ordnance Survey under the Open
+Government Licence v3.0.
