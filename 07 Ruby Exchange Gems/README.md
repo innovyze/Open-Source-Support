@@ -14,7 +14,7 @@ Gems hosted here **must be 100% Ruby**. No C extensions, no native compiled code
 
 | # | Gem | Author | Products | Domain | License |
 |---|---|---|---|---|---|
-| _No gems yet — be the first._ | | | | | |
+| 1 | [SMO-EA-Hydrology](SMO-EA-Hydrology/) | Sebastian Madrid Ontiveros | InfoWorks ICM 2027 | Hydrology: UK Environment Agency rainfall data | MIT |
 
 ## How to use a gem
 
