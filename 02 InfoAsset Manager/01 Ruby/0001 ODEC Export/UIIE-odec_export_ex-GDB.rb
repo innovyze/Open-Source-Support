@@ -4,6 +4,14 @@ else
 	$db = WSApplication.open('localhost:40000/IA_DATABASE')
     $nw = $db.model_object_from_type_and_id('Collection Network',4)
     $net = $nw.open
+    current_commit_id = $nw.current_commit_id
+	latest_commit_id = $nw.latest_commit_id
+	if(latest_commit_id > current_commit_id) then
+		puts "Updating from Commit ID #{current_commit_id} to Commit ID #{latest_commit_id}"
+		$nw.update
+	else
+		puts 'Network is up to date'
+	end
     WSApplication.use_arcgis_desktop_licence()
 end
 
